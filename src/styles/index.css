@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animation utility classes */
+@layer utilities {
+  .anim {
+    @apply animate-slideUp;
+  }
+
+  .anim-d1 {
+    @apply animate-slideUp;
+    animation-delay: 0.1s;
+  }
+
+  .anim-d2 {
+    @apply animate-slideUp;
+    animation-delay: 0.2s;
+  }
+
+  .anim-d3 {
+    @apply animate-slideUp;
+    animation-delay: 0.3s;
+  }
+
+  .anim-d4 {
+    @apply animate-slideUp;
+    animation-delay: 0.4s;
+  }
+
+  .anim-d5 {
+    @apply animate-slideUp;
+    animation-delay: 0.5s;
+  }
+
+  .shimmer {
+    @apply animate-shimmer;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 1000px 100%;
+  }
+
+  .pop {
+    @apply animate-pop;
+  }
+
+  .shake {
+    @apply animate-shake;
+  }
+
+  .float {
+    @apply animate-float;
+  }
+
+  .fade-in {
+    @apply animate-fadeIn;
+  }
+
+  .scale-in {
+    @apply animate-scaleIn;
+  }
+
+  .confetti {
+    @apply animate-confettiFall;
+  }
+
+  .ring-draw {
+    @apply animate-ringDraw;
+  }
+
+  .count-up {
+    @apply animate-countUp;
+  }
+
+  .badge-unlock {
+    @apply animate-badgeUnlock;
+  }
+
+  .streak-fire {
+    @apply animate-streakFire;
+  }
+
+  .level-up {
+    @apply animate-levelUp;
+  }
+}
+
+/* Base styles */
+@layer base {
+  body {
+    @apply bg-[#F5F5F0] text-gray-900;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 rounded-lg bg-sage text-white font-medium hover:bg-sage-dark transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-lg bg-surface-2 text-gray-900 font-medium hover:bg-surface-3 transition-colors;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm p-4;
+  }
+
+  .card-lg {
+    @apply bg-white rounded-lg shadow-sm p-6;
+  }
+}
