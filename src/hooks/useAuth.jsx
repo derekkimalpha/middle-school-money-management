@@ -9,10 +9,12 @@ export const useAuth = () => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // Check for existing session
-        const { data: { session } } = await supabase.auth.getSession()
+        console.log('[AUTH] Starting initAuth...')
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        console.log('[AUTH] Session:', session ? 'exists' : 'none', 'Error:', sessionError)
 
         if (session?.user) {
+          console.log('[AUTH] User found:', session.user.email)
           setUser({
             id: session.user.id,
             email: session.user.email,
@@ -26,13 +28,18 @@ export const useAuth = () => {
             .eq('id', session.user.id)
             .single()
 
+          console.log('[AUTH] Profile:', profileData, 'Error:', profileError)
+
           if (profileData && !profileError) {
             setProfile(profileData)
           }
+        } else {
+          console.log('[AUTH] No session found')
         }
       } catch (error) {
-        console.error('Auth init error:', error)
+        console.error('[AUTH] Init error:', error)
       } finally {
+        console.log('[AUTH] Loading complete')
         setLoading(false)
       }
     }
