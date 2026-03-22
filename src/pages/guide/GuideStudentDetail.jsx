@@ -347,7 +347,7 @@ export const GuideStudentDetail = () => {
                 </motion.div>
               )
             }))
-          )}
+          }
         </div>
       </motion.div>
 
