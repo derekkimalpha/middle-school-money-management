@@ -33,6 +33,7 @@ const ACCOUNT_COLORS = {
   savings:  { hex: '#6b8a87', light: 'rgba(107,138,135,0.08)', accent: 'text-teal dark:text-teal' },
   sp500:    { hex: '#a68b5b', light: 'rgba(166,139,91,0.08)', accent: 'text-amber dark:text-amber' },
   nasdaq:   { hex: '#78716c', light: 'rgba(120,113,108,0.08)', accent: 'text-stone-500 dark:text-stone-400' },
+  roth:     { hex: '#8b5cf6', light: 'rgba(139,92,246,0.08)', accent: 'text-plum dark:text-plum' },
 }
 
 const ACCOUNT_ICONS = {
@@ -40,6 +41,7 @@ const ACCOUNT_ICONS = {
   savings: PiggyBank,
   sp500: TrendingUp,
   nasdaq: BarChart3,
+  roth: Lock,
 }
 
 const ACCOUNT_SUBTITLES = {
@@ -47,6 +49,7 @@ const ACCOUNT_SUBTITLES = {
   savings: 'Growing with interest',
   sp500: 'Top 500 U.S. companies',
   nasdaq: 'Tech & growth companies',
+  roth: 'Locked until graduation',
 }
 
 const ACCOUNT_LEARN = {
@@ -497,7 +500,7 @@ export const StudentDashboard = () => {
       {/* ── Account Cards with Learn Popups ── */}
       <div className="px-8 mb-8">
         <div className="grid grid-cols-2 gap-3">
-          {Object.entries(ACCOUNT_COLORS).map(([key, colors], index) => {
+          {Object.entries(ACCOUNT_COLORS).filter(([key]) => key !== 'roth').map(([key, colors], index) => {
             const balance = accounts[key] || 0
             const Icon = ACCOUNT_ICONS[key]
             const isInvestment = key === 'sp500' || key === 'nasdaq'
@@ -533,9 +536,11 @@ export const StudentDashboard = () => {
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); setLearnPopup(learnPopup === key ? null : key) }}
-                      className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors"
+                      className="flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide transition-all"
+                      style={{ backgroundColor: colors.light, color: colors.hex }}
                     >
-                      <Info className="w-3.5 h-3.5 text-ink-faint dark:text-white/25" />
+                      <BookOpen className="w-3 h-3" />
+                      Learn
                     </button>
                   </div>
 
@@ -556,6 +561,51 @@ export const StudentDashboard = () => {
               </motion.div>
             )
           })}
+          {/* Roth IRA Card — spans full width */}
+          {(accounts.roth > 0 || mapTests.length > 0) && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.44 }}
+              className="col-span-2"
+            >
+              <div className="rounded-xl p-5 bg-gradient-to-r from-violet-50/80 to-purple-50/40 dark:from-violet-900/10 dark:to-purple-900/5 border border-violet-200/40 dark:border-violet-700/20">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
+                      <Lock className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+                    </div>
+                    <span className="text-[11px] font-semibold text-violet-500 dark:text-violet-400 uppercase tracking-wider">
+                      Roth IRA
+                    </span>
+                  </div>
+                  <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-violet-100/60 dark:bg-violet-800/20 text-[9px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-wide">
+                    <GraduationCap className="w-3 h-3" />
+                    Locked until graduation
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-black tabular-nums text-violet-900 dark:text-violet-200 mb-1">
+                      <AnimNum value={accounts.roth || 0} prefix="$" />
+                    </p>
+                    <p className="text-[10px] text-violet-500/60 dark:text-violet-400/40">
+                      Earned from MAP testing — grows tax-free
+                    </p>
+                  </div>
+                  {mapTests.filter(t => t.payout > 0).length > 0 && (
+                    <div className="text-right space-y-0.5">
+                      {mapTests.filter(t => t.payout > 0).map(test => (
+                        <div key={test.id} className="text-[10px] text-violet-600/70 dark:text-violet-300/60">
+                          {test.subject} · <span className="font-semibold">{formatCurrency(test.payout)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
 
@@ -820,45 +870,6 @@ export const StudentDashboard = () => {
                     />
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ── Roth IRA (MAP Rewards — locked) ── */}
-      {(accounts.roth > 0 || mapTests.length > 0) && (
-        <div className="px-8 mb-8">
-          <div className="rounded-xl border border-amber-200/60 dark:border-amber-700/20 bg-gradient-to-br from-amber-50/80 to-orange-50/40 dark:from-amber-900/10 dark:to-orange-900/5 p-5">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                </div>
-                <div>
-                  <span className="text-[11px] font-semibold text-amber-600/70 dark:text-amber-400/60 uppercase tracking-wider">Roth IRA</span>
-                </div>
-              </div>
-              <span className="text-[10px] px-2 py-1 rounded-full bg-amber-200/50 dark:bg-amber-800/30 text-amber-700 dark:text-amber-400 font-semibold">
-                Locked until graduation
-              </span>
-            </div>
-            <p className="text-2xl font-black tabular-nums text-amber-800 dark:text-amber-300 mb-2 mt-2">
-              {formatCurrency(accounts.roth || 0)}
-            </p>
-            <p className="text-[11px] text-amber-600/60 dark:text-amber-400/40 leading-relaxed">
-              Earned from MAP testing. Like a real Roth IRA, this money grows tax-free but can't be touched until you graduate.
-            </p>
-            {mapTests.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-amber-200/40 dark:border-amber-700/20 space-y-1.5">
-                {mapTests.filter(t => t.payout > 0).map(test => (
-                  <div key={test.id} className="flex items-center justify-between text-xs">
-                    <span className="text-amber-700/70 dark:text-amber-300/60 capitalize">
-                      {test.subject} · {test.percentile}th %ile
-                    </span>
-                    <span className="font-semibold text-amber-700 dark:text-amber-400">{formatCurrency(test.payout)}</span>
-                  </div>
-                ))}
               </div>
             )}
           </div>
