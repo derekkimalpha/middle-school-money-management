@@ -272,7 +272,7 @@ export const GuideSettings = () => {
         <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">My Classroom</h2>
 
         {activeSession && (
-          <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] bg-white space-y-4">
+          <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] bg-white space-y-4">
             <div>
               <Field label="Class Name">
                 <input
@@ -280,7 +280,7 @@ export const GuideSettings = () => {
                   value={className}
                   onChange={(e) => setClassName(e.target.value)}
                   placeholder="e.g., Alpha Middle School San Francisco"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                 />
               </Field>
             </div>
@@ -318,7 +318,7 @@ export const GuideSettings = () => {
         {settings && (
           <div className="space-y-4">
             {/* Base Pay Section */}
-            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] bg-white space-y-4">
+            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] bg-white space-y-4">
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white">Base Pay</h3>
                 <p className="text-sm text-gray-500 dark:text-white/50">Students earn base pay when they reach the weekly XP threshold</p>
@@ -330,7 +330,7 @@ export const GuideSettings = () => {
                     value={settings.xp_threshold || ''}
                     onChange={(e) => setSettings({ ...settings, xp_threshold: e.target.value })}
                     placeholder="e.g., 500"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Minimum weekly XP to earn base pay</p>
                 </Field>
@@ -341,7 +341,7 @@ export const GuideSettings = () => {
                     value={settings.base_pay || ''}
                     onChange={(e) => setSettings({ ...settings, base_pay: e.target.value })}
                     placeholder="e.g., 10.00"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Amount earned when threshold is met</p>
                 </Field>
@@ -349,7 +349,7 @@ export const GuideSettings = () => {
             </div>
 
             {/* Epic Bonus Section */}
-            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] bg-white space-y-4">
+            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] bg-white space-y-4">
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white">Epic Bonus</h3>
                 <p className="text-sm text-gray-500 dark:text-white/50">Reward students for having epic (productive) days</p>
@@ -361,7 +361,7 @@ export const GuideSettings = () => {
                     value={settings.epic_days_required || 5}
                     onChange={(e) => setSettings({ ...settings, epic_days_required: e.target.value })}
                     placeholder="e.g., 5"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">How many epic days needed for the bonus</p>
                 </Field>
@@ -372,7 +372,7 @@ export const GuideSettings = () => {
                     value={settings.epic_week_bonus || ''}
                     onChange={(e) => setSettings({ ...settings, epic_week_bonus: e.target.value })}
                     placeholder="e.g., 5.00"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Bonus amount when epic day goal is met</p>
                 </Field>
@@ -380,7 +380,7 @@ export const GuideSettings = () => {
             </div>
 
             {/* Bonus XP Section */}
-            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] bg-white space-y-4">
+            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] bg-white space-y-4">
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white">Bonus XP</h3>
                 <p className="text-sm text-gray-500 dark:text-white/50">Extra pay for XP earned above the threshold</p>
@@ -392,7 +392,7 @@ export const GuideSettings = () => {
                     value={settings.bonus_xp_per || 50}
                     onChange={(e) => setSettings({ ...settings, bonus_xp_per: e.target.value })}
                     placeholder="e.g., 50"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Every X XP above the threshold...</p>
                 </Field>
@@ -403,7 +403,7 @@ export const GuideSettings = () => {
                     value={settings.bonus_xp_rate || ''}
                     onChange={(e) => setSettings({ ...settings, bonus_xp_rate: e.target.value })}
                     placeholder="e.g., 0.01"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">...earns this amount</p>
                 </Field>
@@ -416,7 +416,7 @@ export const GuideSettings = () => {
             </div>
 
             {/* Mastery Tests Section */}
-            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] bg-white space-y-4">
+            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] bg-white space-y-4">
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white">Mastery Tests</h3>
                 <p className="text-sm text-gray-500 dark:text-white/50">Reward students for mastery test performance</p>
@@ -428,7 +428,7 @@ export const GuideSettings = () => {
                     value={settings.mastery_min_score || ''}
                     onChange={(e) => setSettings({ ...settings, mastery_min_score: e.target.value })}
                     placeholder="e.g., 70"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Minimum score to earn pass pay</p>
                 </Field>
@@ -439,7 +439,7 @@ export const GuideSettings = () => {
                     value={settings.mastery_pass_pay || ''}
                     onChange={(e) => setSettings({ ...settings, mastery_pass_pay: e.target.value })}
                     placeholder="e.g., 2.50"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Reward for passing</p>
                 </Field>
@@ -450,7 +450,7 @@ export const GuideSettings = () => {
                     value={settings.mastery_perfect_pay || ''}
                     onChange={(e) => setSettings({ ...settings, mastery_perfect_pay: e.target.value })}
                     placeholder="e.g., 5.00"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Reward for 100%</p>
                 </Field>
@@ -458,7 +458,7 @@ export const GuideSettings = () => {
             </div>
 
             {/* Transfer Fees Section */}
-            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] bg-white space-y-4">
+            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] bg-white space-y-4">
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white">Transfer Fees</h3>
                 <p className="text-sm text-gray-500 dark:text-white/50">Fees charged when students move money between accounts</p>
@@ -471,7 +471,7 @@ export const GuideSettings = () => {
                     value={settings.transfer_fee_invest_pct ?? 10}
                     onChange={(e) => setSettings({ ...settings, transfer_fee_invest_pct: e.target.value })}
                     placeholder="e.g., 10"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Fee for withdrawing from S&P 500 or NASDAQ to Checking</p>
                 </Field>
@@ -482,7 +482,7 @@ export const GuideSettings = () => {
                     value={settings.transfer_fee_savings_pct ?? 0}
                     onChange={(e) => setSettings({ ...settings, transfer_fee_savings_pct: e.target.value })}
                     placeholder="e.g., 0"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Fee for early withdrawal from Savings</p>
                 </Field>
@@ -490,7 +490,7 @@ export const GuideSettings = () => {
             </div>
 
             {/* Custom Bonuses Section */}
-            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] bg-white space-y-4">
+            <div className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] bg-white space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">Bonuses</h3>
@@ -507,7 +507,7 @@ export const GuideSettings = () => {
                     })
                     setSettings({ ...settings, custom_bonuses: bonuses })
                   }}
-                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-violet-600 dark:text-violet-400 border-2 border-violet-300 dark:border-white/10 rounded-lg hover:bg-violet-50 dark:hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-teal-300 dark:border-white/10 rounded-lg hover:bg-teal-50 dark:hover:bg-white/5 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Add Bonus
@@ -535,7 +535,7 @@ export const GuideSettings = () => {
                                 setSettings({ ...settings, custom_bonuses: bonuses })
                               }}
                               placeholder="e.g., SMART Goal"
-                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-[#1a1625] dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10 text-sm"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 text-sm"
                             />
                           </div>
                           <div>
@@ -552,7 +552,7 @@ export const GuideSettings = () => {
                                 setSettings({ ...settings, custom_bonuses: bonuses })
                               }}
                               placeholder="0.00"
-                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-[#1a1625] dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10 text-sm"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 text-sm"
                             />
                           </div>
                           <div>
@@ -564,7 +564,7 @@ export const GuideSettings = () => {
                                 bonuses[idx] = { ...bonuses[idx], type: e.target.value }
                                 setSettings({ ...settings, custom_bonuses: bonuses })
                               }}
-                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-[#1a1625] dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10 text-sm"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 text-sm"
                             >
                               <option value="checkbox">Checkbox (fixed amount)</option>
                               <option value="student_amount">Student sets amount</option>
@@ -614,7 +614,7 @@ export const GuideSettings = () => {
           {jobs.map(job => (
             <motion.div
               key={job.id}
-              className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] hover:border-violet-400 transition-colors"
+              className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] hover:border-teal-400 transition-colors"
               whileHover={{ x: 2 }}
             >
               <div className="flex-1">
@@ -627,7 +627,7 @@ export const GuideSettings = () => {
                 </div>
               </div>
               <div className="flex-shrink-0 text-right mr-4">
-                <p className="font-bold text-lg text-violet-600 dark:text-teal-400">${job.weekly_pay}</p>
+                <p className="font-bold text-lg text-teal-600 dark:text-teal-400">${job.weekly_pay}</p>
                 <p className="text-xs text-gray-400 dark:text-white/40">per week</p>
               </div>
               <div className="flex gap-2">
@@ -652,7 +652,7 @@ export const GuideSettings = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10 dark:bg-[#1a1625]/50 space-y-3"
+            className="p-4 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10 dark:bg-white/[0.04]/50 space-y-3"
           >
             <Field label="Job Title">
               <input
@@ -660,7 +660,7 @@ export const GuideSettings = () => {
                 value={newJob.title}
                 onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
                 placeholder="e.g., Tutor"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
               />
             </Field>
             <Field label="Description">
@@ -669,7 +669,7 @@ export const GuideSettings = () => {
                 value={newJob.description}
                 onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
                 placeholder="Job description"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
               />
             </Field>
             <Field label="Icon (emoji)">
@@ -679,7 +679,7 @@ export const GuideSettings = () => {
                 onChange={(e) => setNewJob({ ...newJob, icon: e.target.value })}
                 placeholder="💼"
                 maxLength="2"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
               />
             </Field>
             <Field label="Weekly Pay ($)">
@@ -689,7 +689,7 @@ export const GuideSettings = () => {
                 value={newJob.weekly_pay}
                 onChange={(e) => setNewJob({ ...newJob, weekly_pay: e.target.value })}
                 placeholder="0.00"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
               />
             </Field>
             <div className="flex gap-2">
@@ -722,14 +722,14 @@ export const GuideSettings = () => {
           {students.map(student => (
             <motion.div
               key={student.id}
-              className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625]"
+              className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04]"
               whileHover={{ x: 2 }}
             >
               <p className="font-semibold text-gray-900 dark:text-white">{student.full_name}</p>
               <select
                 value={studentJobs[student.id] || ''}
                 onChange={(e) => assignJobToStudent(student.id, e.target.value || null)}
-                className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400"
+                className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400"
               >
                 <option value="">No job</option>
                 {jobs.map(job => (

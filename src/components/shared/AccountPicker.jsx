@@ -6,7 +6,7 @@ const PICKER_COLORS = {
   checking: { dot: '#10b981', bg: 'bg-emerald-500/[0.06] dark:bg-emerald-400/[0.08]', border: 'border-emerald-500/30 dark:border-emerald-400/30', text: 'text-emerald-700 dark:text-emerald-400' },
   savings: { dot: '#06b6d4', bg: 'bg-cyan-500/[0.06] dark:bg-cyan-400/[0.08]', border: 'border-cyan-500/30 dark:border-cyan-400/30', text: 'text-cyan-700 dark:text-cyan-400' },
   sp500: { dot: '#f59e0b', bg: 'bg-amber-500/[0.06] dark:bg-amber-400/[0.08]', border: 'border-amber-500/30 dark:border-amber-400/30', text: 'text-amber-700 dark:text-amber-400' },
-  nasdaq: { dot: '#8b5cf6', bg: 'bg-violet-500/[0.06] dark:bg-violet-400/[0.08]', border: 'border-violet-500/30 dark:border-violet-400/30', text: 'text-violet-700 dark:text-violet-400' },
+  nasdaq: { dot: '#3b82f6', bg: 'bg-blue-500/[0.06] dark:bg-blue-400/[0.08]', border: 'border-blue-500/30 dark:border-blue-400/30', text: 'text-blue-700 dark:text-blue-400' },
 };
 
 export const AccountPicker = ({

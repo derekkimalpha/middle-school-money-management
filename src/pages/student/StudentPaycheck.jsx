@@ -293,7 +293,7 @@ export const StudentPaycheck = () => {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-gray-950">
         <motion.div
-          className="w-10 h-10 border-[3px] border-gray-200 border-t-violet-600 rounded-full dark:border-white/10 dark:border-t-violet-400"
+          className="w-10 h-10 border-[3px] border-gray-200 border-t-teal-600 rounded-full dark:border-white/10 dark:border-t-teal-400"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -318,7 +318,7 @@ export const StudentPaycheck = () => {
           {/* New Paycheck CTA */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             {existingThisWeek ? (
-              <div className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-5 text-center">
+              <div className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-5 text-center">
                 <p className="text-gray-500 dark:text-white/40 text-sm">
                   Paycheck submitted for {currentWeekLabel}.
                   {existingThisWeek.status === 'verified' && (
@@ -338,7 +338,7 @@ export const StudentPaycheck = () => {
             ) : (
               <button
                 onClick={() => { resetForm(); setView('new') }}
-                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl p-5 flex items-center justify-between shadow-sm transition-colors"
+                className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 rounded-xl p-5 flex items-center justify-between shadow-sm transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -363,7 +363,7 @@ export const StudentPaycheck = () => {
                 {[1, 2, 3].map(i => <div key={i} className="h-16 bg-gray-100 dark:bg-white/[0.04] dark:bg-white/[0.04] rounded-xl animate-pulse" />)}
               </div>
             ) : pastPaychecks.length === 0 ? (
-              <div className="text-center py-16 bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
+              <div className="text-center py-16 bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
                 <DollarSign className="w-10 h-10 mx-auto mb-3 text-black/20 dark:text-white/15" />
                 <p className="text-[13px] text-gray-400 dark:text-white/30">No paychecks yet</p>
                 <p className="text-[11px] text-gray-300 dark:text-white/20 mt-1">Log your first one above</p>
@@ -379,7 +379,7 @@ export const StudentPaycheck = () => {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.04 }}
-                      className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-4 hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-all cursor-pointer"
+                      className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-4 hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-all cursor-pointer"
                       onClick={() => {
                         if (paycheck.status === 'verified') {
                           setSelectedPaycheck(paycheck)
@@ -418,7 +418,7 @@ export const StudentPaycheck = () => {
           </div>
 
           {/* Learn tip */}
-          <details className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] group">
+          <details className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] group">
             <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
               <span className="text-lg">🏦</span>
               <span className="text-sm font-semibold text-gray-900 dark:text-white flex-1">Why Budget Your Paycheck?</span>
@@ -452,7 +452,7 @@ export const StudentPaycheck = () => {
         </button>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-6">
+          <div className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">{p.week_label || 'Paycheck'}</h2>
               <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusConf.color}`}>
@@ -495,7 +495,7 @@ export const StudentPaycheck = () => {
               {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-emerald-600 dark:text-emerald-400"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
               {p.job_pay > 0 && <div className="flex justify-between text-sm text-teal-600 dark:text-teal-400"><span>💼 Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
               {p.smart_goal > 0 && <div className="flex justify-between text-sm text-blue-600 dark:text-blue-400"><span>🎯 SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
-              {p.other_pay > 0 && <div className="flex justify-between text-sm text-purple-600 dark:text-purple-400"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
+              {p.other_pay > 0 && <div className="flex justify-between text-sm text-teal-600 dark:text-teal-400"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
             </div>
 
             {/* Allocation (if allocated) */}
@@ -571,7 +571,7 @@ export const StudentPaycheck = () => {
             Think about your goals. Need something soon? Put more in checking. Building an emergency fund? Boost savings. Playing the long game? Feed your investments. There's no single right answer — it's about YOUR priorities.
           </FinTip>
 
-          <div className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-6">
+          <div className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-[15px] font-semibold text-gray-900 dark:text-white">Your Split</h3>
               <Button size="sm" onClick={() => useSuggestedSplit(total)}>
@@ -596,7 +596,7 @@ export const StudentPaycheck = () => {
                       step="0.01"
                       value={value || ''}
                       onChange={(e) => setAllocation({ ...allocation, [account]: parseFloat(e.target.value) || 0 })}
-                      className={`w-full px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-violet-400 dark:focus:border-violet-500/50 bg-white dark:bg-white/[0.04] dark:text-white ${meta?.borderColor || ''}`}
+                      className={`w-full px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 bg-white dark:bg-white/[0.04] dark:text-white ${meta?.borderColor || ''}`}
                       placeholder="0.00"
                     />
                   </div>
@@ -652,7 +652,7 @@ export const StudentPaycheck = () => {
       <div className="max-w-2xl space-y-4">
 
         {/* Daily XP */}
-        <div className="bg-white dark:bg-[#1a1625] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
+        <div className="bg-white dark:bg-white/[0.04] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
           <h3 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Daily XP</h3>
           <div className="grid grid-cols-5 gap-3 mb-6">
             {DAYS.map((day, idx) => {
@@ -668,7 +668,7 @@ export const StudentPaycheck = () => {
                     max="300"
                     value={xpByDay[dayKey] || ''}
                     onChange={(e) => setXpByDay({ ...xpByDay, [dayKey]: parseInt(e.target.value) || 0 })}
-                    className="w-full px-2 py-2 text-center text-lg font-bold border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-violet-400 dark:focus:border-violet-500/50 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10 bg-white dark:bg-white/[0.04] dark:text-white"
+                    className="w-full px-2 py-2 text-center text-lg font-bold border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 bg-white dark:bg-white/[0.04] dark:text-white"
                     whileFocus={{ scale: 1.05 }}
                     placeholder="0"
                   />
@@ -703,7 +703,7 @@ export const StudentPaycheck = () => {
         {/* Job Card */}
         {studentJob && (
           <motion.div
-            className={`border rounded-xl p-4 cursor-pointer transition-all ${jobDone ? 'bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06] border-emerald-500/30 dark:border-emerald-400/20' : 'bg-white dark:bg-[#1a1625] border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]'}`}
+            className={`border rounded-xl p-4 cursor-pointer transition-all ${jobDone ? 'bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06] border-emerald-500/30 dark:border-emerald-400/20' : 'bg-white dark:bg-white/[0.04] border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]'}`}
             onClick={() => setJobDone(!jobDone)}
             whileHover={{ scale: 1.01 }}
           >
@@ -723,7 +723,7 @@ export const StudentPaycheck = () => {
         )}
 
         {/* Mastery Tests */}
-        <div className="bg-white dark:bg-[#1a1625] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
+        <div className="bg-white dark:bg-white/[0.04] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
           <h3 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Mastery Tests</h3>
           <p className="text-[11px] text-gray-400 dark:text-white/30 mb-3">
             Score {settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} | 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}
@@ -737,11 +737,11 @@ export const StudentPaycheck = () => {
               <motion.div key={idx} className="p-3 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] rounded-lg mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 grid grid-cols-3 gap-3">
-                    <input type="text" value={test.subject} onChange={(e) => { const u = [...masteryTests]; u[idx].subject = e.target.value; setMasteryTests(u) }} placeholder="Subject" className="px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-violet-400 dark:focus:border-violet-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
-                    <select value={test.grade} onChange={(e) => { const u = [...masteryTests]; u[idx].grade = e.target.value; setMasteryTests(u) }} className="px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-violet-400 dark:focus:border-violet-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white">
+                    <input type="text" value={test.subject} onChange={(e) => { const u = [...masteryTests]; u[idx].subject = e.target.value; setMasteryTests(u) }} placeholder="Subject" className="px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
+                    <select value={test.grade} onChange={(e) => { const u = [...masteryTests]; u[idx].grade = e.target.value; setMasteryTests(u) }} className="px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white">
                       {GRADES.map(g => <option key={g} value={g}>{g}</option>)}
                     </select>
-                    <input type="number" min="0" max="100" value={test.score || ''} onChange={(e) => { const u = [...masteryTests]; u[idx].score = parseInt(e.target.value) || 0; setMasteryTests(u) }} placeholder="Score" className="px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-violet-400 dark:focus:border-violet-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
+                    <input type="number" min="0" max="100" value={test.score || ''} onChange={(e) => { const u = [...masteryTests]; u[idx].score = parseInt(e.target.value) || 0; setMasteryTests(u) }} placeholder="Score" className="px-3 py-2 border border-gray-200 dark:border-white/10 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
                   </div>
                   <button onClick={() => setMasteryTests(masteryTests.filter((_, i) => i !== idx))} className="p-1 text-gray-300 dark:text-white/20 hover:text-rose-500 dark:hover:text-rose-400">
                     <Trash2 className="w-4 h-4" />
@@ -761,7 +761,7 @@ export const StudentPaycheck = () => {
 
         {/* Custom Bonuses */}
         {(settings.custom_bonuses || []).length > 0 && (
-          <div className="bg-white dark:bg-[#1a1625] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] space-y-4">
+          <div className="bg-white dark:bg-white/[0.04] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] space-y-4">
             <h3 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider">Bonuses</h3>
             <div className="space-y-3">
               {(settings.custom_bonuses || []).map(bonus => {
@@ -770,7 +770,7 @@ export const StudentPaycheck = () => {
                   return (
                     <motion.div
                       key={bonus.id}
-                      className={`border rounded-xl p-4 cursor-pointer transition-all ${entry.claimed ? 'bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06] border-emerald-500/30 dark:border-emerald-400/20' : 'bg-white dark:bg-[#1a1625] border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]'}`}
+                      className={`border rounded-xl p-4 cursor-pointer transition-all ${entry.claimed ? 'bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06] border-emerald-500/30 dark:border-emerald-400/20' : 'bg-white dark:bg-white/[0.04] border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]'}`}
                       onClick={() => setCustomBonuses({
                         ...customBonuses,
                         [bonus.id]: { ...entry, claimed: !entry.claimed }
@@ -790,7 +790,7 @@ export const StudentPaycheck = () => {
                   )
                 } else {
                   return (
-                    <div key={bonus.id} className="p-4 rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#1a1625]">
+                    <div key={bonus.id} className="p-4 rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] bg-white dark:bg-white/[0.04]">
                       <label className="font-bold text-gray-900 dark:text-white block mb-2">{bonus.name}</label>
                       <Input
                         type="number"
@@ -813,7 +813,7 @@ export const StudentPaycheck = () => {
         )}
 
         {/* Earnings Breakdown */}
-        <div className="bg-white dark:bg-[#1a1625] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] space-y-3">
+        <div className="bg-white dark:bg-white/[0.04] rounded-xl p-6 border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] space-y-3">
           <h3 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Earnings Breakdown</h3>
           <div className="space-y-2 text-sm">
             {earnings.basePay > 0 && <div className="flex justify-between"><span className="text-gray-500 dark:text-white/40">Base Pay</span><span className="font-semibold">{formatCurrency(earnings.basePay)}</span></div>}
@@ -821,7 +821,7 @@ export const StudentPaycheck = () => {
             {earnings.bonusXp > 0 && <div className="flex justify-between text-blue-600 dark:text-blue-400"><span>📈 Bonus XP Pay</span><span className="font-semibold">{formatCurrency(earnings.bonusXp)}</span></div>}
             {earnings.masteryRewards > 0 && <div className="flex justify-between text-emerald-600 dark:text-emerald-400"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(earnings.masteryRewards)}</span></div>}
             {earnings.jobPay > 0 && <div className="flex justify-between text-teal-600 dark:text-teal-400"><span>💼 Job</span><span className="font-semibold">{formatCurrency(earnings.jobPay)}</span></div>}
-            {earnings.customBonusTotal > 0 && <div className="flex justify-between text-purple-600 dark:text-purple-400"><span>⭐ Bonuses</span><span className="font-semibold">{formatCurrency(earnings.customBonusTotal)}</span></div>}
+            {earnings.customBonusTotal > 0 && <div className="flex justify-between text-teal-600 dark:text-teal-400"><span>⭐ Bonuses</span><span className="font-semibold">{formatCurrency(earnings.customBonusTotal)}</span></div>}
 
             <div className="border-t border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] pt-2 mt-2 flex justify-between">
               <span className="font-bold text-gray-900 dark:text-white">Total Paycheck</span>
@@ -835,7 +835,7 @@ export const StudentPaycheck = () => {
           disabled={loading || totalPaycheck <= 0}
           className={`w-full rounded-xl py-4 text-base font-semibold transition-all flex items-center justify-center gap-2 ${
             totalPaycheck > 0 && !loading
-              ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white dark:text-white hover:from-violet-700 hover:to-purple-700'
+              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100'
               : 'bg-gray-100 dark:bg-white/[0.06] dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
           }`}
         >

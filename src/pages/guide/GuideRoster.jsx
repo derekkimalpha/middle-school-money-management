@@ -166,7 +166,7 @@ export const GuideRoster = () => {
           <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Students</h1>
           <p className="text-lg text-gray-500 dark:text-white/50">
             {filteredStudents.length} {filteredStudents.length === 1 ? 'student' : 'students'} •{' '}
-            <span className="font-bold text-violet-600 dark:text-violet-400">
+            <span className="font-bold text-teal-600 dark:text-teal-400">
               <AnimNum value={totalBalance} prefix="$" duration={600} />
             </span>
           </p>
@@ -223,7 +223,7 @@ export const GuideRoster = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by name or email..."
-          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10 transition-all"
+          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 transition-all"
         />
       </div>
 
@@ -252,10 +252,10 @@ export const GuideRoster = () => {
                 className="w-full text-left"
               >
                 <motion.div
-                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#1a1625] hover:border-violet-300 dark:hover:border-violet-500/30 hover:shadow-md hover:shadow-violet-500/5 transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] hover:border-teal-300 dark:hover:border-teal-500/30 hover:shadow-md hover:shadow-teal-500/5 transition-all group"
                   whileHover={{ x: 4 }}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-violet-500/20">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center text-white dark:text-gray-900 font-bold text-sm shadow-md shadow-black/10">
                     {initials(student.full_name)}
                   </div>
 
@@ -271,7 +271,7 @@ export const GuideRoster = () => {
                     <p className="text-xs text-gray-400 dark:text-white/30 font-medium">Total balance</p>
                   </div>
 
-                  <div className="flex-shrink-0 text-violet-400 group-hover:translate-x-1 transition-transform">
+                  <div className="flex-shrink-0 text-gray-400 dark:text-white/50 group-hover:translate-x-1 transition-transform">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -299,7 +299,7 @@ export const GuideRoster = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#1a1625] rounded-2xl shadow-2xl shadow-purple-500/10 z-50 w-full max-w-sm mx-4 p-6 border border-gray-200 dark:border-white/10"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-white/[0.04] rounded-2xl shadow-2xl shadow-black/5 z-50 w-full max-w-sm mx-4 p-6 border border-gray-200 dark:border-white/10"
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">Add Student</h2>

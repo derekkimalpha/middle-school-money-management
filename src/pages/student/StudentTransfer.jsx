@@ -103,7 +103,7 @@ export const StudentTransfer = () => {
   if (accountsLoading || !accounts || !profile) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
       </div>
     )
   }
@@ -145,7 +145,7 @@ export const StudentTransfer = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-6 space-y-6"
+          className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-6 space-y-6"
         >
           {/* From Account Picker */}
           <div>
@@ -168,7 +168,7 @@ export const StudentTransfer = () => {
               animate={{ scale: 1 }}
               className="flex justify-center"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 flex items-center justify-center text-white">
+              <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white flex items-center justify-center text-white dark:text-gray-900">
                 <ArrowDownUp className="w-6 h-6" />
               </div>
             </motion.div>
@@ -267,7 +267,7 @@ export const StudentTransfer = () => {
 
                     <div className="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
                       <span className="text-gray-900 dark:text-white">You'll receive</span>
-                      <span className="text-violet-600 dark:text-violet-400">
+                      <span className="text-teal-600 dark:text-teal-400">
                         {formatCurrency(amountAfterFee)}
                       </span>
                     </div>
@@ -309,7 +309,7 @@ export const StudentTransfer = () => {
           transition={{ delay: 0.3 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
-          <div className="bg-white dark:bg-[#1a1625] border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] rounded-xl p-4">
+          <div className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] rounded-xl p-4">
             <h3 className="font-semibold text-[13px] text-gray-900 dark:text-white mb-2 uppercase tracking-wider">Current Balances</h3>
             <div className="space-y-1 text-sm">
               {Object.entries(accounts)
@@ -328,7 +328,7 @@ export const StudentTransfer = () => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-[#1a1625] border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] rounded-xl p-4">
+          <div className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] rounded-xl p-4">
             <h3 className="font-semibold text-[13px] text-gray-900 dark:text-white mb-2 uppercase tracking-wider">Transfer Fees</h3>
             <div className="space-y-1 text-xs text-gray-600 dark:text-white/50">
               <p>• Investment → Checking: {settings?.transfer_fee_invest_pct ?? 10}% fee</p>
@@ -338,7 +338,7 @@ export const StudentTransfer = () => {
           </div>
         </motion.div>
 
-        <FinTip icon="🧠" title="Real-World Connection: Early Withdrawal Penalties" color="from-purple-50 to-pink-50">
+        <FinTip icon="🧠" title="Real-World Connection: Early Withdrawal Penalties" color="from-blue-50 to-cyan-50">
           In real life, retirement accounts like 401(k)s and IRAs charge a 10% penalty if you withdraw money before age 59½. That's why our investment accounts have a transfer fee — it teaches you that taking money out of investments early costs you. The best investors think long-term!
         </FinTip>
       </div>

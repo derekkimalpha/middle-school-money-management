@@ -174,7 +174,7 @@ export const GuideStudentDetail = () => {
     const colors = {
       submitted: 'bg-amber-100 text-amber-800',
       verified: 'bg-green-100 text-green-800',
-      allocated: 'bg-violet-100 text-violet-700'
+      allocated: 'bg-teal-100 text-teal-700'
     }
     return colors[status] || 'bg-slate-100 text-slate-700'
   }
@@ -204,7 +204,7 @@ export const GuideStudentDetail = () => {
 
       <motion.button
         onClick={() => navigate('/')}
-        className="flex items-center gap-2 text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+        className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
         whileHover={{ x: -4 }}
       >
         <ArrowLeft className="w-5 h-5" />
@@ -214,17 +214,17 @@ export const GuideStudentDetail = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-500/5 dark:to-purple-500/5 p-6 rounded-lg border border-violet-200 dark:border-violet-500/20"
+        className="bg-white dark:bg-white/[0.04] p-6 rounded-lg border border-gray-200 dark:border-white/[0.08]"
       >
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl">
+          <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center text-white dark:text-gray-900 font-bold text-2xl">
             {initials(student.full_name)}
           </div>
 
           <div className="flex-1">
             <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">{student.full_name}</h1>
             <p className="text-gray-500 dark:text-white/50">{student.email}</p>
-            <p className="text-2xl font-extrabold text-violet-600 dark:text-violet-400 mt-2">
+            <p className="text-2xl font-extrabold text-teal-600 dark:text-teal-400 mt-2">
               <AnimNum value={total} prefix="$" duration={600} />
             </p>
           </div>
@@ -276,7 +276,7 @@ export const GuideStudentDetail = () => {
               return (
                 <motion.div
                   key={paycheck.id}
-                  className="p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] space-y-3"
+                  className="p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] space-y-3"
                   whileHover={{ y: -2 }}
                 >
                   <div className="flex items-center justify-between gap-4">
@@ -284,14 +284,14 @@ export const GuideStudentDetail = () => {
                       <p className="font-semibold text-gray-900 dark:text-white">
                         {paycheck.week_label || new Date(paycheck.created_at).toLocaleDateString()}
                       </p>
-                      <p className="text-lg font-bold text-violet-600 dark:text-violet-400 mt-1">{formatCurrency(paycheck.total_earnings || 0)}</p>
+                      <p className="text-lg font-bold text-teal-600 dark:text-teal-400 mt-1">{formatCurrency(paycheck.total_earnings || 0)}</p>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs">
                         {totalXp > 0 && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full">XP: {totalXp}</span>}
                         {epicCount > 0 && <span className="px-2 py-1 bg-amber-50 text-amber-600 rounded-full">🔥 {epicCount} epic</span>}
                         {paycheck.base_pay > 0 && <span className="px-2 py-1 bg-green-50 text-green-600 rounded-full">Base: ${paycheck.base_pay}</span>}
                         {paycheck.epic_bonus > 0 && <span className="px-2 py-1 bg-amber-50 text-amber-600 rounded-full">Epic: ${paycheck.epic_bonus}</span>}
                         {paycheck.xp_bonus > 0 && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full">XP Bonus: ${paycheck.xp_bonus}</span>}
-                        {paycheck.mastery_pay > 0 && <span className="px-2 py-1 bg-purple-50 text-purple-600 rounded-full">Mastery: ${paycheck.mastery_pay}</span>}
+                        {paycheck.mastery_pay > 0 && <span className="px-2 py-1 bg-teal-50 text-teal-600 rounded-full">Mastery: ${paycheck.mastery_pay}</span>}
                         {paycheck.job_pay > 0 && <span className="px-2 py-1 bg-teal-50 text-teal-600 rounded-full">Job: ${paycheck.job_pay}</span>}
                         {paycheck.smart_goal > 0 && <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full">SMART: ${paycheck.smart_goal}</span>}
                         {paycheck.other_pay > 0 && <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full">Other: ${paycheck.other_pay}</span>}
@@ -322,7 +322,7 @@ export const GuideStudentDetail = () => {
                             [paycheck.id]: e.target.value
                           }))}
                           placeholder="Or adjust amount..."
-                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400"
+                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400"
                         />
                         {verifiedAmounts[paycheck.id] && (
                           <Button
@@ -355,7 +355,7 @@ export const GuideStudentDetail = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="space-y-4 p-4 rounded-lg bg-violet-50 dark:bg-violet-500/5 border border-violet-200 dark:border-violet-500/20"
+        className="space-y-4 p-4 rounded-lg bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08]"
       >
         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Add Manual Bonus</h2>
         <div className="space-y-3">
@@ -365,7 +365,7 @@ export const GuideStudentDetail = () => {
               value={bonusAmount}
               onChange={(e) => setBonusAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
             />
           </Field>
           <Field label="Description (optional)">
@@ -374,7 +374,7 @@ export const GuideStudentDetail = () => {
               value={bonusDescription}
               onChange={(e) => setBonusDescription(e.target.value)}
               placeholder="e.g., Extra credit bonus"
-              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
             />
           </Field>
           <Button
@@ -401,7 +401,7 @@ export const GuideStudentDetail = () => {
             transactions.map(trans => (
               <motion.div
                 key={trans.id}
-                className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                 whileHover={{ x: 2 }}
               >
                 <div className="flex-1">

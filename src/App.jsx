@@ -2,8 +2,10 @@ import React, { useMemo } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from './hooks/useAuth'
+import { useAccounts } from './hooks/useAccounts'
 import { ThemeProvider } from './hooks/useTheme'
 import { Layout } from './components/shared/Layout'
+import { getLevel, getNextLevel } from './lib/constants'
 import { LoginPage } from './pages/LoginPage'
 // Student pages
 import { StudentDashboard } from './pages/student/StudentDashboard'
@@ -35,6 +37,23 @@ function AppInner() {
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+
+  const isStudent = profile?.role === 'student'
+  const { accounts } = useAccounts(isStudent ? profile?.id : null)
+
+  // Compute level / XP progress / streak for student sidebar
+  const studentMeta = useMemo(() => {
+    if (!isStudent || !accounts) return { level: null, xpProgress: 0, streak: 0 }
+    const total = Object.entries(accounts)
+      .filter(([key]) => key !== 'bonus')
+      .reduce((sum, [, bal]) => sum + bal, 0)
+    const level = getLevel(total)
+    const next = getNextLevel(total)
+    const xpProgress = next
+      ? Math.min(((total - level.min) / (next.min - level.min)) * 100, 100)
+      : 100
+    return { level, xpProgress, streak: 0 }
+  }, [isStudent, accounts])
 
   const studentNavItems = useMemo(
     () => [
@@ -91,6 +110,9 @@ function AppInner() {
       activePage={activePage}
       onNavigate={handleNavigate}
       onSignOut={handleSignOut}
+      level={studentMeta.level}
+      xpProgress={studentMeta.xpProgress}
+      streak={studentMeta.streak}
     >
       {isGuide ? (
         <Routes>

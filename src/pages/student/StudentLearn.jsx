@@ -104,7 +104,7 @@ const StudentLearn = () => {
     {
       id: 2,
       title: 'Investing Fundamentals',
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-teal-500 to-teal-600',
       icon: '📊',
       locked: true,
       lessons: [

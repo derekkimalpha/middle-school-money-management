@@ -44,7 +44,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       backgroundColor: {
         base: '#F5F5F0',

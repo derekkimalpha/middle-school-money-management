@@ -223,7 +223,7 @@ export const GuideSession = () => {
                   value={savingsRate}
                   onChange={(e) => setSavingsRate(e.target.value)}
                   placeholder="e.g., 2.5"
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                 />
               </Field>
               <Field label="S&P 500 Return Rate (%)">
@@ -232,7 +232,7 @@ export const GuideSession = () => {
                   value={spRate}
                   onChange={(e) => setSpRate(e.target.value)}
                   placeholder="e.g., 10"
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                 />
               </Field>
               <Field label="NASDAQ Return Rate (%)">
@@ -241,7 +241,7 @@ export const GuideSession = () => {
                   value={nasdaqRate}
                   onChange={(e) => setNasdaqRate(e.target.value)}
                   placeholder="e.g., 12"
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
                 />
               </Field>
             </div>
@@ -267,7 +267,7 @@ export const GuideSession = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10 dark:bg-[#1a1625]/50 space-y-4"
+          className="p-6 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10 dark:bg-white/[0.02] space-y-4"
         >
           <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Start New Session</h2>
           <p className="text-gray-500 dark:text-white/50">Create a new finance session for your students.</p>
@@ -279,7 +279,7 @@ export const GuideSession = () => {
                 value={sessionName}
                 onChange={(e) => setSessionName(e.target.value)}
                 placeholder="e.g., Spring 2024"
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
               />
             </Field>
 
@@ -288,7 +288,7 @@ export const GuideSession = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
               />
             </Field>
 

@@ -71,7 +71,7 @@ export const StudentHistory = () => {
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
       </div>
     )
   }
@@ -110,7 +110,7 @@ export const StudentHistory = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-3"
+          className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] p-3"
         >
           <div className="flex gap-2 overflow-x-auto pb-2">
             {filters.map((filter) => (
@@ -119,7 +119,7 @@ export const StudentHistory = () => {
                 onClick={() => handleFilterChange(filter.id)}
                 className={`px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
                   selectedFilter === filter.id
-                    ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white dark:text-white'
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
                     : 'bg-gray-100 dark:bg-white/[0.04] text-gray-500 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-white/[0.07]'
                 }`}
               >
@@ -134,15 +134,15 @@ export const StudentHistory = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] overflow-hidden"
+          className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] overflow-hidden"
         >
           {loading ? (
-            <div className="p-8 text-center dark:bg-[#1a1625]">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-400 mx-auto mb-4"></div>
+            <div className="p-8 text-center dark:bg-white/[0.04]">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
               <p className="text-[13px] text-gray-500 dark:text-white/50">Loading transactions...</p>
             </div>
           ) : filteredTransactions.length === 0 ? (
-            <div className="p-12 text-center dark:bg-[#1a1625]">
+            <div className="p-12 text-center dark:bg-white/[0.04]">
               <div className="text-4xl mb-3">📭</div>
               <p className="text-[13px] text-gray-500 dark:text-white/50 text-lg">No transactions yet</p>
               <p className="text-[13px] text-gray-400 dark:text-white/40 text-sm">
@@ -244,7 +244,7 @@ export const StudentHistory = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6"
+            className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6"
           >
             <h3 className="text-[13px] font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Summary</h3>
 

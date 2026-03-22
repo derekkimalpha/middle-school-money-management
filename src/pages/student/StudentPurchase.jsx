@@ -126,7 +126,7 @@ export const StudentPurchase = () => {
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
       </div>
     )
   }
@@ -164,7 +164,7 @@ export const StudentPurchase = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-[#1a1625] border border-gray-200 dark:border-white/[0.08] rounded-xl p-6"
+          className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] rounded-xl p-6"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -185,7 +185,7 @@ export const StudentPurchase = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6 space-y-5"
+          className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6 space-y-5"
         >
           <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white">New Request</h2>
 
@@ -231,7 +231,7 @@ export const StudentPurchase = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6"
+            className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6"
           >
             <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">
               Your Requests
@@ -244,7 +244,7 @@ export const StudentPurchase = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 border border-gray-200 dark:border-white/[0.08] rounded-xl hover:border-violet-300 dark:hover:border-violet-500/30 transition-colors"
+                  className="p-4 border border-gray-200 dark:border-white/[0.08] rounded-xl hover:border-gray-300 dark:hover:border-white/[0.12] transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
