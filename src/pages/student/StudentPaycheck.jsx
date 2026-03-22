@@ -291,8 +291,12 @@ export const StudentPaycheck = () => {
 
   if (!profile) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-400"></div>
+      <div className="flex items-center justify-center h-screen bg-slate-50">
+        <motion.div
+          className="w-10 h-10 border-[3px] border-slate-200 border-t-slate-800 rounded-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        />
       </div>
     )
   }
@@ -300,116 +304,132 @@ export const StudentPaycheck = () => {
   // ─── PAYCHECK LIST VIEW ────────────────────────────
   if (view === 'list') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-warm-gray to-white p-6 pb-20">
+      <div className="min-h-screen bg-slate-50 pb-24">
         <Toast message={toast} />
         <Confetti active={showConfetti} />
 
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Paychecks</h1>
-          <p className="text-slate-600">Track your weekly earnings and allocations</p>
-        </motion.div>
-
-        <FinTip icon="💡" title="How Paychecks Work" color="from-blue-50 to-cyan-50">
-          Each week, log your XP, epic days, mastery tests, and any bonuses. Your guide reviews and approves your paycheck, then you decide how to split it across your accounts. Think of it like a real job — you earn, it gets verified, then you budget!
-        </FinTip>
-
-        {/* New Paycheck Button */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mt-6 mb-6">
-          {existingThisWeek ? (
-            <div className="p-4 rounded-xl bg-slate-50 border-2 border-slate-200 text-center">
-              <p className="text-slate-600 text-sm">
-                You already submitted a paycheck for this week ({currentWeekLabel}).
-                {existingThisWeek.status === 'verified' && (
-                  <button
-                    onClick={() => {
-                      setSelectedPaycheck(existingThisWeek)
-                      setAllocation({
-                        checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0,
-                      })
-                      setView('allocate')
-                    }}
-                    className="ml-2 text-sage-600 font-semibold underline"
-                  >
-                    Allocate it now
-                  </button>
-                )}
-              </p>
-            </div>
-          ) : (
-            <Button full size="lg" onClick={() => { resetForm(); setView('new') }}>
-              <DollarSign className="w-5 h-5 mr-2" />
-              Log This Week's Paycheck
-            </Button>
-          )}
-        </motion.div>
-
-        {/* Past Paychecks */}
-        <div className="space-y-3">
-          <h2 className="text-lg font-bold text-slate-900">Paycheck History</h2>
-
-          {loadingHistory ? (
-            <div className="animate-pulse space-y-3">
-              {[1, 2, 3].map(i => <div key={i} className="h-20 bg-slate-200 rounded-xl" />)}
-            </div>
-          ) : pastPaychecks.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
-              <DollarSign className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-              <p>No paychecks yet. Log your first one!</p>
-            </div>
-          ) : (
-            pastPaychecks.map((paycheck, idx) => {
-              const statusConf = STATUS_CONFIG[paycheck.status] || STATUS_CONFIG.draft
-              const StatusIcon = statusConf.icon
-
-              return (
-                <motion.div
-                  key={paycheck.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="bg-white rounded-xl border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => {
-                    if (paycheck.status === 'verified') {
-                      setSelectedPaycheck(paycheck)
-                      setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
-                      setView('allocate')
-                    } else {
-                      setSelectedPaycheck(paycheck)
-                      setView('detail')
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sage-400 to-green-400 flex items-center justify-center text-white font-bold text-sm">
-                        ${Math.round(paycheck.total_earnings || 0)}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-slate-900">{paycheck.week_label || 'Week'}</p>
-                        <p className="text-xs text-slate-500">
-                          {new Date(paycheck.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusConf.color}`}>
-                        <StatusIcon className="w-3 h-3 inline mr-1" />
-                        {statusConf.label}
-                      </span>
-                      <ChevronRight className="w-4 h-4 text-slate-400" />
-                    </div>
-                  </div>
-                </motion.div>
-              )
-            })
-          )}
+        {/* Header */}
+        <div className="bg-slate-900 text-white px-6 pt-8 pb-12">
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+            <p className="text-slate-400 text-sm font-medium">Weekly</p>
+            <h1 className="text-2xl font-bold mt-0.5">Paychecks</h1>
+          </motion.div>
         </div>
 
-        {/* Financial literacy */}
-        <div className="mt-8">
-          <FinTip icon="🏦" title="Why Budget Your Paycheck?" color="from-green-50 to-emerald-50">
-            In real life, your paycheck doesn't all go to one place. Bills, savings, investments, and fun money all need their share. Learning to split your earnings now builds habits that'll serve you for life. The 50/30/20 rule suggests: 50% needs, 30% wants, 20% savings.
-          </FinTip>
+        <div className="px-6 -mt-6 relative z-10 space-y-4">
+          {/* New Paycheck CTA */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            {existingThisWeek ? (
+              <div className="bg-white rounded-xl border border-slate-200 p-5 text-center shadow-sm">
+                <p className="text-slate-600 text-sm">
+                  Paycheck submitted for {currentWeekLabel}.
+                  {existingThisWeek.status === 'verified' && (
+                    <button
+                      onClick={() => {
+                        setSelectedPaycheck(existingThisWeek)
+                        setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
+                        setView('allocate')
+                      }}
+                      className="ml-2 text-emerald-600 font-semibold hover:underline"
+                    >
+                      Allocate now →
+                    </button>
+                  )}
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => { resetForm(); setView('new') }}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl p-5 flex items-center justify-between shadow-sm transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold">Log This Week's Paycheck</p>
+                    <p className="text-sm text-emerald-100">Week of {currentWeekLabel}</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-emerald-200" />
+              </button>
+            )}
+          </motion.div>
+
+          {/* Paycheck History */}
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-3">History</h2>
+
+            {loadingHistory ? (
+              <div className="space-y-2.5">
+                {[1, 2, 3].map(i => <div key={i} className="h-16 bg-slate-200 rounded-xl animate-pulse" />)}
+              </div>
+            ) : pastPaychecks.length === 0 ? (
+              <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
+                <DollarSign className="w-10 h-10 mx-auto mb-3 text-slate-300" />
+                <p className="text-sm text-slate-500">No paychecks yet</p>
+                <p className="text-xs text-slate-400 mt-1">Log your first one above</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {pastPaychecks.map((paycheck, idx) => {
+                  const statusConf = STATUS_CONFIG[paycheck.status] || STATUS_CONFIG.draft
+
+                  return (
+                    <motion.div
+                      key={paycheck.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.04 }}
+                      className="bg-white rounded-xl border border-slate-200 p-4 hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer"
+                      onClick={() => {
+                        if (paycheck.status === 'verified') {
+                          setSelectedPaycheck(paycheck)
+                          setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
+                          setView('allocate')
+                        } else {
+                          setSelectedPaycheck(paycheck)
+                          setView('detail')
+                        }
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-sm text-slate-700">
+                            ${Math.round(paycheck.total_earnings || 0)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-slate-900">{paycheck.week_label || 'Week'}</p>
+                            <p className="text-xs text-slate-500">
+                              {new Date(paycheck.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${statusConf.color}`}>
+                            {statusConf.label}
+                          </span>
+                          <ChevronRight className="w-4 h-4 text-slate-300" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Learn tip */}
+          <details className="bg-white rounded-xl border border-slate-200 group">
+            <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <span className="text-lg">🏦</span>
+              <span className="text-sm font-semibold text-slate-800 flex-1">Why Budget Your Paycheck?</span>
+              <ChevronRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90" />
+            </summary>
+            <div className="px-4 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              In real life, your paycheck doesn't all go to one place. Learning to split your earnings now builds habits that'll serve you for life. The 50/30/20 rule suggests: 50% needs, 30% wants, 20% savings.
+            </div>
+          </details>
         </div>
       </div>
     )
@@ -616,33 +636,26 @@ export const StudentPaycheck = () => {
 
   // ─── NEW PAYCHECK VIEW ────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-gray to-white p-6 pb-20">
+    <div className="min-h-screen bg-slate-50 pb-24">
       <Toast message={toast} />
 
-      <button
-        onClick={() => setView('list')}
-        className="text-sage-600 font-semibold mb-4 flex items-center gap-1 hover:underline"
-      >
-        ← Back to Paychecks
-      </button>
+      {/* Header */}
+      <div className="bg-slate-900 text-white px-6 pt-6 pb-10">
+        <button
+          onClick={() => setView('list')}
+          className="text-slate-400 hover:text-white text-sm font-medium mb-3 flex items-center gap-1 transition-colors"
+        >
+          ← Back
+        </button>
+        <h1 className="text-2xl font-bold">Log Paycheck</h1>
+        <p className="text-slate-400 text-sm mt-1">Week of {currentWeekLabel}</p>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-2xl mx-auto space-y-6"
-      >
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Log Your Weekly Paycheck</h1>
-          <p className="text-slate-600">Week of {currentWeekLabel}</p>
-        </div>
-
-        <FinTip icon="📊" title="How Earning Works" color="from-blue-50 to-cyan-50">
-          Your paycheck is built from multiple sources: XP from daily work (hit {xpThreshold} XP for base pay), epic day bonuses, mastery test rewards, your job, and any bonuses your guide has set up. It mirrors real life — most adults have income from multiple sources too!
-        </FinTip>
+      <div className="px-6 -mt-4 relative z-10 max-w-2xl mx-auto space-y-4">
 
         {/* Daily XP */}
-        <div className="bg-white rounded-xl p-6 shadow-lg">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Daily XP</h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Daily XP</h3>
           <div className="grid grid-cols-5 gap-3 mb-6">
             {DAYS.map((day, idx) => {
               const dayKey = ['mon', 'tue', 'wed', 'thu', 'fri'][idx]
@@ -712,8 +725,8 @@ export const StudentPaycheck = () => {
         )}
 
         {/* Mastery Tests */}
-        <div className="bg-white rounded-xl p-6 shadow-lg">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Mastery Tests</h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Mastery Tests</h3>
           <p className="text-xs text-slate-500 mb-3">
             Score {settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} | 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}
           </p>
@@ -750,8 +763,8 @@ export const StudentPaycheck = () => {
 
         {/* Custom Bonuses */}
         {(settings.custom_bonuses || []).length > 0 && (
-          <div className="bg-white rounded-xl p-6 shadow-lg space-y-4">
-            <h3 className="text-lg font-bold text-slate-900">Bonuses</h3>
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Bonuses</h3>
             <div className="space-y-3">
               {(settings.custom_bonuses || []).map(bonus => {
                 const entry = customBonuses[bonus.id] || {}
@@ -802,8 +815,8 @@ export const StudentPaycheck = () => {
         )}
 
         {/* Earnings Breakdown */}
-        <div className="bg-white rounded-xl p-6 shadow-lg space-y-3">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Earnings Breakdown</h3>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
+          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Earnings Breakdown</h3>
           <div className="space-y-2 text-sm">
             {earnings.basePay > 0 && <div className="flex justify-between"><span className="text-slate-600">Base Pay</span><span className="font-semibold">{formatCurrency(earnings.basePay)}</span></div>}
             {earnings.epicBonus > 0 && <div className="flex justify-between text-amber-600"><span>🔥 Epic Week Bonus</span><span className="font-semibold">{formatCurrency(earnings.epicBonus)}</span></div>}
@@ -819,15 +832,23 @@ export const StudentPaycheck = () => {
           </div>
         </div>
 
-        <Button full size="lg" onClick={handleSubmitPaycheck} disabled={loading || totalPaycheck <= 0}>
-          {loading ? 'Submitting...' : 'Submit for Review'}
-          <ChevronRight className="w-5 h-5 ml-2" />
-        </Button>
+        <button
+          onClick={handleSubmitPaycheck}
+          disabled={loading || totalPaycheck <= 0}
+          className={`w-full rounded-xl py-4 text-base font-semibold transition-all flex items-center justify-center gap-2 ${
+            totalPaycheck > 0 && !loading
+              ? 'bg-slate-900 text-white hover:bg-slate-800'
+              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+          }`}
+        >
+          {loading ? 'Submitting...' : `Submit ${formatCurrency(totalPaycheck)} for Review`}
+          {!loading && <ChevronRight className="w-4 h-4" />}
+        </button>
 
-        <p className="text-xs text-center text-slate-500">
-          Your guide will review and approve your paycheck before you can allocate it.
+        <p className="text-xs text-center text-slate-400">
+          Your guide will review and approve your paycheck.
         </p>
-      </motion.div>
+      </div>
     </div>
   )
 }

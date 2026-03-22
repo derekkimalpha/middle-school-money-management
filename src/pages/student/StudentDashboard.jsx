@@ -4,11 +4,7 @@ import { motion } from 'framer-motion'
 import {
   AnimNum,
   DonutChart,
-  FinTip,
-  LevelRing,
   Badge,
-  Button,
-  TiltCard,
   Toast,
 } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
@@ -20,18 +16,22 @@ import {
   getLevel,
   getNextLevel,
 } from '../../lib/constants'
-import { ArrowRight, TrendingUp, Send, ShoppingCart } from 'lucide-react'
+import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight } from 'lucide-react'
 
-const QUIPS = [
-  'Ready to level up your money game?',
-  'Time to make your money work for you!',
-  'Let\'s grow that wealth!',
-  'Your financial journey starts here!',
-  'Every dollar counts!',
-  'You got this!',
-  'Making money moves today?',
-  'Let\'s check on your empire!',
-]
+// Consistent account color system
+const ACCOUNT_COLORS = {
+  checking: { hex: '#10b981', bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700' },
+  savings: { hex: '#06b6d4', bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-cyan-700' },
+  sp500: { hex: '#f59e0b', bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700' },
+  nasdaq: { hex: '#8b5cf6', bg: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-700' },
+}
+
+const ACCOUNT_ICONS = {
+  checking: Wallet,
+  savings: PiggyBank,
+  sp500: TrendingUp,
+  nasdaq: BarChart3,
+}
 
 export const StudentDashboard = () => {
   const navigate = useNavigate()
@@ -40,365 +40,298 @@ export const StudentDashboard = () => {
   const [toast, setToast] = useState(null)
   const { accounts, loading } = useAccounts(profile?.id)
 
-  // Get random quip
-  const randomQuip = QUIPS[Math.floor(Math.random() * QUIPS.length)]
-
-  // Fetch streak and badges
   useEffect(() => {
     if (!profile?.id) return
-
-    const fetchStreakAndBadges = async () => {
+    const fetchBadges = async () => {
       try {
-        // Fetch badges
         const { data: badgeData } = await supabase
           .from('student_badges')
           .select('badge_id, badges:badge_definitions(*)')
           .eq('student_id', profile.id)
-
         if (badgeData) {
-          const formattedBadges = badgeData.map((sb) => ({
+          setBadges(badgeData.map((sb) => ({
             id: sb.badge_id,
             title: sb.badges?.title || '',
             icon: sb.badges?.icon || '',
             description: sb.badges?.description || '',
             earned: true,
-          }))
-          setBadges(formattedBadges)
+          })))
         }
       } catch (error) {
         console.error('Error fetching badges:', error)
       }
     }
-
-    fetchStreakAndBadges()
+    fetchBadges()
   }, [profile?.id])
 
   if (loading || !accounts || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-400"></div>
+      <div className="flex items-center justify-center h-screen bg-slate-50">
+        <motion.div
+          className="w-10 h-10 border-[3px] border-slate-200 border-t-slate-800 rounded-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        />
       </div>
     )
   }
 
-  // Calculate total balance
-  const totalBalance = Object.values(accounts).reduce((sum, bal) => sum + bal, 0)
+  const totalBalance = Object.entries(accounts)
+    .filter(([key]) => key !== 'bonus')
+    .reduce((sum, [, bal]) => sum + bal, 0)
   const currentLevel = getLevel(totalBalance)
   const nextLevel = getNextLevel(totalBalance)
-
-  // Prepare donut chart data
-  const donutChartData = [
-    { value: accounts.checking || 0, color: '#7EA58C' },
-    { value: accounts.savings || 0, color: '#14B8A6' },
-    { value: accounts.sp500 || 0, color: '#F59E0B' },
-    { value: accounts.nasdaq || 0, color: '#A855F7' },
-  ].filter((item) => item.value > 0)
-
   const nextLevelThreshold = nextLevel?.min || totalBalance
+  const levelProgress = nextLevel ? Math.min((totalBalance / nextLevelThreshold) * 100, 100) : 100
+
+  const donutData = Object.entries(ACCOUNT_COLORS)
+    .filter(([key]) => (accounts[key] || 0) > 0)
+    .map(([key, colors]) => ({
+      value: accounts[key],
+      color: colors.hex,
+    }))
+
+  const firstName = profile?.full_name?.split(' ')[0] || 'Friend'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-gray to-white p-6 pb-20">
+    <div className="min-h-screen bg-slate-50 pb-24">
       <Toast message={toast} />
 
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <div>
-          <h1 className="text-4xl font-bold text-slate-900">
-            Hey {profile?.full_name?.split(' ')[0] || 'Friend'}
-          </h1>
-          <p className="text-slate-600 mt-2 italic">{randomQuip}</p>
-        </div>
-      </motion.div>
+      {/* ── Hero Section ──────────────────────────────── */}
+      <div className="bg-slate-900 text-white px-6 pt-8 pb-16 relative overflow-hidden">
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+          backgroundSize: '24px 24px'
+        }} />
 
-      {/* Hero Card with DonutChart and LevelRing */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-white rounded-2xl shadow-lg p-8 mb-8"
-      >
-        <div className="grid grid-cols-2 gap-8 items-center mb-8">
-          {/* DonutChart */}
-          <div className="flex flex-col items-center">
-            {donutChartData.length > 0 ? (
-              <>
-                <DonutChart data={donutChartData} size={200} stroke={16} />
-                <div className="flex flex-col gap-2 mt-4">
-                  {accounts.checking > 0 && (
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#7EA58C' }}></div>
-                      <span className="text-sm text-slate-700">Checking</span>
-                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.checking)}</span>
-                    </div>
-                  )}
-                  {accounts.savings > 0 && (
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#14B8A6' }}></div>
-                      <span className="text-sm text-slate-700">Savings</span>
-                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.savings)}</span>
-                    </div>
-                  )}
-                  {accounts.sp500 > 0 && (
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#F59E0B' }}></div>
-                      <span className="text-sm text-slate-700">S&P 500</span>
-                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.sp500)}</span>
-                    </div>
-                  )}
-                  {accounts.nasdaq > 0 && (
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#A855F7' }}></div>
-                      <span className="text-sm text-slate-700">NASDAQ</span>
-                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.nasdaq)}</span>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="text-center text-slate-400">No accounts yet</div>
-            )}
-          </div>
-
-          {/* LevelRing and Stats */}
-          <div className="flex flex-col items-center gap-6">
-            <LevelRing total={totalBalance} />
-            <div className="text-center">
-              <p className="text-sm text-slate-600 mb-2">
-                Total Balance
-              </p>
-              <h2 className="text-3xl font-bold text-slate-900">
-                <AnimNum value={totalBalance} prefix="$" />
-              </h2>
-              <p className="text-xs text-slate-500 mt-2">
-                Level: {currentLevel?.name || 'N/A'}{' '}
-                {currentLevel?.icon}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress to next level */}
-        {nextLevel && (
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-semibold text-slate-700">
-                Progress to {nextLevel.name}
-              </span>
-              <span className="text-xs text-slate-600">
-                ${(nextLevelThreshold - totalBalance).toLocaleString()} away
-              </span>
-            </div>
-            <div className="w-full bg-slate-200 rounded-full h-2">
-              <motion.div
-                className="bg-gradient-to-r from-sage-400 to-green-400 h-2 rounded-full"
-                initial={{ width: 0 }}
-                animate={{
-                  width: `${Math.min((totalBalance / nextLevelThreshold) * 100, 100)}%`,
-                }}
-                transition={{ duration: 0.8 }}
-              />
-            </div>
-          </div>
-        )}
-
-        <FinTip
-          icon="💭"
-          title="Why Multiple Accounts?"
-          color="from-blue-50 to-cyan-50"
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10"
         >
-          Different accounts serve different purposes. Checking for daily needs,
-          Savings for safety nets, S&P 500 for long-term growth, and NASDAQ for
-          tech-focused investing. Diversification helps you build wealth
-          strategically!
-        </FinTip>
-      </motion.div>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <p className="text-slate-400 text-sm font-medium">Welcome back</p>
+              <h1 className="text-2xl font-bold mt-0.5">{firstName}</h1>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
+              <span className="text-base">{currentLevel?.icon}</span>
+              <span className="text-xs font-semibold">{currentLevel?.name}</span>
+            </div>
+          </div>
 
-      {/* Achievements Section */}
-      {badges.length > 0 && (
+          {/* Balance display */}
+          <div className="mb-2">
+            <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Total Balance</p>
+            <h2 className="text-4xl font-bold tracking-tight">
+              <AnimNum value={totalBalance} prefix="$" />
+            </h2>
+          </div>
+
+          {/* Level progress */}
+          {nextLevel && (
+            <div className="mt-4">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-xs text-slate-400">{currentLevel?.name}</span>
+                <span className="text-xs text-slate-400">{nextLevel.name} · {formatCurrency(nextLevelThreshold - totalBalance)} to go</span>
+              </div>
+              <div className="w-full bg-white/10 rounded-full h-1.5">
+                <motion.div
+                  className="bg-emerald-400 h-1.5 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${levelProgress}%` }}
+                  transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
+                />
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </div>
+
+      {/* ── Portfolio Breakdown Card ──────────────────── */}
+      <div className="px-6 -mt-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8"
+          transition={{ delay: 0.15 }}
+          className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
         >
-          <h3 className="text-xl font-bold text-slate-900 mb-4">
-            Achievements
-          </h3>
-          <div className="overflow-x-auto pb-4">
-            <div className="flex gap-4 min-w-max">
-              {badges.slice(0, 6).map((badge, index) => (
-                <Badge key={badge.id} badge={badge} delay={index * 0.1} />
-              ))}
-            </div>
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Portfolio</h3>
+            <span className="text-xs text-slate-500">{donutData.length} accounts</span>
           </div>
-        </motion.div>
-      )}
 
-      {/* Accounts Grid */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="mb-8"
-      >
-        <h3 className="text-xl font-bold text-slate-900 mb-4">Your Accounts</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          {Object.entries(accounts)
-            .filter(([key]) => key !== 'bonus')
-            .map(([key, balance], index) => {
-              const meta = ACCOUNT_META[key]
-              const Icon = meta?.icon
-              const percentage = (balance / totalBalance) * 100
+          <div className="flex items-center gap-6">
+            {/* Donut chart */}
+            <div className="flex-shrink-0">
+              {donutData.length > 0 ? (
+                <DonutChart
+                  data={donutData}
+                  size={140}
+                  stroke={16}
+                  centerValue={formatCurrency(totalBalance)}
+                  centerLabel="Total"
+                />
+              ) : (
+                <div className="w-[140px] h-[140px] rounded-full bg-slate-100 flex items-center justify-center">
+                  <span className="text-slate-400 text-sm">No funds</span>
+                </div>
+              )}
+            </div>
 
-              return (
-                <motion.div
-                  key={key}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                >
-                  <div
-                    className={`${meta?.bgColor} border-2 ${meta?.borderColor} rounded-xl p-4`}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
-                          {meta?.label}
-                        </p>
-                        <h4 className={`text-2xl font-bold ${meta?.color} mt-1`}>
-                          <AnimNum value={balance} prefix="$" />
-                        </h4>
+            {/* Account legend */}
+            <div className="flex-1 space-y-3">
+              {Object.entries(ACCOUNT_COLORS).map(([key, colors]) => {
+                const balance = accounts[key] || 0
+                const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
+
+                return (
+                  <div key={key} className="flex items-center gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: colors.hex }} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-700">{ACCOUNT_META[key]?.label}</span>
+                        <span className="text-sm font-semibold text-slate-900 tabular-nums">{formatCurrency(balance)}</span>
                       </div>
-                      {Icon && <Icon className={`${meta?.color} w-5 h-5`} />}
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center text-xs text-slate-600">
-                        <span>% of total</span>
-                        <span className="font-semibold">
-                          {percentage.toFixed(1)}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-slate-200/50 rounded-full h-1.5">
-                        <motion.div
-                          className={`h-1.5 rounded-full ${
-                            meta?.color?.replace('text-', 'bg-')
-                          }`}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${percentage}%` }}
-                          transition={{ duration: 0.8 }}
-                        />
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <div className="flex-1 bg-slate-100 rounded-full h-1">
+                          <motion.div
+                            className="h-1 rounded-full"
+                            style={{ backgroundColor: colors.hex }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 0.8, delay: 0.3 }}
+                          />
+                        </div>
+                        <span className="text-[10px] text-slate-400 font-medium tabular-nums w-7 text-right">{pct}%</span>
                       </div>
                     </div>
                   </div>
-                </motion.div>
-              )
-            })}
+                )
+              })}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ── Account Cards ─────────────────────────────── */}
+      <div className="px-6 mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Accounts</h3>
         </div>
 
-        {/* FinTips for each account */}
-        <div className="space-y-3 mb-6">
-          <FinTip
-            icon="🏦"
-            title="Checking Account"
-            color="from-blue-50 to-cyan-50"
-          >
-            Your everyday spending account. Keep funds here for bills, groceries,
-            and immediate expenses.
-          </FinTip>
+        <div className="grid grid-cols-2 gap-3">
+          {Object.entries(ACCOUNT_COLORS).map(([key, colors], index) => {
+            const balance = accounts[key] || 0
+            const Icon = ACCOUNT_ICONS[key]
 
-          <FinTip
-            icon="🪴"
-            title="Savings Account"
-            color="from-green-50 to-teal-50"
-          >
-            Your safety net and emergency fund. Keep 3-6 months of expenses here
-            for unexpected costs.
-          </FinTip>
-
-          <FinTip
-            icon="📈"
-            title="S&P 500"
-            color="from-amber-50 to-orange-50"
-          >
-            Invest in the 500 largest US companies. Lower risk, steady growth over
-            the long term.
-          </FinTip>
-
-          <FinTip
-            icon="📊"
-            title="NASDAQ"
-            color="from-purple-50 to-pink-50"
-          >
-            Invest in tech and growth companies. Higher risk, higher potential
-            returns.
-          </FinTip>
-        </div>
-      </motion.div>
-
-      {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        <h3 className="text-xl font-bold text-slate-900 mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <TiltCard>
-            <button
-              onClick={() => navigate('/paycheck')}
-              className="w-full h-full p-6 rounded-xl bg-gradient-to-br from-green-400 to-sage-400 text-white hover:shadow-lg transition-shadow"
-            >
-              <div className="flex flex-col items-center justify-center gap-3 h-full">
-                <div className="text-3xl">💰</div>
-                <div className="text-center">
-                  <h4 className="font-bold text-lg">Log Paycheck</h4>
-                  <p className="text-sm opacity-90 mt-1">
-                    Record your earnings
+            return (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + index * 0.08 }}
+                className={`${colors.bg} ${colors.border} border rounded-xl p-4 relative overflow-hidden`}
+              >
+                <div className="absolute -right-3 -top-3 w-16 h-16 rounded-full opacity-10" style={{ backgroundColor: colors.hex }} />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon className={`w-4 h-4 ${colors.text}`} />
+                    <span className={`text-xs font-semibold ${colors.text} uppercase tracking-wide`}>
+                      {ACCOUNT_META[key]?.label}
+                    </span>
+                  </div>
+                  <p className="text-xl font-bold text-slate-900 tabular-nums">
+                    <AnimNum value={balance} prefix="$" />
                   </p>
                 </div>
-                <ArrowRight className="w-4 h-4 mt-auto" />
-              </div>
-            </button>
-          </TiltCard>
-
-          <TiltCard>
-            <button
-              onClick={() => navigate('/transfer')}
-              className="w-full h-full p-6 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-400 text-white hover:shadow-lg transition-shadow"
-            >
-              <div className="flex flex-col items-center justify-center gap-3 h-full">
-                <Send className="w-8 h-8" />
-                <div className="text-center">
-                  <h4 className="font-bold text-lg">Transfer</h4>
-                  <p className="text-sm opacity-90 mt-1">Move between accounts</p>
-                </div>
-                <ArrowRight className="w-4 h-4 mt-auto" />
-              </div>
-            </button>
-          </TiltCard>
-
-          <TiltCard>
-            <button
-              onClick={() => navigate('/purchase')}
-              className="w-full h-full p-6 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 text-white hover:shadow-lg transition-shadow"
-            >
-              <div className="flex flex-col items-center justify-center gap-3 h-full">
-                <ShoppingCart className="w-8 h-8" />
-                <div className="text-center">
-                  <h4 className="font-bold text-lg">Purchase Request</h4>
-                  <p className="text-sm opacity-90 mt-1">Ask to buy something</p>
-                </div>
-                <ArrowRight className="w-4 h-4 mt-auto" />
-              </div>
-            </button>
-          </TiltCard>
+              </motion.div>
+            )
+          })}
         </div>
-      </motion.div>
+      </div>
+
+      {/* ── Quick Actions ─────────────────────────────── */}
+      <div className="px-6 mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Quick Actions</h3>
+        </div>
+
+        <div className="space-y-2.5">
+          {[
+            { label: 'Log Paycheck', desc: 'Submit your weekly earnings', icon: DollarSign, color: 'bg-emerald-600', route: '/paycheck' },
+            { label: 'Transfer Funds', desc: 'Move money between accounts', icon: Send, color: 'bg-slate-900', route: '/transfer' },
+            { label: 'Purchase Request', desc: 'Ask to buy something', icon: ShoppingCart, color: 'bg-amber-600', route: '/purchase' },
+          ].map((action, index) => (
+            <motion.button
+              key={action.label}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 + index * 0.08 }}
+              onClick={() => navigate(action.route)}
+              className="w-full flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all text-left group"
+            >
+              <div className={`${action.color} w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0`}>
+                <action.icon className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-slate-900">{action.label}</p>
+                <p className="text-xs text-slate-500">{action.desc}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Achievements ──────────────────────────────── */}
+      {badges.length > 0 && (
+        <div className="px-6 mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Achievements</h3>
+            <span className="text-xs text-slate-500">{badges.length} earned</span>
+          </div>
+          <div className="overflow-x-auto pb-2 -mx-6 px-6">
+            <div className="flex gap-3 min-w-max">
+              {badges.slice(0, 8).map((badge, index) => (
+                <Badge key={badge.id} badge={badge} delay={index * 0.08} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Learn Section ─────────────────────────────── */}
+      <div className="px-6 mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Learn</h3>
+        </div>
+        <div className="space-y-2.5">
+          {[
+            { icon: '🏦', title: 'Why diversify?', body: 'Different accounts serve different purposes — checking for daily use, savings for safety, investments for growth.' },
+            { icon: '📈', title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth. NASDAQ focuses on tech for higher risk and reward.' },
+            { icon: '💡', title: '50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.' },
+          ].map((tip, i) => (
+            <motion.details
+              key={i}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 + i * 0.08 }}
+              className="bg-white rounded-xl border border-slate-200 group"
+            >
+              <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <span className="text-lg">{tip.icon}</span>
+                <span className="text-sm font-semibold text-slate-800 flex-1">{tip.title}</span>
+                <ChevronRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90" />
+              </summary>
+              <div className="px-4 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                {tip.body}
+              </div>
+            </motion.details>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
