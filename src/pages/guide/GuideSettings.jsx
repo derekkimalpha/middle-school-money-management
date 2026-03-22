@@ -98,7 +98,9 @@ export const GuideSettings = () => {
           mastery_pass_pay: parseFloat(settings.mastery_pass_pay) || 0,
           mastery_perfect_pay: parseFloat(settings.mastery_perfect_pay) || 0,
           mastery_min_score: parseFloat(settings.mastery_min_score) || 0,
-          transfer_fee_pct: parseFloat(settings.transfer_fee_pct) || 0
+          transfer_fee_pct: parseFloat(settings.transfer_fee_pct) || 0,
+          smart_goal_pay: parseFloat(settings.smart_goal_pay) || 0,
+          bonus_xp_per: parseFloat(settings.bonus_xp_per) || 50
         })
         .eq('session_id', activeSession.id)
 
@@ -283,6 +285,8 @@ export const GuideSettings = () => {
             <div><strong>Bonus XP Rate:</strong> Pay per XP above threshold (e.g., $0.01 per XP)</div>
             <div><strong>Mastery:</strong> Pay for passing/perfect scores on skill mastery</div>
             <div><strong>Transfer Fee:</strong> Percentage cost to transfer between accounts</div>
+            <div><strong>SMART Goal Pay:</strong> Bonus for completing a SMART goal each week</div>
+            <div><strong>Bonus XP Per:</strong> Every X XP above threshold earns the bonus rate</div>
           </p>
         </FinTip>
 
@@ -354,8 +358,25 @@ export const GuideSettings = () => {
                 <input
                   type="number"
                   step="0.1"
-                  value={settings.transfer_fee_pct || ''}
+                  value={settings.transfer_fee_pct ?? ''}
                   onChange={(e) => setSettings({ ...settings, transfer_fee_pct: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                />
+              </Field>
+              <Field label="SMART Goal Pay ($)">
+                <input
+                  type="number"
+                  step="0.01"
+                  value={settings.smart_goal_pay ?? ''}
+                  onChange={(e) => setSettings({ ...settings, smart_goal_pay: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                />
+              </Field>
+              <Field label="Bonus XP Per (XP above threshold)">
+                <input
+                  type="number"
+                  value={settings.bonus_xp_per ?? ''}
+                  onChange={(e) => setSettings({ ...settings, bonus_xp_per: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
                 />
               </Field>
