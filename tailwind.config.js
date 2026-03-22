@@ -36,13 +36,26 @@ export default {
           DEFAULT: '#a67272',
           bg: 'rgba(166,114,114,0.07)',
         },
-        // Paper-like surface palette
+        // Notebook palette
         paper: {
-          DEFAULT: '#faf9f7',
-          warm: '#f5f3ef',
-          dark: '#141211',
-          sidebar: '#1c1b19',
+          DEFAULT: '#faf8f4',
+          warm: '#f3efe8',
+          cream: '#f7f3ec',
+          dark: '#1e2a1e',
+          sidebar: '#243024',
         },
+        pencil: {
+          DEFAULT: '#e8c840',
+          light: '#f5e17a',
+          dark: '#c9a520',
+          muted: '#d4b84c',
+        },
+        chalk: {
+          DEFAULT: '#f0ece4',
+          white: '#f8f5ef',
+        },
+        margin: '#d94040',
+        ruled: '#bfd4e8',
         surface: {
           1: '#FFFFFF',
           2: '#f0eeeb',
@@ -58,9 +71,10 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        hand: ['Caveat', 'cursive'],
       },
       backgroundColor: {
-        base: '#faf9f7',
+        base: '#faf8f4',
       },
       animation: {
         slideUp: 'slideUp 0.5s ease-out forwards',

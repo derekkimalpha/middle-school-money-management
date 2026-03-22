@@ -25,9 +25,9 @@ export const Input = ({
         placeholder={placeholder}
         disabled={disabled}
         className={`
-          w-full rounded-xl border border-gray-200 dark:border-white/10 transition-all duration-200
-          focus:outline-none focus:border-stone-400 dark:focus:border-stone-500 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10
-          placeholder-gray-300 dark:placeholder-white/20 text-gray-900 dark:text-white
+          w-full rounded border border-black/[0.1] dark:border-white/10 transition-all duration-200
+          focus:outline-none focus:border-pencil dark:focus:border-pencil/60 focus:ring-2 focus:ring-pencil/20 dark:focus:ring-pencil/10
+          placeholder-ink-faint dark:placeholder-white/20 text-ink dark:text-chalk-white
           ${prefix ? 'pl-8' : 'px-4'} py-2.5
           ${big ? 'text-lg py-3.5 font-bold' : 'text-[14px]'}
           bg-white dark:bg-white/5

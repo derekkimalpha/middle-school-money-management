@@ -2,119 +2,159 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animation utility classes */
-@layer utilities {
-  .anim {
-    @apply animate-slideUp;
-  }
+/* ══════════════════════════════════════════════
+   NOTEBOOK THEME — CSS FOUNDATION
+   ══════════════════════════════════════════════ */
 
-  .anim-d1 {
-    @apply animate-slideUp;
-    animation-delay: 0.1s;
-  }
-
-  .anim-d2 {
-    @apply animate-slideUp;
-    animation-delay: 0.2s;
-  }
-
-  .anim-d3 {
-    @apply animate-slideUp;
-    animation-delay: 0.3s;
-  }
-
-  .anim-d4 {
-    @apply animate-slideUp;
-    animation-delay: 0.4s;
-  }
-
-  .anim-d5 {
-    @apply animate-slideUp;
-    animation-delay: 0.5s;
-  }
-
-  .shimmer {
-    @apply animate-shimmer;
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.2) 20%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    background-size: 1000px 100%;
-  }
-
-  .pop {
-    @apply animate-pop;
-  }
-
-  .shake {
-    @apply animate-shake;
-  }
-
-  .float {
-    @apply animate-float;
-  }
-
-  .fade-in {
-    @apply animate-fadeIn;
-  }
-
-  .scale-in {
-    @apply animate-scaleIn;
-  }
-
-  .confetti {
-    @apply animate-confettiFall;
-  }
-
-  .ring-draw {
-    @apply animate-ringDraw;
-  }
-
-  .count-up {
-    @apply animate-countUp;
-  }
-
-  .badge-unlock {
-    @apply animate-badgeUnlock;
-  }
-
-  .streak-fire {
-    @apply animate-streakFire;
-  }
-
-  .level-up {
-    @apply animate-levelUp;
-  }
-}
-
-/* Base styles */
+/* ── Base ── */
 @layer base {
   body {
-    @apply bg-[#F5F5F0] text-gray-900;
+    @apply bg-[#faf8f4] text-gray-900 dark:bg-[#1e2a1e] dark:text-chalk-white;
   }
-
   html {
     scroll-behavior: smooth;
   }
 }
 
-/* Custom component styles */
+/* ── Notebook Paper Effects ── */
+@layer utilities {
+  /* Ruled notebook paper background */
+  .notebook-ruled {
+    background-image:
+      repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        #bfd4e8 31px,
+        #bfd4e8 32px
+      );
+    background-size: 100% 32px;
+    background-position: 0 8px;
+  }
+
+  .dark .notebook-ruled {
+    background-image:
+      repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        rgba(255,255,255,0.06) 31px,
+        rgba(255,255,255,0.06) 32px
+      );
+  }
+
+  /* Red margin line */
+  .notebook-margin {
+    border-left: 2px solid #d94040;
+    padding-left: 20px;
+  }
+
+  .dark .notebook-margin {
+    border-left-color: rgba(217,64,64,0.3);
+  }
+
+  /* Graph paper (for investment/chart areas) */
+  .notebook-grid {
+    background-image:
+      linear-gradient(rgba(191,212,232,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(191,212,232,0.3) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .dark .notebook-grid {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  }
+
+  /* Paper card with subtle shadow (like a piece of paper) */
+  .paper-card {
+    @apply bg-white dark:bg-white/[0.04] rounded-sm shadow-[2px_2px_0px_rgba(0,0,0,0.06)];
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .dark .paper-card {
+    border-color: rgba(255,255,255,0.06);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+  }
+
+  /* Stamp badge (rubber stamp look for statuses) */
+  .stamp {
+    @apply inline-block px-3 py-1 font-hand font-bold text-lg uppercase tracking-wider;
+    border: 3px solid currentColor;
+    border-radius: 4px;
+    transform: rotate(-3deg);
+    opacity: 0.8;
+  }
+
+  .stamp-approved {
+    @apply text-green-700 dark:text-green-400;
+    border-color: currentColor;
+  }
+
+  .stamp-pending {
+    @apply text-amber dark:text-pencil;
+    border-color: currentColor;
+  }
+
+  .stamp-rejected {
+    @apply text-red-700 dark:text-red-400;
+    border-color: currentColor;
+  }
+
+  /* Pencil underline for section headers */
+  .pencil-underline {
+    text-decoration: underline;
+    text-decoration-color: #e8c840;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 4px;
+    text-decoration-style: wavy;
+  }
+
+  /* Torn paper edge (top) */
+  .torn-top {
+    clip-path: polygon(
+      0% 4%, 3% 0%, 7% 3%, 11% 1%, 15% 4%, 19% 0%, 23% 3%, 27% 1%,
+      31% 4%, 35% 0%, 39% 3%, 43% 1%, 47% 4%, 51% 0%, 55% 3%, 59% 1%,
+      63% 4%, 67% 0%, 71% 3%, 75% 1%, 79% 4%, 83% 0%, 87% 3%, 91% 1%,
+      95% 4%, 100% 0%, 100% 100%, 0% 100%
+    );
+    padding-top: 12px;
+  }
+}
+
+/* ── Animations ── */
+@layer utilities {
+  .anim { @apply animate-slideUp; }
+  .anim-d1 { @apply animate-slideUp; animation-delay: 0.1s; }
+  .anim-d2 { @apply animate-slideUp; animation-delay: 0.2s; }
+  .anim-d3 { @apply animate-slideUp; animation-delay: 0.3s; }
+  .anim-d4 { @apply animate-slideUp; animation-delay: 0.4s; }
+  .anim-d5 { @apply animate-slideUp; animation-delay: 0.5s; }
+  .shimmer { @apply animate-shimmer; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0) 100%); background-size: 1000px 100%; }
+  .pop { @apply animate-pop; }
+  .shake { @apply animate-shake; }
+  .float { @apply animate-float; }
+  .fade-in { @apply animate-fadeIn; }
+  .scale-in { @apply animate-scaleIn; }
+  .confetti { @apply animate-confettiFall; }
+  .ring-draw { @apply animate-ringDraw; }
+  .count-up { @apply animate-countUp; }
+  .badge-unlock { @apply animate-badgeUnlock; }
+  .streak-fire { @apply animate-streakFire; }
+  .level-up { @apply animate-levelUp; }
+}
+
+/* ── Component Styles ── */
 @layer components {
   .btn-primary {
-    @apply px-4 py-2 rounded-lg bg-sage text-white font-medium hover:bg-sage-dark transition-colors;
+    @apply px-4 py-2 rounded bg-ink text-white font-medium hover:bg-ink-light transition-colors;
   }
-
   .btn-secondary {
-    @apply px-4 py-2 rounded-lg bg-surface-2 text-gray-900 font-medium hover:bg-surface-3 transition-colors;
+    @apply px-4 py-2 rounded bg-surface-2 text-gray-900 font-medium hover:bg-surface-3 transition-colors;
   }
-
   .card {
-    @apply bg-white rounded-lg shadow-sm p-4;
+    @apply bg-white rounded-sm shadow-[2px_2px_0px_rgba(0,0,0,0.06)] p-4 border border-black/[0.08] dark:bg-white/[0.04] dark:border-white/[0.06];
   }
-
   .card-lg {
-    @apply bg-white rounded-lg shadow-sm p-6;
+    @apply bg-white rounded-sm shadow-[2px_2px_0px_rgba(0,0,0,0.06)] p-6 border border-black/[0.08] dark:bg-white/[0.04] dark:border-white/[0.06];
   }
 }

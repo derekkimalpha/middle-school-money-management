@@ -142,10 +142,10 @@ export const StudentPurchase = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-[-0.02em] mb-2">
+        <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white tracking-[-0.02em] mb-2">
           Purchase Request
         </h1>
-        <p className="text-[13px] text-gray-500 dark:text-white/50">
+        <p className="text-[13px] text-ink-muted dark:text-white/50">
           Ask for permission to buy something
         </p>
       </motion.div>
@@ -166,14 +166,14 @@ export const StudentPurchase = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] rounded-xl p-6"
+          className="bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] rounded-sm p-6 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[12px] font-semibold text-gray-500 dark:text-white/50 uppercase tracking-wider mb-1">
+              <p className="text-[12px] font-semibold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-1">
                 Checking Balance (For Purchases)
               </p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+              <p className="text-3xl font-bold text-ink dark:text-chalk-white tabular-nums">
                 <AnimNum value={checkingBalance} prefix="$" />
               </p>
             </div>
@@ -187,9 +187,9 @@ export const StudentPurchase = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6 space-y-5"
+          className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] p-6 space-y-5 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
         >
-          <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white">New Request</h2>
+          <h2 className="text-[15px] font-semibold text-ink dark:text-chalk-white font-hand">New Request</h2>
 
           <Field label="What do you want to buy?">
             <Input
@@ -233,9 +233,9 @@ export const StudentPurchase = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6"
+            className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] p-6 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
           >
-            <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-[15px] font-semibold text-ink dark:text-chalk-white font-hand mb-4">
               Your Requests
             </h2>
 
@@ -246,19 +246,19 @@ export const StudentPurchase = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 border border-gray-200 dark:border-white/[0.08] rounded-xl hover:border-gray-300 dark:hover:border-white/[0.12] transition-colors"
+                  className="p-4 border border-black/[0.08] dark:border-white/[0.06] rounded-sm hover:border-black/[0.12] dark:hover:border-white/[0.10] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                        <h3 className="font-semibold text-ink dark:text-chalk-white">
                           {purchase.item_name}
                         </h3>
                         {getStatusTag(purchase.status)}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-gray-500 dark:text-white/50 mb-2">
-                        <div className="font-semibold text-gray-900 dark:text-white">
+                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-ink-muted dark:text-white/50 mb-2">
+                        <div className="font-semibold text-ink dark:text-chalk-white">
                           {formatCurrency(purchase.price)}
                         </div>
 
@@ -278,7 +278,7 @@ export const StudentPurchase = () => {
                             href={purchase.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-900 dark:text-white/50 hover:text-gray-900 dark:hover:text-white/90 flex items-center gap-1"
+                            className="text-ink dark:text-white/50 hover:text-ink dark:hover:text-white/90 flex items-center gap-1"
                           >
                             View Link
                             <ExternalLink className="w-3 h-3" />
@@ -301,8 +301,8 @@ export const StudentPurchase = () => {
             </div>
 
             {/* Status Legend */}
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-white/[0.08] text-sm text-gray-500 dark:text-white/50 space-y-2">
-              <p className="font-semibold text-gray-900 dark:text-white">Status Meanings:</p>
+            <div className="mt-6 pt-6 border-t border-black/[0.08] dark:border-white/[0.06] text-sm text-ink-muted dark:text-white/50 space-y-2">
+              <p className="font-semibold text-ink dark:text-chalk-white">Status Meanings:</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-stone-400" />
@@ -329,8 +329,8 @@ export const StudentPurchase = () => {
             className="py-16 text-center"
           >
             <div className="text-4xl mb-3">🛒</div>
-            <p className="text-sm font-semibold text-gray-500 dark:text-white/40">No purchase requests</p>
-            <p className="text-xs text-gray-400 dark:text-white/25 mt-1">Submit a request above to buy something</p>
+            <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No purchase requests</p>
+            <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Submit a request above to buy something</p>
           </motion.div>
         )}
 

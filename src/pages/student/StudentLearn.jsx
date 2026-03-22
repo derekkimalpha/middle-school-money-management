@@ -263,9 +263,9 @@ const StudentLearn = () => {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
+    <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-[#1e2a1e]' : 'bg-[#faf8f4]'} notebook-ruled`}>
       {/* Header */}
-      <div className="bg-slate-900 dark:bg-slate-950 text-white sticky top-0 z-10 shadow-lg">
+      <div className="bg-ink dark:bg-[#0f1710] text-chalk-white dark:text-chalk-white sticky top-0 z-10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-3">
             <BookOpen size={32} className="text-stone-400" />
@@ -283,23 +283,23 @@ const StudentLearn = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`mb-8 p-6 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-md`}
+          className={`mb-8 p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] ${isDark ? 'bg-white/[0.04]' : 'bg-white'} shadow-[2px_2px_0px_rgba(0,0,0,0.06)]`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h2 className={`text-lg font-semibold font-hand ${isDark ? 'text-chalk-white' : 'text-ink'}`}>
                 Your Learning Progress
               </h2>
-              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>
+              <p className={`text-sm ${isDark ? 'text-white/50' : 'text-ink-muted'}`}>
                 {completedLessons.size} of 20 lessons completed
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-32 h-2 rounded-full ${isDark ? 'bg-gray-700' : 'bg-slate-200'} overflow-hidden`}>
+              <div className={`w-32 h-2 rounded-full ${isDark ? 'bg-white/[0.1]' : 'bg-gray-200'} overflow-hidden`}>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(completedLessons.size / 20) * 100}%` }}
-                  className="h-full bg-stone-500"
+                  className="h-full bg-pencil"
                   transition={{ duration: 0.5 }}
                 />
               </div>
@@ -322,25 +322,25 @@ const StudentLearn = () => {
               {/* Unit Header */}
               <button
                 onClick={() => toggleUnit(unit.id)}
-                className={`w-full p-6 rounded-lg transition-all duration-200 ${
+                className={`w-full p-6 rounded-sm transition-all duration-200 border border-black/[0.08] dark:border-white/[0.06] ${
                   isDark
-                    ? 'bg-gray-800 hover:bg-gray-700 text-white'
-                    : 'bg-white hover:bg-slate-50 text-slate-900'
-                } shadow-md border-l-4 ${
+                    ? 'bg-white/[0.04] hover:bg-white/[0.06] text-chalk-white'
+                    : 'bg-white hover:bg-gray-50 text-ink'
+                } shadow-[2px_2px_0px_rgba(0,0,0,0.06)] border-l-4 ${
                   unit.locked
-                    ? `border-gray-500 ${isDark ? 'opacity-75' : 'opacity-90'}`
-                    : `border-stone-500`
+                    ? `border-l-gray-400 ${isDark ? 'opacity-75' : 'opacity-90'}`
+                    : `border-l-pencil`
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 text-left flex-1">
                     <span className="text-3xl">{unit.icon}</span>
                     <div>
-                      <h3 className="text-xl font-bold flex items-center gap-2">
+                      <h3 className="text-xl font-bold font-hand flex items-center gap-2">
                         {unit.title}
-                        {unit.locked && <Lock size={18} className="text-gray-500" />}
+                        {unit.locked && <Lock size={18} className={isDark ? 'text-white/40' : 'text-gray-400'} />}
                       </h3>
-                      <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>
+                      <p className={`text-sm ${isDark ? 'text-white/50' : 'text-ink-muted'}`}>
                         {unit.lessons.length} lessons
                       </p>
                     </div>
@@ -351,7 +351,7 @@ const StudentLearn = () => {
                   >
                     <ChevronDown
                       size={24}
-                      className={unit.locked ? 'text-gray-500' : 'text-stone-500'}
+                      className={unit.locked ? (isDark ? 'text-white/40' : 'text-gray-400') : 'text-pencil-dark'}
                     />
                   </motion.div>
                 </div>
@@ -365,7 +365,7 @@ const StudentLearn = () => {
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className={`mt-3 space-y-3 ${isDark ? 'bg-gray-800/50' : 'bg-slate-50/50'} p-4 rounded-lg`}
+                    className={`mt-3 space-y-3 ${isDark ? 'bg-white/[0.02]' : 'bg-gray-50/50'} p-4 rounded-sm border border-black/[0.04] dark:border-white/[0.03]`}
                   >
                     {unit.lessons.map((lesson) => (
                       <motion.div
@@ -376,17 +376,17 @@ const StudentLearn = () => {
                       >
                         {/* Lesson Card */}
                         <div
-                          className={`rounded-lg overflow-hidden transition-all duration-200 ${
+                          className={`rounded-sm overflow-hidden transition-all duration-200 border ${
                             isDark
-                              ? 'bg-gray-700 hover:bg-gray-650'
-                              : 'bg-white hover:bg-slate-100'
-                          } border ${
+                              ? 'bg-white/[0.03] hover:bg-white/[0.05]'
+                              : 'bg-white hover:bg-gray-50'
+                          } ${
                             completedLessons.has(lesson.id)
-                              ? 'border-green-500'
+                              ? 'border-sage-500/50 dark:border-sage-400/50'
                               : isDark
-                                ? 'border-gray-600'
-                                : 'border-slate-200'
-                          }`}
+                                ? 'border-white/[0.06]'
+                                : 'border-black/[0.08]'
+                          } shadow-[2px_2px_0px_rgba(0,0,0,0.06)]`}
                         >
                           {/* Lesson Header */}
                           <button
@@ -400,7 +400,7 @@ const StudentLearn = () => {
                                 <span className="text-2xl flex-shrink-0">{lesson.emoji}</span>
                               )}
                               <div className="flex-1">
-                                <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                <h4 className={`font-semibold font-hand ${isDark ? 'text-chalk-white' : 'text-ink'}`}>
                                   {lesson.number}: {lesson.title}
                                 </h4>
                               </div>
@@ -411,7 +411,7 @@ const StudentLearn = () => {
                             >
                               <ChevronRight
                                 size={20}
-                                className={isDark ? 'text-gray-400' : 'text-slate-500'}
+                                className={isDark ? 'text-white/50' : 'text-ink-muted'}
                               />
                             </motion.div>
                           </button>
@@ -424,11 +424,11 @@ const StudentLearn = () => {
                                 animate={{ opacity: 1, height: 'auto' }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className={`border-t ${isDark ? 'border-gray-600 bg-gray-800' : 'border-slate-200 bg-slate-50'} p-4 space-y-4`}
+                                className={`border-t ${isDark ? 'border-white/[0.06] bg-white/[0.02]' : 'border-black/[0.08] bg-gray-50'} p-4 space-y-4`}
                               >
                                 {/* Explanation */}
                                 <div>
-                                  <p className={`text-sm leading-relaxed ${isDark ? 'text-gray-200' : 'text-slate-700'}`}>
+                                  <p className={`text-sm leading-relaxed ${isDark ? 'text-chalk-white/90' : 'text-ink'}`}>
                                     {lesson.explanation}
                                   </p>
                                 </div>
@@ -438,21 +438,21 @@ const StudentLearn = () => {
                                   initial={{ opacity: 0, scale: 0.95 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={{ delay: 0.1 }}
-                                  className={`p-3 rounded-lg flex items-start gap-3 ${
+                                  className={`p-3 rounded-sm flex items-start gap-3 border ${
                                     isDark
-                                      ? 'bg-stone-900/30 border border-stone-700'
-                                      : 'bg-stone-50 border border-stone-200'
+                                      ? 'bg-white/[0.04] border-pencil/20'
+                                      : 'bg-pencil/10 border-pencil/30'
                                   }`}
                                 >
                                   <Star
                                     size={18}
-                                    className={`flex-shrink-0 mt-0.5 ${isDark ? 'text-stone-400' : 'text-stone-600'}`}
+                                    className={`flex-shrink-0 mt-0.5 ${isDark ? 'text-pencil' : 'text-pencil-dark'}`}
                                   />
                                   <div>
-                                    <p className={`text-xs font-semibold ${isDark ? 'text-stone-300' : 'text-stone-600'}`}>
+                                    <p className={`text-xs font-semibold font-hand ${isDark ? 'text-pencil/80' : 'text-pencil-dark'}`}>
                                       Key Takeaway
                                     </p>
-                                    <p className={`text-sm mt-1 ${isDark ? 'text-stone-200' : 'text-stone-700'}`}>
+                                    <p className={`text-sm mt-1 ${isDark ? 'text-chalk-white/80' : 'text-ink'}`}>
                                       {lesson.keyTakeaway}
                                     </p>
                                   </div>
@@ -464,10 +464,10 @@ const StudentLearn = () => {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => toggleLessonComplete(lesson.id)}
-                                    className={`flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all ${
+                                    className={`flex-1 py-2 px-4 rounded-sm font-medium text-sm transition-all border ${
                                       completedLessons.has(lesson.id)
-                                        ? `${isDark ? 'bg-sage-600/20 text-sage-400 border border-sage-600/40' : 'bg-sage-100 text-sage-700 border border-sage-300'}`
-                                        : `${isDark ? 'bg-stone-600 text-white hover:bg-stone-700' : 'bg-stone-500 text-white hover:bg-stone-600'}`
+                                        ? `${isDark ? 'bg-sage-500/20 text-sage-400 border-sage-500/40' : 'bg-sage-100 text-sage-700 border-sage-300'}`
+                                        : `${isDark ? 'bg-pencil/20 text-pencil border-pencil/40 hover:bg-pencil/30' : 'bg-pencil text-ink hover:bg-pencil-dark border-pencil'}`
                                     }`}
                                   >
                                     {completedLessons.has(lesson.id) ? '✓ Completed' : 'Mark Complete'}
@@ -491,13 +491,13 @@ const StudentLearn = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className={`mt-12 p-6 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-slate-100'} text-center`}
+          className={`mt-12 p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] ${isDark ? 'bg-white/[0.04]' : 'bg-gray-50'} text-center shadow-[2px_2px_0px_rgba(0,0,0,0.06)]`}
         >
-          <Lock size={32} className={`mx-auto mb-3 ${isDark ? 'text-gray-500' : 'text-slate-500'}`} />
-          <h3 className={`font-semibold ${isDark ? 'text-gray-300' : 'text-slate-700'}`}>
+          <Lock size={32} className={`mx-auto mb-3 ${isDark ? 'text-white/40' : 'text-ink-muted'}`} />
+          <h3 className={`font-semibold font-hand ${isDark ? 'text-chalk-white/80' : 'text-ink'}`}>
             More Units Coming Soon
           </h3>
-          <p className={`text-sm mt-2 ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>
+          <p className={`text-sm mt-2 ${isDark ? 'text-white/50' : 'text-ink-muted'}`}>
             Unlock advanced lessons as you progress through the curriculum. Keep learning!
           </p>
         </motion.div>

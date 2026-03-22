@@ -183,8 +183,8 @@ export const GuideStudentDetail = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-24 bg-stone-200 dark:bg-white/5 rounded-lg animate-pulse" />
-        <div className="h-64 bg-stone-200 dark:bg-white/5 rounded-lg animate-pulse" />
+        <div className="h-24 bg-stone-200 dark:bg-white/5 rounded-sm animate-pulse" />
+        <div className="h-64 bg-stone-200 dark:bg-white/5 rounded-sm animate-pulse" />
       </div>
     )
   }
@@ -192,7 +192,7 @@ export const GuideStudentDetail = () => {
   if (!student) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 dark:text-white/50">Student not found</p>
+        <p className="text-ink-muted dark:text-white/50">Student not found</p>
       </div>
     )
   }
@@ -205,7 +205,7 @@ export const GuideStudentDetail = () => {
 
       <motion.button
         onClick={() => navigate('/')}
-        className="flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
+        className="flex items-center gap-2 text-pencil-dark dark:text-pencil hover:text-pencil-dark/80 dark:hover:text-pencil/80 transition-colors font-hand"
         whileHover={{ x: -4 }}
       >
         <ArrowLeft className="w-5 h-5" />
@@ -215,7 +215,7 @@ export const GuideStudentDetail = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-white/[0.04] p-6 rounded-lg border border-gray-200 dark:border-white/[0.08]"
+        className="bg-white dark:bg-white/[0.04] p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)] notebook-ruled"
       >
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center text-white dark:text-gray-900 font-bold text-2xl">
@@ -223,8 +223,8 @@ export const GuideStudentDetail = () => {
           </div>
 
           <div className="flex-1">
-            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">{student.full_name}</h1>
-            <p className="text-gray-500 dark:text-white/50">{student.email}</p>
+            <h1 className="text-3xl font-extrabold text-ink dark:text-chalk-white">{student.full_name}</h1>
+            <p className="text-ink-muted dark:text-white/50">{student.email}</p>
             <p className="text-2xl font-extrabold text-stone-600 dark:text-stone-400 mt-2">
               <AnimNum value={total} prefix="$" duration={600} />
             </p>
@@ -238,7 +238,7 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.1 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Account Summary</h2>
+        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white">Account Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {Object.entries(ACCOUNT_META).map(([key, meta]) => {
             const account = student.accounts.find(a => a.account_type === key)
@@ -246,10 +246,10 @@ export const GuideStudentDetail = () => {
             return (
               <motion.div
                 key={key}
-                className={`p-4 rounded-lg border-2 ${meta.borderColor} ${meta.bgColor} dark:bg-white/5 dark:border-white/10`}
+                className={`p-4 rounded-sm border-2 ${meta.borderColor} ${meta.bgColor} dark:bg-white/5 dark:border-white/10`}
                 whileHover={{ y: -2 }}
               >
-                <p className="text-xs font-semibold text-gray-500 dark:text-white/50 uppercase">{meta.label}</p>
+                <p className="text-xs font-semibold text-ink-muted dark:text-white/50 uppercase">{meta.label}</p>
                 <p className="text-lg font-bold mt-2">
                   <AnimNum value={balance} prefix="$" duration={600} />
                 </p>
@@ -265,10 +265,10 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.15 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Paycheck History</h2>
+        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white">Paycheck History</h2>
         <div className="space-y-3">
           {paychecks.length === 0 ? (
-            <p className="text-gray-500 dark:text-white/50">No paychecks yet</p>
+            <p className="text-ink-muted dark:text-white/50">No paychecks yet</p>
           ) : (
             paychecks.map(paycheck => {
               const totalXp = (paycheck.xp_mon || 0) + (paycheck.xp_tue || 0) + (paycheck.xp_wed || 0) + (paycheck.xp_thu || 0) + (paycheck.xp_fri || 0)
@@ -277,12 +277,12 @@ export const GuideStudentDetail = () => {
               return (
                 <motion.div
                   key={paycheck.id}
-                  className="p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] space-y-3"
+                  className="p-4 rounded-sm border border-black/[0.08] dark:border-white/[0.06] dark:bg-white/[0.04] space-y-3"
                   whileHover={{ y: -2 }}
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900 dark:text-white">
+                      <p className="font-semibold text-ink dark:text-chalk-white">
                         {paycheck.week_label || new Date(paycheck.created_at).toLocaleDateString()}
                       </p>
                       <p className="text-lg font-bold text-stone-600 dark:text-stone-400 mt-1">{formatCurrency(paycheck.total_earnings || 0)}</p>
@@ -305,7 +305,7 @@ export const GuideStudentDetail = () => {
                   </div>
 
                   {paycheck.status === 'submitted' && (
-                    <div className="border-t border-gray-200 dark:border-white/[0.08] pt-3 flex gap-2">
+                    <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-3 flex gap-2">
                       <Button
                         onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: paycheck.total_earnings })}
                         disabled={verifyingPaycheck === paycheck.id}
@@ -323,7 +323,7 @@ export const GuideStudentDetail = () => {
                             [paycheck.id]: e.target.value
                           }))}
                           placeholder="Or adjust amount..."
-                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400"
+                          className="flex-1 px-3 py-1 text-sm rounded-sm border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400"
                         />
                         {verifiedAmounts[paycheck.id] && (
                           <Button
@@ -356,9 +356,9 @@ export const GuideStudentDetail = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="space-y-4 p-4 rounded-lg bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08]"
+        className="space-y-4 p-4 rounded-sm bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06]"
       >
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Add Manual Bonus</h2>
+        <h2 className="text-lg font-bold text-ink dark:text-chalk-white">Add Manual Bonus</h2>
         <div className="space-y-3">
           <Field label="Bonus Amount ($)">
             <input
@@ -366,7 +366,7 @@ export const GuideStudentDetail = () => {
               value={bonusAmount}
               onChange={(e) => setBonusAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
+              className="w-full px-3 py-2 rounded-sm border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
             />
           </Field>
           <Field label="Description (optional)">
@@ -375,7 +375,7 @@ export const GuideStudentDetail = () => {
               value={bonusDescription}
               onChange={(e) => setBonusDescription(e.target.value)}
               placeholder="e.g., Extra credit bonus"
-              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
+              className="w-full px-3 py-2 rounded-sm border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
             />
           </Field>
           <Button
@@ -394,20 +394,20 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.25 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Transaction History</h2>
+        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white">Transaction History</h2>
         <div className="space-y-2">
           {transactions.length === 0 ? (
-            <p className="text-gray-500 dark:text-white/50">No transactions yet</p>
+            <p className="text-ink-muted dark:text-white/50">No transactions yet</p>
           ) : (
             transactions.map(trans => (
               <motion.div
                 key={trans.id}
-                className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                className="flex items-center justify-between p-3 rounded-sm border border-black/[0.08] dark:border-white/[0.06] dark:bg-white/[0.04] hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                 whileHover={{ x: 2 }}
               >
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-white">{trans.description}</p>
-                  <p className="text-xs text-gray-400 dark:text-white/40 mt-1">
+                  <p className="font-semibold text-ink dark:text-chalk-white">{trans.description}</p>
+                  <p className="text-xs text-ink-faint dark:text-white/40 mt-1">
                     {new Date(trans.created_at).toLocaleDateString()}
                     {trans.category && <span className="ml-2 capitalize text-gray-400">{trans.category}</span>}
                   </p>
@@ -417,7 +417,7 @@ export const GuideStudentDetail = () => {
                     {trans.amount >= 0 ? '+' : ''}{formatCurrency(trans.amount)}
                   </p>
                   {trans.balance_after != null && (
-                    <p className="text-xs text-gray-400 dark:text-white/40">Bal: {formatCurrency(trans.balance_after)}</p>
+                    <p className="text-xs text-ink-faint dark:text-white/40">Bal: {formatCurrency(trans.balance_after)}</p>
                   )}
                 </div>
               </motion.div>

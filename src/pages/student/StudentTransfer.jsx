@@ -117,10 +117,10 @@ export const StudentTransfer = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-[-0.02em] mb-2">
+        <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white tracking-[-0.02em] mb-2">
           Transfer Funds
         </h1>
-        <p className="text-[13px] text-gray-500 dark:text-white/50">
+        <p className="text-[13px] text-ink-muted dark:text-white/50">
           Move money between your accounts
         </p>
       </motion.div>
@@ -145,11 +145,11 @@ export const StudentTransfer = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-white/[0.04] rounded-xl border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] p-6 space-y-6"
+          className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)] p-6 space-y-6"
         >
           {/* From Account Picker */}
           <div>
-            <h2 className="text-[13px] font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+            <h2 className="text-[13px] font-semibold text-ink dark:text-chalk-white font-hand uppercase tracking-wider mb-4">
               From Account
             </h2>
             <AccountPicker
@@ -168,7 +168,7 @@ export const StudentTransfer = () => {
               animate={{ scale: 1 }}
               className="flex justify-center"
             >
-              <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white flex items-center justify-center text-white dark:text-gray-900">
+              <div className="w-10 h-10 rounded-sm bg-ink dark:bg-chalk-white flex items-center justify-center text-white dark:text-ink">
                 <ArrowDownUp className="w-6 h-6" />
               </div>
             </motion.div>
@@ -181,7 +181,7 @@ export const StudentTransfer = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <h2 className="text-[13px] font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+              <h2 className="text-[13px] font-semibold text-ink dark:text-chalk-white font-hand uppercase tracking-wider mb-4">
                 To Account
               </h2>
               <AccountPicker
@@ -215,7 +215,7 @@ export const StudentTransfer = () => {
               className="space-y-6"
             >
               <div>
-                <h2 className="text-[13px] font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+                <h2 className="text-[13px] font-semibold text-ink dark:text-chalk-white font-hand uppercase tracking-wider mb-4">
                   Amount
                 </h2>
                 <Field label="How much would you like to transfer?">
@@ -236,27 +236,27 @@ export const StudentTransfer = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-4 p-4 bg-gray-50 dark:bg-white/[0.04] rounded-xl space-y-2"
+                    className="mt-4 p-4 bg-gray-50 dark:bg-white/[0.04] rounded-sm space-y-2"
                   >
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-500 dark:text-white/50">Transfer Amount</span>
-                      <span className="font-semibold text-gray-900 dark:text-white">
+                      <span className="text-ink-muted dark:text-white/50">Transfer Amount</span>
+                      <span className="font-semibold text-ink dark:text-chalk-white">
                         {formatCurrency(amount)}
                       </span>
                     </div>
 
                     {hasFee && (
                       <>
-                        <div className="flex justify-between text-sm border-t border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] pt-2">
-                          <span className="text-stone-600 dark:text-stone-400 font-semibold">
+                        <div className="flex justify-between text-sm border-t border-black/[0.08] dark:border-white/[0.06] pt-2">
+                          <span className="text-ink-muted dark:text-white/50 font-semibold">
                             {feePct}% Transfer Fee
                           </span>
-                          <span className="font-semibold text-stone-600 dark:text-stone-400">
+                          <span className="font-semibold text-ink-muted dark:text-white/50">
                             -{formatCurrency(feeAmount)}
                           </span>
                         </div>
 
-                        <div className="text-xs text-stone-600 dark:text-stone-400 mt-2 p-2 bg-stone-100 dark:bg-stone-900/30 rounded">
+                        <div className="text-xs text-ink-muted dark:text-white/50 mt-2 p-2 bg-stone-100 dark:bg-stone-900/30 rounded-sm">
                           {['sp500', 'nasdaq'].includes(fromAccount)
                             ? `Transferring from an investment account to Checking incurs a ${feePct}% fee to encourage long-term investing.`
                             : `Transferring from Savings to Checking incurs a ${feePct}% fee.`
@@ -265,9 +265,9 @@ export const StudentTransfer = () => {
                       </>
                     )}
 
-                    <div className="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
-                      <span className="text-gray-900 dark:text-white">You'll receive</span>
-                      <span className="text-stone-600 dark:text-stone-400">
+                    <div className="flex justify-between text-base font-bold pt-2 border-t border-black/[0.08] dark:border-white/[0.06]">
+                      <span className="text-ink dark:text-chalk-white">You'll receive</span>
+                      <span className="text-ink-muted dark:text-white/50">
                         {formatCurrency(amountAfterFee)}
                       </span>
                     </div>
@@ -309,15 +309,15 @@ export const StudentTransfer = () => {
           transition={{ delay: 0.3 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
-          <div className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] rounded-xl p-4">
-            <h3 className="font-semibold text-[13px] text-gray-900 dark:text-white mb-2 uppercase tracking-wider">Current Balances</h3>
+          <div className="bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] rounded-sm p-4 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]">
+            <h3 className="font-semibold text-[13px] text-ink dark:text-chalk-white font-hand mb-2 uppercase tracking-wider">Current Balances</h3>
             <div className="space-y-1 text-sm">
               {Object.entries(accounts)
                 .filter(([key]) => key !== 'bonus')
                 .map(([key, balance]) => (
                   <div
                     key={key}
-                    className="flex justify-between text-gray-600 dark:text-white/50"
+                    className="flex justify-between text-ink-muted dark:text-white/50"
                   >
                     <span>{ACCOUNT_META[key]?.label}</span>
                     <span className="font-semibold">
@@ -328,9 +328,9 @@ export const StudentTransfer = () => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] rounded-xl p-4">
-            <h3 className="font-semibold text-[13px] text-gray-900 dark:text-white mb-2 uppercase tracking-wider">Transfer Fees</h3>
-            <div className="space-y-1 text-xs text-gray-600 dark:text-white/50">
+          <div className="bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] rounded-sm p-4 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]">
+            <h3 className="font-semibold text-[13px] text-ink dark:text-chalk-white font-hand mb-2 uppercase tracking-wider">Transfer Fees</h3>
+            <div className="space-y-1 text-xs text-ink-muted dark:text-white/50">
               <p>• Investment → Checking: {settings?.transfer_fee_invest_pct ?? 10}% fee</p>
               <p>• Savings → Checking: {settings?.transfer_fee_savings_pct ?? 0}% fee</p>
               <p>• All other transfers: No fee</p>

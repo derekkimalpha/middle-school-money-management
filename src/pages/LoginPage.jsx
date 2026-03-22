@@ -3,38 +3,46 @@ import { motion } from 'framer-motion'
 
 export const LoginPage = ({ onSignInWithGoogle, loading }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#141211] px-4">
-      {/* Card */}
+    <div className="min-h-screen flex items-center justify-center bg-[#243024] px-4 relative overflow-hidden">
+      {/* Chalkboard texture overlay */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',
+      }} />
+
+      {/* Notebook paper card */}
       <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
+        initial={{ opacity: 0, y: 30, rotate: -1 }}
+        animate={{ opacity: 1, y: 0, rotate: 0 }}
         transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-        className="relative z-10 w-full max-w-[420px]"
+        className="relative z-10 w-full max-w-[400px]"
       >
-        <div className="bg-white dark:bg-white/[0.04] rounded-2xl border border-gray-200 dark:border-white/[0.08] p-10 shadow-lg dark:shadow-2xl dark:shadow-black/50">
-          {/* Logo */}
+        <div className="bg-[#faf8f4] rounded-sm p-10 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] border border-black/[0.1] notebook-ruled relative">
+          {/* Red margin line */}
+          <div className="absolute top-0 bottom-0 left-[60px] w-[2px] bg-margin/40" />
+
+          {/* Pencil logo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.5, type: 'spring', stiffness: 200 }}
             className="flex justify-center mb-6"
           >
-            <div className="w-16 h-16 rounded-2xl bg-stone-700 flex items-center justify-center shadow-sm">
-              <span className="text-3xl">$</span>
+            <div className="w-16 h-16 rounded-md bg-pencil flex items-center justify-center shadow-[2px_2px_0px_rgba(0,0,0,0.15)]">
+              <span className="text-3xl font-black text-[#243024]">$</span>
             </div>
           </motion.div>
 
-          {/* Title */}
+          {/* Title — handwritten style */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
             className="text-center mb-8"
           >
-            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+            <h1 className="text-4xl font-hand font-bold text-ink tracking-tight">
               My Money
             </h1>
-            <p className="text-sm text-gray-500 dark:text-white/40 mt-2">
+            <p className="text-sm font-hand text-ink-muted mt-2">
               Alpha School
             </p>
           </motion.div>
@@ -48,13 +56,13 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
             whileTap={{ scale: 0.98 }}
             onClick={onSignInWithGoogle}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white dark:bg-gray-50 text-gray-900 dark:text-gray-900 rounded-xl font-bold text-[15px] border border-gray-200 dark:border-gray-100 transition-all duration-200 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-ink rounded font-bold text-[15px] border border-black/[0.1] transition-all duration-200 shadow-[2px_2px_0px_rgba(0,0,0,0.08)] hover:shadow-[3px_3px_0px_rgba(0,0,0,0.1)] hover:bg-paper-warm disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {loading ? (
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                className="w-5 h-5 border-2 border-gray-300 border-t-gray-800 rounded-full"
+                className="w-5 h-5 border-2 border-gray-300 border-t-pencil rounded-full"
               />
             ) : (
               <>
@@ -68,6 +76,11 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
               </>
             )}
           </motion.button>
+
+          {/* Pencil doodle */}
+          <p className="text-center text-sm font-hand text-ink-faint mt-6">
+            ✏️ Learn money. Have fun.
+          </p>
         </div>
       </motion.div>
     </div>

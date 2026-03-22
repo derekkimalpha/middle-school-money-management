@@ -4,7 +4,7 @@ import { Moon, Sun, LogOut, Menu } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 
 /* ── XP Progress Ring (SVG) ─────────────────────── */
-const XPRing = ({ progress = 0, size = 64, stroke = 4, color = '#a68b5b' }) => {
+const XPRing = ({ progress = 0, size = 64, stroke = 4, color = '#e8c840' }) => {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (Math.min(progress, 100) / 100) * circumference;
@@ -13,7 +13,7 @@ const XPRing = ({ progress = 0, size = 64, stroke = 4, color = '#a68b5b' }) => {
     <svg width={size} height={size} className="rotate-[-90deg]">
       <circle
         cx={size / 2} cy={size / 2} r={radius}
-        fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke}
+        fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={stroke}
       />
       <motion.circle
         cx={size / 2} cy={size / 2} r={radius}
@@ -46,37 +46,26 @@ export const Layout = ({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Listen to window resize and track mobile breakpoint
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 768px)');
-
     const handleMediaChange = (e) => {
       setIsMobile(!e.matches);
-      // Close sidebar if switching to desktop
-      if (e.matches) {
-        setSidebarOpen(false);
-      }
+      if (e.matches) setSidebarOpen(false);
     };
-
-    // Set initial state
     setIsMobile(!mediaQuery.matches);
-
     mediaQuery.addEventListener('change', handleMediaChange);
     return () => mediaQuery.removeEventListener('change', handleMediaChange);
   }, []);
 
-  // Handle navigation item click on mobile
   const handleNavClick = (itemId) => {
     onNavigate(itemId);
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
+    if (isMobile) setSidebarOpen(false);
   };
 
   return (
-    <div className="flex h-screen bg-[#faf9f7] dark:bg-[#141211] transition-colors duration-300">
+    <div className="flex h-screen bg-[#faf8f4] dark:bg-[#1e2a1e] transition-colors duration-300">
 
-      {/* ── Mobile Sidebar Backdrop ─────────────── */}
+      {/* ── Mobile Sidebar Backdrop ── */}
       {isMobile && sidebarOpen && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -88,10 +77,11 @@ export const Layout = ({
         />
       )}
 
-      {/* ── Sidebar: Dark glass panel ─────────────── */}
+      {/* ── Sidebar: Composition Notebook Cover ── */}
       <aside
         className={`
-          flex flex-col bg-[#1c1b19] border-r border-white/[0.06] select-none
+          flex flex-col select-none overflow-hidden
+          bg-[#243024] border-r border-[#1a241a]
           md:w-[240px] md:relative md:translate-x-0 md:z-auto
           ${isMobile
             ? 'fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-300'
@@ -100,50 +90,47 @@ export const Layout = ({
           ${isMobile && !sidebarOpen ? '-translate-x-full' : ''}
         `}
       >
+        {/* Composition notebook tape strip */}
+        <div className="h-1.5 bg-pencil/80" />
 
         {/* Brand */}
-        <div className="px-5 pt-6 pb-4">
+        <div className="px-5 pt-5 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-[11px] bg-stone-800 flex items-center justify-center shadow-sm">
-              <span className="text-white font-black text-sm">$</span>
+            <div className="w-9 h-9 rounded-md bg-pencil flex items-center justify-center">
+              <span className="text-[#243024] font-black text-sm">$</span>
             </div>
             <div className="min-w-0">
-              <div className="text-[14px] font-bold text-white tracking-tight leading-tight">My Money</div>
+              <div className="text-[14px] font-hand font-bold text-white tracking-tight leading-tight text-[17px]">My Money</div>
               <div className="text-[11px] text-white/30 font-medium mt-0.5 truncate">Alpha School</div>
             </div>
           </div>
         </div>
 
-        {/* Student Status: Avatar ring + Level + Streak */}
+        {/* Student Status */}
         {isStudent && (
-          <div className="mx-4 mb-3 p-4 rounded-2xl bg-white/[0.04] border border-white/[0.06]">
-            <div className="flex items-center gap-3 mb-3">
-              {/* Avatar with XP ring */}
+          <div className="mx-4 mb-3 p-4 rounded-lg bg-white/[0.05] border border-white/[0.08]">
+            <div className="flex items-center gap-3 mb-2">
               <div className="relative flex-shrink-0">
-                <XPRing progress={xpProgress} size={48} stroke={3} color="#a68b5b" />
+                <XPRing progress={xpProgress} size={48} stroke={3} color="#e8c840" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[36px] h-[36px] rounded-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center">
-                    <span className="text-white font-bold text-[13px]">
+                  <div className="w-[36px] h-[36px] rounded-full bg-white/10 flex items-center justify-center">
+                    <span className="text-white font-hand font-bold text-[16px]">
                       {firstName?.[0]?.toUpperCase() || '?'}
                     </span>
                   </div>
                 </div>
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-[13px] font-semibold text-white truncate">{firstName}</div>
-                <div className="flex items-center gap-2 mt-0.5">
-                  {level && (
-                    <span className="text-[11px] font-bold text-stone-400">{level.icon} {level.name}</span>
-                  )}
-                </div>
+                <div className="text-[14px] font-hand font-semibold text-white">{firstName}</div>
+                {level && (
+                  <span className="text-[12px] font-hand text-pencil">{level.icon} {level.name}</span>
+                )}
               </div>
             </div>
-
-            {/* Streak badge */}
             {streak > 0 && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-stone-500/10 border border-stone-500/20">
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-pencil/10 border border-pencil/20">
                 <span className="text-[13px]">🔥</span>
-                <span className="text-[11px] font-bold text-stone-400">{streak}-day streak</span>
+                <span className="text-[12px] font-hand font-bold text-pencil">{streak}-day streak</span>
               </div>
             )}
           </div>
@@ -151,16 +138,16 @@ export const Layout = ({
 
         {/* Guide badge */}
         {role === 'guide' && (
-          <div className="mx-4 mb-3 p-3 rounded-2xl bg-white/[0.04] border border-white/[0.06]">
+          <div className="mx-4 mb-3 p-3 rounded-lg bg-white/[0.05] border border-white/[0.08]">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-stone-600 flex items-center justify-center">
-                <span className="text-white font-bold text-[13px]">
+              <div className="w-9 h-9 rounded-full bg-pencil/20 border-2 border-pencil/40 flex items-center justify-center">
+                <span className="text-pencil font-hand font-bold text-[15px]">
                   {firstName?.[0]?.toUpperCase() || '?'}
                 </span>
               </div>
               <div className="min-w-0">
-                <div className="text-[13px] font-semibold text-white truncate">{user?.name}</div>
-                <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Guide</div>
+                <div className="text-[14px] font-hand font-semibold text-white">{user?.name}</div>
+                <div className="text-[11px] font-bold text-pencil/70 uppercase tracking-wider">Guide</div>
               </div>
             </div>
           </div>
@@ -175,9 +162,9 @@ export const Layout = ({
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
                 className={`
-                  w-full text-left px-3 py-2.5 rounded-xl transition-all duration-150 text-[13px] relative
+                  w-full text-left px-3 py-2.5 rounded-lg transition-all duration-150 text-[13px] relative
                   ${isActive
-                    ? 'bg-white/[0.1] text-white font-semibold'
+                    ? 'bg-pencil/15 text-pencil font-semibold'
                     : 'text-white/40 hover:text-white/70 hover:bg-white/[0.04] font-medium'
                   }
                 `}
@@ -190,7 +177,7 @@ export const Layout = ({
                 {isActive && (
                   <motion.div
                     layoutId="sidebar-active"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-stone-500"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-pencil"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -203,7 +190,7 @@ export const Layout = ({
         <div className="px-3 pb-4 pt-3 space-y-0.5 border-t border-white/[0.06] mt-auto">
           <button
             onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-white/30 hover:text-white/60 hover:bg-white/[0.04] transition-all duration-150"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-white/30 hover:text-pencil/80 hover:bg-white/[0.04] transition-all duration-150"
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
@@ -222,7 +209,7 @@ export const Layout = ({
 
           <button
             onClick={onSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-white/30 hover:text-red-400 hover:bg-red-500/[0.06] transition-all duration-150"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-white/30 hover:text-red-400 hover:bg-red-500/[0.06] transition-all duration-150"
           >
             <div className="w-5 flex justify-center">
               <LogOut className="w-[15px] h-[15px]" />
@@ -232,11 +219,11 @@ export const Layout = ({
         </div>
       </aside>
 
-      {/* ── Main panel ──────────────────────────────── */}
+      {/* ── Main panel ── */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
-        {/* Topbar */}
-        <header className="sticky top-0 z-20 backdrop-blur-xl bg-[#faf9f7]/80 dark:bg-[#141211]/80 border-b border-black/[0.04] dark:border-white/[0.06] px-8 h-[52px] flex items-center justify-between transition-colors duration-300">
+        {/* Topbar — subtle notebook feel */}
+        <header className="sticky top-0 z-20 backdrop-blur-xl bg-[#faf8f4]/80 dark:bg-[#1e2a1e]/80 border-b border-black/[0.06] dark:border-white/[0.06] px-8 h-[52px] flex items-center justify-between transition-colors duration-300">
           <div className="flex items-center gap-4">
             {isMobile && (
               <button
@@ -247,14 +234,14 @@ export const Layout = ({
                 <Menu className="w-5 h-5" />
               </button>
             )}
-            <h1 className="text-[14px] font-semibold text-gray-800 dark:text-white/80">
+            <h1 className="text-[16px] font-hand font-bold text-ink dark:text-chalk-white">
               {navItems.find((item) => item.id === activePage)?.label || 'My Money'}
             </h1>
           </div>
           {user && (
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">
-                <div className="text-[12px] font-medium text-gray-600 dark:text-white/50 leading-tight">{user.email}</div>
+                <div className="text-[12px] font-medium text-ink-muted dark:text-white/50 leading-tight">{user.email}</div>
               </div>
             </div>
           )}

@@ -12,18 +12,18 @@ export const Button = ({
   className = ''
 }) => {
   const sizeClasses = {
-    sm: 'px-3.5 py-1.5 text-[12px] gap-1.5 rounded-lg',
-    md: 'px-4 py-2.5 text-[13px] gap-2 rounded-xl',
-    lg: 'px-6 py-3.5 text-sm gap-2 rounded-xl'
+    sm: 'px-3.5 py-1.5 text-[12px] gap-1.5 rounded',
+    md: 'px-4 py-2.5 text-[13px] gap-2 rounded',
+    lg: 'px-6 py-3.5 text-sm gap-2 rounded'
   };
 
   const variantClasses = {
-    primary: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 shadow-sm',
-    accent: 'bg-stone-700 hover:bg-stone-800 dark:bg-stone-300 dark:hover:bg-stone-200 dark:text-stone-900 text-white shadow-sm',
-    ghost: 'border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20',
-    danger: 'bg-red-700 text-white hover:bg-red-800 shadow-sm',
-    soft: 'bg-gray-100 dark:bg-white/[0.06] text-gray-700 dark:text-white/60 hover:bg-gray-200 dark:hover:bg-white/[0.1]',
-    secondary: 'bg-gray-100 dark:bg-white/[0.06] text-gray-700 dark:text-white/60 hover:bg-gray-200 dark:hover:bg-white/[0.1]',
+    primary: 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink-light dark:hover:bg-chalk shadow-[2px_2px_0px_rgba(0,0,0,0.1)]',
+    accent: 'bg-pencil hover:bg-pencil-dark text-ink shadow-[2px_2px_0px_rgba(0,0,0,0.1)]',
+    ghost: 'border border-black/[0.1] dark:border-white/10 text-ink dark:text-white/60 hover:bg-paper-warm dark:hover:bg-white/5',
+    danger: 'bg-red-700 text-white hover:bg-red-800 shadow-[2px_2px_0px_rgba(0,0,0,0.1)]',
+    soft: 'bg-paper-warm dark:bg-white/[0.06] text-ink-light dark:text-white/60 hover:bg-surface-3 dark:hover:bg-white/[0.1]',
+    secondary: 'bg-paper-warm dark:bg-white/[0.06] text-ink-light dark:text-white/60 hover:bg-surface-3 dark:hover:bg-white/[0.1]',
   };
 
   return (
