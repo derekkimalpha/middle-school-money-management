@@ -10,6 +10,7 @@ import {
 } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
+import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, TRANSFER_RULES, formatCurrency } from '../../lib/constants'
 import { ArrowDownUp, AlertCircle } from 'lucide-react'
@@ -24,16 +25,26 @@ export const StudentTransfer = () => {
   const { accounts, loading: accountsLoading, refreshAccounts } = useAccounts(
     profile?.id
   )
+  const { settings } = usePaycheckSettings()
 
   // Get valid transfer targets
   const validTargets = fromAccount ? TRANSFER_RULES[fromAccount] || [] : []
 
-  // Calculate fee
-  const hasFee =
-    fromAccount &&
-    ['sp500', 'nasdaq'].includes(fromAccount) &&
-    ['checking'].includes(toAccount)
-  const feeAmount = hasFee ? Math.round(amount * 0.1 * 100) / 100 : 0
+  // Calculate fee based on transfer type and settings
+  const getFeePct = () => {
+    if (!fromAccount || !toAccount) return 0
+    if (['sp500', 'nasdaq'].includes(fromAccount) && toAccount === 'checking') {
+      return settings?.transfer_fee_invest_pct ?? 10
+    }
+    if (fromAccount === 'savings' && toAccount === 'checking') {
+      return settings?.transfer_fee_savings_pct ?? 0
+    }
+    return 0
+  }
+
+  const feePct = getFeePct()
+  const hasFee = feePct > 0
+  const feeAmount = hasFee ? Math.round(amount * (feePct / 100) * 100) / 100 : 0
   const amountAfterFee = amount - feeAmount
 
   // Validate form
@@ -56,14 +67,15 @@ export const StudentTransfer = () => {
 
     setLoading(true)
     try {
-      const { error } = await supabase.rpc('transfer_funds', {
-        from_account_type: fromAccount,
-        to_account_type: toAccount,
-        amount: amount,
-        student_id: profile.id,
+      const { data, error } = await supabase.rpc('transfer_funds', {
+        p_student_id: profile.id,
+        p_from_type: fromAccount,
+        p_to_type: toAccount,
+        p_amount: amount,
       })
 
       if (error) throw error
+      if (data?.error) throw new Error(data.error)
 
       setToast({
         type: 'success',
@@ -81,7 +93,7 @@ export const StudentTransfer = () => {
       console.error('Error transferring funds:', error)
       setToast({
         type: 'error',
-        text: 'Transfer failed. Please try again.',
+        text: error.message || 'Transfer failed. Please try again.',
       })
     } finally {
       setLoading(false)
@@ -119,10 +131,14 @@ export const StudentTransfer = () => {
           title="How Transfers Work"
           color="from-blue-50 to-cyan-50"
         >
-          You can move money between your accounts to manage your finances. Moving
-          money from investments (S&P 500, NASDAQ) to Checking has a 10% withdrawal
-          fee to encourage long-term investing. Keep these fees in mind when
-          planning your transfers!
+          You can move money between your accounts to manage your finances.
+          {settings?.transfer_fee_invest_pct > 0 && (
+            <> Moving money from investments (S&P 500, NASDAQ) to Checking has a {settings.transfer_fee_invest_pct}% withdrawal fee to encourage long-term investing.</>
+          )}
+          {settings?.transfer_fee_savings_pct > 0 && (
+            <> Savings to Checking transfers have a {settings.transfer_fee_savings_pct}% fee.</>
+          )}
+          {' '}Keep these fees in mind when planning your transfers!
         </FinTip>
 
         <motion.div
@@ -233,7 +249,7 @@ export const StudentTransfer = () => {
                       <>
                         <div className="flex justify-between text-sm border-t border-slate-200 pt-2">
                           <span className="text-amber-600 font-semibold">
-                            10% Withdrawal Fee
+                            {feePct}% Transfer Fee
                           </span>
                           <span className="font-semibold text-amber-600">
                             -{formatCurrency(feeAmount)}
@@ -241,8 +257,10 @@ export const StudentTransfer = () => {
                         </div>
 
                         <div className="text-xs text-amber-600 mt-2 p-2 bg-amber-50 rounded">
-                          Transferring from an investment account to Checking incurs
-                          a 10% fee to encourage long-term investing.
+                          {['sp500', 'nasdaq'].includes(fromAccount)
+                            ? `Transferring from an investment account to Checking incurs a ${feePct}% fee to encourage long-term investing.`
+                            : `Transferring from Savings to Checking incurs a ${feePct}% fee.`
+                          }
                         </div>
                       </>
                     )}
@@ -311,12 +329,11 @@ export const StudentTransfer = () => {
           </div>
 
           <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
-            <h3 className="font-bold text-green-900 mb-2">Transfer Rules</h3>
+            <h3 className="font-bold text-green-900 mb-2">Transfer Fees</h3>
             <div className="space-y-1 text-xs text-green-800">
-              <p>• Checking → All accounts</p>
-              <p>• Savings → Checking, S&P, NASDAQ</p>
-              <p>• S&P, NASDAQ → Checking, Savings</p>
-              <p>• Bonus → All accounts</p>
+              <p>• Investment → Checking: {settings?.transfer_fee_invest_pct ?? 10}% fee</p>
+              <p>• Savings → Checking: {settings?.transfer_fee_savings_pct ?? 0}% fee</p>
+              <p>• All other transfers: No fee</p>
             </div>
           </div>
         </motion.div>
