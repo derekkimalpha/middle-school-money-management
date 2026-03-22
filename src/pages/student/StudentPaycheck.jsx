@@ -42,8 +42,7 @@ export const StudentPaycheck = () => {
   const [xpByDay, setXpByDay] = useState({ mon: 0, tue: 0, wed: 0, thu: 0, fri: 0 })
   const [epicDays, setEpicDays] = useState({ mon: false, tue: false, wed: false, thu: false, fri: false })
   const [masteryTests, setMasteryTests] = useState([])
-  const [smartGoal, setSmartGoal] = useState(0)
-  const [other, setOther] = useState(0)
+  const [customBonuses, setCustomBonuses] = useState({}) // { bonusId: { claimed: bool, amount: number } }
   const [jobDone, setJobDone] = useState(false)
   const [studentJob, setStudentJob] = useState(null)
 
@@ -112,14 +111,22 @@ export const StudentPaycheck = () => {
     }, 0)
     const jobPay = jobDone && studentJob ? studentJob.weekly_pay || 0 : 0
 
+    // Calculate custom bonus total
+    const customBonusTotal = (settings.custom_bonuses || []).reduce((sum, bonus) => {
+      const entry = customBonuses[bonus.id]
+      if (!entry) return sum
+      if (bonus.type === 'checkbox' && entry.claimed) return sum + (bonus.amount || 0)
+      if (bonus.type === 'student_amount' && entry.amount > 0) return sum + entry.amount
+      return sum
+    }, 0)
+
     return {
       basePay: Math.round(basePay * 100) / 100,
       epicBonus,
       bonusXp: Math.round(bonusXp * 100) / 100,
       masteryRewards,
       jobPay,
-      smartGoal: smartGoal || 0,
-      other: other || 0,
+      customBonusTotal: Math.round(customBonusTotal * 100) / 100,
     }
   }
 
@@ -174,9 +181,21 @@ export const StudentPaycheck = () => {
           xp_bonus: earnings.bonusXp,
           mastery_pay: earnings.masteryRewards,
           job_pay: earnings.jobPay,
-          smart_goal: earnings.smartGoal,
-          other_pay: earnings.other,
+          smart_goal: 0,
+          other_pay: earnings.customBonusTotal,
           total_earnings: totalPaycheck,
+          custom_bonus_data: (settings.custom_bonuses || [])
+            .filter(b => {
+              const entry = customBonuses[b.id]
+              if (!entry) return false
+              return (b.type === 'checkbox' && entry.claimed) || (b.type === 'student_amount' && entry.amount > 0)
+            })
+            .map(b => ({
+              id: b.id,
+              name: b.name,
+              type: b.type,
+              amount: b.type === 'checkbox' ? b.amount : (customBonuses[b.id]?.amount || 0)
+            })),
           job_completed: jobDone,
           job_id: studentJob?.id || null,
         })
@@ -255,8 +274,7 @@ export const StudentPaycheck = () => {
     setXpByDay({ mon: 0, tue: 0, wed: 0, thu: 0, fri: 0 })
     setEpicDays({ mon: false, tue: false, wed: false, thu: false, fri: false })
     setMasteryTests([])
-    setSmartGoal(0)
-    setOther(0)
+    setCustomBonuses({})
     setJobDone(false)
     setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
   }
@@ -619,7 +637,7 @@ export const StudentPaycheck = () => {
         </div>
 
         <FinTip icon="📊" title="How Earning Works" color="from-blue-50 to-cyan-50">
-          Your paycheck is built from multiple sources: XP from daily work (hit {xpThreshold} XP for base pay), epic day bonuses, mastery test rewards, your job, and any SMART goal or other bonuses your guide awards. It mirrors real life — most adults have income from multiple sources too!
+          Your paycheck is built from multiple sources: XP from daily work (hit {xpThreshold} XP for base pay), epic day bonuses, mastery test rewards, your job, and any bonuses your guide has set up. It mirrors real life — most adults have income from multiple sources too!
         </FinTip>
 
         {/* Daily XP */}
@@ -730,15 +748,58 @@ export const StudentPaycheck = () => {
           )}
         </div>
 
-        {/* SMART Goal and Other */}
-        <div className="grid grid-cols-2 gap-4 bg-white rounded-xl p-6 shadow-lg">
-          <Field label={`SMART Goal Bonus`}>
-            <Input type="number" min="0" value={smartGoal || ''} onChange={(e) => setSmartGoal(parseInt(e.target.value) || 0)} placeholder="Amount" />
-          </Field>
-          <Field label="Other Income">
-            <Input type="number" min="0" value={other || ''} onChange={(e) => setOther(parseInt(e.target.value) || 0)} placeholder="Amount" />
-          </Field>
-        </div>
+        {/* Custom Bonuses */}
+        {(settings.custom_bonuses || []).length > 0 && (
+          <div className="bg-white rounded-xl p-6 shadow-lg space-y-4">
+            <h3 className="text-lg font-bold text-slate-900">Bonuses</h3>
+            <div className="space-y-3">
+              {(settings.custom_bonuses || []).map(bonus => {
+                const entry = customBonuses[bonus.id] || {}
+                if (bonus.type === 'checkbox') {
+                  return (
+                    <motion.div
+                      key={bonus.id}
+                      className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${entry.claimed ? 'bg-green-50 border-green-300' : 'bg-slate-50 border-slate-200'}`}
+                      onClick={() => setCustomBonuses({
+                        ...customBonuses,
+                        [bonus.id]: { ...entry, claimed: !entry.claimed }
+                      })}
+                      whileHover={{ scale: 1.01 }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-bold text-slate-900">{bonus.name}</p>
+                          <p className="text-sm text-slate-600">+{formatCurrency(bonus.amount)}</p>
+                        </div>
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${entry.claimed ? 'bg-sage-400 border-sage-400' : 'border-slate-300'}`}>
+                          {entry.claimed && <span className="text-white text-sm">✓</span>}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                } else {
+                  return (
+                    <div key={bonus.id} className="p-4 rounded-xl border-2 border-slate-200 bg-slate-50">
+                      <label className="font-bold text-slate-900 block mb-2">{bonus.name}</label>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={entry.amount || ''}
+                        onChange={(e) => setCustomBonuses({
+                          ...customBonuses,
+                          [bonus.id]: { ...entry, amount: parseFloat(e.target.value) || 0 }
+                        })}
+                        placeholder="Enter amount"
+                        prefix="$"
+                      />
+                    </div>
+                  )
+                }
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Earnings Breakdown */}
         <div className="bg-white rounded-xl p-6 shadow-lg space-y-3">
@@ -749,8 +810,7 @@ export const StudentPaycheck = () => {
             {earnings.bonusXp > 0 && <div className="flex justify-between text-blue-600"><span>📈 Bonus XP Pay</span><span className="font-semibold">{formatCurrency(earnings.bonusXp)}</span></div>}
             {earnings.masteryRewards > 0 && <div className="flex justify-between text-sage-600"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(earnings.masteryRewards)}</span></div>}
             {earnings.jobPay > 0 && <div className="flex justify-between text-teal-600"><span>💼 Job</span><span className="font-semibold">{formatCurrency(earnings.jobPay)}</span></div>}
-            {earnings.smartGoal > 0 && <div className="flex justify-between text-blue-600"><span>🎯 SMART Goal</span><span className="font-semibold">{formatCurrency(earnings.smartGoal)}</span></div>}
-            {earnings.other > 0 && <div className="flex justify-between text-purple-600"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(earnings.other)}</span></div>}
+            {earnings.customBonusTotal > 0 && <div className="flex justify-between text-purple-600"><span>⭐ Bonuses</span><span className="font-semibold">{formatCurrency(earnings.customBonusTotal)}</span></div>}
 
             <div className="border-t-2 border-slate-200 pt-2 mt-2 flex justify-between">
               <span className="font-bold text-slate-900">Total Paycheck</span>

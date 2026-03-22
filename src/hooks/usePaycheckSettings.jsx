@@ -15,7 +15,9 @@ const DEFAULT_SETTINGS = {
   transfer_fee_invest_pct: 10,
   transfer_fee_savings_pct: 0,
   smart_goal_pay: 6,
-  custom_bonuses: []
+  custom_bonuses: [
+    { id: 'smart_goal', name: 'SMART Goal', amount: 6, type: 'checkbox' }
+  ]
 }
 
 export const usePaycheckSettings = () => {

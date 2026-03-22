@@ -79,7 +79,8 @@ export const GuideSession = () => {
           transfer_fee_pct: 10,
           transfer_fee_invest_pct: 10,
           transfer_fee_savings_pct: 0,
-          smart_goal_pay: 6
+          smart_goal_pay: 6,
+          custom_bonuses: [{ id: 'smart_goal', name: 'SMART Goal', amount: 6, type: 'checkbox' }]
         })
 
       if (settingsError) throw settingsError

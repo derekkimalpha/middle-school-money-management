@@ -105,7 +105,8 @@ export const GuideSettings = () => {
           transfer_fee_invest_pct: parseFloat(settings.transfer_fee_invest_pct) || 10,
           transfer_fee_savings_pct: parseFloat(settings.transfer_fee_savings_pct) || 0,
           transfer_fee_pct: parseFloat(settings.transfer_fee_pct) || 0,
-          smart_goal_pay: parseFloat(settings.smart_goal_pay) || 0
+          smart_goal_pay: parseFloat(settings.smart_goal_pay) || 0,
+          custom_bonuses: settings.custom_bonuses || []
         })
         .eq('session_id', activeSession.id)
 
@@ -278,7 +279,7 @@ export const GuideSettings = () => {
                   type="text"
                   value={className}
                   onChange={(e) => setClassName(e.target.value)}
-                  placeholder="e.g., 3rd Period Economics"
+                  placeholder="e.g., Alpha Middle School San Francisco"
                   className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
                 />
               </Field>
@@ -488,23 +489,108 @@ export const GuideSettings = () => {
               </div>
             </div>
 
-            {/* Other Bonuses Section */}
+            {/* Custom Bonuses Section */}
             <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
-              <div>
-                <h3 className="font-semibold text-slate-900">Other Bonuses</h3>
-                <p className="text-sm text-slate-600">Additional rewards for student achievements</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-slate-900">Bonuses</h3>
+                  <p className="text-sm text-slate-600">Add custom bonuses students can earn each week</p>
+                </div>
+                <button
+                  onClick={() => {
+                    const bonuses = [...(settings.custom_bonuses || [])]
+                    bonuses.push({
+                      id: `bonus_${Date.now()}`,
+                      name: '',
+                      amount: 0,
+                      type: 'checkbox'
+                    })
+                    setSettings({ ...settings, custom_bonuses: bonuses })
+                  }}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-sage-600 border-2 border-sage-300 rounded-lg hover:bg-sage-50 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Bonus
+                </button>
               </div>
-              <Field label="SMART Goal Pay ($)">
-                <input
-                  type="number"
-                  step="0.01"
-                  value={settings.smart_goal_pay ?? ''}
-                  onChange={(e) => setSettings({ ...settings, smart_goal_pay: e.target.value })}
-                  placeholder="e.g., 3.00"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-                <p className="text-xs text-slate-500 mt-1">Weekly bonus for completing a SMART goal</p>
-              </Field>
+
+              {(settings.custom_bonuses || []).length === 0 ? (
+                <div className="text-center py-6 text-slate-400 border-2 border-dashed border-slate-200 rounded-lg">
+                  <p className="text-sm">No bonuses configured yet. Click "Add Bonus" to create one.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {(settings.custom_bonuses || []).map((bonus, idx) => (
+                    <div key={bonus.id} className="p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div>
+                            <label className="text-xs font-semibold text-slate-600 mb-1 block">Bonus Name</label>
+                            <input
+                              type="text"
+                              value={bonus.name}
+                              onChange={(e) => {
+                                const bonuses = [...settings.custom_bonuses]
+                                bonuses[idx] = { ...bonuses[idx], name: e.target.value }
+                                setSettings({ ...settings, custom_bonuses: bonuses })
+                              }}
+                              placeholder="e.g., SMART Goal"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100 text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-semibold text-slate-600 mb-1 block">
+                              {bonus.type === 'checkbox' ? 'Fixed Amount ($)' : 'Max Amount ($)'}
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={bonus.amount || ''}
+                              onChange={(e) => {
+                                const bonuses = [...settings.custom_bonuses]
+                                bonuses[idx] = { ...bonuses[idx], amount: parseFloat(e.target.value) || 0 }
+                                setSettings({ ...settings, custom_bonuses: bonuses })
+                              }}
+                              placeholder="0.00"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100 text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-semibold text-slate-600 mb-1 block">Student Input</label>
+                            <select
+                              value={bonus.type}
+                              onChange={(e) => {
+                                const bonuses = [...settings.custom_bonuses]
+                                bonuses[idx] = { ...bonuses[idx], type: e.target.value }
+                                setSettings({ ...settings, custom_bonuses: bonuses })
+                              }}
+                              className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100 text-sm"
+                            >
+                              <option value="checkbox">Checkbox (fixed amount)</option>
+                              <option value="student_amount">Student sets amount</option>
+                            </select>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const bonuses = settings.custom_bonuses.filter((_, i) => i !== idx)
+                            setSettings({ ...settings, custom_bonuses: bonuses })
+                          }}
+                          className="p-2 rounded-lg hover:bg-rose-100 transition-colors mt-5"
+                        >
+                          <Trash2 className="w-4 h-4 text-rose-500" />
+                        </button>
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        {bonus.type === 'checkbox'
+                          ? `Students check a box to claim $${(bonus.amount || 0).toFixed(2)} for this bonus`
+                          : `Students enter their own amount for this bonus`
+                        }
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <Button onClick={savePaycheckSettings} disabled={saving} full>
