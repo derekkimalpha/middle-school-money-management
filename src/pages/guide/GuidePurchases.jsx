@@ -177,14 +177,14 @@ export const GuidePurchases = () => {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-1"
       >
-        <h1 className="text-4xl font-bold text-slate-900">Purchases</h1>
-        <p className="text-lg text-slate-600">Student requests</p>
+        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Purchases</h1>
+        <p className="text-lg text-slate-600 dark:text-gray-400">Student requests</p>
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex gap-2 border-b border-slate-200"
+        className="flex gap-2 border-b border-slate-200 dark:border-gray-800"
       >
         {filterTabs.map(tab => (
           <button
@@ -193,12 +193,12 @@ export const GuidePurchases = () => {
             className={`px-4 py-3 font-semibold text-sm transition-all border-b-2 ${
               filter === tab.value
                 ? 'border-sage text-sage'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                : 'border-transparent text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             {tab.label}
             {tab.count > 0 && (
-              <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300 text-xs font-bold">
                 {tab.count}
               </span>
             )}
@@ -209,7 +209,7 @@ export const GuidePurchases = () => {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-24 bg-slate-200 rounded-lg animate-pulse" />
+            <div key={i} className="h-24 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
           ))}
         </div>
       ) : filteredPurchases.length === 0 ? (
@@ -218,7 +218,7 @@ export const GuidePurchases = () => {
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <p className="text-slate-600 text-lg">No purchases found</p>
+          <p className="text-slate-600 dark:text-gray-400 text-lg">No purchases found</p>
         </motion.div>
       ) : (
         <div className="space-y-4">
@@ -229,7 +229,7 @@ export const GuidePurchases = () => {
               variants={cardVariants}
               initial="hidden"
               animate="visible"
-              className="p-6 rounded-lg border border-slate-200 hover:border-sage transition-colors"
+              className="p-6 rounded-lg border border-slate-200 dark:border-gray-800 dark:bg-gray-900 hover:border-sage transition-colors"
             >
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-4">
@@ -239,8 +239,8 @@ export const GuidePurchases = () => {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-900">{purchase.profiles.full_name}</p>
-                      <p className="text-sm text-slate-600">
+                      <p className="font-semibold text-slate-900 dark:text-white">{purchase.profiles.full_name}</p>
+                      <p className="text-sm text-slate-600 dark:text-gray-400">
                         {new Date(purchase.created_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -251,15 +251,15 @@ export const GuidePurchases = () => {
                   </Tag>
                 </div>
 
-                <div className="border-t border-slate-200 pt-4">
-                  <p className="text-3xl font-bold text-slate-900">{purchase.item_name}</p>
+                <div className="border-t border-slate-200 dark:border-gray-800 pt-4">
+                  <p className="text-3xl font-bold text-slate-900 dark:text-white">{purchase.item_name}</p>
                   <p className="text-2xl font-bold text-sage mt-2">
                     {formatCurrency(purchase.price)}
                   </p>
                 </div>
 
                 {purchase.status === 'pending' && (
-                  <div className="border-t border-slate-200 pt-4 flex gap-3">
+                  <div className="border-t border-slate-200 dark:border-gray-800 pt-4 flex gap-3">
                     <Button
                       onClick={() => approvePurchase(purchase)}
                       disabled={processingId === purchase.id}

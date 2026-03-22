@@ -16,14 +16,15 @@ import {
   getLevel,
   getNextLevel,
 } from '../../lib/constants'
-import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight } from 'lucide-react'
+import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight, BookOpen } from 'lucide-react'
+import { useTheme } from '../../hooks/useTheme'
 
 // Consistent account color system
 const ACCOUNT_COLORS = {
-  checking: { hex: '#10b981', bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700' },
-  savings: { hex: '#06b6d4', bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-cyan-700' },
-  sp500: { hex: '#f59e0b', bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700' },
-  nasdaq: { hex: '#8b5cf6', bg: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-700' },
+  checking: { hex: '#10b981', bg: 'bg-emerald-50 dark:bg-emerald-950/30', border: 'border-emerald-200 dark:border-emerald-800', text: 'text-emerald-700 dark:text-emerald-400' },
+  savings: { hex: '#06b6d4', bg: 'bg-cyan-50 dark:bg-cyan-950/30', border: 'border-cyan-200 dark:border-cyan-800', text: 'text-cyan-700 dark:text-cyan-400' },
+  sp500: { hex: '#f59e0b', bg: 'bg-amber-50 dark:bg-amber-950/30', border: 'border-amber-200 dark:border-amber-800', text: 'text-amber-700 dark:text-amber-400' },
+  nasdaq: { hex: '#8b5cf6', bg: 'bg-violet-50 dark:bg-violet-950/30', border: 'border-violet-200 dark:border-violet-800', text: 'text-violet-700 dark:text-violet-400' },
 }
 
 const ACCOUNT_ICONS = {
@@ -39,6 +40,7 @@ export const StudentDashboard = () => {
   const [badges, setBadges] = useState([])
   const [toast, setToast] = useState(null)
   const { accounts, loading } = useAccounts(profile?.id)
+  const { isDark } = useTheme()
 
   useEffect(() => {
     if (!profile?.id) return
@@ -94,15 +96,21 @@ export const StudentDashboard = () => {
   const firstName = profile?.full_name?.split(' ')[0] || 'Friend'
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 pb-24 transition-colors duration-300">
       <Toast message={toast} />
 
       {/* ── Hero Section ──────────────────────────────── */}
-      <div className="bg-slate-900 text-white px-6 pt-8 pb-16 relative overflow-hidden">
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
+      <div className="bg-slate-900 dark:bg-gray-900 text-white px-6 pt-8 pb-16 relative overflow-hidden">
+        {/* Animated mesh gradient background */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 -left-20 w-72 h-72 bg-emerald-500 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
+          <div className="absolute bottom-0 right-0 w-60 h-60 bg-violet-500 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
+          <div className="absolute top-10 right-20 w-40 h-40 bg-cyan-500 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+        </div>
+        {/* Subtle dot pattern */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-          backgroundSize: '24px 24px'
+          backgroundSize: '20px 20px'
         }} />
 
         <motion.div
@@ -155,10 +163,10 @@ export const StudentDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800 p-6 transition-colors duration-300"
         >
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Portfolio</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Portfolio</h3>
             <span className="text-xs text-slate-500">{donutData.length} accounts</span>
           </div>
 
@@ -191,11 +199,11 @@ export const StudentDashboard = () => {
                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: colors.hex }} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-slate-700">{ACCOUNT_META[key]?.label}</span>
-                        <span className="text-sm font-semibold text-slate-900 tabular-nums">{formatCurrency(balance)}</span>
+                        <span className="text-sm font-medium text-slate-700 dark:text-gray-300">{ACCOUNT_META[key]?.label}</span>
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white tabular-nums">{formatCurrency(balance)}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <div className="flex-1 bg-slate-100 rounded-full h-1">
+                        <div className="flex-1 bg-slate-100 dark:bg-gray-800 rounded-full h-1">
                           <motion.div
                             className="h-1 rounded-full"
                             style={{ backgroundColor: colors.hex }}
@@ -218,7 +226,7 @@ export const StudentDashboard = () => {
       {/* ── Account Cards ─────────────────────────────── */}
       <div className="px-6 mt-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Accounts</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Accounts</h3>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -234,7 +242,7 @@ export const StudentDashboard = () => {
                 transition={{ delay: 0.2 + index * 0.08 }}
                 className={`${colors.bg} ${colors.border} border rounded-xl p-4 relative overflow-hidden`}
               >
-                <div className="absolute -right-3 -top-3 w-16 h-16 rounded-full opacity-10" style={{ backgroundColor: colors.hex }} />
+                <div className="absolute -right-3 -top-3 w-16 h-16 rounded-full opacity-10 dark:opacity-20" style={{ backgroundColor: colors.hex }} />
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-2">
                     <Icon className={`w-4 h-4 ${colors.text}`} />
@@ -242,7 +250,7 @@ export const StudentDashboard = () => {
                       {ACCOUNT_META[key]?.label}
                     </span>
                   </div>
-                  <p className="text-xl font-bold text-slate-900 tabular-nums">
+                  <p className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
                     <AnimNum value={balance} prefix="$" />
                   </p>
                 </div>
@@ -255,7 +263,7 @@ export const StudentDashboard = () => {
       {/* ── Quick Actions ─────────────────────────────── */}
       <div className="px-6 mt-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Quick Actions</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Quick Actions</h3>
         </div>
 
         <div className="space-y-2.5">
@@ -270,16 +278,16 @@ export const StudentDashboard = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 + index * 0.08 }}
               onClick={() => navigate(action.route)}
-              className="w-full flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all text-left group"
+              className="w-full flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 hover:shadow-sm transition-all text-left group"
             >
               <div className={`${action.color} w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0`}>
                 <action.icon className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-slate-900">{action.label}</p>
-                <p className="text-xs text-slate-500">{action.desc}</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">{action.label}</p>
+                <p className="text-xs text-slate-500 dark:text-gray-500">{action.desc}</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+              <ChevronRight className="w-4 h-4 text-slate-400 dark:text-gray-600 group-hover:text-slate-600 dark:group-hover:text-gray-300 transition-colors" />
             </motion.button>
           ))}
         </div>
@@ -289,7 +297,7 @@ export const StudentDashboard = () => {
       {badges.length > 0 && (
         <div className="px-6 mt-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Achievements</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Achievements</h3>
             <span className="text-xs text-slate-500">{badges.length} earned</span>
           </div>
           <div className="overflow-x-auto pb-2 -mx-6 px-6">
@@ -305,7 +313,7 @@ export const StudentDashboard = () => {
       {/* ── Learn Section ─────────────────────────────── */}
       <div className="px-6 mt-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Learn</h3>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Learn</h3>
         </div>
         <div className="space-y-2.5">
           {[
@@ -318,14 +326,14 @@ export const StudentDashboard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 + i * 0.08 }}
-              className="bg-white rounded-xl border border-slate-200 group"
+              className="bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 group"
             >
               <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
                 <span className="text-lg">{tip.icon}</span>
-                <span className="text-sm font-semibold text-slate-800 flex-1">{tip.title}</span>
+                <span className="text-sm font-semibold text-slate-800 dark:text-white flex-1">{tip.title}</span>
                 <ChevronRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90" />
               </summary>
-              <div className="px-4 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              <div className="px-4 pb-4 text-sm text-slate-600 dark:text-gray-400 leading-relaxed border-t border-slate-100 dark:border-gray-800 pt-3">
                 {tip.body}
               </div>
             </motion.details>

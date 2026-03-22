@@ -291,9 +291,9 @@ export const StudentPaycheck = () => {
 
   if (!profile) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-50">
+      <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-gray-950">
         <motion.div
-          className="w-10 h-10 border-[3px] border-slate-200 border-t-slate-800 rounded-full"
+          className="w-10 h-10 border-[3px] border-slate-200 border-t-slate-800 rounded-full dark:border-gray-800 dark:border-t-gray-400"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -304,14 +304,14 @@ export const StudentPaycheck = () => {
   // ─── PAYCHECK LIST VIEW ────────────────────────────
   if (view === 'list') {
     return (
-      <div className="min-h-screen bg-slate-50 pb-24">
+      <div className="min-h-screen bg-slate-50 dark:bg-gray-950 pb-24">
         <Toast message={toast} />
         <Confetti active={showConfetti} />
 
         {/* Header */}
-        <div className="bg-slate-900 text-white px-6 pt-8 pb-12">
+        <div className="bg-slate-900 dark:bg-gray-900 text-white px-6 pt-8 pb-12">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="text-slate-400 text-sm font-medium">Weekly</p>
+            <p className="text-slate-400 dark:text-gray-500 text-sm font-medium">Weekly</p>
             <h1 className="text-2xl font-bold mt-0.5">Paychecks</h1>
           </motion.div>
         </div>
@@ -320,8 +320,8 @@ export const StudentPaycheck = () => {
           {/* New Paycheck CTA */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             {existingThisWeek ? (
-              <div className="bg-white rounded-xl border border-slate-200 p-5 text-center shadow-sm">
-                <p className="text-slate-600 text-sm">
+              <div className="bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 p-5 text-center shadow-sm">
+                <p className="text-slate-600 dark:text-gray-400 text-sm">
                   Paycheck submitted for {currentWeekLabel}.
                   {existingThisWeek.status === 'verified' && (
                     <button
@@ -358,17 +358,17 @@ export const StudentPaycheck = () => {
 
           {/* Paycheck History */}
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-3">History</h2>
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">History</h2>
 
             {loadingHistory ? (
               <div className="space-y-2.5">
-                {[1, 2, 3].map(i => <div key={i} className="h-16 bg-slate-200 rounded-xl animate-pulse" />)}
+                {[1, 2, 3].map(i => <div key={i} className="h-16 bg-slate-200 dark:bg-gray-800 rounded-xl animate-pulse" />)}
               </div>
             ) : pastPaychecks.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
-                <DollarSign className="w-10 h-10 mx-auto mb-3 text-slate-300" />
-                <p className="text-sm text-slate-500">No paychecks yet</p>
-                <p className="text-xs text-slate-400 mt-1">Log your first one above</p>
+              <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800">
+                <DollarSign className="w-10 h-10 mx-auto mb-3 text-slate-300 dark:text-gray-700" />
+                <p className="text-sm text-slate-500 dark:text-gray-400">No paychecks yet</p>
+                <p className="text-xs text-slate-400 dark:text-gray-500 mt-1">Log your first one above</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -381,7 +381,7 @@ export const StudentPaycheck = () => {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.04 }}
-                      className="bg-white rounded-xl border border-slate-200 p-4 hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer"
+                      className="bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 p-4 hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer dark:hover:border-gray-700"
                       onClick={() => {
                         if (paycheck.status === 'verified') {
                           setSelectedPaycheck(paycheck)
@@ -395,12 +395,12 @@ export const StudentPaycheck = () => {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-sm text-slate-700">
+                          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-gray-800 flex items-center justify-center font-bold text-sm text-slate-700 dark:text-gray-300">
                             ${Math.round(paycheck.total_earnings || 0)}
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-slate-900">{paycheck.week_label || 'Week'}</p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white">{paycheck.week_label || 'Week'}</p>
+                            <p className="text-xs text-slate-500 dark:text-gray-400">
                               {new Date(paycheck.created_at).toLocaleDateString()}
                             </p>
                           </div>
@@ -409,7 +409,7 @@ export const StudentPaycheck = () => {
                           <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${statusConf.color}`}>
                             {statusConf.label}
                           </span>
-                          <ChevronRight className="w-4 h-4 text-slate-300" />
+                          <ChevronRight className="w-4 h-4 text-slate-300 dark:text-gray-700" />
                         </div>
                       </div>
                     </motion.div>
@@ -420,13 +420,13 @@ export const StudentPaycheck = () => {
           </div>
 
           {/* Learn tip */}
-          <details className="bg-white rounded-xl border border-slate-200 group">
+          <details className="bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 group">
             <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
               <span className="text-lg">🏦</span>
-              <span className="text-sm font-semibold text-slate-800 flex-1">Why Budget Your Paycheck?</span>
-              <ChevronRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90" />
+              <span className="text-sm font-semibold text-slate-800 dark:text-white flex-1">Why Budget Your Paycheck?</span>
+              <ChevronRight className="w-4 h-4 text-slate-400 dark:text-gray-600 transition-transform group-open:rotate-90" />
             </summary>
-            <div className="px-4 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+            <div className="px-4 pb-4 text-sm text-slate-600 dark:text-gray-400 leading-relaxed border-t border-slate-100 dark:border-gray-800 pt-3">
               In real life, your paycheck doesn't all go to one place. Learning to split your earnings now builds habits that'll serve you for life. The 50/30/20 rule suggests: 50% needs, 30% wants, 20% savings.
             </div>
           </details>
@@ -443,28 +443,28 @@ export const StudentPaycheck = () => {
     const epicCountDetail = [p.epic_mon, p.epic_tue, p.epic_wed, p.epic_thu, p.epic_fri].filter(Boolean).length
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-warm-gray to-white p-6 pb-20">
+      <div className="min-h-screen bg-slate-50 dark:bg-gray-950 p-6 pb-20">
         <Toast message={toast} />
 
         <button
           onClick={() => { setView('list'); setSelectedPaycheck(null) }}
-          className="text-sage-600 font-semibold mb-4 flex items-center gap-1 hover:underline"
+          className="text-sage-600 dark:text-emerald-400 font-semibold mb-4 flex items-center gap-1 hover:underline"
         >
           ← Back to Paychecks
         </button>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-slate-900">{p.week_label || 'Paycheck'}</h2>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{p.week_label || 'Paycheck'}</h2>
               <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusConf.color}`}>
                 {statusConf.label}
               </span>
             </div>
 
             <div className="text-center mb-6">
-              <p className="text-sm text-slate-500">Total Earnings</p>
-              <p className="text-4xl font-bold text-sage-600">{formatCurrency(p.total_earnings || 0)}</p>
+              <p className="text-sm text-slate-500 dark:text-gray-400">Total Earnings</p>
+              <p className="text-4xl font-bold text-sage-600 dark:text-emerald-400">{formatCurrency(p.total_earnings || 0)}</p>
             </div>
 
             {/* XP Summary */}
@@ -474,44 +474,44 @@ export const StudentPaycheck = () => {
                 const xp = p[`xp_${key}`] || 0
                 const epic = p[`epic_${key}`]
                 return (
-                  <div key={day} className="text-center p-2 rounded-lg bg-slate-50">
-                    <p className="text-xs text-slate-500">{day}</p>
-                    <p className="text-lg font-bold text-slate-900">{xp}</p>
+                  <div key={day} className="text-center p-2 rounded-lg bg-slate-50 dark:bg-gray-800">
+                    <p className="text-xs text-slate-500 dark:text-gray-400">{day}</p>
+                    <p className="text-lg font-bold text-slate-900 dark:text-white">{xp}</p>
                     {epic && <span className="text-xs">🔥</span>}
                   </div>
                 )
               })}
             </div>
 
-            <div className="text-sm text-slate-600 mb-4">
+            <div className="text-sm text-slate-600 dark:text-gray-400 mb-4">
               Total XP: <span className="font-bold">{totalXpDetail}</span> / {xpThreshold}
               {epicCountDetail > 0 && <span className="ml-3">🔥 {epicCountDetail} epic days</span>}
             </div>
 
             {/* Earnings Breakdown */}
-            <div className="space-y-2 border-t border-slate-200 pt-4">
-              <h3 className="font-semibold text-slate-900 mb-2">Breakdown</h3>
-              {p.base_pay > 0 && <div className="flex justify-between text-sm"><span className="text-slate-600">Base Pay</span><span className="font-semibold">{formatCurrency(p.base_pay)}</span></div>}
-              {p.epic_bonus > 0 && <div className="flex justify-between text-sm text-amber-600"><span>🔥 Epic Bonus</span><span className="font-semibold">{formatCurrency(p.epic_bonus)}</span></div>}
-              {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-blue-600"><span>📈 XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
-              {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-sage-600"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
-              {p.job_pay > 0 && <div className="flex justify-between text-sm text-teal-600"><span>💼 Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
-              {p.smart_goal > 0 && <div className="flex justify-between text-sm text-blue-600"><span>🎯 SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
-              {p.other_pay > 0 && <div className="flex justify-between text-sm text-purple-600"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
+            <div className="space-y-2 border-t border-slate-200 dark:border-gray-800 pt-4">
+              <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Breakdown</h3>
+              {p.base_pay > 0 && <div className="flex justify-between text-sm"><span className="text-slate-600 dark:text-gray-400">Base Pay</span><span className="font-semibold">{formatCurrency(p.base_pay)}</span></div>}
+              {p.epic_bonus > 0 && <div className="flex justify-between text-sm text-amber-600 dark:text-amber-400"><span>🔥 Epic Bonus</span><span className="font-semibold">{formatCurrency(p.epic_bonus)}</span></div>}
+              {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-blue-600 dark:text-blue-400"><span>📈 XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
+              {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-sage-600 dark:text-emerald-400"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
+              {p.job_pay > 0 && <div className="flex justify-between text-sm text-teal-600 dark:text-teal-400"><span>💼 Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
+              {p.smart_goal > 0 && <div className="flex justify-between text-sm text-blue-600 dark:text-blue-400"><span>🎯 SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
+              {p.other_pay > 0 && <div className="flex justify-between text-sm text-purple-600 dark:text-purple-400"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
             </div>
 
             {/* Allocation (if allocated) */}
             {p.status === 'allocated' && (
-              <div className="mt-4 border-t border-slate-200 pt-4">
-                <h3 className="font-semibold text-slate-900 mb-2">Allocation</h3>
+              <div className="mt-4 border-t border-slate-200 dark:border-gray-800 pt-4">
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Allocation</h3>
                 <div className="grid grid-cols-5 gap-2">
                   {['checking', 'savings', 'sp500', 'nasdaq', 'bonus'].map(acct => {
                     const val = p[`alloc_${acct}`] || 0
                     if (val <= 0) return null
                     return (
-                      <div key={acct} className="text-center p-2 rounded-lg bg-slate-50">
-                        <p className="text-xs text-slate-500 capitalize">{ACCOUNT_META[acct]?.label || acct}</p>
-                        <p className="text-sm font-bold text-slate-900">{formatCurrency(val)}</p>
+                      <div key={acct} className="text-center p-2 rounded-lg bg-slate-50 dark:bg-gray-800">
+                        <p className="text-xs text-slate-500 dark:text-gray-400 capitalize">{ACCOUNT_META[acct]?.label || acct}</p>
+                        <p className="text-sm font-bold text-slate-900 dark:text-white">{formatCurrency(val)}</p>
                       </div>
                     )
                   })}
@@ -532,7 +532,7 @@ export const StudentPaycheck = () => {
             )}
 
             {p.status === 'submitted' && (
-              <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-700">
+              <div className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-400">
                 <Clock className="w-4 h-4 inline mr-1" />
                 Waiting for your guide to approve this paycheck.
               </div>
@@ -550,21 +550,21 @@ export const StudentPaycheck = () => {
     const isAllocValid = Math.abs(allocTotal - total) < 0.01
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-warm-gray to-white p-6 pb-20">
+      <div className="min-h-screen bg-slate-50 dark:bg-gray-950 p-6 pb-20">
         <Toast message={toast} />
         <Confetti active={showConfetti} />
 
         <button
           onClick={() => { setView('detail'); }}
-          className="text-sage-600 font-semibold mb-4 flex items-center gap-1 hover:underline"
+          className="text-sage-600 dark:text-emerald-400 font-semibold mb-4 flex items-center gap-1 hover:underline"
         >
           ← Back
         </button>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-6">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Allocate Your Paycheck</h1>
-            <p className="text-slate-600">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Allocate Your Paycheck</h1>
+            <p className="text-slate-600 dark:text-gray-400">
               {selectedPaycheck.week_label} — {formatCurrency(total)} to distribute
             </p>
           </div>
@@ -573,9 +573,9 @@ export const StudentPaycheck = () => {
             Think about your goals. Need something soon? Put more in checking. Building an emergency fund? Boost savings. Playing the long game? Feed your investments. There's no single right answer — it's about YOUR priorities.
           </FinTip>
 
-          <div className="bg-white rounded-xl p-6 shadow-lg">
+          <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-slate-900">Your Split</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Your Split</h3>
               <Button size="sm" onClick={() => useSuggestedSplit(total)}>
                 Use 20/30/25/15/10
               </Button>
@@ -589,8 +589,8 @@ export const StudentPaycheck = () => {
                 return (
                   <div key={account}>
                     <div className="flex justify-between items-center mb-1">
-                      <label className="text-sm font-semibold text-slate-700">{meta?.label || account}</label>
-                      <span className="text-xs text-slate-500">{percentage.toFixed(0)}%</span>
+                      <label className="text-sm font-semibold text-slate-700 dark:text-gray-300">{meta?.label || account}</label>
+                      <span className="text-xs text-slate-500 dark:text-gray-500">{percentage.toFixed(0)}%</span>
                     </div>
                     <input
                       type="number"
@@ -598,7 +598,7 @@ export const StudentPaycheck = () => {
                       step="0.01"
                       value={value || ''}
                       onChange={(e) => setAllocation({ ...allocation, [account]: parseFloat(e.target.value) || 0 })}
-                      className={`w-full px-3 py-2 border-2 rounded-lg focus:outline-none focus:border-sage-400 ${meta?.borderColor || 'border-slate-300'}`}
+                      className={`w-full px-3 py-2 border-2 rounded-lg focus:outline-none focus:border-sage-400 dark:bg-gray-800 dark:text-white dark:border-gray-700 ${meta?.borderColor || 'border-slate-300'}`}
                       placeholder="0.00"
                     />
                   </div>
@@ -606,22 +606,22 @@ export const StudentPaycheck = () => {
               })}
             </div>
 
-            <div className="border-t-2 border-slate-200 pt-4 space-y-2">
+            <div className="border-t-2 border-slate-200 dark:border-gray-800 pt-4 space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-600">Allocated</span>
+                <span className="text-slate-600 dark:text-gray-400">Allocated</span>
                 <span className="font-semibold">{formatCurrency(allocTotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-600">Paycheck Total</span>
+                <span className="text-slate-600 dark:text-gray-400">Paycheck Total</span>
                 <span className="font-semibold">{formatCurrency(total)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="font-bold">Remaining</span>
-                <span className={`font-bold ${isAllocValid ? 'text-sage-600' : 'text-rose-600'}`}>
+                <span className={`font-bold ${isAllocValid ? 'text-sage-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                   {formatCurrency(Math.abs(total - allocTotal))}
                 </span>
               </div>
-              {isAllocValid && <p className="text-xs text-sage-600 font-semibold">✓ All funds allocated</p>}
+              {isAllocValid && <p className="text-xs text-sage-600 dark:text-emerald-400 font-semibold">✓ All funds allocated</p>}
             </div>
           </div>
 
@@ -636,26 +636,26 @@ export const StudentPaycheck = () => {
 
   // ─── NEW PAYCHECK VIEW ────────────────────────
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 pb-24">
       <Toast message={toast} />
 
       {/* Header */}
-      <div className="bg-slate-900 text-white px-6 pt-6 pb-10">
+      <div className="bg-slate-900 dark:bg-gray-900 text-white px-6 pt-6 pb-10">
         <button
           onClick={() => setView('list')}
-          className="text-slate-400 hover:text-white text-sm font-medium mb-3 flex items-center gap-1 transition-colors"
+          className="text-slate-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-300 text-sm font-medium mb-3 flex items-center gap-1 transition-colors"
         >
           ← Back
         </button>
         <h1 className="text-2xl font-bold">Log Paycheck</h1>
-        <p className="text-slate-400 text-sm mt-1">Week of {currentWeekLabel}</p>
+        <p className="text-slate-400 dark:text-gray-500 text-sm mt-1">Week of {currentWeekLabel}</p>
       </div>
 
       <div className="px-6 -mt-4 relative z-10 max-w-2xl mx-auto space-y-4">
 
         {/* Daily XP */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Daily XP</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-gray-800">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Daily XP</h3>
           <div className="grid grid-cols-5 gap-3 mb-6">
             {DAYS.map((day, idx) => {
               const dayKey = ['mon', 'tue', 'wed', 'thu', 'fri'][idx]
@@ -663,20 +663,20 @@ export const StudentPaycheck = () => {
 
               return (
                 <div key={day} className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-slate-700 text-center">{day.slice(0, 3)}</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-gray-300 text-center">{day.slice(0, 3)}</label>
                   <motion.input
                     type="number"
                     min="0"
                     max="300"
                     value={xpByDay[dayKey] || ''}
                     onChange={(e) => setXpByDay({ ...xpByDay, [dayKey]: parseInt(e.target.value) || 0 })}
-                    className="w-full px-2 py-2 text-center text-lg font-bold border-2 border-slate-300 rounded-lg focus:outline-none focus:border-sage-400 focus:ring-2 focus:ring-sage-200"
+                    className="w-full px-2 py-2 text-center text-lg font-bold border-2 border-slate-300 dark:border-gray-700 rounded-lg focus:outline-none focus:border-sage-400 focus:ring-2 focus:ring-sage-200 dark:bg-gray-800 dark:text-white dark:focus:border-emerald-400 dark:focus:ring-emerald-900"
                     whileFocus={{ scale: 1.05 }}
                     placeholder="0"
                   />
                   <button
                     onClick={() => setEpicDays({ ...epicDays, [dayKey]: !isEpic })}
-                    className={`text-xs font-semibold py-1 rounded-lg transition-all ${isEpic ? 'bg-amber-300 text-amber-900' : 'bg-slate-200 text-slate-600'}`}
+                    className={`text-xs font-semibold py-1 rounded-lg transition-all ${isEpic ? 'bg-amber-300 text-amber-900' : 'bg-slate-200 dark:bg-gray-800 text-slate-600 dark:text-gray-400'}`}
                   >
                     {isEpic ? '🔥 Epic' : 'Epic'}
                   </button>
@@ -687,10 +687,10 @@ export const StudentPaycheck = () => {
 
           <div className="mb-2">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-semibold text-slate-700">Weekly XP Progress</span>
-              <span className="text-sm font-bold text-slate-900">{totalXp} / {xpThreshold}</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-gray-300">Weekly XP Progress</span>
+              <span className="text-sm font-bold text-slate-900 dark:text-white">{totalXp} / {xpThreshold}</span>
             </div>
-            <div className="w-full bg-slate-200 rounded-full h-3">
+            <div className="w-full bg-slate-200 dark:bg-gray-800 rounded-full h-3">
               <motion.div
                 className="bg-gradient-to-r from-green-400 to-sage-400 h-3 rounded-full"
                 initial={{ width: 0 }}
@@ -698,14 +698,14 @@ export const StudentPaycheck = () => {
                 transition={{ duration: 0.5 }}
               />
             </div>
-            {xpProgress >= 100 && <p className="text-xs text-sage-600 font-semibold mt-2">✓ XP threshold reached — base pay earned!</p>}
+            {xpProgress >= 100 && <p className="text-xs text-sage-600 dark:text-emerald-400 font-semibold mt-2">✓ XP threshold reached — base pay earned!</p>}
           </div>
         </div>
 
         {/* Job Card */}
         {studentJob && (
           <motion.div
-            className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${jobDone ? 'bg-green-50 border-green-300' : 'bg-slate-50 border-slate-200'}`}
+            className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${jobDone ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700' : 'bg-slate-50 dark:bg-gray-800 border-slate-200 dark:border-gray-700'}`}
             onClick={() => setJobDone(!jobDone)}
             whileHover={{ scale: 1.01 }}
           >
@@ -713,11 +713,11 @@ export const StudentPaycheck = () => {
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{studentJob.icon || '💼'}</span>
                 <div>
-                  <p className="font-bold text-slate-900">{studentJob.title}</p>
-                  <p className="text-sm text-slate-600">+{formatCurrency(studentJob.weekly_pay || 0)}/week</p>
+                  <p className="font-bold text-slate-900 dark:text-white">{studentJob.title}</p>
+                  <p className="text-sm text-slate-600 dark:text-gray-400">+{formatCurrency(studentJob.weekly_pay || 0)}/week</p>
                 </div>
               </div>
-              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${jobDone ? 'bg-sage-400 border-sage-400' : 'border-slate-300'}`}>
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${jobDone ? 'bg-sage-400 dark:bg-emerald-500 border-sage-400 dark:border-emerald-500' : 'border-slate-300 dark:border-gray-600'}`}>
                 {jobDone && <span className="text-white text-sm">✓</span>}
               </div>
             </div>
@@ -725,9 +725,9 @@ export const StudentPaycheck = () => {
         )}
 
         {/* Mastery Tests */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Mastery Tests</h3>
-          <p className="text-xs text-slate-500 mb-3">
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-gray-800">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Mastery Tests</h3>
+          <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">
             Score {settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} | 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}
           </p>
 
@@ -736,26 +736,26 @@ export const StudentPaycheck = () => {
               test.score >= (settings.mastery_min_score || 90) ? (settings.mastery_pass_pay || 20) : 0
 
             return (
-              <motion.div key={idx} className="p-3 border border-slate-200 rounded-lg mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key={idx} className="p-3 border border-slate-200 dark:border-gray-800 rounded-lg mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 grid grid-cols-3 gap-3">
-                    <input type="text" value={test.subject} onChange={(e) => { const u = [...masteryTests]; u[idx].subject = e.target.value; setMasteryTests(u) }} placeholder="Subject" className="px-3 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-sage-400 text-sm" />
-                    <select value={test.grade} onChange={(e) => { const u = [...masteryTests]; u[idx].grade = e.target.value; setMasteryTests(u) }} className="px-3 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-sage-400 text-sm">
+                    <input type="text" value={test.subject} onChange={(e) => { const u = [...masteryTests]; u[idx].subject = e.target.value; setMasteryTests(u) }} placeholder="Subject" className="px-3 py-2 border-2 border-slate-300 dark:border-gray-700 rounded-lg focus:outline-none focus:border-sage-400 text-sm dark:bg-gray-800 dark:text-white dark:focus:border-emerald-400" />
+                    <select value={test.grade} onChange={(e) => { const u = [...masteryTests]; u[idx].grade = e.target.value; setMasteryTests(u) }} className="px-3 py-2 border-2 border-slate-300 dark:border-gray-700 rounded-lg focus:outline-none focus:border-sage-400 text-sm dark:bg-gray-800 dark:text-white dark:focus:border-emerald-400">
                       {GRADES.map(g => <option key={g} value={g}>{g}</option>)}
                     </select>
-                    <input type="number" min="0" max="100" value={test.score || ''} onChange={(e) => { const u = [...masteryTests]; u[idx].score = parseInt(e.target.value) || 0; setMasteryTests(u) }} placeholder="Score" className="px-3 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-sage-400 text-sm" />
+                    <input type="number" min="0" max="100" value={test.score || ''} onChange={(e) => { const u = [...masteryTests]; u[idx].score = parseInt(e.target.value) || 0; setMasteryTests(u) }} placeholder="Score" className="px-3 py-2 border-2 border-slate-300 dark:border-gray-700 rounded-lg focus:outline-none focus:border-sage-400 text-sm dark:bg-gray-800 dark:text-white dark:focus:border-emerald-400" />
                   </div>
-                  <button onClick={() => setMasteryTests(masteryTests.filter((_, i) => i !== idx))} className="p-1 text-slate-400 hover:text-rose-500">
+                  <button onClick={() => setMasteryTests(masteryTests.filter((_, i) => i !== idx))} className="p-1 text-slate-400 dark:text-gray-600 hover:text-rose-500 dark:hover:text-rose-400">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-                {reward > 0 && <p className="text-xs text-sage-600 font-semibold mt-1">+{formatCurrency(reward)}</p>}
+                {reward > 0 && <p className="text-xs text-sage-600 dark:text-emerald-400 font-semibold mt-1">+{formatCurrency(reward)}</p>}
               </motion.div>
             )
           })}
 
           {masteryTests.length < 6 && (
-            <button onClick={() => setMasteryTests([...masteryTests, { subject: '', grade: 'K', score: 0 }])} className="text-sm font-semibold text-sage-600 hover:text-sage-700">
+            <button onClick={() => setMasteryTests([...masteryTests, { subject: '', grade: 'K', score: 0 }])} className="text-sm font-semibold text-sage-600 dark:text-emerald-400 hover:text-sage-700 dark:hover:text-emerald-300">
               + Add Mastery Test
             </button>
           )}
@@ -763,8 +763,8 @@ export const StudentPaycheck = () => {
 
         {/* Custom Bonuses */}
         {(settings.custom_bonuses || []).length > 0 && (
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Bonuses</h3>
+          <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-gray-800 space-y-4">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Bonuses</h3>
             <div className="space-y-3">
               {(settings.custom_bonuses || []).map(bonus => {
                 const entry = customBonuses[bonus.id] || {}
@@ -772,7 +772,7 @@ export const StudentPaycheck = () => {
                   return (
                     <motion.div
                       key={bonus.id}
-                      className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${entry.claimed ? 'bg-green-50 border-green-300' : 'bg-slate-50 border-slate-200'}`}
+                      className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${entry.claimed ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700' : 'bg-slate-50 dark:bg-gray-800 border-slate-200 dark:border-gray-700'}`}
                       onClick={() => setCustomBonuses({
                         ...customBonuses,
                         [bonus.id]: { ...entry, claimed: !entry.claimed }
@@ -781,10 +781,10 @@ export const StudentPaycheck = () => {
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-bold text-slate-900">{bonus.name}</p>
-                          <p className="text-sm text-slate-600">+{formatCurrency(bonus.amount)}</p>
+                          <p className="font-bold text-slate-900 dark:text-white">{bonus.name}</p>
+                          <p className="text-sm text-slate-600 dark:text-gray-400">+{formatCurrency(bonus.amount)}</p>
                         </div>
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${entry.claimed ? 'bg-sage-400 border-sage-400' : 'border-slate-300'}`}>
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${entry.claimed ? 'bg-sage-400 dark:bg-emerald-500 border-sage-400 dark:border-emerald-500' : 'border-slate-300 dark:border-gray-600'}`}>
                           {entry.claimed && <span className="text-white text-sm">✓</span>}
                         </div>
                       </div>
@@ -792,8 +792,8 @@ export const StudentPaycheck = () => {
                   )
                 } else {
                   return (
-                    <div key={bonus.id} className="p-4 rounded-xl border-2 border-slate-200 bg-slate-50">
-                      <label className="font-bold text-slate-900 block mb-2">{bonus.name}</label>
+                    <div key={bonus.id} className="p-4 rounded-xl border-2 border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-800">
+                      <label className="font-bold text-slate-900 dark:text-white block mb-2">{bonus.name}</label>
                       <Input
                         type="number"
                         min="0"
@@ -815,19 +815,19 @@ export const StudentPaycheck = () => {
         )}
 
         {/* Earnings Breakdown */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-3">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">Earnings Breakdown</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-gray-800 space-y-3">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Earnings Breakdown</h3>
           <div className="space-y-2 text-sm">
-            {earnings.basePay > 0 && <div className="flex justify-between"><span className="text-slate-600">Base Pay</span><span className="font-semibold">{formatCurrency(earnings.basePay)}</span></div>}
-            {earnings.epicBonus > 0 && <div className="flex justify-between text-amber-600"><span>🔥 Epic Week Bonus</span><span className="font-semibold">{formatCurrency(earnings.epicBonus)}</span></div>}
-            {earnings.bonusXp > 0 && <div className="flex justify-between text-blue-600"><span>📈 Bonus XP Pay</span><span className="font-semibold">{formatCurrency(earnings.bonusXp)}</span></div>}
-            {earnings.masteryRewards > 0 && <div className="flex justify-between text-sage-600"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(earnings.masteryRewards)}</span></div>}
-            {earnings.jobPay > 0 && <div className="flex justify-between text-teal-600"><span>💼 Job</span><span className="font-semibold">{formatCurrency(earnings.jobPay)}</span></div>}
-            {earnings.customBonusTotal > 0 && <div className="flex justify-between text-purple-600"><span>⭐ Bonuses</span><span className="font-semibold">{formatCurrency(earnings.customBonusTotal)}</span></div>}
+            {earnings.basePay > 0 && <div className="flex justify-between"><span className="text-slate-600 dark:text-gray-400">Base Pay</span><span className="font-semibold">{formatCurrency(earnings.basePay)}</span></div>}
+            {earnings.epicBonus > 0 && <div className="flex justify-between text-amber-600 dark:text-amber-400"><span>🔥 Epic Week Bonus</span><span className="font-semibold">{formatCurrency(earnings.epicBonus)}</span></div>}
+            {earnings.bonusXp > 0 && <div className="flex justify-between text-blue-600 dark:text-blue-400"><span>📈 Bonus XP Pay</span><span className="font-semibold">{formatCurrency(earnings.bonusXp)}</span></div>}
+            {earnings.masteryRewards > 0 && <div className="flex justify-between text-sage-600 dark:text-emerald-400"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(earnings.masteryRewards)}</span></div>}
+            {earnings.jobPay > 0 && <div className="flex justify-between text-teal-600 dark:text-teal-400"><span>💼 Job</span><span className="font-semibold">{formatCurrency(earnings.jobPay)}</span></div>}
+            {earnings.customBonusTotal > 0 && <div className="flex justify-between text-purple-600 dark:text-purple-400"><span>⭐ Bonuses</span><span className="font-semibold">{formatCurrency(earnings.customBonusTotal)}</span></div>}
 
-            <div className="border-t-2 border-slate-200 pt-2 mt-2 flex justify-between">
-              <span className="font-bold text-slate-900">Total Paycheck</span>
-              <span className="text-xl font-bold text-sage-600"><AnimNum value={totalPaycheck} prefix="$" /></span>
+            <div className="border-t-2 border-slate-200 dark:border-gray-800 pt-2 mt-2 flex justify-between">
+              <span className="font-bold text-slate-900 dark:text-white">Total Paycheck</span>
+              <span className="text-xl font-bold text-sage-600 dark:text-emerald-400"><AnimNum value={totalPaycheck} prefix="$" /></span>
             </div>
           </div>
         </div>
@@ -837,15 +837,15 @@ export const StudentPaycheck = () => {
           disabled={loading || totalPaycheck <= 0}
           className={`w-full rounded-xl py-4 text-base font-semibold transition-all flex items-center justify-center gap-2 ${
             totalPaycheck > 0 && !loading
-              ? 'bg-slate-900 text-white hover:bg-slate-800'
-              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+              ? 'bg-slate-900 dark:bg-gray-800 text-white hover:bg-slate-800 dark:hover:bg-gray-700'
+              : 'bg-slate-200 dark:bg-gray-800 text-slate-400 dark:text-gray-600 cursor-not-allowed'
           }`}
         >
           {loading ? 'Submitting...' : `Submit ${formatCurrency(totalPaycheck)} for Review`}
           {!loading && <ChevronRight className="w-4 h-4" />}
         </button>
 
-        <p className="text-xs text-center text-slate-400">
+        <p className="text-xs text-center text-slate-400 dark:text-gray-500">
           Your guide will review and approve your paycheck.
         </p>
       </div>

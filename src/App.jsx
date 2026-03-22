@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from './hooks/useAuth'
+import { ThemeProvider } from './hooks/useTheme'
 import { Layout } from './components/shared/Layout'
 import { LoginPage } from './pages/LoginPage'
 // Student pages
@@ -10,6 +11,7 @@ import { StudentPaycheck } from './pages/student/StudentPaycheck'
 import { StudentTransfer } from './pages/student/StudentTransfer'
 import { StudentPurchase } from './pages/student/StudentPurchase'
 import { StudentHistory } from './pages/student/StudentHistory'
+import { StudentLearn } from './pages/student/StudentLearn'
 
 // Guide pages
 import { GuideRoster } from './pages/guide/GuideRoster'
@@ -19,17 +21,17 @@ import { GuideSession } from './pages/guide/GuideSession'
 import { GuideSettings } from './pages/guide/GuideSettings'
 
 const LoadingSpinner = ({ debugMsg }) => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-sage-bg to-slate-50">
+  <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-gray-950">
     <motion.div
       animate={{ rotate: 360 }}
-      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-      className="w-12 h-12 border-4 border-sage-light border-t-sage rounded-full"
+      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+      className="w-10 h-10 border-[3px] border-slate-200 dark:border-gray-700 border-t-slate-800 dark:border-t-emerald-400 rounded-full"
     />
     {debugMsg && <p className="mt-4 text-xs text-gray-400 font-mono max-w-md text-center">{debugMsg}</p>}
   </div>
 )
 
-export default function App() {
+function AppInner() {
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -40,7 +42,8 @@ export default function App() {
       { id: 'paycheck', label: 'Paycheck', icon: '💰', path: '/paycheck' },
       { id: 'transfer', label: 'Transfer', icon: '↔️', path: '/transfer' },
       { id: 'purchase', label: 'Buy', icon: '🛍️', path: '/purchase' },
-      { id: 'history', label: 'History', icon: '📋', path: '/history' }
+      { id: 'learn', label: 'Learn', icon: '📚', path: '/learn' },
+      { id: 'history', label: 'History', icon: '📋', path: '/history' },
     ],
     []
   )
@@ -66,7 +69,6 @@ export default function App() {
   const isGuide = profile.role === 'guide'
   const navItems = isGuide ? guideNavItems : studentNavItems
 
-  // Determine active page from current URL path
   const currentPath = location.pathname
   const activePage = navItems.find(item =>
     item.path === '/' ? currentPath === '/' : currentPath.startsWith(item.path)
@@ -105,10 +107,19 @@ export default function App() {
           <Route path="/paycheck" element={<StudentPaycheck />} />
           <Route path="/transfer" element={<StudentTransfer />} />
           <Route path="/purchase" element={<StudentPurchase />} />
+          <Route path="/learn" element={<StudentLearn />} />
           <Route path="/history" element={<StudentHistory />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       )}
     </Layout>
+  )
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppInner />
+    </ThemeProvider>
   )
 }

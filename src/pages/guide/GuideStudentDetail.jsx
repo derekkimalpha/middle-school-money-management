@@ -182,8 +182,8 @@ export const GuideStudentDetail = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-24 bg-slate-200 rounded-lg animate-pulse" />
-        <div className="h-64 bg-slate-200 rounded-lg animate-pulse" />
+        <div className="h-24 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="h-64 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
       </div>
     )
   }
@@ -191,7 +191,7 @@ export const GuideStudentDetail = () => {
   if (!student) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-600">Student not found</p>
+        <p className="text-slate-600 dark:text-gray-400">Student not found</p>
       </div>
     )
   }
@@ -204,7 +204,7 @@ export const GuideStudentDetail = () => {
 
       <motion.button
         onClick={() => navigate('/')}
-        className="flex items-center gap-2 text-sage hover:text-sage-dark transition-colors"
+        className="flex items-center gap-2 text-sage dark:text-teal-400 hover:text-sage-dark dark:hover:text-teal-300 transition-colors"
         whileHover={{ x: -4 }}
       >
         <ArrowLeft className="w-5 h-5" />
@@ -214,7 +214,7 @@ export const GuideStudentDetail = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-sage-50 to-slate-50 p-6 rounded-lg border border-sage border-opacity-20"
+        className="bg-gradient-to-br from-sage-50 to-slate-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-lg border border-sage dark:border-gray-700 border-opacity-20"
       >
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-sage to-teal flex items-center justify-center text-white font-bold text-2xl">
@@ -222,8 +222,8 @@ export const GuideStudentDetail = () => {
           </div>
 
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-slate-900">{student.full_name}</h1>
-            <p className="text-slate-600">{student.email}</p>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{student.full_name}</h1>
+            <p className="text-slate-600 dark:text-gray-400">{student.email}</p>
             <p className="text-2xl font-bold text-sage mt-2">
               <AnimNum value={total} prefix="$" duration={600} />
             </p>
@@ -237,7 +237,7 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.1 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-bold text-slate-900">Account Summary</h2>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Account Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {Object.entries(ACCOUNT_META).map(([key, meta]) => {
             const account = student.accounts.find(a => a.account_type === key)
@@ -245,10 +245,10 @@ export const GuideStudentDetail = () => {
             return (
               <motion.div
                 key={key}
-                className={`p-4 rounded-lg border-2 ${meta.borderColor} ${meta.bgColor}`}
+                className={`p-4 rounded-lg border-2 ${meta.borderColor} ${meta.bgColor} dark:bg-gray-800 dark:border-gray-700`}
                 whileHover={{ y: -2 }}
               >
-                <p className="text-xs font-semibold text-slate-600 uppercase">{meta.label}</p>
+                <p className="text-xs font-semibold text-slate-600 dark:text-gray-400 uppercase">{meta.label}</p>
                 <p className="text-lg font-bold mt-2">
                   <AnimNum value={balance} prefix="$" duration={600} />
                 </p>
@@ -264,10 +264,10 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.15 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-bold text-slate-900">Paycheck History</h2>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Paycheck History</h2>
         <div className="space-y-3">
           {paychecks.length === 0 ? (
-            <p className="text-slate-600">No paychecks yet</p>
+            <p className="text-slate-600 dark:text-gray-400">No paychecks yet</p>
           ) : (
             paychecks.map(paycheck => {
               const totalXp = (paycheck.xp_mon || 0) + (paycheck.xp_tue || 0) + (paycheck.xp_wed || 0) + (paycheck.xp_thu || 0) + (paycheck.xp_fri || 0)
@@ -276,12 +276,12 @@ export const GuideStudentDetail = () => {
               return (
                 <motion.div
                   key={paycheck.id}
-                  className="p-4 rounded-lg border border-slate-200 space-y-3"
+                  className="p-4 rounded-lg border border-slate-200 dark:border-gray-800 dark:bg-gray-900 space-y-3"
                   whileHover={{ y: -2 }}
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
-                      <p className="font-semibold text-slate-900">
+                      <p className="font-semibold text-slate-900 dark:text-white">
                         {paycheck.week_label || new Date(paycheck.created_at).toLocaleDateString()}
                       </p>
                       <p className="text-lg font-bold text-sage mt-1">{formatCurrency(paycheck.total_earnings || 0)}</p>
@@ -304,7 +304,7 @@ export const GuideStudentDetail = () => {
                   </div>
 
                   {paycheck.status === 'submitted' && (
-                    <div className="border-t border-slate-200 pt-3 flex gap-2">
+                    <div className="border-t border-slate-200 dark:border-gray-800 pt-3 flex gap-2">
                       <Button
                         onClick={() => verifyPaycheck(paycheck.id, paycheck.total_earnings)}
                         disabled={verifyingPaycheck === paycheck.id}
@@ -322,7 +322,7 @@ export const GuideStudentDetail = () => {
                             [paycheck.id]: e.target.value
                           }))}
                           placeholder="Or adjust amount..."
-                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-slate-300 focus:outline-none focus:border-sage"
+                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage"
                         />
                         {verifiedAmounts[paycheck.id] && (
                           <Button
@@ -355,9 +355,9 @@ export const GuideStudentDetail = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="space-y-4 p-4 rounded-lg bg-rose-50 border border-rose-200"
+        className="space-y-4 p-4 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50"
       >
-        <h2 className="text-lg font-bold text-slate-900">Add Manual Bonus</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Add Manual Bonus</h2>
         <div className="space-y-3">
           <Field label="Bonus Amount ($)">
             <input
@@ -365,7 +365,7 @@ export const GuideStudentDetail = () => {
               value={bonusAmount}
               onChange={(e) => setBonusAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+              className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
             />
           </Field>
           <Field label="Description (optional)">
@@ -374,7 +374,7 @@ export const GuideStudentDetail = () => {
               value={bonusDescription}
               onChange={(e) => setBonusDescription(e.target.value)}
               placeholder="e.g., Extra credit bonus"
-              className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+              className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
             />
           </Field>
           <Button
@@ -393,20 +393,20 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.25 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-bold text-slate-900">Transaction History</h2>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Transaction History</h2>
         <div className="space-y-2">
           {transactions.length === 0 ? (
-            <p className="text-slate-600">No transactions yet</p>
+            <p className="text-slate-600 dark:text-gray-400">No transactions yet</p>
           ) : (
             transactions.map(trans => (
               <motion.div
                 key={trans.id}
-                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-gray-800 dark:bg-gray-900 hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors"
                 whileHover={{ x: 2 }}
               >
                 <div className="flex-1">
-                  <p className="font-semibold text-slate-900">{trans.description}</p>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="font-semibold text-slate-900 dark:text-white">{trans.description}</p>
+                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-1">
                     {new Date(trans.created_at).toLocaleDateString()}
                     {trans.category && <span className="ml-2 capitalize text-slate-400">{trans.category}</span>}
                   </p>
@@ -416,7 +416,7 @@ export const GuideStudentDetail = () => {
                     {trans.amount >= 0 ? '+' : ''}{formatCurrency(trans.amount)}
                   </p>
                   {trans.balance_after != null && (
-                    <p className="text-xs text-slate-500">Bal: {formatCurrency(trans.balance_after)}</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-500">Bal: {formatCurrency(trans.balance_after)}</p>
                   )}
                 </div>
               </motion.div>

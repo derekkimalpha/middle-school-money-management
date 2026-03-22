@@ -102,14 +102,14 @@ export const StudentTransfer = () => {
 
   if (accountsLoading || !accounts || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen dark:bg-gray-950">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-400"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-gray to-white p-6 pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 p-6 pb-20">
       <Toast message={toast} />
 
       <motion.div
@@ -117,10 +117,10 @@ export const StudentTransfer = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
           Transfer Funds
         </h1>
-        <p className="text-slate-600">
+        <p className="text-slate-600 dark:text-gray-400">
           Move money between your accounts
         </p>
       </motion.div>
@@ -145,11 +145,11 @@ export const StudentTransfer = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl shadow-lg p-8 space-y-6"
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 space-y-6"
         >
           {/* From Account Picker */}
           <div>
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
               From Account
             </h2>
             <AccountPicker
@@ -181,7 +181,7 @@ export const StudentTransfer = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <h2 className="text-lg font-bold text-slate-900 mb-4">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
                 To Account
               </h2>
               <AccountPicker
@@ -196,9 +196,9 @@ export const StudentTransfer = () => {
               />
 
               {validTargets.length === 0 && (
-                <div className="mt-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-lg flex gap-3">
-                  <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-amber-800">
+                <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-lg flex gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-amber-800 dark:text-amber-300">
                     Cannot transfer from this account
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export const StudentTransfer = () => {
               className="space-y-6"
             >
               <div>
-                <h2 className="text-lg font-bold text-slate-900 mb-4">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
                   Amount
                 </h2>
                 <Field label="How much would you like to transfer?">
@@ -236,27 +236,27 @@ export const StudentTransfer = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-4 p-4 bg-slate-50 rounded-lg space-y-2"
+                    className="mt-4 p-4 bg-slate-50 dark:bg-gray-800 rounded-lg space-y-2"
                   >
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Transfer Amount</span>
-                      <span className="font-semibold text-slate-900">
+                      <span className="text-slate-600 dark:text-gray-400">Transfer Amount</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">
                         {formatCurrency(amount)}
                       </span>
                     </div>
 
                     {hasFee && (
                       <>
-                        <div className="flex justify-between text-sm border-t border-slate-200 pt-2">
-                          <span className="text-amber-600 font-semibold">
+                        <div className="flex justify-between text-sm border-t border-slate-200 dark:border-gray-700 pt-2">
+                          <span className="text-amber-600 dark:text-amber-400 font-semibold">
                             {feePct}% Transfer Fee
                           </span>
-                          <span className="font-semibold text-amber-600">
+                          <span className="font-semibold text-amber-600 dark:text-amber-400">
                             -{formatCurrency(feeAmount)}
                           </span>
                         </div>
 
-                        <div className="text-xs text-amber-600 mt-2 p-2 bg-amber-50 rounded">
+                        <div className="text-xs text-amber-600 dark:text-amber-400 mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 rounded">
                           {['sp500', 'nasdaq'].includes(fromAccount)
                             ? `Transferring from an investment account to Checking incurs a ${feePct}% fee to encourage long-term investing.`
                             : `Transferring from Savings to Checking incurs a ${feePct}% fee.`
@@ -265,9 +265,9 @@ export const StudentTransfer = () => {
                       </>
                     )}
 
-                    <div className="flex justify-between text-base font-bold pt-2 border-t border-slate-300">
-                      <span className="text-slate-900">You'll receive</span>
-                      <span className="text-sage-600">
+                    <div className="flex justify-between text-base font-bold pt-2 border-t border-slate-300 dark:border-gray-700">
+                      <span className="text-slate-900 dark:text-white">You'll receive</span>
+                      <span className="text-sage-600 dark:text-sage-400">
                         {formatCurrency(amountAfterFee)}
                       </span>
                     </div>
@@ -278,10 +278,10 @@ export const StudentTransfer = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-4 p-4 bg-rose-50 border-2 border-rose-200 rounded-lg flex gap-3"
+                    className="mt-4 p-4 bg-rose-50 dark:bg-rose-950/30 border-2 border-rose-200 dark:border-rose-800 rounded-lg flex gap-3"
                   >
-                    <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-rose-800">
+                    <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-rose-800 dark:text-rose-300">
                       Insufficient balance. You have{' '}
                       {formatCurrency(accounts[fromAccount] || 0)}.
                     </p>
@@ -309,15 +309,15 @@ export const StudentTransfer = () => {
           transition={{ delay: 0.3 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-            <h3 className="font-bold text-blue-900 mb-2">Current Balances</h3>
+          <div className="bg-blue-50 dark:bg-blue-950/30 border-2 border-blue-200 dark:border-blue-800 rounded-xl p-4">
+            <h3 className="font-bold text-blue-900 dark:text-blue-300 mb-2">Current Balances</h3>
             <div className="space-y-1 text-sm">
               {Object.entries(accounts)
                 .filter(([key]) => key !== 'bonus')
                 .map(([key, balance]) => (
                   <div
                     key={key}
-                    className="flex justify-between text-blue-800"
+                    className="flex justify-between text-blue-800 dark:text-blue-400"
                   >
                     <span>{ACCOUNT_META[key]?.label}</span>
                     <span className="font-semibold">
@@ -328,9 +328,9 @@ export const StudentTransfer = () => {
             </div>
           </div>
 
-          <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
-            <h3 className="font-bold text-green-900 mb-2">Transfer Fees</h3>
-            <div className="space-y-1 text-xs text-green-800">
+          <div className="bg-green-50 dark:bg-green-950/30 border-2 border-green-200 dark:border-green-800 rounded-xl p-4">
+            <h3 className="font-bold text-green-900 dark:text-green-300 mb-2">Transfer Fees</h3>
+            <div className="space-y-1 text-xs text-green-800 dark:text-green-400">
               <p>• Investment → Checking: {settings?.transfer_fee_invest_pct ?? 10}% fee</p>
               <p>• Savings → Checking: {settings?.transfer_fee_savings_pct ?? 0}% fee</p>
               <p>• All other transfers: No fee</p>

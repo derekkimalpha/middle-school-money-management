@@ -163,8 +163,8 @@ export const GuideRoster = () => {
         className="flex items-start justify-between gap-4"
       >
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-slate-900">Students</h1>
-          <p className="text-lg text-slate-600">
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Students</h1>
+          <p className="text-lg text-slate-600 dark:text-gray-400">
             {filteredStudents.length} {filteredStudents.length === 1 ? 'student' : 'students'} •{' '}
             <span className="font-semibold text-sage">
               <AnimNum value={totalBalance} prefix="$" duration={600} />
@@ -189,7 +189,7 @@ export const GuideRoster = () => {
             initial="initial"
             animate="animate"
             transition={{ delay: 0.1 }}
-            className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg flex items-start gap-3"
+            className="bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-400 p-4 rounded-lg flex items-start gap-3"
           >
             <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
             <div>
@@ -205,7 +205,7 @@ export const GuideRoster = () => {
             initial="initial"
             animate="animate"
             transition={{ delay: 0.15 }}
-            className="bg-rose-50 border-l-4 border-rose-400 p-4 rounded-lg flex items-start gap-3"
+            className="bg-rose-50 dark:bg-rose-950/30 border-l-4 border-rose-400 p-4 rounded-lg flex items-start gap-3"
           >
             <AlertCircle className="w-5 h-5 text-rose-600 mt-0.5 flex-shrink-0" />
             <div>
@@ -217,25 +217,25 @@ export const GuideRoster = () => {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-gray-500" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by name or email..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100 text-slate-800"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
         />
       </div>
 
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-slate-200 rounded-lg animate-pulse" />
+            <div key={i} className="h-16 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
           ))}
         </div>
       ) : filteredStudents.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-slate-600">No students found</p>
+          <p className="text-slate-600 dark:text-gray-400">No students found</p>
         </div>
       ) : (
         <div className="space-y-2 overflow-hidden">
@@ -252,7 +252,7 @@ export const GuideRoster = () => {
                 className="w-full text-left"
               >
                 <motion.div
-                  className="flex items-center gap-4 p-4 rounded-lg border border-slate-200 hover:border-sage hover:bg-sage-bg transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-lg border border-slate-200 dark:border-gray-800 dark:bg-gray-900 hover:border-sage hover:bg-sage-bg dark:hover:bg-gray-800 transition-all group"
                   whileHover={{ x: 4 }}
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-sage to-teal flex items-center justify-center text-white font-semibold text-sm">
@@ -260,15 +260,15 @@ export const GuideRoster = () => {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-slate-900 truncate">{student.full_name}</p>
-                    <p className="text-sm text-slate-600 truncate">{student.email}</p>
+                    <p className="font-semibold text-slate-900 dark:text-white truncate">{student.full_name}</p>
+                    <p className="text-sm text-slate-600 dark:text-gray-400 truncate">{student.email}</p>
                   </div>
 
                   <div className="flex-shrink-0 text-right">
-                    <p className="font-bold text-lg text-slate-900">
+                    <p className="font-bold text-lg text-slate-900 dark:text-white">
                       <AnimNum value={total} prefix="$" duration={600} />
                     </p>
-                    <p className="text-xs text-slate-500">Total balance</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-500">Total balance</p>
                   </div>
 
                   <div className="flex-shrink-0 text-sage group-hover:translate-x-1 transition-transform">
@@ -299,13 +299,13 @@ export const GuideRoster = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl z-50 w-full max-w-sm mx-4 p-6"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 w-full max-w-sm mx-4 p-6"
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Add Student</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Add Student</h2>
                 <button
                   onClick={handleCloseModal}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                  className="text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-400 transition-colors"
                 >
                   <X className="w-6 h-6" />
                 </button>
