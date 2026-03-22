@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun, LogOut } from 'lucide-react';
+import { Moon, Sun, LogOut, Menu } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 
 /* ── XP Progress Ring (SVG) ─────────────────────── */
@@ -43,12 +43,63 @@ export const Layout = ({
   const { isDark, toggleTheme } = useTheme();
   const isStudent = role === 'student';
   const firstName = user?.name?.split(' ')[0] || '';
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Listen to window resize and track mobile breakpoint
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 768px)');
+
+    const handleMediaChange = (e) => {
+      setIsMobile(!e.matches);
+      // Close sidebar if switching to desktop
+      if (e.matches) {
+        setSidebarOpen(false);
+      }
+    };
+
+    // Set initial state
+    setIsMobile(!mediaQuery.matches);
+
+    mediaQuery.addEventListener('change', handleMediaChange);
+    return () => mediaQuery.removeEventListener('change', handleMediaChange);
+  }, []);
+
+  // Handle navigation item click on mobile
+  const handleNavClick = (itemId) => {
+    onNavigate(itemId);
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-[#f5f5f7] dark:bg-[#09090b] transition-colors duration-300">
 
+      {/* ── Mobile Sidebar Backdrop ─────────────── */}
+      {isMobile && sidebarOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 z-40 bg-black/50"
+        />
+      )}
+
       {/* ── Sidebar: Dark glass panel ─────────────── */}
-      <aside className="w-[240px] flex flex-col bg-[#111113] border-r border-white/[0.06] select-none">
+      <aside
+        className={`
+          flex flex-col bg-[#111113] border-r border-white/[0.06] select-none
+          md:w-[240px] md:relative md:translate-x-0 md:z-auto
+          ${isMobile
+            ? 'fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-300'
+            : ''
+          }
+          ${isMobile && !sidebarOpen ? '-translate-x-full' : ''}
+        `}
+      >
 
         {/* Brand */}
         <div className="px-5 pt-6 pb-4">
@@ -122,7 +173,7 @@ export const Layout = ({
             return (
               <motion.button
                 key={item.id}
-                onClick={() => onNavigate(item.id)}
+                onClick={() => handleNavClick(item.id)}
                 className={`
                   w-full text-left px-3 py-2.5 rounded-xl transition-all duration-150 text-[13px] relative
                   ${isActive
@@ -186,9 +237,20 @@ export const Layout = ({
 
         {/* Topbar */}
         <header className="sticky top-0 z-20 backdrop-blur-xl bg-[#f5f5f7]/80 dark:bg-[#09090b]/80 border-b border-black/[0.04] dark:border-white/[0.06] px-8 h-[52px] flex items-center justify-between transition-colors duration-300">
-          <h1 className="text-[14px] font-semibold text-gray-800 dark:text-white/80">
-            {navItems.find((item) => item.id === activePage)?.label || 'My Money'}
-          </h1>
+          <div className="flex items-center gap-4">
+            {isMobile && (
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-gray-800 dark:text-white/60 hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-150"
+                aria-label="Toggle sidebar"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            )}
+            <h1 className="text-[14px] font-semibold text-gray-800 dark:text-white/80">
+              {navItems.find((item) => item.id === activePage)?.label || 'My Money'}
+            </h1>
+          </div>
           {user && (
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">

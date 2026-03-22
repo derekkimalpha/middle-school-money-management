@@ -13,3 +13,4 @@ export { Input } from './Input';
 export { Field } from './Field';
 export { AccountPicker } from './AccountPicker';
 export { Layout } from './Layout';
+export { ConfirmDialog } from './ConfirmDialog';

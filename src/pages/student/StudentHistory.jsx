@@ -142,14 +142,10 @@ export const StudentHistory = () => {
               <p className="text-[13px] text-gray-500 dark:text-white/50">Loading transactions...</p>
             </div>
           ) : filteredTransactions.length === 0 ? (
-            <div className="p-12 text-center dark:bg-white/[0.04]">
-              <div className="text-4xl mb-3">📭</div>
-              <p className="text-[13px] text-gray-500 dark:text-white/50 text-lg">No transactions yet</p>
-              <p className="text-[13px] text-gray-400 dark:text-white/40 text-sm">
-                {selectedFilter === 'all'
-                  ? 'Your transactions will appear here'
-                  : `No transactions in ${selectedFilter}`}
-              </p>
+            <div className="py-16 text-center">
+              <div className="text-4xl mb-3">📋</div>
+              <p className="text-sm font-semibold text-gray-500 dark:text-white/40">No transactions yet</p>
+              <p className="text-xs text-gray-400 dark:text-white/25 mt-1">Your transaction history will show up here after you log a paycheck or make a transfer</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-100 dark:divide-white/[0.06]">

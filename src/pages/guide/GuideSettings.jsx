@@ -17,6 +17,7 @@ export const GuideSettings = () => {
   const [editingJob, setEditingJob] = useState(null)
   const [newJob, setNewJob] = useState({ title: '', description: '', icon: '', weekly_pay: '' })
   const [toast, setToast] = useState(null)
+  const [activeTab, setActiveTab] = useState('classroom')
 
   useEffect(() => {
     fetchData()
@@ -262,8 +263,50 @@ export const GuideSettings = () => {
         <p className="text-lg text-gray-500 dark:text-white/50">Configure classroom, game rules, and job assignments</p>
       </motion.div>
 
-      {/* My Classroom Section */}
+      {/* Tab Navigation */}
       <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="flex gap-2 border-b border-gray-200 dark:border-white/[0.08]"
+      >
+        <button
+          onClick={() => setActiveTab('classroom')}
+          className={`px-4 py-3 rounded-lg text-sm font-semibold transition-colors ${
+            activeTab === 'classroom'
+              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+              : 'text-gray-500 dark:text-white/40 hover:text-gray-700 dark:hover:text-white/60'
+          }`}
+        >
+          Classroom
+        </button>
+        <button
+          onClick={() => setActiveTab('payrules')}
+          className={`px-4 py-3 rounded-lg text-sm font-semibold transition-colors ${
+            activeTab === 'payrules'
+              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+              : 'text-gray-500 dark:text-white/40 hover:text-gray-700 dark:hover:text-white/60'
+          }`}
+        >
+          Pay Rules
+        </button>
+        <button
+          onClick={() => setActiveTab('jobs')}
+          className={`px-4 py-3 rounded-lg text-sm font-semibold transition-colors ${
+            activeTab === 'jobs'
+              ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+              : 'text-gray-500 dark:text-white/40 hover:text-gray-700 dark:hover:text-white/60'
+          }`}
+        >
+          Jobs
+        </button>
+      </motion.div>
+
+      {/* Classroom Tab */}
+      {activeTab === 'classroom' && (
+        <>
+        {/* My Classroom Section */}
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
@@ -305,7 +348,12 @@ export const GuideSettings = () => {
           </div>
         )}
       </motion.div>
+        </>
+      )}
 
+      {/* Pay Rules Tab */}
+      {activeTab === 'payrules' && (
+        <>
       {/* Paycheck Rules Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -600,7 +648,12 @@ export const GuideSettings = () => {
           </div>
         )}
       </motion.div>
+        </>
+      )}
 
+      {/* Jobs Tab */}
+      {activeTab === 'jobs' && (
+        <>
       {/* Job Manager Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -742,6 +795,8 @@ export const GuideSettings = () => {
           ))}
         </div>
       </motion.div>
+        </>
+      )}
     </div>
   )
 }

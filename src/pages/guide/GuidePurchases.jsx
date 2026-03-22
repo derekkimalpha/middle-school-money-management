@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Check, X } from 'lucide-react'
-import { Button, Tag, Toast } from '../../components/shared'
+import { Button, Tag, Toast, ConfirmDialog } from '../../components/shared'
 import { formatCurrency } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
 
@@ -12,6 +12,7 @@ export const GuidePurchases = () => {
   const [filter, setFilter] = useState('all')
   const [processingId, setProcessingId] = useState(null)
   const [toast, setToast] = useState(null)
+  const [confirmAction, setConfirmAction] = useState(null)
 
   useEffect(() => {
     fetchPurchases()
@@ -216,9 +217,15 @@ export const GuidePurchases = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-12"
+          className="py-16 text-center"
         >
-          <p className="text-gray-500 dark:text-white/50 text-lg">No purchases found</p>
+          <div className="text-4xl mb-3">📦</div>
+          <p className="text-sm font-semibold text-gray-500 dark:text-white/40">No purchases found</p>
+          <p className="text-xs text-gray-400 dark:text-white/25 mt-1">
+            {filter === 'pending'
+              ? 'No pending requests right now'
+              : "Students haven't submitted any purchase requests yet"}
+          </p>
         </motion.div>
       ) : (
         <div className="space-y-4">
@@ -261,7 +268,7 @@ export const GuidePurchases = () => {
                 {purchase.status === 'pending' && (
                   <div className="border-t border-gray-200 dark:border-white/[0.08] pt-4 flex gap-3">
                     <Button
-                      onClick={() => approvePurchase(purchase)}
+                      onClick={() => setConfirmAction({ type: 'approve', purchase })}
                       disabled={processingId === purchase.id}
                       size="sm"
                       full
@@ -270,7 +277,7 @@ export const GuidePurchases = () => {
                       Approve
                     </Button>
                     <Button
-                      onClick={() => rejectPurchase(purchase.id)}
+                      onClick={() => setConfirmAction({ type: 'reject', purchase })}
                       disabled={processingId === purchase.id}
                       variant="danger"
                       size="sm"
@@ -286,6 +293,24 @@ export const GuidePurchases = () => {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmAction !== null}
+        title={confirmAction?.type === 'approve' ? 'Approve this purchase?' : 'Reject this purchase?'}
+        message={confirmAction ? `${confirmAction.purchase.item_name} - ${formatCurrency(confirmAction.purchase.price)}` : ''}
+        confirmLabel={confirmAction?.type === 'approve' ? 'Approve' : 'Reject'}
+        variant={confirmAction?.type === 'approve' ? 'primary' : 'danger'}
+        loading={processingId === confirmAction?.purchase?.id}
+        onConfirm={async () => {
+          if (confirmAction?.type === 'approve') {
+            await approvePurchase(confirmAction.purchase)
+          } else {
+            await rejectPurchase(confirmAction.purchase.id)
+          }
+          setConfirmAction(null)
+        }}
+        onCancel={() => setConfirmAction(null)}
+      />
     </div>
   )
 }

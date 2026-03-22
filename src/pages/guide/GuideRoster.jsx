@@ -234,8 +234,20 @@ export const GuideRoster = () => {
           ))}
         </div>
       ) : filteredStudents.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-slate-600 dark:text-gray-400">No students found</p>
+        <div className="py-16 text-center">
+          {students.length === 0 ? (
+            <>
+              <div className="text-4xl mb-3">👥</div>
+              <p className="text-sm font-semibold text-gray-500 dark:text-white/40">No students yet</p>
+              <p className="text-xs text-gray-400 dark:text-white/25 mt-1">Click '+ Add Student' to get started</p>
+            </>
+          ) : (
+            <>
+              <div className="text-4xl mb-3">🔍</div>
+              <p className="text-sm font-semibold text-gray-500 dark:text-white/40">No results</p>
+              <p className="text-xs text-gray-400 dark:text-white/25 mt-1">Try a different search term</p>
+            </>
+          )}
         </div>
       ) : (
         <div className="space-y-2 overflow-hidden">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Button, Field, FinTip, Input, Toast, Tag, AnimNum } from '../../components/shared'
+import { Button, Field, FinTip, Input, Toast, Tag, AnimNum, ConfirmDialog } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
 import { supabase } from '../../lib/supabase'
@@ -15,6 +15,7 @@ export const StudentPurchase = () => {
   const [purchases, setPurchases] = useState([])
   const [toast, setToast] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(null)
   const { accounts } = useAccounts(profile?.id)
 
   const checkingBalance = accounts?.checking || 0
@@ -106,6 +107,7 @@ export const StudentPurchase = () => {
 
       setPurchases(purchases.filter((p) => p.id !== id))
       setToast({ type: 'success', text: 'Purchase request deleted' })
+      setConfirmDelete(null)
     } catch (error) {
       console.error('Error deleting purchase:', error)
       setToast({ type: 'error', text: 'Failed to delete request' })
@@ -287,7 +289,7 @@ export const StudentPurchase = () => {
 
                     {purchase.status === 'pending' && (
                       <button
-                        onClick={() => handleDelete(purchase.id)}
+                        onClick={() => setConfirmDelete(purchase)}
                         className="p-2 text-gray-300 dark:text-white/40 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -324,13 +326,11 @@ export const StudentPurchase = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-center py-12"
+            className="py-16 text-center"
           >
             <div className="text-4xl mb-3">🛒</div>
-            <p className="text-gray-500 dark:text-white/50 text-[15px]">No purchase requests yet</p>
-            <p className="text-gray-400 dark:text-white/40 text-sm">
-              Submit a request above to get started
-            </p>
+            <p className="text-sm font-semibold text-gray-500 dark:text-white/40">No purchase requests</p>
+            <p className="text-xs text-gray-400 dark:text-white/25 mt-1">Submit a request above to buy something</p>
           </motion.div>
         )}
 
@@ -338,6 +338,16 @@ export const StudentPurchase = () => {
           Before making a big purchase, wait 24 hours. This is a real strategy that millionaires use! If you still want it after a day, it might be worth buying. But often, the urge passes and you save your money for something better.
         </FinTip>
       </div>
+
+      <ConfirmDialog
+        open={confirmDelete !== null}
+        title="Delete purchase request?"
+        message={confirmDelete ? `${confirmDelete.item_name} - ${formatCurrency(confirmDelete.price)}` : ''}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={() => confirmDelete && handleDelete(confirmDelete.id)}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </div>
   )
 }

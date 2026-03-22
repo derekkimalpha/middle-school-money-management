@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Check } from 'lucide-react'
-import { AnimNum, Button, Tag, Toast, Field } from '../../components/shared'
+import { AnimNum, Button, Tag, Toast, Field, ConfirmDialog } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { formatCurrency, ACCOUNT_META } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
@@ -21,6 +21,7 @@ export const GuideStudentDetail = () => {
   const [bonusDescription, setBonusDescription] = useState('')
   const [addingBonus, setAddingBonus] = useState(false)
   const [toast, setToast] = useState(null)
+  const [confirmPaycheck, setConfirmPaycheck] = useState(null)
 
   useEffect(() => {
     fetchStudent()
@@ -306,7 +307,7 @@ export const GuideStudentDetail = () => {
                   {paycheck.status === 'submitted' && (
                     <div className="border-t border-gray-200 dark:border-white/[0.08] pt-3 flex gap-2">
                       <Button
-                        onClick={() => verifyPaycheck(paycheck.id, paycheck.total_earnings)}
+                        onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: paycheck.total_earnings })}
                         disabled={verifyingPaycheck === paycheck.id}
                         size="sm"
                       >
@@ -326,7 +327,7 @@ export const GuideStudentDetail = () => {
                         />
                         {verifiedAmounts[paycheck.id] && (
                           <Button
-                            onClick={() => verifyPaycheck(paycheck.id, parseFloat(verifiedAmounts[paycheck.id]))}
+                            onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: parseFloat(verifiedAmounts[paycheck.id]) })}
                             disabled={verifyingPaycheck === paycheck.id}
                             size="sm"
                             variant="ghost"
@@ -424,6 +425,21 @@ export const GuideStudentDetail = () => {
           )}
         </div>
       </motion.div>
+
+      <ConfirmDialog
+        open={confirmPaycheck !== null}
+        title="Verify paycheck?"
+        message={confirmPaycheck ? `Amount: ${formatCurrency(confirmPaycheck.amount)}` : ''}
+        confirmLabel="Verify"
+        loading={verifyingPaycheck === confirmPaycheck?.id}
+        onConfirm={async () => {
+          if (confirmPaycheck) {
+            await verifyPaycheck(confirmPaycheck.id, confirmPaycheck.amount)
+          }
+          setConfirmPaycheck(null)
+        }}
+        onCancel={() => setConfirmPaycheck(null)}
+      />
     </div>
   )
 }
