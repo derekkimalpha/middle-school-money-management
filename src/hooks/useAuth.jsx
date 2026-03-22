@@ -5,76 +5,99 @@ export const useAuth = () => {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [debugMsg, setDebugMsg] = useState('Starting...')
+  const [debugMsg, setDebugMsg] = useState('Initializing...')
+
+  const fetchProfile = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      if (data && !error) {
+        setProfile(data)
+      } else {
+        setDebugMsg(`Profile error: ${error?.message || 'not found'}`)
+      }
+    } catch (err) {
+      setDebugMsg(`Profile fetch failed: ${err.message}`)
+    }
+  }
+
+  const handleSession = async (session) => {
+    if (session?.user) {
+      setUser({
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.user_metadata?.name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User'
+      })
+      await fetchProfile(session.user.id)
+    } else {
+      setUser(null)
+      setProfile(null)
+    }
+  }
 
   useEffect(() => {
-    const initAuth = async () => {
+    let mounted = true
+
+    const init = async () => {
       try {
-        setDebugMsg('Calling getSession...')
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-        setDebugMsg(`Session: ${session ? 'exists' : 'none'}, Error: ${sessionError?.message || 'none'}`)
+        // Check if we have a code in the URL (PKCE flow callback)
+        const params = new URLSearchParams(window.location.search)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1))
+        const code = params.get('code')
+        const accessToken = hashParams.get('access_token')
 
-        if (session?.user) {
-          setDebugMsg(`User: ${session.user.email}, fetching profile...`)
-          setUser({
-            id: session.user.id,
-            email: session.user.email,
-            name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User'
-          })
+        setDebugMsg(`Init: code=${!!code}, token=${!!accessToken}`)
 
-          // Fetch user profile
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single()
-
-          console.log('[AUTH] Profile:', profileData, 'Error:', profileError)
-
-          if (profileData && !profileError) {
-            setProfile(profileData)
+        if (code) {
+          // Exchange the code for a session (PKCE flow)
+          setDebugMsg('Exchanging code for session...')
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+          if (error) {
+            setDebugMsg(`Code exchange error: ${error.message}`)
+          } else if (data?.session) {
+            setDebugMsg(`Code exchange success: ${data.session.user.email}`)
+            if (mounted) {
+              await handleSession(data.session)
+              // Clean up the URL
+              window.history.replaceState({}, '', window.location.pathname)
+            }
           }
         } else {
-          console.log('[AUTH] No session found')
+          // No code, just check for existing session
+          setDebugMsg('Checking existing session...')
+          const { data: { session }, error } = await supabase.auth.getSession()
+          setDebugMsg(`Session check: ${session ? session.user.email : 'none'}, error: ${error?.message || 'none'}`)
+          if (mounted && session) {
+            await handleSession(session)
+          }
         }
-      } catch (error) {
-        console.error('[AUTH] Init error:', error)
+      } catch (err) {
+        setDebugMsg(`Init error: ${err.message}`)
       } finally {
-        console.log('[AUTH] Loading complete')
-        setLoading(false)
+        if (mounted) {
+          setLoading(false)
+        }
       }
     }
 
-    initAuth()
+    init()
 
-    // Subscribe to auth state changes
+    // Also listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (session?.user) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email,
-            name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User'
-          })
-
-          // Fetch updated profile
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single()
-
-          if (profileData) {
-            setProfile(profileData)
-          }
-        } else {
-          setUser(null)
-          setProfile(null)
+        setDebugMsg(`Auth event: ${event}`)
+        if (mounted) {
+          await handleSession(session)
+          if (loading) setLoading(false)
         }
       }
     )
 
     return () => {
+      mounted = false
       subscription?.unsubscribe()
     }
   }, [])
