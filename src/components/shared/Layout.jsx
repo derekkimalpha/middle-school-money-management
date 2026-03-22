@@ -93,17 +93,20 @@ export const Layout = ({
         {/* Composition notebook tape strip */}
         <div className="h-1.5 bg-pencil/80" />
 
-        {/* Brand */}
+        {/* Brand — clickable to go home */}
         <div className="px-5 pt-5 pb-4">
-          <div className="flex items-center gap-3">
+          <button
+            onClick={() => onNavigate('home')}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
             <div className="w-9 h-9 rounded-md bg-pencil flex items-center justify-center">
               <span className="text-[#243024] font-black text-sm">$</span>
             </div>
-            <div className="min-w-0">
-              <div className="text-[14px] font-hand font-bold text-white tracking-tight leading-tight text-[17px]">My Money</div>
+            <div className="min-w-0 text-left">
+              <div className="text-[17px] font-hand font-bold text-white tracking-tight leading-tight">My Money</div>
               <div className="text-[11px] text-white/30 font-medium mt-0.5 truncate">Alpha School</div>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Student Status */}
@@ -123,7 +126,7 @@ export const Layout = ({
               <div className="min-w-0 flex-1">
                 <div className="text-[14px] font-hand font-semibold text-white">{firstName}</div>
                 {level && (
-                  <span className="text-[12px] font-hand text-pencil">{level.icon} {level.name}</span>
+                  <span className="text-[12px] font-hand text-pencil">✦ {level.name}</span>
                 )}
               </div>
             </div>
@@ -171,7 +174,12 @@ export const Layout = ({
                 whileTap={{ scale: 0.97 }}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-[16px] w-5 text-center leading-none">{item.icon}</span>
+                  <div className="w-5 flex justify-center">
+                    {typeof item.icon === 'string'
+                      ? <span className="text-[16px] leading-none">{item.icon}</span>
+                      : <item.icon className="w-[18px] h-[18px]" />
+                    }
+                  </div>
                   <span>{item.label}</span>
                 </div>
                 {isActive && (

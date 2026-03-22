@@ -16,7 +16,7 @@ import {
   getLevel,
   getNextLevel,
 } from '../../lib/constants'
-import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight } from 'lucide-react'
+import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight, Banknote } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 
 const ACCOUNT_COLORS = {
@@ -35,24 +35,28 @@ const ACCOUNT_ICONS = {
 
 const ACCOUNT_TIPS = {
   checking: {
-    emoji: '🎒',
+    Icon: Wallet,
     title: 'Checking Account',
-    body: "Your everyday spending money — like the cash in your backpack, but digital. Use it to buy stuff!",
+    definition: 'A bank account designed for frequent transactions — deposits, withdrawals, and purchases. Money is available instantly.',
+    example: 'When you buy lunch or pay for a subscription, the money comes out of checking.',
   },
   savings: {
-    emoji: '🐷',
+    Icon: PiggyBank,
     title: 'Savings Account',
-    body: "Your piggy bank that actually grows! Money here earns interest — it's like getting paid for NOT spending.",
+    definition: 'A bank account that earns interest over time. Designed for money you want to keep and grow, not spend right away.',
+    example: 'If you deposit $100 at 4% annual interest, you earn $4 that year — without doing anything.',
   },
   sp500: {
-    emoji: '🏢',
-    title: 'S&P 500 Index',
-    body: "You own a tiny slice of the 500 biggest companies in America — Apple, Nike, Disney, you name it. Slow and steady wins the race!",
+    Icon: TrendingUp,
+    title: 'S&P 500 Index Fund',
+    definition: 'An investment that tracks the 500 largest U.S. companies (Apple, Amazon, Nike, etc.). Instead of picking one stock, you own a piece of all 500.',
+    example: 'The S&P 500 has averaged ~10% annual returns since 1957 — $100 invested becomes ~$110 after one year.',
   },
   nasdaq: {
-    emoji: '🚀',
-    title: 'NASDAQ Index',
-    body: "The tech-heavy one! Think Google, Tesla, and Netflix. It can zoom up fast, but also dip — that's the thrill of investing.",
+    Icon: BarChart3,
+    title: 'NASDAQ Index Fund',
+    definition: 'An investment focused on technology and growth companies (Google, Tesla, Netflix). Higher potential returns, but also bigger swings up and down.',
+    example: 'NASDAQ rose 43% in 2023 but dropped 33% in 2022 — that volatility is the trade-off for higher growth.',
   },
 }
 
@@ -61,15 +65,19 @@ const AccountTooltip = ({ tip, isVisible }) => (
     initial={{ opacity: 0, y: 8, scale: 0.95 }}
     animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 8, scale: 0.95 }}
     transition={{ duration: 0.2, ease: 'easeOut' }}
-    className="absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 pointer-events-none"
+    className="absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 pointer-events-none"
     style={{ display: isVisible ? 'block' : 'none' }}
   >
     <div className="relative bg-ink dark:bg-chalk-white rounded-sm p-4 shadow-[4px_4px_0px_rgba(0,0,0,0.15)] border-2 border-pencil/40">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-lg">{tip.emoji}</span>
+        <tip.Icon className="w-4 h-4 text-pencil" />
         <span className="text-sm font-hand font-bold text-chalk-white dark:text-ink">{tip.title}</span>
       </div>
-      <p className="text-xs leading-relaxed text-chalk-white/80 dark:text-ink-light">{tip.body}</p>
+      <p className="text-[11px] leading-relaxed text-chalk-white/90 dark:text-ink">{tip.definition}</p>
+      <div className="mt-2 pt-2 border-t border-chalk-white/20 dark:border-ink/20">
+        <p className="text-[10px] font-bold text-pencil dark:text-pencil-dark uppercase tracking-wider mb-0.5">Example</p>
+        <p className="text-[11px] leading-relaxed text-chalk-white/70 dark:text-ink-light">{tip.example}</p>
+      </div>
       {/* little arrow */}
       <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-3 h-3 rotate-45 bg-ink dark:bg-chalk-white border-r-2 border-b-2 border-pencil/40" />
     </div>
@@ -154,16 +162,16 @@ export const StudentDashboard = () => {
               Welcome back
             </p>
             <h1 className="text-4xl font-hand font-bold text-ink dark:text-chalk-white mt-1">
-              {firstName} 👋
+              {firstName}
             </h1>
           </div>
 
-          {/* Level badge — looks like a sticker */}
+          {/* Level badge */}
           <motion.div
-            className="flex items-center gap-2 rounded-lg px-4 py-2 bg-pencil/10 border-2 border-pencil/30 dark:bg-pencil/10 dark:border-pencil/20"
+            className="flex items-center gap-2 rounded-sm px-4 py-2 bg-pencil/10 border-2 border-pencil/30 dark:bg-pencil/10 dark:border-pencil/20"
             whileHover={{ scale: 1.05, rotate: -2 }}
           >
-            <span className="text-lg">{currentLevel?.icon}</span>
+            <DollarSign className="w-4 h-4 text-pencil-dark dark:text-pencil" />
             <span className="text-sm font-hand font-bold text-pencil-dark dark:text-pencil">
               {currentLevel?.name}
             </span>
@@ -179,7 +187,7 @@ export const StudentDashboard = () => {
           transition={{ delay: 0.08 }}
           className="rounded-sm p-8 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[3px_3px_0px_rgba(0,0,0,0.08)] dark:shadow-[3px_3px_0px_rgba(0,0,0,0.3)] notebook-grid"
         >
-          <p className="text-[11px] font-hand font-bold uppercase tracking-widest mb-2 text-ink-muted dark:text-white/50">
+          <p className="text-xs font-hand font-bold uppercase tracking-widest mb-2 text-ink-muted dark:text-white/60">
             Total Balance
           </p>
           <h2 className="text-5xl font-black tabular-nums text-ink dark:text-chalk-white">
@@ -210,12 +218,14 @@ export const StudentDashboard = () => {
             transition={{ delay: 0.12 }}
             className="rounded-sm p-6 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
           >
-            <p className="text-[11px] font-hand font-bold uppercase tracking-widest mb-4 text-ink-muted dark:text-white/50">
+            <p className="text-xs font-hand font-bold uppercase tracking-widest mb-4 text-ink-muted dark:text-white/60">
               Progress to Next Level
             </p>
 
             <div className="flex items-center gap-4 mb-3">
-              <span className="text-2xl flex-shrink-0">{currentLevel?.icon}</span>
+              <div className="w-8 h-8 rounded-sm bg-pencil/15 dark:bg-pencil/10 border border-pencil/30 dark:border-pencil/20 flex items-center justify-center flex-shrink-0">
+                <DollarSign className="w-4 h-4 text-pencil-dark dark:text-pencil" />
+              </div>
               <div className="flex-1">
                 <div className="h-4 rounded-sm overflow-hidden bg-paper-warm dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.06]">
                   <motion.div
@@ -229,7 +239,9 @@ export const StudentDashboard = () => {
                   />
                 </div>
               </div>
-              <span className="text-2xl flex-shrink-0">{nextLevel?.icon}</span>
+              <div className="w-8 h-8 rounded-sm bg-pencil/15 dark:bg-pencil/10 border border-pencil/30 dark:border-pencil/20 flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-4 h-4 text-pencil-dark dark:text-pencil" />
+              </div>
             </div>
 
             <div className="flex justify-between items-center">
@@ -246,7 +258,7 @@ export const StudentDashboard = () => {
 
       {/* ── Account Cards — paper cards with colored tape ── */}
       <div className="px-8 mb-6">
-        <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
+        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
           Your Accounts
         </h3>
 
@@ -278,7 +290,7 @@ export const StudentDashboard = () => {
                   <div className="flex items-center gap-2 mb-4 mt-1">
                     <Icon className="w-4 h-4 text-ink-muted dark:text-white/50" />
                     <div>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted dark:text-white/50 block">
+                      <span className="text-xs font-bold uppercase tracking-wider text-ink-muted dark:text-white/60 block">
                         {ACCOUNT_META[key]?.label}
                       </span>
                       {key === 'sp500' && <span className="text-[9px] text-ink-faint dark:text-white/30 block">Top 500 companies</span>}
@@ -298,15 +310,15 @@ export const StudentDashboard = () => {
 
       {/* ── Quick Actions — like sticky notes ── */}
       <div className="px-8 mb-6">
-        <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
+        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
           Quick Actions
         </h3>
 
         <div className="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 mt-4">
           {[
-            { label: 'Log Pay', icon: '💵', route: '/paycheck' },
-            { label: 'Transfer', icon: '🔄', route: '/transfer' },
-            { label: 'Buy', icon: '🛒', route: '/purchase' },
+            { label: 'Log Pay', Icon: Banknote, route: '/paycheck' },
+            { label: 'Transfer', Icon: Send, route: '/transfer' },
+            { label: 'Buy', Icon: ShoppingCart, route: '/purchase' },
           ].map((action, index) => (
             <motion.button
               key={action.label}
@@ -318,7 +330,7 @@ export const StudentDashboard = () => {
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 px-5 py-3 rounded-sm font-hand font-bold text-[15px] whitespace-nowrap flex-shrink-0 bg-pencil/10 border-2 border-pencil/30 text-pencil-dark dark:bg-pencil/10 dark:border-pencil/20 dark:text-pencil hover:bg-pencil/20 transition-colors"
             >
-              <span>{action.icon}</span>
+              <action.Icon className="w-4 h-4" />
               {action.label}
             </motion.button>
           ))}
@@ -348,7 +360,7 @@ export const StudentDashboard = () => {
 
       {/* ── Portfolio Breakdown — graph paper style ── */}
       <div className="px-8 mb-6">
-        <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
+        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
           Where Your Money Is
         </h3>
 
@@ -402,14 +414,14 @@ export const StudentDashboard = () => {
 
       {/* ── Learn Section — notebook tips ── */}
       <div className="px-8">
-        <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
+        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
           Level Up Your Knowledge
         </h3>
         <div className="space-y-3 mt-4">
           {[
-            { icon: '🏦', title: 'Why spread your money around?', body: 'Diversifying means spreading your money across different account types for different goals — checking for daily use, savings for safety, investments for growth.' },
-            { icon: '📈', title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth — think of it like owning a tiny piece of Apple, Microsoft, and hundreds of other stable businesses. NASDAQ focuses on tech companies, which can grow faster but are riskier. Both are great for long-term investing!' },
-            { icon: '💡', title: '50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.' },
+            { Icon: PiggyBank, title: 'Why spread your money around?', body: 'Diversifying means spreading your money across different account types for different goals — checking for daily use, savings for safety, investments for growth.' },
+            { Icon: TrendingUp, title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth — think of it like owning a tiny piece of Apple, Microsoft, and hundreds of other stable businesses. NASDAQ focuses on tech companies, which can grow faster but are riskier. Both are great for long-term investing!' },
+            { Icon: DollarSign, title: '50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.' },
           ].map((tip, i) => (
             <motion.details
               key={i}
@@ -419,7 +431,9 @@ export const StudentDashboard = () => {
               className="group rounded-sm border border-black/[0.08] dark:border-white/[0.06] bg-white dark:bg-white/[0.04] shadow-[2px_2px_0px_rgba(0,0,0,0.04)]"
             >
               <summary className="flex items-center gap-3 px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-paper-warm dark:hover:bg-white/[0.02]">
-                <span className="text-lg">{tip.icon}</span>
+                <div className="w-8 h-8 rounded-sm bg-pencil/10 dark:bg-pencil/10 border border-pencil/20 flex items-center justify-center flex-shrink-0">
+                  <tip.Icon className="w-4 h-4 text-pencil-dark dark:text-pencil" />
+                </div>
                 <span className="text-sm font-bold flex-1 text-ink dark:text-chalk-white">
                   {tip.title}
                 </span>

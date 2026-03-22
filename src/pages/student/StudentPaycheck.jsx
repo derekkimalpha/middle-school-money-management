@@ -122,7 +122,9 @@ export const StudentPaycheck = () => {
         if (existing.status !== 'draft' && existing.status !== 'rejected') {
           setSelectedPaycheck(existing)
           if (existing.status === 'verified') {
-            setView('tracker') // show tracker but will redirect to allocate
+            // Auto-show allocation view for approved paychecks
+            setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
+            setView('allocate')
           }
         }
       } else {
@@ -959,8 +961,8 @@ export const StudentPaycheck = () => {
         </div>
       </div>
 
-      {/* ── Sticky bottom bar: running total + lock-in ── */}
-      {isEditable && (
+      {/* ── Sticky bottom bar: running total + lock-in / allocate ── */}
+      {(isEditable || draftStatus === 'verified') && (
         <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-30 bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-xl border-t border-gray-200 dark:border-white/[0.06]">
           <div className="max-w-2xl mx-auto px-8 py-4 flex items-center justify-between">
             <div>
@@ -979,22 +981,35 @@ export const StudentPaycheck = () => {
                 </div>
               )}
             </div>
-            <button
-              onClick={handleLockIn}
-              disabled={loading || totalPaycheck <= 0}
-              className={`rounded-sm px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
-                totalPaycheck > 0 && !loading
-                  ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
-                  : 'bg-gray-100 dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
-              }`}
-            >
-              {loading ? 'Locking in...' : (
-                <>
-                  <Lock className="w-4 h-4" />
-                  Lock In My Pay
-                </>
-              )}
-            </button>
+            {draftStatus === 'verified' ? (
+              <button
+                onClick={() => {
+                  setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
+                  setView('allocate')
+                }}
+                className="rounded-sm px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 bg-pencil text-ink hover:bg-pencil-dark shadow-[2px_2px_0px_rgba(0,0,0,0.1)] animate-pulse"
+              >
+                <DollarSign className="w-4 h-4" />
+                Split to My Accounts
+              </button>
+            ) : (
+              <button
+                onClick={handleLockIn}
+                disabled={loading || totalPaycheck <= 0}
+                className={`rounded-sm px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
+                  totalPaycheck > 0 && !loading
+                    ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
+                    : 'bg-gray-100 dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
+                }`}
+              >
+                {loading ? 'Locking in...' : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    Lock In My Pay
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
       )}

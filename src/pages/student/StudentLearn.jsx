@@ -18,7 +18,7 @@ const TOPICS = [
         emoji: '🏛️',
         short: 'A system for trading value',
         full: 'Money is a medium of exchange that lets us trade goods and services. It has existed for thousands of years — from shells and salt to coins and digital currency. Today, money enables our entire economy and allows us to store value over time.',
-        funFact: 'The world's largest bill ever printed was a 100-trillion-dollar note from Zimbabwe. It could barely buy a loaf of bread!',
+        funFact: "The world's largest bill ever printed was a 100-trillion-dollar note from Zimbabwe. It could barely buy a loaf of bread!",
       },
       {
         term: 'Income',

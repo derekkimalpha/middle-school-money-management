@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../hooks/useTheme';
 
 export const DonutChart = ({
   data = [],
@@ -8,6 +9,7 @@ export const DonutChart = ({
   centerLabel = '',
   centerValue = '',
 }) => {
+  const { isDark } = useTheme();
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const center = size / 2;
@@ -41,7 +43,7 @@ export const DonutChart = ({
           cy={center}
           r={radius}
           fill="none"
-          stroke="#d4d0cb"
+          stroke={isDark ? 'rgba(255,255,255,0.08)' : '#d4d0cb'}
           strokeWidth={stroke}
         />
         {/* Data segments */}
@@ -73,7 +75,7 @@ export const DonutChart = ({
         <div className="absolute text-center">
           {centerValue && (
             <motion.div
-              className="text-2xl font-bold text-slate-900"
+              className="text-2xl font-bold text-ink dark:text-chalk-white"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5, duration: 0.4 }}
@@ -83,7 +85,7 @@ export const DonutChart = ({
           )}
           {centerLabel && (
             <motion.div
-              className="text-xs font-medium text-slate-500 uppercase tracking-wider"
+              className="text-xs font-medium text-ink-muted dark:text-white/60 uppercase tracking-wider"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
