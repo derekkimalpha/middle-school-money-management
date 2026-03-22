@@ -271,7 +271,7 @@ const StudentLearn = () => {
             <BookOpen size={32} className="text-blue-400" />
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold">Financial Literacy</h1>
-              <p className="text-slate-300 mt-1">Master money management with our interactive curriculum</p>
+              <p className="text-slate-300 mt-1">Alpha School's interactive money management curriculum</p>
             </div>
           </div>
         </div>

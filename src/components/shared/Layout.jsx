@@ -21,14 +21,12 @@ export const Layout = ({
         {/* Logo */}
         <div className="p-5 border-b border-slate-200 dark:border-gray-800">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-              $
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 dark:from-emerald-500 dark:to-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+              <span className="text-base">α</span>
             </div>
             <div>
-              <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">my money</div>
-              {role && (
-                <div className="text-[10px] text-slate-500 dark:text-gray-500 uppercase tracking-widest font-semibold">{role}</div>
-              )}
+              <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">My Money</div>
+              <div className="text-[10px] text-slate-400 dark:text-gray-500 font-medium tracking-wide">by Alpha School{role ? ` · ${role}` : ''}</div>
             </div>
           </div>
         </div>

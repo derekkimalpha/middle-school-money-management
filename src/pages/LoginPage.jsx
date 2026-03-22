@@ -21,10 +21,10 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="flex justify-center mb-8"
+            className="flex justify-center mb-6"
           >
-            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-sage-light to-sage text-white flex items-center justify-center shadow-lg">
-              <span className="text-3xl font-bold">$</span>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 text-white flex items-center justify-center shadow-lg">
+              <span className="text-3xl font-bold">α</span>
             </div>
           </motion.div>
 
@@ -33,9 +33,9 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="text-center text-5xl font-black text-slate-900 mb-2"
+            className="text-center text-4xl font-black text-slate-900 mb-1"
           >
-            my money
+            My Money
           </motion.h1>
 
           {/* Subtitle */}
@@ -43,9 +43,9 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-center text-slate-500 text-sm mb-8 uppercase tracking-wide"
+            className="text-center text-slate-400 text-xs mb-8 uppercase tracking-[0.2em] font-semibold"
           >
-            alpha school finance tracker
+            by Alpha School
           </motion.p>
 
           {/* Sign in button */}
@@ -101,7 +101,7 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="text-center text-xs text-slate-400 mt-8"
           >
-            SF campus · est. 2026
+            Alpha School · San Francisco
           </motion.p>
         </div>
       </motion.div>
