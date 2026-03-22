@@ -152,7 +152,7 @@ export const StudentPurchase = () => {
 
       <div className="max-w-2xl mx-auto space-y-6">
         <FinTip
-          icon="🛍️"
+          icon=""
           title="Needs vs Wants"
           color="from-stone-50 to-stone-100"
         >
@@ -180,7 +180,7 @@ export const StudentPurchase = () => {
                 from your Checking account
               </p>
             </div>
-            <div className="text-4xl">💰</div>
+            <div className="text-4xl"></div>
           </div>
         </motion.div>
 
@@ -331,13 +331,13 @@ export const StudentPurchase = () => {
             transition={{ delay: 0.3 }}
             className="py-16 text-center"
           >
-            <div className="text-4xl mb-3">🛒</div>
+            <div className="text-4xl mb-3"></div>
             <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No purchase requests yet</p>
             <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Fill out the form above to request a purchase</p>
           </motion.div>
         )}
 
-        <FinTip icon="💡" title="The 24-Hour Rule" color="from-stone-50 to-stone-100">
+        <FinTip icon="" title="The 24-Hour Rule" color="from-stone-50 to-stone-100">
           Before making a big purchase, wait 24 hours. This is a real strategy that millionaires use! If you still want it after a day, it might be worth buying. But often, the urge passes and you save your money for something better.
         </FinTip>
       </div>

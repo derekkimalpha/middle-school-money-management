@@ -219,7 +219,7 @@ export const GuidePurchases = () => {
           animate={{ opacity: 1 }}
           className="py-16 text-center"
         >
-          <div className="text-4xl mb-3">📦</div>
+          <div className="text-4xl mb-3"></div>
           <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No purchases found</p>
           <p className="text-xs text-ink-faint dark:text-white/25 mt-1">
             {filter === 'pending'

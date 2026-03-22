@@ -192,7 +192,7 @@ export const GuideClassStats = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-bold text-ink dark:text-chalk-white truncate">{student.full_name}</p>
-                  <p className="text-[10px] text-ink-faint dark:text-white/25">✦ {level.name}</p>
+                  <p className="text-[10px] text-ink-faint dark:text-white/25">· {level.name}</p>
                 </div>
                 <p className="text-sm font-black tabular-nums text-ink dark:text-chalk-white">
                   {formatCurrency(student.total)}
@@ -258,7 +258,7 @@ export const GuideClassStats = () => {
                   key={`${badge.student_id}-${badge.badge_id}`}
                   className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]"
                 >
-                  <span className="text-xl">{badge.badges?.icon || '🏆'}</span>
+                  <span className="text-xl">{badge.badges?.icon || ''}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-bold text-ink dark:text-chalk-white">{studentName}</p>
                     <p className="text-[11px] text-ink-faint dark:text-white/30">{badge.badges?.title}</p>

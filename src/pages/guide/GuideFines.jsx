@@ -16,7 +16,7 @@ export const GuideFines = () => {
 
   // Add fine type modal
   const [showAddType, setShowAddType] = useState(false)
-  const [newType, setNewType] = useState({ title: '', amount: '', description: '', icon: '⚠️' })
+  const [newType, setNewType] = useState({ title: '', amount: '', description: '', icon: '' })
   const [savingType, setSavingType] = useState(false)
 
   // Issue fine modal
@@ -26,7 +26,7 @@ export const GuideFines = () => {
   const [customNote, setCustomNote] = useState('')
   const [issuingFine, setIssuingFine] = useState(false)
 
-  const ICON_OPTIONS = ['⚠️', '⏰', '🔊', '📝', '📱', '👔', '🚫', '💤', '🗣️', '🎮', '❌', '🔴']
+  const ICON_OPTIONS = [] // icons removed for cleaner aesthetic
 
   useEffect(() => {
     fetchAll()
@@ -68,7 +68,7 @@ export const GuideFines = () => {
       })
       if (error) throw error
       setToast({ type: 'success', text: `"${newType.title}" fine type added` })
-      setNewType({ title: '', amount: '', description: '', icon: '⚠️' })
+      setNewType({ title: '', amount: '', description: '', icon: '' })
       setShowAddType(false)
       await fetchAll()
     } catch (err) {
@@ -172,7 +172,7 @@ export const GuideFines = () => {
               transition={{ delay: i * 0.04 }}
               className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] group"
             >
-              <span className="text-xl flex-shrink-0">{ft.icon}</span>
+              <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center text-xs font-bold text-rose-600 dark:text-rose-400">${ft.amount}</div>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold text-ink dark:text-chalk-white">{ft.title}</p>
                 {ft.description && (
@@ -217,7 +217,7 @@ export const GuideFines = () => {
                 onClick={() => openIssueFine(ft)}
                 className="flex items-center gap-2 p-3 rounded-lg border border-black/[0.06] dark:border-white/[0.06] hover:border-rose/30 hover:bg-rose-bg/50 dark:hover:bg-rose/[0.04] transition-all text-left"
               >
-                <span className="text-base">{ft.icon}</span>
+                <div className="w-6 h-6 rounded bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center text-[10px] font-bold text-rose-600 dark:text-rose-400">${ft.amount}</div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold text-ink dark:text-chalk-white truncate">{ft.title}</p>
                   <p className="text-[10px] font-bold text-rose">-${ft.amount}</p>
@@ -243,7 +243,7 @@ export const GuideFines = () => {
                 transition={{ delay: i * 0.03 }}
                 className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]"
               >
-                <span className="text-base">{fine.fine_type?.icon || '⚠️'}</span>
+                <div className="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center text-xs font-bold text-rose-600 dark:text-rose-400">${fine.amount}</div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
                     {fine.student?.full_name}

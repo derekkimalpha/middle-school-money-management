@@ -79,7 +79,7 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
 
           {/* Pencil doodle */}
           <p className="text-center text-sm font-hand text-ink-faint mt-6">
-            ✏️ Learn money. Have fun.
+             Learn money. Have fun.
           </p>
         </div>
       </motion.div>

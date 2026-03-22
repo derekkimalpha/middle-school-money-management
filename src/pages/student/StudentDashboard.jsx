@@ -24,7 +24,7 @@ import {
   TrendingUp, Send, ShoppingCart, Wallet, PiggyBank,
   BarChart3, ChevronRight, Banknote, ArrowUpRight,
   Sprout, Trophy, Flame, Target, Sparkles, BookOpen,
-  Clock, Star, X, Info, Lock, MapPin,
+  Clock, Star, X, Info, Lock, MapPin, GraduationCap,
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
@@ -52,19 +52,16 @@ const ACCOUNT_SUBTITLES = {
 const ACCOUNT_LEARN = {
   checking: {
     title: 'What is a Checking Account?',
-    emoji: '💳',
     body: 'A checking account is your everyday spending money. In real life, this is the account connected to your debit card. You use it to buy things, pay bills, and handle daily expenses. It doesn\'t earn interest, so it\'s not for growing money — it\'s for using money.',
     funFact: 'The average American uses their debit card 23 times per month.',
   },
   savings: {
     title: 'What is a Savings Account?',
-    emoji: '🏦',
     body: 'A savings account is where you park money you don\'t need right now. Banks pay you interest (free money!) for keeping it there, because they use your deposit to make loans to other people. It\'s low risk — your balance only goes up. Think of it as your "safe growth" account.',
     funFact: 'The highest savings rate in US history was 33% during WWII — people had nothing to buy!',
   },
   sp500: {
     title: 'What is the S&P 500?',
-    emoji: '🏛️',
     body: 'An index is a collection of stocks bundled together. The S&P 500 tracks the 500 biggest companies in America — Apple, Amazon, Google, McDonald\'s, Nike, and more. Instead of picking one company, you invest in ALL of them. It\'s considered lower-risk investing because if one company drops, the others balance it out. Historically returns ~10% per year.',
     funFact: 'If you invested $100 in the S&P 500 in 1980, it would be worth over $10,000 today.',
     riskLabel: 'Moderate Risk',
@@ -72,7 +69,6 @@ const ACCOUNT_LEARN = {
   },
   nasdaq: {
     title: 'What is the NASDAQ?',
-    emoji: '💻',
     body: 'The NASDAQ-100 is an index focused on the 100 biggest tech and growth companies — Apple, Microsoft, Tesla, Meta, Netflix. It\'s higher-risk than the S&P 500 because tech stocks are more volatile (bigger ups AND bigger downs). But historically, higher risk = higher reward over long periods. Great for people who can handle the ride.',
     funFact: 'The NASDAQ has outperformed the S&P 500 in 7 of the last 10 years.',
     riskLabel: 'Higher Risk / Higher Reward',
@@ -81,58 +77,58 @@ const ACCOUNT_LEARN = {
 }
 
 const LEVEL_DISPLAY = {
-  Rookie:   { emoji: '🌱', color: 'from-stone-300 to-stone-400' },
-  Saver:    { emoji: '🌿', color: 'from-sage to-teal' },
-  Investor: { emoji: '📈', color: 'from-teal to-sage' },
-  Baller:   { emoji: '💎', color: 'from-amber to-pencil' },
-  Tycoon:   { emoji: '👑', color: 'from-pencil to-amber' },
-  Legend:   { emoji: '🏆', color: 'from-amber to-rose' },
+  Rookie:   { label: 'R', color: 'from-stone-300 to-stone-400' },
+  Saver:    { label: 'S', color: 'from-sage to-teal' },
+  Investor: { label: 'I', color: 'from-teal to-sage' },
+  Baller:   { label: 'B', color: 'from-amber to-pencil' },
+  Tycoon:   { label: 'T', color: 'from-pencil to-amber' },
+  Legend:   { label: 'L', color: 'from-amber to-rose' },
 }
 
 const DAILY_STORIES = [
-  { title: 'The Janitor Who Died a Millionaire', story: 'Ronald Read was a gas station attendant and janitor in Vermont. He never earned more than $25/hour. But he quietly invested in stocks for decades. When he died at 92, he was worth $8 million. He left most of it to his local library and hospital. Patience beats salary.', icon: '🧹' },
-  { title: 'Why Netflix Almost Sold for $50M', story: 'In 2000, Netflix offered to sell itself to Blockbuster for $50 million. Blockbuster laughed them out of the room. Today Netflix is worth over $250 billion. Blockbuster went bankrupt. The lesson? Don\'t sleep on small things that are growing.', icon: '📺' },
-  { title: 'The $1 That Became $10,000', story: 'If you invested $1 in the S&P 500 in 1970, it would be worth over $200 today — and that\'s after crashes, recessions, and pandemics. The market always recovered. Every. Single. Time.', icon: '📈' },
-  { title: 'Warren Buffett\'s Biggest Regret', story: 'Warren Buffett bought his first stock at age 11. He\'s now worth $130+ billion. But he says his biggest regret is not starting EARLIER. He spent years wishing he\'d invested his paper route money at age 6.', icon: '🧓' },
-  { title: 'The Latte Factor', story: 'Spending $5/day on drinks = $1,825/year. Invested at 10% for 30 years, that\'s over $300,000. David Bach calls this "The Latte Factor" — small daily spending habits that secretly cost you a fortune over time.', icon: '☕' },
-  { title: 'How a Pizza Cost $100 Million', story: 'In 2010, someone bought two pizzas for 10,000 Bitcoin. At today\'s prices, those pizzas cost over $600 million. It\'s now celebrated as "Bitcoin Pizza Day" every May 22nd. Every financial decision has a future cost.', icon: '🍕' },
-  { title: 'The Psychology of Losing Money', story: 'Scientists found that losing $100 feels twice as painful as gaining $100 feels good. That\'s why people panic-sell during crashes. Smart investors know: the pain is temporary, but selling locks in the loss forever.', icon: '🧠' },
-  { title: 'The World\'s Greatest Investor Started Young', story: 'Peter Lynch ran the best-performing mutual fund in history from 1977-1990 — turning $1,000 into $28,000. His secret? "Invest in what you know." He bought stocks of stores and products he actually used.', icon: '🎯' },
-  { title: 'Why Rich People Stay Rich', story: 'Morgan Housel says wealth isn\'t about how much you earn — it\'s about what you DON\'T spend. A doctor earning $300k who spends $300k is broke. A teacher saving 20% of $50k is building real wealth. Wealth = what you don\'t see.', icon: '👀' },
-  { title: 'The Magic of Compounding', story: 'If you put $100 in an account earning 10% a year and never add another dollar: after 10 years you\'d have $259. After 30 years: $1,745. After 50 years: $11,739. All from one $100 bill. Time is the real investment.', icon: '✨' },
-  { title: 'How a Teenager Built a $5B Company', story: 'At 15, Catherine Cook and her brother saw their high school yearbook and thought "this should be online." They built myYearbook.com, grew it to 33 million users, and sold it for over $100 million. Ideas + action = wealth.', icon: '💡' },
-  { title: 'The 72 Rule', story: 'Want to know how long it takes to double your money? Divide 72 by your interest rate. At 10% returns, your money doubles every 7.2 years. At 4% savings interest, every 18 years. This is why investments grow faster than savings.', icon: '🔢' },
-  { title: 'Why Crashes Are Actually Good', story: 'The S&P 500 has crashed 20%+ about once every 4 years since 1950. But it\'s also gone up 10,000%+ total. Every crash was a sale — stocks at a discount. The people who kept investing during crashes are the richest.', icon: '🎢' },
-  { title: 'The Marshmallow Test (For Money)', story: 'In a famous experiment, kids who could wait 15 minutes to get TWO marshmallows instead of one ended up more successful in life. Money works the same way — the ability to delay spending is the #1 predictor of wealth.', icon: '🍬' },
-  { title: 'Jay-Z\'s Financial Lesson', story: 'Jay-Z went from selling CDs out of his car to a net worth of $2.5 billion. He says: "I\'m not a businessman — I\'m a business, man." He invested in companies (Tidal, Uber, Ace of Spades) instead of just spending. Ownership > paychecks.', icon: '🎤' },
-  { title: 'The Savings Secret Nobody Talks About', story: 'Most people think getting rich requires a huge salary. But studies show your savings RATE matters more than your income. Someone saving 50% of a $40k salary will retire before someone saving 5% of $200k. It\'s math, not magic.', icon: '🔑' },
-  { title: 'Apple Was Almost Bankrupt', story: 'In 1997, Apple was 90 days from going bankrupt. Steve Jobs came back and made one bet: simplify everything. If you invested $1,000 in Apple that year, it would be worth over $1,000,000 today. Sometimes the biggest winners look like losers first.', icon: '🍎' },
-  { title: 'Why Your Brain Hates Investing', story: 'Your brain is wired to avoid risk — it kept your ancestors alive. But in investing, taking zero risk is actually the riskiest move. Inflation eats your cash at ~3%/year. Not investing is choosing to lose money slowly.', icon: '🧠' },
-  { title: 'The Two Types of Money People', story: 'Morgan Housel says there are people who have money and people who look like they have money. The person driving a $80k car might be in $80k of debt. The person driving a Honda might have $2 million saved. You can\'t judge wealth by appearances.', icon: '🚗' },
-  { title: 'How Kids Your Age Made Millions', story: 'Moziah Bridges started a bow tie business at age 9. By 15, he\'d made over $600k and appeared on Shark Tank. He didn\'t wait to be "old enough." He started small, reinvested profits, and grew. That\'s what you\'re doing right now.', icon: '🎀' },
+  { title: 'The Janitor Who Died a Millionaire', story: 'Ronald Read was a gas station attendant and janitor in Vermont. He never earned more than $25/hour. But he quietly invested in stocks for decades. When he died at 92, he was worth $8 million. He left most of it to his local library and hospital. Patience beats salary.' },
+  { title: 'Why Netflix Almost Sold for $50M', story: 'In 2000, Netflix offered to sell itself to Blockbuster for $50 million. Blockbuster laughed them out of the room. Today Netflix is worth over $250 billion. Blockbuster went bankrupt. The lesson? Don\'t sleep on small things that are growing.' },
+  { title: 'The $1 That Became $10,000', story: 'If you invested $1 in the S&P 500 in 1970, it would be worth over $200 today — and that\'s after crashes, recessions, and pandemics. The market always recovered. Every. Single. Time.' },
+  { title: 'Warren Buffett\'s Biggest Regret', story: 'Warren Buffett bought his first stock at age 11. He\'s now worth $130+ billion. But he says his biggest regret is not starting EARLIER. He spent years wishing he\'d invested his paper route money at age 6.' },
+  { title: 'The Latte Factor', story: 'Spending $5/day on drinks = $1,825/year. Invested at 10% for 30 years, that\'s over $300,000. David Bach calls this "The Latte Factor" — small daily spending habits that secretly cost you a fortune over time.' },
+  { title: 'How a Pizza Cost $100 Million', story: 'In 2010, someone bought two pizzas for 10,000 Bitcoin. At today\'s prices, those pizzas cost over $600 million. It\'s now celebrated as "Bitcoin Pizza Day" every May 22nd. Every financial decision has a future cost.' },
+  { title: 'The Psychology of Losing Money', story: 'Scientists found that losing $100 feels twice as painful as gaining $100 feels good. That\'s why people panic-sell during crashes. Smart investors know: the pain is temporary, but selling locks in the loss forever.' },
+  { title: 'The World\'s Greatest Investor Started Young', story: 'Peter Lynch ran the best-performing mutual fund in history from 1977-1990 — turning $1,000 into $28,000. His secret? "Invest in what you know." He bought stocks of stores and products he actually used.' },
+  { title: 'Why Rich People Stay Rich', story: 'Morgan Housel says wealth isn\'t about how much you earn — it\'s about what you DON\'T spend. A doctor earning $300k who spends $300k is broke. A teacher saving 20% of $50k is building real wealth. Wealth = what you don\'t see.' },
+  { title: 'The Magic of Compounding', story: 'If you put $100 in an account earning 10% a year and never add another dollar: after 10 years you\'d have $259. After 30 years: $1,745. After 50 years: $11,739. All from one $100 bill. Time is the real investment.' },
+  { title: 'How a Teenager Built a $5B Company', story: 'At 15, Catherine Cook and her brother saw their high school yearbook and thought "this should be online." They built myYearbook.com, grew it to 33 million users, and sold it for over $100 million. Ideas + action = wealth.' },
+  { title: 'The 72 Rule', story: 'Want to know how long it takes to double your money? Divide 72 by your interest rate. At 10% returns, your money doubles every 7.2 years. At 4% savings interest, every 18 years. This is why investments grow faster than savings.' },
+  { title: 'Why Crashes Are Actually Good', story: 'The S&P 500 has crashed 20%+ about once every 4 years since 1950. But it\'s also gone up 10,000%+ total. Every crash was a sale — stocks at a discount. The people who kept investing during crashes are the richest.' },
+  { title: 'The Marshmallow Test (For Money)', story: 'In a famous experiment, kids who could wait 15 minutes to get TWO marshmallows instead of one ended up more successful in life. Money works the same way — the ability to delay spending is the #1 predictor of wealth.' },
+  { title: 'Jay-Z\'s Financial Lesson', story: 'Jay-Z went from selling CDs out of his car to a net worth of $2.5 billion. He says: "I\'m not a businessman — I\'m a business, man." He invested in companies (Tidal, Uber, Ace of Spades) instead of just spending. Ownership > paychecks.' },
+  { title: 'The Savings Secret Nobody Talks About', story: 'Most people think getting rich requires a huge salary. But studies show your savings RATE matters more than your income. Someone saving 50% of a $40k salary will retire before someone saving 5% of $200k. It\'s math, not magic.' },
+  { title: 'Apple Was Almost Bankrupt', story: 'In 1997, Apple was 90 days from going bankrupt. Steve Jobs came back and made one bet: simplify everything. If you invested $1,000 in Apple that year, it would be worth over $1,000,000 today. Sometimes the biggest winners look like losers first.' },
+  { title: 'Why Your Brain Hates Investing', story: 'Your brain is wired to avoid risk — it kept your ancestors alive. But in investing, taking zero risk is actually the riskiest move. Inflation eats your cash at ~3%/year. Not investing is choosing to lose money slowly.' },
+  { title: 'The Two Types of Money People', story: 'Morgan Housel says there are people who have money and people who look like they have money. The person driving a $80k car might be in $80k of debt. The person driving a Honda might have $2 million saved. You can\'t judge wealth by appearances.' },
+  { title: 'How Kids Your Age Made Millions', story: 'Moziah Bridges started a bow tie business at age 9. By 15, he\'d made over $600k and appeared on Shark Tank. He didn\'t wait to be "old enough." He started small, reinvested profits, and grew. That\'s what you\'re doing right now.' },
 ]
 
 const DAILY_FUN_FACTS = [
-  { fact: 'The average American has $65,000 in savings by age 30 — but the median is only $20,000. Averages can be misleading!', icon: '📊' },
-  { fact: 'A dollar bill lasts about 6.6 years in circulation before it\'s too worn out and gets shredded by the Federal Reserve.', icon: '💵' },
-  { fact: 'The stock market has returned an average of ~10% per year since 1926. But no single year is ever exactly "average."', icon: '📈' },
-  { fact: 'There\'s more Monopoly money printed each year than real U.S. currency. About $30 billion in Monopoly cash vs $7 billion real.', icon: '🎲' },
-  { fact: 'Credit cards were invented by accident in 1949 when a man forgot his wallet at a restaurant and felt embarrassed.', icon: '💳' },
-  { fact: 'If you saved a penny and doubled it every day for 30 days, you\'d have over $5.3 million. That\'s the power of compounding.', icon: '🪙' },
-  { fact: 'The word "budget" comes from the French word "bougette" — a small leather purse. Budgeting = knowing what\'s in your purse.', icon: '👛' },
-  { fact: 'About 78% of NFL players go broke within 5 years of retirement. Earning big doesn\'t matter without financial habits.', icon: '🏈' },
-  { fact: 'The first ATM was installed in London in 1967. Before that, you could only get cash during bank hours (9-3pm, no weekends).', icon: '🏧' },
-  { fact: 'Warren Buffett still lives in the same house he bought in 1958 for $31,500. It\'s now worth about $1.4 million.', icon: '🏠' },
-  { fact: 'The S&P 500 was only 500 companies when it started in 1957. Today it represents about 80% of total U.S. stock market value.', icon: '🏢' },
-  { fact: 'Teens who learn about money before 18 are 75% more likely to save regularly as adults. You\'re ahead of the game.', icon: '🎓' },
-  { fact: 'The NASDAQ is named after the National Association of Securities Dealers Automated Quotations. It was the first electronic stock exchange.', icon: '⚡' },
-  { fact: 'Inflation means $100 today will only buy about $74 worth of stuff in 10 years (at 3% inflation). Saving alone isn\'t enough — you need to invest.', icon: '🔥' },
-  { fact: 'The richest person in modern history was Mansa Musa, a 14th-century African king worth an estimated $400 billion in today\'s dollars.', icon: '👑' },
-  { fact: 'Americans spend an average of $219/month on subscriptions — but think they only spend about $86. Hidden spending adds up fast.', icon: '📱' },
-  { fact: 'Compound interest was called the "eighth wonder of the world" by Albert Einstein. Whether or not he actually said it, the math checks out.', icon: '🌍' },
-  { fact: 'The New York Stock Exchange started in 1792 under a buttonwood tree when 24 stockbrokers signed an agreement on Wall Street.', icon: '🌳' },
-  { fact: 'Only about 12% of Americans have a written financial plan. People with written plans save 2x more than those without one.', icon: '📝' },
-  { fact: 'The 50/30/20 rule: 50% of income to needs, 30% to wants, 20% to savings. It\'s the simplest budget that actually works.', icon: '🧮' },
+  { fact: 'The average American has $65,000 in savings by age 30 — but the median is only $20,000. Averages can be misleading!' },
+  { fact: 'A dollar bill lasts about 6.6 years in circulation before it\'s too worn out and gets shredded by the Federal Reserve.' },
+  { fact: 'The stock market has returned an average of ~10% per year since 1926. But no single year is ever exactly "average."' },
+  { fact: 'There\'s more Monopoly money printed each year than real U.S. currency. About $30 billion in Monopoly cash vs $7 billion real.' },
+  { fact: 'Credit cards were invented by accident in 1949 when a man forgot his wallet at a restaurant and felt embarrassed.' },
+  { fact: 'If you saved a penny and doubled it every day for 30 days, you\'d have over $5.3 million. That\'s the power of compounding.' },
+  { fact: 'The word "budget" comes from the French word "bougette" — a small leather purse. Budgeting = knowing what\'s in your purse.' },
+  { fact: 'About 78% of NFL players go broke within 5 years of retirement. Earning big doesn\'t matter without financial habits.' },
+  { fact: 'The first ATM was installed in London in 1967. Before that, you could only get cash during bank hours (9-3pm, no weekends).' },
+  { fact: 'Warren Buffett still lives in the same house he bought in 1958 for $31,500. It\'s now worth about $1.4 million.' },
+  { fact: 'The S&P 500 was only 500 companies when it started in 1957. Today it represents about 80% of total U.S. stock market value.' },
+  { fact: 'Teens who learn about money before 18 are 75% more likely to save regularly as adults. You\'re ahead of the game.' },
+  { fact: 'The NASDAQ is named after the National Association of Securities Dealers Automated Quotations. It was the first electronic stock exchange.' },
+  { fact: 'Inflation means $100 today will only buy about $74 worth of stuff in 10 years (at 3% inflation). Saving alone isn\'t enough — you need to invest.' },
+  { fact: 'The richest person in modern history was Mansa Musa, a 14th-century African king worth an estimated $400 billion in today\'s dollars.' },
+  { fact: 'Americans spend an average of $219/month on subscriptions — but think they only spend about $86. Hidden spending adds up fast.' },
+  { fact: 'Compound interest was called the "eighth wonder of the world" by Albert Einstein. Whether or not he actually said it, the math checks out.' },
+  { fact: 'The New York Stock Exchange started in 1792 under a buttonwood tree when 24 stockbrokers signed an agreement on Wall Street.' },
+  { fact: 'Only about 12% of Americans have a written financial plan. People with written plans save 2x more than those without one.' },
+  { fact: 'The 50/30/20 rule: 50% of income to needs, 30% to wants, 20% to savings. It\'s the simplest budget that actually works.' },
 ]
 
 const MILESTONES = [100, 250, 500, 1000, 2000, 5000]
@@ -381,7 +377,7 @@ export const StudentDashboard = () => {
             {/* Current tier badge */}
             <div className="flex-shrink-0">
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${LEVEL_DISPLAY[currentLevel?.name]?.color || 'from-stone-300 to-stone-400'} flex items-center justify-center shadow-sm`}>
-                <span className="text-2xl">{LEVEL_DISPLAY[currentLevel?.name]?.emoji || '🌱'}</span>
+                <span className="text-lg font-black text-white">{LEVEL_DISPLAY[currentLevel?.name]?.label || 'R'}</span>
               </div>
             </div>
 
@@ -401,7 +397,7 @@ export const StudentDashboard = () => {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[11px] text-ink-muted dark:text-white/40">
-                      Next: <span className="font-semibold">{LEVEL_DISPLAY[nextLevel.name]?.emoji} {nextLevel.name}</span> at {formatCurrency(nextLevel.min)}
+                      Next: <span className="font-semibold">{nextLevel.name}</span> at {formatCurrency(nextLevel.min)}
                     </span>
                     <span className="text-[11px] font-bold text-pencil">
                       {formatCurrency(nextLevel.min - totalBalance)} to go
@@ -430,7 +426,7 @@ export const StudentDashboard = () => {
               return (
                 <div key={level.name} className="flex-1 flex flex-col items-center gap-1">
                   <span className={`text-sm ${isActive ? '' : isPast ? 'opacity-60' : 'opacity-25 grayscale'}`}>
-                    {LEVEL_DISPLAY[level.name]?.emoji}
+                    {LEVEL_DISPLAY[level.name]?.label}
                   </span>
                   <span className={`text-[9px] font-bold ${isActive ? 'text-pencil' : isPast ? 'text-ink-muted dark:text-white/40' : 'text-ink-faint dark:text-white/20'}`}>
                     {level.name}
@@ -462,7 +458,6 @@ export const StudentDashboard = () => {
             }}
           >
             <div className="flex items-start gap-2.5">
-              <span className="text-xl flex-shrink-0">{dailyFact.icon}</span>
               <div className="min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-teal/70 dark:text-teal/50 mb-1">
                   Fun Fact
@@ -483,7 +478,6 @@ export const StudentDashboard = () => {
             }}
           >
             <div className="flex items-start gap-2.5">
-              <span className="text-xl flex-shrink-0">{dailyStory.icon}</span>
               <div className="min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-amber/70 dark:text-amber/50 mb-1">
                   Money Story
@@ -593,7 +587,7 @@ export const StudentDashboard = () => {
                 style={{ background: `linear-gradient(135deg, ${ACCOUNT_COLORS[learnPopup]?.light} 0%, transparent 100%)` }}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl">{ACCOUNT_LEARN[learnPopup].emoji}</span>
+                  
                   <h3 className="text-[16px] font-bold text-ink dark:text-chalk-white">
                     {ACCOUNT_LEARN[learnPopup].title}
                   </h3>
@@ -832,44 +826,41 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── MAP Rewards (locked) ── */}
-      {mapTests.length > 0 && (
+      {/* ── Roth IRA (MAP Rewards — locked) ── */}
+      {(accounts.roth > 0 || mapTests.length > 0) && (
         <div className="px-8 mb-8">
-          <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
-            MAP Rewards
-          </h3>
-          <div className="rounded-xl border border-amber-200/60 dark:border-amber-700/20 bg-gradient-to-r from-amber-50/80 to-orange-50/60 dark:from-amber-900/10 dark:to-orange-900/10 p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-amber-500" />
-                <span className="text-sm font-bold text-amber-800 dark:text-amber-300">
-                  {formatCurrency(mapTotal)} earned
-                </span>
+          <div className="rounded-xl border border-amber-200/60 dark:border-amber-700/20 bg-gradient-to-br from-amber-50/80 to-orange-50/40 dark:from-amber-900/10 dark:to-orange-900/5 p-5">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-semibold text-amber-600/70 dark:text-amber-400/60 uppercase tracking-wider">Roth IRA</span>
+                </div>
               </div>
               <span className="text-[10px] px-2 py-1 rounded-full bg-amber-200/50 dark:bg-amber-800/30 text-amber-700 dark:text-amber-400 font-semibold">
                 Locked until graduation
               </span>
             </div>
-            <div className="space-y-2">
-              {mapTests.map(test => (
-                <div key={test.id} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs">
-                      {test.subject === 'math' ? '🔢' : test.subject === 'reading' ? '📖' : test.subject === 'language' ? '✏️' : '🔬'}
+            <p className="text-2xl font-black tabular-nums text-amber-800 dark:text-amber-300 mb-2 mt-2">
+              {formatCurrency(accounts.roth || 0)}
+            </p>
+            <p className="text-[11px] text-amber-600/60 dark:text-amber-400/40 leading-relaxed">
+              Earned from MAP testing. Like a real Roth IRA, this money grows tax-free but can't be touched until you graduate.
+            </p>
+            {mapTests.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-amber-200/40 dark:border-amber-700/20 space-y-1.5">
+                {mapTests.filter(t => t.payout > 0).map(test => (
+                  <div key={test.id} className="flex items-center justify-between text-xs">
+                    <span className="text-amber-700/70 dark:text-amber-300/60 capitalize">
+                      {test.subject} · {test.percentile}th %ile
                     </span>
-                    <span className="text-amber-900/80 dark:text-amber-200/70 capitalize">{test.subject}</span>
-                    <span className="text-[10px] text-amber-600/50 dark:text-amber-400/40">
-                      {test.percentile}th %ile · {test.grade_level}
-                    </span>
-                  </div>
-                  {test.payout > 0 ? (
                     <span className="font-semibold text-amber-700 dark:text-amber-400">{formatCurrency(test.payout)}</span>
-                  ) : (
-                    <span className="text-[11px] text-gray-300 dark:text-white/15">—</span>
-                  )}
-                </div>
-              ))}
-            </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

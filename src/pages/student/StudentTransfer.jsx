@@ -117,7 +117,7 @@ export const StudentTransfer = () => {
 
       <div className="max-w-2xl mx-auto space-y-6">
         <FinTip
-          icon="💸"
+          icon=""
           title="How Transfers Work"
           color="from-stone-50 to-stone-100"
         >
@@ -290,7 +290,7 @@ export const StudentTransfer = () => {
           </div>
         </motion.div>
 
-        <FinTip icon="🧠" title="Think Before You Transfer" color="from-stone-50 to-stone-100">
+        <FinTip icon="" title="Think Before You Transfer" color="from-stone-50 to-stone-100">
           In real life, moving money between accounts is easy — but having a plan matters. Think about your goals: savings for safety, investments for growth, and checking for spending. The best money managers are intentional about every move!
         </FinTip>
       </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const FinTip = ({
-  icon = '💡',
+  icon = '',
   title = 'Tip',
   children,
   color

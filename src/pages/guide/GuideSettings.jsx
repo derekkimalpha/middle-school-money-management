@@ -158,7 +158,7 @@ export const GuideSettings = () => {
           session_id: activeSession.id,
           title: newJob.title,
           description: newJob.description,
-          icon: newJob.icon || '💼',
+          icon: newJob.icon || '',
           weekly_pay: parseFloat(newJob.weekly_pay),
           is_active: true
         })
@@ -890,7 +890,7 @@ export const GuideSettings = () => {
                 type="text"
                 value={newJob.icon}
                 onChange={(e) => setNewJob({ ...newJob, icon: e.target.value })}
-                placeholder="💼"
+                placeholder=""
                 maxLength="2"
                 className="w-full px-3 py-2 rounded-sm border border-black/[0.08] dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
               />

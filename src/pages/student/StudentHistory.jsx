@@ -95,7 +95,7 @@ export const StudentHistory = () => {
 
       <div className="max-w-3xl mx-auto space-y-6">
         <FinTip
-          icon="📋"
+          icon=""
           title="Track Your Transactions"
           color="from-stone-50 to-stone-100"
         >
@@ -144,7 +144,7 @@ export const StudentHistory = () => {
             </div>
           ) : filteredTransactions.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="text-4xl mb-3">📋</div>
+              <div className="text-4xl mb-3"></div>
               <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No transactions yet</p>
               <p className="text-xs text-ink-faint dark:text-white/25 mt-1">You'll see all your deposits, transfers, and purchases here once you start earning</p>
             </div>

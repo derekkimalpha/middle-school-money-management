@@ -4,6 +4,7 @@ import {
   TrendingUp,
   BarChart3,
   Gift,
+  Lock,
 } from 'lucide-react'
 
 // Account metadata with colors and icons
@@ -48,6 +49,14 @@ export const ACCOUNT_META = {
     borderColor: 'border-rose',
     icon: Gift,
   },
+  roth: {
+    label: 'Roth IRA',
+    tag: 'roth',
+    color: 'text-plum',
+    bgColor: 'bg-plum/[0.06]',
+    borderColor: 'border-plum',
+    icon: Lock,
+  },
 }
 
 // Transfer rules defining which accounts can transfer to which
@@ -57,6 +66,7 @@ export const TRANSFER_RULES = {
   sp500: ['checking', 'savings'],
   nasdaq: ['checking', 'savings'],
   bonus: ['checking', 'savings', 'sp500', 'nasdaq'],
+  roth: [], // Locked until graduation — no transfers allowed
 }
 
 // Grade levels

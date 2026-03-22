@@ -126,13 +126,13 @@ export const Layout = ({
               <div className="min-w-0 flex-1">
                 <div className="text-[14px] font-hand font-semibold text-white">{firstName}</div>
                 {level && (
-                  <span className="text-[12px] font-hand text-pencil">✦ {level.name}</span>
+                  <span className="text-[12px] font-hand text-pencil">· {level.name}</span>
                 )}
               </div>
             </div>
             {streak > 0 && (
               <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-pencil/10 border border-pencil/20">
-                <span className="text-[13px]">🔥</span>
+                <span className="text-[13px]"></span>
                 <span className="text-[12px] font-hand font-bold text-pencil">{streak}-day streak</span>
               </div>
             )}

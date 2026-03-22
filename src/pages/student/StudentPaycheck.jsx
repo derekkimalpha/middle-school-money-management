@@ -481,7 +481,7 @@ export const StudentPaycheck = () => {
             </p>
           </div>
 
-          <FinTip icon="📍" title="Smart Allocation" color="from-stone-50 to-stone-100">
+          <FinTip icon="" title="Smart Allocation" color="from-stone-50 to-stone-100">
             Think about your goals. Need something soon? Put more in checking. Building an emergency fund? Boost savings. Playing the long game? Feed your investments.
           </FinTip>
 
@@ -532,7 +532,7 @@ export const StudentPaycheck = () => {
                   {formatCurrency(Math.abs(total - allocTotal))}
                 </span>
               </div>
-              {isAllocValid && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold">✓ All funds allocated</p>}
+              {isAllocValid && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold">All funds allocated</p>}
             </div>
           </div>
 
@@ -588,7 +588,7 @@ export const StudentPaycheck = () => {
                   <div key={day} className="text-center p-2 rounded-sm bg-gray-50 dark:bg-white/[0.03]">
                     <p className="text-[11px] text-gray-400 dark:text-white/30">{day}</p>
                     <p className="text-lg font-bold text-ink dark:text-chalk-white tabular-nums">{xp}</p>
-                    {epic && <span className="text-xs">🔥</span>}
+                    {epic && <span className="text-xs font-bold text-pencil">E</span>}
                   </div>
                 )
               })}
@@ -596,19 +596,19 @@ export const StudentPaycheck = () => {
 
             <div className="text-sm text-gray-500 dark:text-white/40 mb-4">
               Total XP: <span className="font-bold">{totalXpDetail}</span> / {xpThreshold}
-              {epicCountDetail > 0 && <span className="ml-3">🔥 {epicCountDetail} epic days</span>}
+              {epicCountDetail > 0 && <span className="ml-3">{epicCountDetail} epic days</span>}
             </div>
 
             {/* Earnings breakdown */}
             <div className="space-y-2 border-t border-gray-200 dark:border-white/[0.06] pt-4">
               <h3 className="font-semibold text-ink dark:text-chalk-white mb-2 font-hand">Breakdown</h3>
               {p.base_pay > 0 && <div className="flex justify-between text-sm"><span className="text-gray-500 dark:text-white/40">Base Pay</span><span className="font-semibold">{formatCurrency(p.base_pay)}</span></div>}
-              {p.epic_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>🔥 Epic Bonus</span><span className="font-semibold">{formatCurrency(p.epic_bonus)}</span></div>}
-              {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>📈 XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
-              {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-sage-600 dark:text-sage-400"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
-              {p.job_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>💼 Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
-              {p.smart_goal > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>🎯 SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
-              {p.other_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
+              {p.epic_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>Epic Bonus</span><span className="font-semibold">{formatCurrency(p.epic_bonus)}</span></div>}
+              {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
+              {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-sage-600 dark:text-sage-400"><span>Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
+              {p.job_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
+              {p.smart_goal > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
+              {p.other_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
             </div>
 
             {/* Allocation (if already allocated) */}
@@ -756,7 +756,7 @@ export const StudentPaycheck = () => {
                           : 'bg-gray-100 dark:bg-white/[0.04] text-gray-400 dark:text-white/30 border border-transparent'
                       } ${!isEditable ? 'opacity-60 cursor-not-allowed' : ''}`}
                     >
-                      {isEpic ? '🔥 Epic' : 'Epic'}
+                      {isEpic ? 'Epic' : 'Epic'}
                     </button>
                   </div>
                 )
@@ -778,7 +778,7 @@ export const StudentPaycheck = () => {
                   transition={{ duration: 0.5 }}
                 />
               </div>
-              {xpProgress >= 100 && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold mt-2">✓ XP threshold reached — base pay earned!</p>}
+              {xpProgress >= 100 && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold mt-2">XP threshold reached — base pay earned!</p>}
             </div>
           </div>
 
@@ -791,14 +791,14 @@ export const StudentPaycheck = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{studentJob.icon || '💼'}</span>
+                  <span className="text-2xl">{studentJob.icon || 'J'}</span>
                   <div>
                     <p className="font-semibold text-ink dark:text-chalk-white">{studentJob.title}</p>
                     <p className="text-[13px] text-gray-500 dark:text-white/40">+{formatCurrency(studentJob.weekly_pay || 0)}/week</p>
                   </div>
                 </div>
                 <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${jobDone ? 'bg-pencil border-pencil-dark' : 'border-black/[0.15] dark:border-white/[0.15]'}`}>
-                  {jobDone && <span className="text-ink text-sm font-bold">✓</span>}
+                  {jobDone && <span className="text-ink text-sm font-bold">Done</span>}
                 </div>
               </div>
             </motion.div>
@@ -863,7 +863,7 @@ export const StudentPaycheck = () => {
                             <p className="text-[13px] text-gray-500 dark:text-white/40">+{formatCurrency(bonus.amount)}</p>
                           </div>
                           <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${entry.claimed ? 'bg-pencil border-pencil-dark' : 'border-black/[0.15] dark:border-white/[0.15]'}`}>
-                            {entry.claimed && <span className="text-ink text-sm font-bold">✓</span>}
+                            {entry.claimed && <span className="text-ink text-sm font-bold">Done</span>}
                           </div>
                         </div>
                       </motion.div>
@@ -951,7 +951,7 @@ export const StudentPaycheck = () => {
           {/* Learn tip */}
           <details className="bg-white dark:bg-white/[0.04] rounded-sm border border-gray-200 dark:border-white/[0.06] group">
             <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-              <span className="text-lg">🏦</span>
+              <span className="text-sm font-bold text-teal">Bank</span>
               <span className="text-sm font-semibold text-ink dark:text-chalk-white flex-1">Why Budget Your Paycheck?</span>
               <ChevronRight className="w-4 h-4 text-gray-300 dark:text-white/20 transition-transform group-open:rotate-90" />
             </summary>
@@ -974,11 +974,11 @@ export const StudentPaycheck = () => {
               {totalPaycheck > 0 && (
                 <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
                   {earnings.basePay > 0 && <span className="text-[10px] text-gray-400 dark:text-white/30">Base {formatCurrency(earnings.basePay)}</span>}
-                  {earnings.epicBonus > 0 && <span className="text-[10px] text-stone-500">🔥 {formatCurrency(earnings.epicBonus)}</span>}
+                  {earnings.epicBonus > 0 && <span className="text-[10px] text-stone-500">Epic {formatCurrency(earnings.epicBonus)}</span>}
                   {earnings.bonusXp > 0 && <span className="text-[10px] text-stone-500">XP +{formatCurrency(earnings.bonusXp)}</span>}
-                  {earnings.masteryRewards > 0 && <span className="text-[10px] text-sage-500">📚 {formatCurrency(earnings.masteryRewards)}</span>}
-                  {earnings.jobPay > 0 && <span className="text-[10px] text-stone-500">💼 {formatCurrency(earnings.jobPay)}</span>}
-                  {earnings.customBonusTotal > 0 && <span className="text-[10px] text-stone-500">⭐ {formatCurrency(earnings.customBonusTotal)}</span>}
+                  {earnings.masteryRewards > 0 && <span className="text-[10px] text-sage-500">Tests {formatCurrency(earnings.masteryRewards)}</span>}
+                  {earnings.jobPay > 0 && <span className="text-[10px] text-stone-500">Job {formatCurrency(earnings.jobPay)}</span>}
+                  {earnings.customBonusTotal > 0 && <span className="text-[10px] text-stone-500">Other {formatCurrency(earnings.customBonusTotal)}</span>}
                 </div>
               )}
             </div>

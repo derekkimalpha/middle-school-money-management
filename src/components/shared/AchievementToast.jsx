@@ -112,7 +112,7 @@ export const AchievementToast = ({ achievements = [], onDismiss }) => {
             }}
             className="text-7xl mb-4"
           >
-            {current.icon || '🏆'}
+            {current.icon || '★'}
           </motion.div>
 
           {/* Title */}

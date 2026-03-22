@@ -15,7 +15,7 @@ export const Streak = ({ count = 0 }) => {
           repeatDelay: 1
         }}
       >
-        🔥
+        
       </motion.span>
       <span className="font-bold text-stone-100 dark:text-stone-900 text-sm">{count} day streak</span>
     </div>
