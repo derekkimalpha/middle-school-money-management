@@ -13,17 +13,17 @@ export const Button = ({
 }) => {
   const sizeClasses = {
     sm: 'px-3.5 py-1.5 text-[12px] gap-1.5 rounded-lg',
-    md: 'px-4 py-2 text-[13px] gap-2 rounded-lg',
-    lg: 'px-5 py-2.5 text-sm gap-2 rounded-xl'
+    md: 'px-4 py-2.5 text-[13px] gap-2 rounded-xl',
+    lg: 'px-6 py-3.5 text-sm gap-2 rounded-xl'
   };
 
   const variantClasses = {
-    primary: 'bg-[#1a1a2e] dark:bg-white/[0.12] text-white dark:text-white/90 hover:bg-[#16213e] dark:hover:bg-white/[0.18] shadow-sm shadow-black/5',
-    accent: 'bg-emerald-600 dark:bg-emerald-500 text-white hover:bg-emerald-700 dark:hover:bg-emerald-400 shadow-sm shadow-emerald-600/10',
-    ghost: 'border border-black/[0.1] dark:border-white/[0.1] text-black/70 dark:text-white/60 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] hover:border-black/[0.15] dark:hover:border-white/[0.15]',
-    danger: 'bg-red-500/90 dark:bg-red-500/80 text-white hover:bg-red-600 dark:hover:bg-red-500 shadow-sm shadow-red-500/10',
-    soft: 'bg-black/[0.04] dark:bg-white/[0.06] text-black/70 dark:text-white/60 hover:bg-black/[0.07] dark:hover:bg-white/[0.1]',
-    secondary: 'bg-black/[0.04] dark:bg-white/[0.06] text-black/70 dark:text-white/60 hover:bg-black/[0.07] dark:hover:bg-white/[0.1]',
+    primary: 'bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-700 hover:to-purple-700 shadow-md shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30',
+    accent: 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 shadow-md shadow-emerald-500/20',
+    ghost: 'border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20',
+    danger: 'bg-gradient-to-r from-red-500 to-rose-500 text-white hover:from-red-600 hover:to-rose-600 shadow-md shadow-red-500/20',
+    soft: 'bg-gray-100 dark:bg-white/[0.06] text-gray-700 dark:text-white/60 hover:bg-gray-200 dark:hover:bg-white/[0.1]',
+    secondary: 'bg-gray-100 dark:bg-white/[0.06] text-gray-700 dark:text-white/60 hover:bg-gray-200 dark:hover:bg-white/[0.1]',
   };
 
   return (
@@ -32,15 +32,15 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled}
       className={`
-        inline-flex items-center justify-center font-semibold transition-all duration-150
+        inline-flex items-center justify-center font-bold transition-all duration-200
         ${sizeClasses[size]}
         ${variantClasses[variant] || variantClasses.primary}
         ${full ? 'w-full' : ''}
         ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
         ${className}
       `}
-      whileHover={!disabled ? { y: -1 } : {}}
-      whileTap={!disabled ? { scale: 0.98 } : {}}
+      whileHover={!disabled ? { y: -1, scale: 1.01 } : {}}
+      whileTap={!disabled ? { scale: 0.97 } : {}}
     >
       {children}
     </motion.button>

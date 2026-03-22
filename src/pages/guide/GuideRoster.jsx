@@ -163,10 +163,10 @@ export const GuideRoster = () => {
         className="flex items-start justify-between gap-4"
       >
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Students</h1>
-          <p className="text-lg text-slate-600 dark:text-gray-400">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Students</h1>
+          <p className="text-lg text-gray-500 dark:text-white/50">
             {filteredStudents.length} {filteredStudents.length === 1 ? 'student' : 'students'} •{' '}
-            <span className="font-semibold text-sage">
+            <span className="font-bold text-violet-600 dark:text-violet-400">
               <AnimNum value={totalBalance} prefix="$" duration={600} />
             </span>
           </p>
@@ -189,7 +189,7 @@ export const GuideRoster = () => {
             initial="initial"
             animate="animate"
             transition={{ delay: 0.1 }}
-            className="bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-400 p-4 rounded-lg flex items-start gap-3"
+            className="bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-400 p-4 rounded-xl flex items-start gap-3"
           >
             <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
             <div>
@@ -205,7 +205,7 @@ export const GuideRoster = () => {
             initial="initial"
             animate="animate"
             transition={{ delay: 0.15 }}
-            className="bg-rose-50 dark:bg-rose-950/30 border-l-4 border-rose-400 p-4 rounded-lg flex items-start gap-3"
+            className="bg-rose-50 dark:bg-rose-500/10 border-l-4 border-rose-400 p-4 rounded-xl flex items-start gap-3"
           >
             <AlertCircle className="w-5 h-5 text-rose-600 mt-0.5 flex-shrink-0" />
             <div>
@@ -223,14 +223,14 @@ export const GuideRoster = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by name or email..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10 transition-all"
         />
       </div>
 
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div key={i} className="h-16 bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
           ))}
         </div>
       ) : filteredStudents.length === 0 ? (
@@ -252,26 +252,26 @@ export const GuideRoster = () => {
                 className="w-full text-left"
               >
                 <motion.div
-                  className="flex items-center gap-4 p-4 rounded-lg border border-slate-200 dark:border-gray-800 dark:bg-gray-900 hover:border-sage hover:bg-sage-bg dark:hover:bg-gray-800 transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#1a1625] hover:border-violet-300 dark:hover:border-violet-500/30 hover:shadow-md hover:shadow-violet-500/5 transition-all group"
                   whileHover={{ x: 4 }}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-sage to-teal flex items-center justify-center text-white font-semibold text-sm">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-violet-500/20">
                     {initials(student.full_name)}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-slate-900 dark:text-white truncate">{student.full_name}</p>
-                    <p className="text-sm text-slate-600 dark:text-gray-400 truncate">{student.email}</p>
+                    <p className="font-bold text-gray-900 dark:text-white truncate">{student.full_name}</p>
+                    <p className="text-sm text-gray-500 dark:text-white/40 truncate">{student.email}</p>
                   </div>
 
                   <div className="flex-shrink-0 text-right">
-                    <p className="font-bold text-lg text-slate-900 dark:text-white">
+                    <p className="font-extrabold text-lg text-gray-900 dark:text-white tabular-nums">
                       <AnimNum value={total} prefix="$" duration={600} />
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-gray-500">Total balance</p>
+                    <p className="text-xs text-gray-400 dark:text-white/30 font-medium">Total balance</p>
                   </div>
 
-                  <div className="flex-shrink-0 text-sage group-hover:translate-x-1 transition-transform">
+                  <div className="flex-shrink-0 text-violet-400 group-hover:translate-x-1 transition-transform">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -299,13 +299,13 @@ export const GuideRoster = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 w-full max-w-sm mx-4 p-6"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#1a1625] rounded-2xl shadow-2xl shadow-purple-500/10 z-50 w-full max-w-sm mx-4 p-6 border border-gray-200 dark:border-white/10"
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Add Student</h2>
+                <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">Add Student</h2>
                 <button
                   onClick={handleCloseModal}
-                  className="text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-400 transition-colors"
+                  className="text-gray-400 dark:text-white/30 hover:text-gray-600 dark:hover:text-white/60 transition-colors"
                 >
                   <X className="w-6 h-6" />
                 </button>

@@ -14,7 +14,7 @@ export const Input = ({
   return (
     <motion.div className="relative">
       {prefix && (
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black/40 dark:text-white/40 font-semibold text-[13px]">
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-white/40 font-bold text-[13px]">
           {prefix}
         </span>
       )}
@@ -25,12 +25,12 @@ export const Input = ({
         placeholder={placeholder}
         disabled={disabled}
         className={`
-          w-full rounded-lg border border-black/[0.1] dark:border-white/[0.1] transition-all duration-150
-          focus:outline-none focus:border-[#1a1a2e]/40 dark:focus:border-white/[0.25] focus:ring-2 focus:ring-[#1a1a2e]/5 dark:focus:ring-white/[0.05]
-          placeholder-black/30 dark:placeholder-white/25 text-[#1a1a2e] dark:text-white/90
-          ${prefix ? 'pl-8' : 'px-3'} py-2
-          ${big ? 'text-lg py-3' : 'text-[13px]'}
-          bg-white dark:bg-white/[0.04]
+          w-full rounded-xl border border-gray-200 dark:border-white/10 transition-all duration-200
+          focus:outline-none focus:border-violet-400 dark:focus:border-violet-500/50 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10
+          placeholder-gray-300 dark:placeholder-white/20 text-gray-900 dark:text-white
+          ${prefix ? 'pl-8' : 'px-4'} py-2.5
+          ${big ? 'text-lg py-3.5 font-bold' : 'text-[14px]'}
+          bg-white dark:bg-white/5
           disabled:opacity-40 disabled:cursor-not-allowed
           ${className}
         `}

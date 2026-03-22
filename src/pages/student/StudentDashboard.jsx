@@ -16,15 +16,15 @@ import {
   getLevel,
   getNextLevel,
 } from '../../lib/constants'
-import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight, BookOpen } from 'lucide-react'
+import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 
-// Refined account color system
+// Vibrant account colors for the game feel
 const ACCOUNT_COLORS = {
-  checking: { hex: '#10b981', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-emerald-500' },
-  savings: { hex: '#06b6d4', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-cyan-500' },
-  sp500: { hex: '#f59e0b', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-amber-500' },
-  nasdaq: { hex: '#8b5cf6', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-violet-500' },
+  checking: { hex: '#10b981', gradient: 'from-emerald-400 to-teal-500', darkGradient: 'from-emerald-500/20 to-teal-500/20', label: 'text-emerald-600 dark:text-emerald-400' },
+  savings: { hex: '#06b6d4', gradient: 'from-cyan-400 to-blue-500', darkGradient: 'from-cyan-500/20 to-blue-500/20', label: 'text-cyan-600 dark:text-cyan-400' },
+  sp500: { hex: '#f59e0b', gradient: 'from-amber-400 to-orange-500', darkGradient: 'from-amber-500/20 to-orange-500/20', label: 'text-amber-600 dark:text-amber-400' },
+  nasdaq: { hex: '#8b5cf6', gradient: 'from-violet-400 to-purple-500', darkGradient: 'from-violet-500/20 to-purple-500/20', label: 'text-violet-600 dark:text-violet-400' },
 }
 
 const ACCOUNT_ICONS = {
@@ -68,9 +68,9 @@ export const StudentDashboard = () => {
 
   if (loading || !accounts || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen bg-[#f8f9fb] dark:bg-[#0a0a0f]">
+      <div className="flex items-center justify-center h-screen">
         <motion.div
-          className="w-10 h-10 border-[3px] border-black/[0.08] dark:border-white/[0.08] border-t-black/20 dark:border-t-white/20 rounded-full"
+          className="w-12 h-12 border-4 border-violet-200 dark:border-violet-900 border-t-violet-600 dark:border-t-violet-400 rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -96,87 +96,85 @@ export const StudentDashboard = () => {
   const firstName = profile?.full_name?.split(' ')[0] || 'Friend'
 
   return (
-    <div className="min-h-screen pb-24 transition-colors duration-300">
+    <div className="pb-24">
       <Toast message={toast} />
 
-      {/* ── Header Section ────────────────────────────── */}
-      <div className="px-8 pt-8 pb-8">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <div className="flex items-baseline justify-between mb-6">
-            <div>
-              <p className="text-black/50 dark:text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">
-                Welcome back
-              </p>
-              <h1 className="text-3xl font-semibold text-[#1a1a2e] dark:text-white/90">
-                {firstName}
-              </h1>
-            </div>
-            <div className="flex items-center gap-2.5 bg-black/[0.04] dark:bg-white/[0.06] rounded-lg px-3.5 py-2">
-              <span className="text-base">{currentLevel?.icon}</span>
-              <span className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90">
-                {currentLevel?.name}
-              </span>
-            </div>
-          </div>
+      {/* ── Hero Section ──────────────────────────── */}
+      <div className="relative overflow-hidden">
+        {/* Gradient hero background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-900/50 dark:via-purple-900/40 dark:to-indigo-900/30" />
+        {/* Animated blobs */}
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-pink-400/20 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-cyan-400/15 rounded-full blur-[60px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
+        {/* Dot pattern */}
+        <div className="absolute inset-0 opacity-[0.06]" style={{
+          backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+          backgroundSize: '24px 24px'
+        }} />
 
-          {/* Balance Display */}
-          <div>
-            <p className="text-black/40 dark:text-white/30 text-xs font-semibold uppercase tracking-widest mb-2.5">
-              Total Balance
-            </p>
-            <h2 className="text-5xl font-semibold text-[#1a1a2e] dark:text-white/90 tracking-tight tabular-nums">
-              <AnimNum value={totalBalance} prefix="$" />
-            </h2>
-          </div>
-
-          {/* Level Progress */}
-          {nextLevel && (
-            <div className="mt-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-medium text-black/50 dark:text-white/40">
-                  {currentLevel?.name}
-                </span>
-                <span className="text-xs font-medium text-black/50 dark:text-white/40">
-                  {nextLevel.name} · {formatCurrency(nextLevelThreshold - totalBalance)} to go
-                </span>
+        <div className="relative z-10 px-8 pt-8 pb-10">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            {/* Greeting + Level */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-white/60 text-sm font-medium">Welcome back</p>
+                <h1 className="text-3xl font-extrabold text-white mt-1">{firstName} 👋</h1>
               </div>
-              <div className="w-full bg-black/[0.06] dark:bg-white/[0.06] rounded-full h-1">
-                <motion.div
-                  className="h-1 rounded-full bg-emerald-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${levelProgress}%` }}
-                  transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-                />
-              </div>
+              <motion.div
+                className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg shadow-purple-900/20"
+                whileHover={{ scale: 1.05 }}
+              >
+                <span className="text-lg">{currentLevel?.icon}</span>
+                <span className="text-sm font-bold text-white">{currentLevel?.name}</span>
+              </motion.div>
             </div>
-          )}
-        </motion.div>
+
+            {/* Total Balance — big and bold */}
+            <div className="mb-2">
+              <p className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Total Balance</p>
+              <h2 className="text-5xl font-extrabold text-white tracking-tight tabular-nums">
+                <AnimNum value={totalBalance} prefix="$" />
+              </h2>
+            </div>
+
+            {/* Level Progress */}
+            {nextLevel && (
+              <div className="mt-5">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-xs font-bold text-white/60">{currentLevel?.name}</span>
+                  <span className="text-xs font-bold text-white/60">{nextLevel.name} · {formatCurrency(nextLevelThreshold - totalBalance)} to go</span>
+                </div>
+                <div className="w-full bg-white/15 rounded-full h-3 overflow-hidden">
+                  <motion.div
+                    className="h-3 rounded-full bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 shadow-sm shadow-amber-400/30"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${levelProgress}%` }}
+                    transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
+                  />
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </div>
       </div>
 
-      {/* ── Portfolio Breakdown Card ────────────────────── */}
-      <div className="px-8 mb-8">
+      {/* ── Portfolio Breakdown ────────────────── */}
+      <div className="px-8 -mt-5 relative z-10 mb-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12, duration: 0.5 }}
-          className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-8 transition-colors duration-300"
+          transition={{ delay: 0.12 }}
+          className="bg-white dark:bg-[#1a1625] rounded-2xl border border-gray-200 dark:border-white/[0.08] p-6 shadow-xl shadow-purple-500/5 dark:shadow-purple-500/10"
         >
-          <div className="flex items-center justify-between mb-7">
-            <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest">
-              Portfolio
-            </h3>
-            <span className="text-xs font-medium text-black/50 dark:text-white/40">
-              {donutData.length} accounts
-            </span>
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Portfolio</h3>
+            <span className="text-xs font-medium text-gray-500 dark:text-white/40">{donutData.length} accounts</span>
           </div>
 
-          <div className="flex items-center gap-12">
-            {/* Donut Chart */}
+          <div className="flex items-center gap-8">
             <div className="flex-shrink-0">
               {donutData.length > 0 ? (
                 <DonutChart
@@ -187,47 +185,36 @@ export const StudentDashboard = () => {
                   centerLabel="Total"
                 />
               ) : (
-                <div className="w-[140px] h-[140px] rounded-full bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center">
-                  <span className="text-xs font-medium text-black/40 dark:text-white/30">No funds</span>
+                <div className="w-[140px] h-[140px] rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                  <span className="text-gray-400 text-sm">No funds</span>
                 </div>
               )}
             </div>
 
-            {/* Account Legend */}
             <div className="flex-1 space-y-4">
               {Object.entries(ACCOUNT_COLORS).map(([key, colors]) => {
                 const balance = accounts[key] || 0
                 const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
 
                 return (
-                  <div key={key} className="space-y-2">
+                  <div key={key} className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div
-                          className="w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: colors.hex }}
-                        />
-                        <span className="text-sm font-medium text-[#1a1a2e] dark:text-white/90">
-                          {ACCOUNT_META[key]?.label}
-                        </span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.hex }} />
+                        <span className="text-sm font-semibold text-gray-700 dark:text-white/80">{ACCOUNT_META[key]?.label}</span>
                       </div>
-                      <span className="text-sm font-semibold text-[#1a1a2e] dark:text-white/90 tabular-nums">
-                        {formatCurrency(balance)}
-                      </span>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white tabular-nums">{formatCurrency(balance)}</span>
                     </div>
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex-1 bg-black/[0.04] dark:bg-white/[0.06] rounded-full h-1.5">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-gray-100 dark:bg-white/[0.06] rounded-full h-2 overflow-hidden">
                         <motion.div
-                          className="h-1.5 rounded-full"
-                          style={{ backgroundColor: colors.hex }}
+                          className={`h-2 rounded-full bg-gradient-to-r ${colors.gradient}`}
                           initial={{ width: 0 }}
                           animate={{ width: `${pct}%` }}
                           transition={{ duration: 0.8, delay: 0.3 }}
                         />
                       </div>
-                      <span className="text-[11px] font-medium text-black/50 dark:text-white/40 tabular-nums w-6 text-right">
-                        {pct}%
-                      </span>
+                      <span className="text-[11px] font-bold text-gray-400 dark:text-white/40 tabular-nums w-7 text-right">{pct}%</span>
                     </div>
                   </div>
                 )
@@ -237,10 +224,10 @@ export const StudentDashboard = () => {
         </motion.div>
       </div>
 
-      {/* ── Account Cards ──────────────────────────────── */}
+      {/* ── Account Cards — Colorful gradient cards ─── */}
       <div className="px-8 mb-8">
-        <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest mb-4">
-          Accounts
+        <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+          Your Accounts
         </h3>
 
         <div className="grid grid-cols-2 gap-4">
@@ -253,84 +240,79 @@ export const StudentDashboard = () => {
                 key={key}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.18 + index * 0.06, duration: 0.5 }}
-                className="group"
+                transition={{ delay: 0.18 + index * 0.06 }}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="cursor-pointer"
               >
-                <button
-                  onClick={() => navigate(`/account/${key}`)}
-                  className="w-full bg-white dark:bg-[#111118] border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 transition-all duration-200 hover:border-black/[0.12] dark:hover:border-white/[0.12] hover:bg-black/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.98]"
+                <div className={`relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br ${colors.gradient} shadow-lg`}
+                  style={{ boxShadow: `0 8px 24px ${colors.hex}30` }}
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: colors.hex + '15' }}
-                    >
-                      <Icon className="w-4.5 h-4.5" style={{ color: colors.hex }} />
+                  {/* Decorative circle */}
+                  <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full" />
+                  <div className="absolute -right-2 -bottom-6 w-16 h-16 bg-white/5 rounded-full" />
+
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Icon className="w-5 h-5 text-white/80" />
+                      <span className="text-xs font-bold text-white/80 uppercase tracking-wider">
+                        {ACCOUNT_META[key]?.label}
+                      </span>
                     </div>
+                    <p className="text-2xl font-extrabold text-white tabular-nums">
+                      <AnimNum value={balance} prefix="$" />
+                    </p>
                   </div>
-                  <p className="text-xs font-semibold text-black/50 dark:text-white/40 uppercase tracking-widest mb-1.5">
-                    {ACCOUNT_META[key]?.label}
-                  </p>
-                  <p className="text-xl font-semibold text-[#1a1a2e] dark:text-white/90 tabular-nums">
-                    <AnimNum value={balance} prefix="$" />
-                  </p>
-                </button>
+                </div>
               </motion.div>
             )
           })}
         </div>
       </div>
 
-      {/* ── Quick Actions ──────────────────────────────── */}
+      {/* ── Quick Actions — Bold and inviting ────── */}
       <div className="px-8 mb-8">
-        <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest mb-4">
+        <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
           Quick Actions
         </h3>
 
         <div className="space-y-3">
           {[
-            { label: 'Log Paycheck', desc: 'Submit your weekly earnings', icon: DollarSign, color: '#10b981', route: '/paycheck' },
-            { label: 'Transfer Funds', desc: 'Move money between accounts', icon: Send, color: '#1a1a2e', route: '/transfer' },
-            { label: 'Purchase Request', desc: 'Ask to buy something', icon: ShoppingCart, color: '#f59e0b', route: '/purchase' },
+            { label: 'Log Paycheck', desc: 'Submit your weekly earnings', icon: '💵', color: 'from-emerald-500 to-teal-500', route: '/paycheck' },
+            { label: 'Transfer Funds', desc: 'Move money between accounts', icon: '🔄', color: 'from-violet-500 to-purple-500', route: '/transfer' },
+            { label: 'Purchase Request', desc: 'Ask to buy something', icon: '🛒', color: 'from-amber-500 to-orange-500', route: '/purchase' },
           ].map((action, index) => (
             <motion.button
               key={action.label}
-              initial={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.36 + index * 0.06, duration: 0.5 }}
+              transition={{ delay: 0.36 + index * 0.08 }}
               onClick={() => navigate(action.route)}
-              className="w-full flex items-center gap-4 px-5 py-4 bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] hover:border-black/[0.12] dark:hover:border-white/[0.12] hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-all text-left group active:scale-[0.98]"
+              whileHover={{ x: 4 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full flex items-center gap-4 px-5 py-4 bg-white dark:bg-[#1a1625] rounded-2xl border border-gray-200 dark:border-white/[0.08] hover:border-violet-300 dark:hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5 transition-all text-left group"
             >
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: action.color + '20' }}
-              >
-                <action.icon className="w-4.5 h-4.5" style={{ color: action.color }} />
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center text-xl shadow-md`}>
+                {action.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#1a1a2e] dark:text-white/90">
-                  {action.label}
-                </p>
-                <p className="text-xs text-black/50 dark:text-white/40">
-                  {action.desc}
-                </p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{action.label}</p>
+                <p className="text-xs text-gray-500 dark:text-white/40 font-medium">{action.desc}</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-black/30 dark:text-white/20 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+              <ChevronRight className="w-5 h-5 text-gray-300 dark:text-white/20 group-hover:text-violet-500 dark:group-hover:text-violet-400 group-hover:translate-x-1 transition-all" />
             </motion.button>
           ))}
         </div>
       </div>
 
-      {/* ── Achievements ────────────────────────────────── */}
+      {/* ── Achievements ──────────────────────── */}
       {badges.length > 0 && (
         <div className="px-8 mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest">
-              Achievements
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+              Achievements 🏆
             </h3>
-            <span className="text-xs font-medium text-black/50 dark:text-white/40">
-              {badges.length} earned
-            </span>
+            <span className="text-xs font-bold text-violet-600 dark:text-violet-400">{badges.length} earned</span>
           </div>
           <div className="overflow-x-auto pb-2 -mx-8 px-8">
             <div className="flex gap-4 min-w-max">
@@ -342,10 +324,10 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── Learn Section ────────────────────────────── */}
+      {/* ── Learn Section — Fun expandable tips ── */}
       <div className="px-8">
-        <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest mb-4">
-          Learn
+        <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+          Level Up Your Knowledge 📚
         </h3>
         <div className="space-y-3">
           {[
@@ -357,17 +339,15 @@ export const StudentDashboard = () => {
               key={i}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.48 + i * 0.06, duration: 0.5 }}
-              className="group bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06]"
+              transition={{ delay: 0.5 + i * 0.08 }}
+              className="group bg-white dark:bg-[#1a1625] rounded-2xl border border-gray-200 dark:border-white/[0.08] hover:border-violet-300 dark:hover:border-violet-500/30 transition-colors"
             >
-              <summary className="flex items-center gap-3 px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors rounded-xl">
-                <span className="text-base">{tip.icon}</span>
-                <span className="text-sm font-semibold text-[#1a1a2e] dark:text-white/90 flex-1">
-                  {tip.title}
-                </span>
-                <ChevronRight className="w-4 h-4 text-black/30 dark:text-white/20 transition-transform group-open:rotate-90" />
+              <summary className="flex items-center gap-3 px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <span className="text-lg">{tip.icon}</span>
+                <span className="text-sm font-bold text-gray-900 dark:text-white flex-1">{tip.title}</span>
+                <ChevronRight className="w-4 h-4 text-gray-400 dark:text-white/30 transition-transform group-open:rotate-90" />
               </summary>
-              <div className="px-5 pb-4 text-sm text-black/50 dark:text-white/40 leading-relaxed border-t border-black/[0.06] dark:border-white/[0.06] pt-4">
+              <div className="px-5 pb-4 text-sm text-gray-600 dark:text-white/50 leading-relaxed border-t border-gray-100 dark:border-white/[0.06] pt-4">
                 {tip.body}
               </div>
             </motion.details>
