@@ -177,7 +177,7 @@ export const GuideStudentDetail = () => {
       submitted: 'bg-stone-100 text-stone-700',
       verified: 'bg-sage-bg text-sage-700',
       allocated: 'bg-stone-100 text-stone-700',
-      rejected: 'bg-red-100 text-red-700',
+      returned: 'bg-red-100 text-red-700',
     }
     return colors[status] || 'bg-stone-100 text-stone-700'
   }
@@ -188,7 +188,7 @@ export const GuideStudentDetail = () => {
       submitted: 'Locked In',
       verified: 'Approved',
       allocated: 'Allocated',
-      rejected: 'Returned',
+      returned: 'Sent Back',
     }
     return labels[status] || status
   }
@@ -197,7 +197,7 @@ export const GuideStudentDetail = () => {
     try {
       const { error } = await supabase
         .from('weekly_paychecks')
-        .update({ status: 'rejected' })
+        .update({ status: 'returned' })
         .eq('id', paycheckId)
       if (error) throw error
       setToast({ type: 'success', text: 'Paycheck returned to student for corrections' })
@@ -278,7 +278,7 @@ export const GuideStudentDetail = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-white/[0.04] p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)] notebook-ruled"
+        className="bg-white dark:bg-white/[0.04] p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
       >
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center text-white dark:text-gray-900 font-bold text-2xl">

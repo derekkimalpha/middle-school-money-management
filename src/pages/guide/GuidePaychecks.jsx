@@ -52,7 +52,7 @@ export const GuidePaychecks = () => {
   const sortPaychecks = () => {
     const pending = paychecks.filter(p => p.status === 'submitted')
     const recent = paychecks
-      .filter(p => p.status === 'verified' || p.status === 'rejected')
+      .filter(p => p.status === 'verified' || p.status === 'returned')
       .slice(0, 10)
 
     setPendingPaychecks(pending)
@@ -87,7 +87,7 @@ export const GuidePaychecks = () => {
       setProcessingId(paycheckId)
       const { error } = await supabase
         .from('weekly_paychecks')
-        .update({ status: 'rejected' })
+        .update({ status: 'returned' })
         .eq('id', paycheckId)
 
       if (error) throw error
@@ -104,7 +104,7 @@ export const GuidePaychecks = () => {
     const colors = {
       submitted: 'bg-stone-100 dark:bg-white/[0.08] text-stone-700 dark:text-white/80',
       verified: 'bg-sage-bg dark:bg-white/[0.08] text-sage-700 dark:text-white/80',
-      rejected: 'bg-red-100 dark:bg-white/[0.08] text-red-800 dark:text-red-400'
+      returned: 'bg-red-100 dark:bg-white/[0.08] text-red-800 dark:text-red-400'
     }
     return colors[status] || 'bg-gray-100 dark:bg-white/[0.08] text-gray-700 dark:text-white/80'
   }
@@ -113,7 +113,7 @@ export const GuidePaychecks = () => {
     switch (status) {
       case 'verified':
         return <CheckCircle className="w-4 h-4" />
-      case 'rejected':
+      case 'returned':
         return <XCircle className="w-4 h-4" />
       case 'submitted':
         return <Clock className="w-4 h-4" />
@@ -126,7 +126,7 @@ export const GuidePaychecks = () => {
     const labels = {
       submitted: 'Pending',
       verified: 'Approved',
-      rejected: 'Returned'
+      returned: 'Sent Back'
     }
     return labels[status] || status
   }
@@ -161,11 +161,11 @@ export const GuidePaychecks = () => {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-1"
       >
-        <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white font-hand">Paychecks</h1>
+        <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white font-hand">Review Paychecks</h1>
         <p className="text-lg text-ink-muted dark:text-white/50">
           {pendingPaychecks.length > 0
-            ? `${pendingPaychecks.length} paycheck${pendingPaychecks.length === 1 ? '' : 's'} need your review`
-            : 'All paychecks reviewed'}
+            ? `${pendingPaychecks.length} paycheck${pendingPaychecks.length === 1 ? '' : 's'} waiting for you`
+            : 'You\u2019re all caught up!'}
         </p>
       </motion.div>
 
@@ -190,7 +190,7 @@ export const GuidePaychecks = () => {
         </div>
       ) : pendingPaychecks.length > 0 ? (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-ink dark:text-chalk-white font-hand">Pending Review</h2>
+          <h2 className="text-lg font-semibold text-ink dark:text-chalk-white font-hand">Needs Your Approval</h2>
           <div className="space-y-4">
             {pendingPaychecks.map((paycheck, index) => (
               <motion.div
@@ -225,7 +225,7 @@ export const GuidePaychecks = () => {
                   </div>
 
                   <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-4">
-                    <p className="text-sm text-ink-muted dark:text-white/50">Total Earnings</p>
+                    <p className="text-sm text-ink-muted dark:text-white/50">Total Pay</p>
                     <p className="text-3xl font-extrabold text-pencil-dark dark:text-pencil mt-1">
                       {formatCurrency(paycheck.total_earnings || 0)}
                     </p>
@@ -249,7 +249,7 @@ export const GuidePaychecks = () => {
                       full
                     >
                       <XCircle className="w-4 h-4 mr-2 inline" />
-                      Return
+                      Send Back
                     </Button>
                   </div>
                 </div>
@@ -264,9 +264,9 @@ export const GuidePaychecks = () => {
           className="py-16 text-center"
         >
           <FileCheck className="w-12 h-12 mx-auto mb-3 text-pencil-dark/20 dark:text-pencil/20" />
-          <p className="text-sm font-semibold text-ink-muted dark:text-white/40">All paychecks reviewed</p>
+          <p className="text-sm font-semibold text-ink-muted dark:text-white/40">Nothing to review</p>
           <p className="text-xs text-ink-faint dark:text-white/25 mt-1">
-            No pending paychecks right now
+            All student paychecks are up to date
           </p>
         </motion.div>
       )}
@@ -332,9 +332,9 @@ export const GuidePaychecks = () => {
 
       <ConfirmDialog
         open={confirmAction !== null}
-        title={confirmAction?.type === 'approve' ? 'Approve this paycheck?' : 'Return this paycheck?'}
+        title={confirmAction?.type === 'approve' ? 'Approve this paycheck?' : 'Send this back for edits?'}
         message={confirmAction ? `${confirmAction.paycheck.profiles.full_name} - ${confirmAction.paycheck.week_label || new Date(confirmAction.paycheck.created_at).toLocaleDateString()} - ${formatCurrency(confirmAction.paycheck.total_earnings || 0)}` : ''}
-        confirmLabel={confirmAction?.type === 'approve' ? 'Approve' : 'Return'}
+        confirmLabel={confirmAction?.type === 'approve' ? 'Approve' : 'Send Back'}
         variant={confirmAction?.type === 'approve' ? 'primary' : 'danger'}
         loading={processingId === confirmAction?.paycheck?.id}
         onConfirm={async () => {

@@ -16,7 +16,7 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
         transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
         className="relative z-10 w-full max-w-[400px]"
       >
-        <div className="bg-[#faf8f4] rounded-sm p-10 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] border border-black/[0.1] notebook-ruled relative">
+        <div className="bg-[#faf8f4] rounded-sm p-10 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] border border-black/[0.1] relative">
           {/* Red margin line */}
           <div className="absolute top-0 bottom-0 left-[60px] w-[2px] bg-margin/40" />
 

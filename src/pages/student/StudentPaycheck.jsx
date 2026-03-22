@@ -22,7 +22,7 @@ const STATUS_CONFIG = {
   submitted: { label: 'Locked In', color: 'bg-stone-100/50 dark:bg-stone-500/[0.06] text-stone-700 dark:text-stone-400' },
   verified: { label: 'Approved', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
   allocated: { label: 'Allocated', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
-  rejected: { label: 'Returned — Please Fix', color: 'bg-red-500/10 dark:bg-red-400/10 text-red-600 dark:text-red-400' },
+  returned: { label: 'Sent Back — Please Fix', color: 'bg-red-500/10 dark:bg-red-400/10 text-red-600 dark:text-red-400' },
 }
 
 // Get today's day key (mon, tue, etc.) — returns null on weekends
@@ -119,7 +119,7 @@ export const StudentPaycheck = () => {
           setCustomBonuses(bonusMap)
         }
         // If it's not a draft, show tracker in read mode
-        if (existing.status !== 'draft' && existing.status !== 'rejected') {
+        if (existing.status !== 'draft' && existing.status !== 'returned') {
           setSelectedPaycheck(existing)
           if (existing.status === 'verified') {
             // Auto-show allocation view for approved paychecks
@@ -193,7 +193,7 @@ export const StudentPaycheck = () => {
 
   // ── Auto-save with debounce ──
   const autoSave = useCallback(async (updatedXp, updatedEpic, updatedJob, updatedBonuses) => {
-    if (!draftId || (draftStatus !== 'draft' && draftStatus !== 'rejected')) return
+    if (!draftId || (draftStatus !== 'draft' && draftStatus !== 'returned')) return
 
     setSaveStatus('saving')
     try {
@@ -431,7 +431,7 @@ export const StudentPaycheck = () => {
     })
   }
 
-  const isEditable = draftStatus === 'draft' || draftStatus === 'rejected'
+  const isEditable = draftStatus === 'draft' || draftStatus === 'returned'
 
   if (!profile) {
     return (
@@ -706,10 +706,10 @@ export const StudentPaycheck = () => {
             </button>
           </div>
         )}
-        {draftStatus === 'rejected' && (
+        {draftStatus === 'returned' && (
           <div className="p-3 rounded-sm bg-red-500/10 dark:bg-red-400/10 border border-red-500/20 dark:border-red-400/10 text-sm text-red-600 dark:text-red-400">
             <AlertCircle className="w-4 h-4 inline mr-1" />
-            Your guide returned this paycheck. Please make corrections and lock it in again.
+            Your guide sent this back — please fix it and submit again.
           </div>
         )}
 

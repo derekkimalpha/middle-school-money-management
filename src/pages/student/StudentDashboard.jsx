@@ -150,8 +150,8 @@ export const StudentDashboard = () => {
     <div className="pb-24">
       <Toast message={toast} />
 
-      {/* ── Notebook Header with ruled lines ── */}
-      <div className="notebook-ruled notebook-margin px-8 pt-8 pb-6 ml-4">
+      {/* ── Header ── */}
+      <div className="px-8 pt-8 pb-6">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -179,13 +179,13 @@ export const StudentDashboard = () => {
         </motion.div>
       </div>
 
-      {/* ── Balance Card — like a check or banknote ── */}
+      {/* ── Balance Card with Donut + Legend ── */}
       <div className="px-8 mb-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.08 }}
-          className="rounded-sm p-8 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[3px_3px_0px_rgba(0,0,0,0.08)] dark:shadow-[3px_3px_0px_rgba(0,0,0,0.3)] notebook-grid"
+          className="rounded-sm p-8 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[3px_3px_0px_rgba(0,0,0,0.08)] dark:shadow-[3px_3px_0px_rgba(0,0,0,0.3)]"
         >
           <p className="text-xs font-hand font-bold uppercase tracking-widest mb-2 text-ink-muted dark:text-white/60">
             Total Balance
@@ -196,14 +196,45 @@ export const StudentDashboard = () => {
           <span className="text-[11px] text-ink-muted dark:text-white/50 mt-1 block">across all accounts</span>
 
           {donutData.length > 0 && (
-            <div className="flex items-center justify-center mt-6">
-              <DonutChart
-                data={donutData}
-                size={160}
-                stroke={14}
-                centerValue={formatCurrency(totalBalance)}
-                centerLabel="Total"
-              />
+            <div className="flex items-center gap-8 mt-6">
+              {/* Donut */}
+              <div className="flex-shrink-0">
+                <DonutChart
+                  data={donutData}
+                  size={140}
+                  stroke={12}
+                  centerValue={formatCurrency(totalBalance)}
+                  centerLabel="Total"
+                />
+              </div>
+              {/* Legend */}
+              <div className="flex-1 space-y-3">
+                {Object.entries(ACCOUNT_COLORS).map(([key, colors]) => {
+                  const balance = accounts[key] || 0
+                  const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
+                  return (
+                    <div key={key} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-2.5 h-2.5 rounded-full"
+                          style={{ backgroundColor: colors.hex }}
+                        />
+                        <span className="text-sm text-ink-light dark:text-white/70">
+                          {ACCOUNT_META[key]?.label}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold tabular-nums text-ink dark:text-chalk-white">
+                          {formatCurrency(balance)}
+                        </span>
+                        <span className="text-xs tabular-nums text-ink-muted dark:text-white/40 w-8 text-right">
+                          {pct}%
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
         </motion.div>
@@ -256,9 +287,9 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── Account Cards — paper cards with colored tape ── */}
+      {/* ── Account Cards ── */}
       <div className="px-8 mb-6">
-        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
+        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4">
           Your Accounts
         </h3>
 
@@ -308,9 +339,9 @@ export const StudentDashboard = () => {
         </div>
       </div>
 
-      {/* ── Quick Actions — like sticky notes ── */}
+      {/* ── Quick Actions ── */}
       <div className="px-8 mb-6">
-        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
+        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4">
           Quick Actions
         </h3>
 
@@ -341,7 +372,7 @@ export const StudentDashboard = () => {
       {badges.length > 0 && (
         <div className="px-8 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white pencil-underline inline-block">
+            <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white">
               Achievements
             </h3>
             <span className="text-xs font-hand font-bold text-pencil-dark dark:text-pencil">
@@ -358,63 +389,9 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── Portfolio Breakdown — graph paper style ── */}
-      <div className="px-8 mb-6">
-        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
-          Where Your Money Is
-        </h3>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.20 }}
-          className="rounded-sm p-6 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)] notebook-grid mt-4"
-        >
-          <div className="space-y-4">
-            {Object.entries(ACCOUNT_COLORS).map(([key, colors]) => {
-              const balance = accounts[key] || 0
-              const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
-
-              return (
-                <div key={key} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-3 h-3 rounded-sm"
-                        style={{ backgroundColor: colors.hex }}
-                      />
-                      <span className="text-sm font-semibold text-ink-light dark:text-white/70">
-                        {ACCOUNT_META[key]?.label}
-                      </span>
-                    </div>
-                    <span className="text-sm font-bold tabular-nums text-ink dark:text-chalk-white">
-                      {formatCurrency(balance)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-2.5 rounded-sm overflow-hidden bg-paper-warm dark:bg-white/[0.06] border border-black/[0.04] dark:border-white/[0.04]">
-                      <motion.div
-                        className="h-full rounded-sm"
-                        style={{ backgroundColor: colors.hex }}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${pct}%` }}
-                        transition={{ duration: 0.8, delay: 0.3 }}
-                      />
-                    </div>
-                    <span className="text-xs font-hand font-bold tabular-nums w-8 text-right text-ink-muted dark:text-white/50">
-                      {pct}%
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* ── Learn Section — notebook tips ── */}
+      {/* ── Learn Section ── */}
       <div className="px-8">
-        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
+        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4">
           Level Up Your Knowledge
         </h3>
         <div className="space-y-3 mt-4">
@@ -439,7 +416,7 @@ export const StudentDashboard = () => {
                 </span>
                 <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-ink-faint dark:text-white/30" />
               </summary>
-              <div className="px-5 pb-4 text-sm leading-relaxed border-t border-black/[0.06] dark:border-white/[0.06] pt-4 text-ink-light dark:text-white/60 notebook-ruled notebook-margin ml-2">
+              <div className="px-5 pb-4 text-sm leading-relaxed border-t border-black/[0.06] dark:border-white/[0.06] pt-4 text-ink-light dark:text-white/60">
                 {tip.body}
               </div>
             </motion.details>

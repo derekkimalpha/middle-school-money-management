@@ -220,7 +220,7 @@ const StudentLearn = () => {
   return (
     <div className="pb-24">
       {/* ── Header ── */}
-      <div className="notebook-ruled notebook-margin px-8 pt-8 pb-6 ml-4">
+      <div className="px-8 pt-8 pb-6">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3">
             <BookOpen className="w-7 h-7 text-pencil-dark dark:text-pencil" />
@@ -317,7 +317,7 @@ const StudentLearn = () => {
               {/* Topic heading */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-lg">{topic.emoji}</span>
-                <h2 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white pencil-underline">
+                <h2 className="text-sm font-hand font-bold text-ink dark:text-chalk-white">
                   {topic.label}
                 </h2>
                 <span className="text-[10px] text-ink-faint dark:text-white/30 ml-1">

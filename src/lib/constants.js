@@ -81,37 +81,37 @@ export const LEVELS = [
   {
     name: 'Rookie',
     min: 0,
-    icon: '🌱',
+    icon: 'sprout',
     description: 'Just getting started',
   },
   {
     name: 'Saver',
     min: 200,
-    icon: '🪴',
+    icon: 'leaf',
     description: 'Growing your wealth',
   },
   {
     name: 'Investor',
     min: 500,
-    icon: '📈',
+    icon: 'trending-up',
     description: 'Making smart moves',
   },
   {
     name: 'Baller',
     min: 1000,
-    icon: '💎',
+    icon: 'gem',
     description: 'Living large',
   },
   {
     name: 'Tycoon',
     min: 2000,
-    icon: '👑',
+    icon: 'crown',
     description: 'Financial mastermind',
   },
   {
     name: 'Legend',
     min: 5000,
-    icon: '🏆',
+    icon: 'trophy',
     description: 'The ultimate money master',
   },
 ]
