@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import {
-  AnimNum,
-  DonutChart,
-  Badge,
-  Toast,
-} from '../../components/shared'
+import { AnimNum, Toast } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
 import { supabase } from '../../lib/supabase'
@@ -16,413 +11,344 @@ import {
   getLevel,
   getNextLevel,
 } from '../../lib/constants'
-import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight } from 'lucide-react'
-import { useTheme } from '../../hooks/useTheme'
+import {
+  Wallet,
+  PiggyBank,
+  TrendingUp,
+  BarChart3,
+  ArrowUpRight,
+  ArrowDownLeft,
+  ChevronRight,
+  DollarSign,
+  ArrowLeftRight,
+  ShoppingBag,
+} from 'lucide-react'
 
-// Clean account colors — no gradients on the cards themselves
-const ACCOUNT_COLORS = {
-  checking: { hex: '#10b981', label: 'text-emerald-600 dark:text-emerald-400' },
-  savings: { hex: '#06b6d4', label: 'text-cyan-600 dark:text-cyan-400' },
-  sp500: { hex: '#f59e0b', label: 'text-amber-600 dark:text-amber-400' },
-  nasdaq: { hex: '#3b82f6', label: 'text-blue-600 dark:text-blue-400' },
+// ── Account config ──────────────────────────────────
+const ACCOUNTS = {
+  checking: { hex: '#10b981', icon: Wallet },
+  savings: { hex: '#06b6d4', icon: PiggyBank },
+  sp500: { hex: '#f59e0b', icon: TrendingUp },
+  nasdaq: { hex: '#3b82f6', icon: BarChart3 },
 }
 
-const ACCOUNT_ICONS = {
-  checking: Wallet,
-  savings: PiggyBank,
-  sp500: TrendingUp,
-  nasdaq: BarChart3,
+// ── Transaction icon helper ─────────────────────────
+const txIcon = (type) => {
+  if (type === 'paycheck' || type === 'bonus') return DollarSign
+  if (type === 'transfer') return ArrowLeftRight
+  if (type === 'purchase') return ShoppingBag
+  return ArrowDownLeft
 }
+const txColor = (amount) => (amount >= 0 ? '#10b981' : '#ef4444')
 
 export const StudentDashboard = () => {
   const navigate = useNavigate()
-  const { user, profile } = useAuth()
-  const [badges, setBadges] = useState([])
-  const [toast, setToast] = useState(null)
+  const { profile } = useAuth()
   const { accounts, loading } = useAccounts(profile?.id)
-  const { isDark } = useTheme()
+  const [recentTx, setRecentTx] = useState([])
+  const [toast, setToast] = useState(null)
 
+  // Fetch recent transactions
   useEffect(() => {
     if (!profile?.id) return
-    const fetchBadges = async () => {
+    const fetchRecent = async () => {
       try {
-        const { data: badgeData } = await supabase
-          .from('student_badges')
-          .select('badge_id, badges:badge_definitions(*)')
+        const { data } = await supabase
+          .from('transactions')
+          .select('*')
           .eq('student_id', profile.id)
-        if (badgeData) {
-          setBadges(badgeData.map((sb) => ({
-            id: sb.badge_id,
-            title: sb.badges?.title || '',
-            icon: sb.badges?.icon || '',
-            description: sb.badges?.description || '',
-            earned: true,
-          })))
-        }
-      } catch (error) {
-        console.error('Error fetching badges:', error)
+          .order('created_at', { ascending: false })
+          .limit(5)
+        if (data) setRecentTx(data)
+      } catch (e) {
+        console.error('Error fetching transactions:', e)
       }
     }
-    fetchBadges()
+    fetchRecent()
   }, [profile?.id])
 
+  // ── Loading state ─────────────────────────────────
   if (loading || !accounts || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-full min-h-[60vh]">
         <motion.div
-          className="w-12 h-12 border-4 border-gray-200 dark:border-white/[0.12] border-t-teal-600 dark:border-t-teal-400 rounded-full"
+          className="w-10 h-10 border-[3px] border-gray-200 dark:border-white/10 border-t-gray-900 dark:border-t-white rounded-full"
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
         />
       </div>
     )
   }
 
+  // ── Derived data ──────────────────────────────────
   const totalBalance = Object.entries(accounts)
     .filter(([key]) => key !== 'bonus')
     .reduce((sum, [, bal]) => sum + bal, 0)
+
   const currentLevel = getLevel(totalBalance)
   const nextLevel = getNextLevel(totalBalance)
-  const nextLevelThreshold = nextLevel?.min || totalBalance
-  const levelProgress = nextLevel ? Math.min((totalBalance / nextLevelThreshold) * 100, 100) : 100
-
-  const donutData = Object.entries(ACCOUNT_COLORS)
-    .filter(([key]) => (accounts[key] || 0) > 0)
-    .map(([key, colors]) => ({
-      value: accounts[key],
-      color: colors.hex,
-    }))
+  const levelProgress = nextLevel
+    ? Math.min(
+        ((totalBalance - currentLevel.min) /
+          (nextLevel.min - currentLevel.min)) *
+          100,
+        100,
+      )
+    : 100
 
   const firstName = profile?.full_name?.split(' ')[0] || 'Friend'
 
+  // ── Render ────────────────────────────────────────
   return (
-    <div className={`pb-24 ${isDark ? 'bg-[#09090b]' : 'bg-[#f5f5f7]'}`}>
+    <div className="max-w-2xl mx-auto px-6 py-8 space-y-8">
       <Toast message={toast} />
 
-      {/* ── Clean Status Bar ─────────────────────── */}
-      <div className={`${isDark ? 'bg-[#09090b]' : 'bg-[#f5f5f7]'} px-8 pt-8 pb-6`}>
+      {/* ─── 1. BALANCE HERO ─────────────────────── */}
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center pt-2"
+      >
+        <p className="text-sm text-gray-500 dark:text-white/50 font-medium mb-1">
+          Hey {firstName}
+        </p>
+        <h1 className="text-[56px] leading-none font-black tracking-tight text-gray-900 dark:text-white tabular-nums">
+          <AnimNum value={totalBalance} prefix="$" />
+        </h1>
+        <p className="text-sm text-gray-400 dark:text-white/30 mt-2">Total balance</p>
+
+        {/* Level pill */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
+          className="inline-flex items-center gap-1.5 mt-4 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20"
+          whileHover={{ scale: 1.05 }}
         >
-          {/* Greeting left */}
-          <div>
-            <p className={`text-xs font-medium ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
-              Welcome back
-            </p>
-            <h1 className={`text-3xl font-black mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              {firstName} 👋
-            </h1>
-          </div>
-
-          {/* Level badge right */}
-          <motion.div
-            className={`flex items-center gap-2 rounded-full px-4 py-2 ${
-              isDark
-                ? 'bg-white/[0.04] border border-white/[0.06]'
-                : 'bg-white border border-gray-200'
-            }`}
-            whileHover={{ scale: 1.05 }}
-          >
-            <span className="text-lg">{currentLevel?.icon}</span>
-            <span className={`text-sm font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              {currentLevel?.name}
-            </span>
-          </motion.div>
+          <span className="text-base">{currentLevel?.icon}</span>
+          <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
+            {currentLevel?.name}
+          </span>
         </motion.div>
-      </div>
+      </motion.section>
 
-      {/* ── Glass Balance Card ──────────────────── */}
-      <div className="px-8 mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08 }}
-          className={`rounded-3xl p-8 ${
-            isDark
-              ? 'bg-white/[0.04] border border-white/[0.06]'
-              : 'bg-white border border-gray-200'
-          }`}
-        >
-          {/* Large balance number */}
-          <p className={`text-xs font-bold uppercase tracking-widest mb-3 ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
-            Total Balance
-          </p>
-          <h2 className={`text-5xl font-black tabular-nums mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            <AnimNum value={totalBalance} prefix="$" />
-          </h2>
-
-          {/* Subtle donut chart inside the card */}
-          {donutData.length > 0 && (
-            <div className="flex items-center justify-center">
-              <DonutChart
-                data={donutData}
-                size={160}
-                stroke={14}
-                centerValue={formatCurrency(totalBalance)}
-                centerLabel="Total"
-              />
-            </div>
-          )}
-        </motion.div>
-      </div>
-
-      {/* ── XP Progress Section ─────────────────── */}
-      {nextLevel && (
-        <div className="px-8 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12 }}
-            className={`rounded-2xl p-6 ${
-              isDark
-                ? 'bg-white/[0.04] border border-white/[0.06]'
-                : 'bg-white border border-gray-200'
-            }`}
-          >
-            <p className={`text-xs font-bold uppercase tracking-widest mb-4 ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
-              Progress to Next Level
-            </p>
-
-            {/* Icons left and right with bar in middle */}
-            <div className="flex items-center gap-4 mb-3">
-              <span className="text-2xl flex-shrink-0">{currentLevel?.icon}</span>
-              <div className="flex-1">
-                <div className={`h-3 rounded-full overflow-hidden ${isDark ? 'bg-white/[0.06]' : 'bg-gray-100'}`}>
-                  <motion.div
-                    className="h-3 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${levelProgress}%` }}
-                    transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-                  />
-                </div>
-              </div>
-              <span className="text-2xl flex-shrink-0">{nextLevel?.icon}</span>
-            </div>
-
-            {/* Progress text */}
-            <div className="flex justify-between items-center">
-              <span className={`text-xs font-semibold ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
-                {currentLevel?.name}
-              </span>
-              <span className={`text-xs font-semibold ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
-                {nextLevel.name} · {formatCurrency(nextLevelThreshold - totalBalance)} to go
-              </span>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-      {/* ── Credit-Card Style Account Cards ────── */}
-      <div className="px-8 mb-8">
-        <h3 className={`text-xs font-black uppercase tracking-widest mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Your Accounts
-        </h3>
-
-        <div className="grid grid-cols-2 gap-4">
-          {Object.entries(ACCOUNT_COLORS).map(([key, colors], index) => {
+      {/* ─── 2. ACCOUNT CARDS (horizontal scroll) ── */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.08 }}
+      >
+        <div className="flex gap-3 overflow-x-auto pb-2 -mx-6 px-6 snap-x">
+          {Object.entries(ACCOUNTS).map(([key, config], i) => {
             const balance = accounts[key] || 0
-            const Icon = ACCOUNT_ICONS[key]
+            const Icon = config.icon
+            const label = ACCOUNT_META[key]?.label || key
 
             return (
               <motion.div
                 key={key}
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.16 + index * 0.06 }}
-                whileHover={{ y: -6 }}
-                whileTap={{ scale: 0.98 }}
-                className="cursor-pointer group"
+                transition={{ delay: 0.1 + i * 0.05 }}
+                className="flex-shrink-0 w-[160px] snap-start"
               >
                 <div
-                  className={`relative rounded-2xl p-5 overflow-hidden border transition-all ${
-                    isDark
-                      ? 'bg-white/[0.04] border-white/[0.06] hover:border-white/[0.12]'
-                      : 'bg-white border-gray-200 hover:border-gray-300'
-                  }`}
-                  style={{
-                    borderLeft: `4px solid ${colors.hex}`,
-                  }}
+                  className="rounded-2xl p-4 border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] hover:shadow-md dark:hover:bg-white/[0.05] transition-all cursor-pointer"
+                  style={{ borderTop: `3px solid ${config.hex}` }}
+                  onClick={() => navigate('/history')}
                 >
-                  {/* Icon + Label */}
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-2 mb-3">
                     <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: `${colors.hex}15` }}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: `${config.hex}12` }}
                     >
-                      <Icon className="w-4 h-4" style={{ color: colors.hex }} />
+                      <Icon className="w-3.5 h-3.5" style={{ color: config.hex }} />
                     </div>
-                    <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white/70' : 'text-gray-700'}`}>
-                      {ACCOUNT_META[key]?.label}
+                    <span className="text-[11px] font-semibold text-gray-500 dark:text-white/50 uppercase tracking-wide">
+                      {label}
                     </span>
                   </div>
-
-                  {/* Balance */}
-                  <p className={`text-2xl font-black tabular-nums ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    <AnimNum value={balance} prefix="$" />
+                  <p className="text-xl font-black tabular-nums text-gray-900 dark:text-white">
+                    {formatCurrency(balance)}
                   </p>
                 </div>
               </motion.div>
             )
           })}
         </div>
-      </div>
+      </motion.section>
 
-      {/* ── Quick Action Pills ──────────────────── */}
-      <div className="px-8 mb-8">
-        <h3 className={`text-xs font-black uppercase tracking-widest mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Quick Actions
-        </h3>
-
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8">
-          {[
-            { label: 'Paycheck', icon: '💵', color: '#10b981', route: '/paycheck' },
-            { label: 'Transfer', icon: '🔄', color: '#06b6d4', route: '/transfer' },
-            { label: 'Purchase', icon: '🛒', color: '#f59e0b', route: '/purchase' },
-          ].map((action, index) => (
+      {/* ─── 3. ACTION BUTTONS ───────────────────── */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.16 }}
+        className="grid grid-cols-3 gap-3"
+      >
+        {[
+          {
+            label: 'Paycheck',
+            icon: DollarSign,
+            route: '/paycheck',
+            color: '#10b981',
+          },
+          {
+            label: 'Transfer',
+            icon: ArrowLeftRight,
+            route: '/transfer',
+            color: '#06b6d4',
+          },
+          {
+            label: 'Buy',
+            icon: ShoppingBag,
+            route: '/purchase',
+            color: '#f59e0b',
+          },
+        ].map((action) => {
+          const Icon = action.icon
+          return (
             <motion.button
               key={action.label}
-              initial={{ opacity: 0, x: -15 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.32 + index * 0.08 }}
               onClick={() => navigate(action.route)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex items-center gap-2 px-5 py-3 rounded-full font-semibold text-sm whitespace-nowrap flex-shrink-0 border transition-all ${
-                isDark
-                  ? 'bg-white/[0.04] border-white/[0.06] text-white hover:bg-white/[0.08]'
-                  : 'bg-white border-gray-200 text-gray-900 hover:bg-gray-50'
-              }`}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              className="flex flex-col items-center gap-2 py-4 rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] hover:shadow-md dark:hover:bg-white/[0.05] transition-all"
             >
-              <span>{action.icon}</span>
-              {action.label}
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${action.color}12` }}
+              >
+                <Icon className="w-5 h-5" style={{ color: action.color }} />
+              </div>
+              <span className="text-xs font-bold text-gray-700 dark:text-white/70">
+                {action.label}
+              </span>
             </motion.button>
-          ))}
-        </div>
-      </div>
+          )
+        })}
+      </motion.section>
 
-      {/* ── Achievements ──────────────────────── */}
-      {badges.length > 0 && (
-        <div className="px-8 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className={`text-xs font-black uppercase tracking-widest ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Achievements 🏆
-            </h3>
-            <span className={`text-xs font-bold ${isDark ? 'text-teal-400' : 'text-teal-600'}`}>
-              {badges.length} earned
-            </span>
-          </div>
-          <div className="overflow-x-auto pb-2 -mx-8 px-8">
-            <div className="flex gap-4 min-w-max">
-              {badges.slice(0, 8).map((badge, index) => (
-                <Badge key={badge.id} badge={badge} delay={index * 0.06} />
-              ))}
+      {/* ─── 4. RECENT ACTIVITY ──────────────────── */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.22 }}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-gray-900 dark:text-white">
+            Recent Activity
+          </h2>
+          {recentTx.length > 0 && (
+            <button
+              onClick={() => navigate('/history')}
+              className="text-xs font-semibold text-gray-400 dark:text-white/40 hover:text-gray-600 dark:hover:text-white/60 flex items-center gap-0.5 transition-colors"
+            >
+              See all <ChevronRight className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] overflow-hidden">
+          {recentTx.length === 0 ? (
+            /* Empty state */
+            <div className="py-12 text-center">
+              <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/[0.06] flex items-center justify-center mx-auto mb-3">
+                <ArrowDownLeft className="w-5 h-5 text-gray-400 dark:text-white/30" />
+              </div>
+              <p className="text-sm font-semibold text-gray-500 dark:text-white/40">
+                No activity yet
+              </p>
+              <p className="text-xs text-gray-400 dark:text-white/25 mt-1">
+                Log your first paycheck to get started
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100 dark:divide-white/[0.04]">
+              {recentTx.map((tx) => {
+                const Icon = txIcon(tx.transaction_type)
+                const isPositive = tx.amount >= 0
+                const dateStr = new Date(tx.created_at).toLocaleDateString(
+                  'en-US',
+                  { month: 'short', day: 'numeric' },
+                )
+
+                return (
+                  <div
+                    key={tx.id}
+                    className="flex items-center gap-3 px-4 py-3.5"
+                  >
+                    <div
+                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{
+                        backgroundColor: `${txColor(tx.amount)}10`,
+                      }}
+                    >
+                      <Icon
+                        className="w-4 h-4"
+                        style={{ color: txColor(tx.amount) }}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                        {tx.description || tx.transaction_type}
+                      </p>
+                      <p className="text-[11px] text-gray-400 dark:text-white/30">
+                        {dateStr} · {ACCOUNT_META[tx.account_type]?.label || tx.account_type}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-sm font-bold tabular-nums ${
+                        isPositive
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-red-500 dark:text-red-400'
+                      }`}
+                    >
+                      {isPositive ? '+' : ''}
+                      {formatCurrency(tx.amount)}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </motion.section>
+
+      {/* ─── 5. LEVEL PROGRESS (subtle) ──────────── */}
+      {nextLevel && (
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.28 }}
+          className="rounded-2xl p-4 border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03]"
+        >
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-base">{currentLevel?.icon}</span>
+              <span className="text-xs font-bold text-gray-700 dark:text-white/70">
+                {currentLevel?.name}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-gray-700 dark:text-white/70">
+                {nextLevel.name}
+              </span>
+              <span className="text-base">{nextLevel?.icon}</span>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* ── Portfolio Breakdown Details ────────── */}
-      <div className="px-8 mb-8">
-        <h3 className={`text-xs font-black uppercase tracking-widest mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Portfolio Breakdown
-        </h3>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.20 }}
-          className={`rounded-2xl p-6 ${
-            isDark
-              ? 'bg-white/[0.04] border border-white/[0.06]'
-              : 'bg-white border border-gray-200'
-          }`}
-        >
-          <div className="space-y-4">
-            {Object.entries(ACCOUNT_COLORS).map(([key, colors]) => {
-              const balance = accounts[key] || 0
-              const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
-
-              return (
-                <div key={key} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: colors.hex }}
-                      />
-                      <span className={`text-sm font-semibold ${isDark ? 'text-white/80' : 'text-gray-700'}`}>
-                        {ACCOUNT_META[key]?.label}
-                      </span>
-                    </div>
-                    <span className={`text-sm font-bold tabular-nums ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {formatCurrency(balance)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className={`flex-1 h-2 rounded-full overflow-hidden ${isDark ? 'bg-white/[0.06]' : 'bg-gray-100'}`}>
-                      <motion.div
-                        className="h-2 rounded-full"
-                        style={{ backgroundColor: colors.hex }}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${pct}%` }}
-                        transition={{ duration: 0.8, delay: 0.3 }}
-                      />
-                    </div>
-                    <span className={`text-xs font-bold tabular-nums w-8 text-right ${isDark ? 'text-white/60' : 'text-gray-500'}`}>
-                      {pct}%
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
+          <div className="h-2 rounded-full overflow-hidden bg-gray-100 dark:bg-white/[0.06]">
+            <motion.div
+              className="h-2 rounded-full bg-amber-400"
+              initial={{ width: 0 }}
+              animate={{ width: `${levelProgress}%` }}
+              transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
+            />
           </div>
-        </motion.div>
-      </div>
 
-      {/* ── Learn Section ──────────────────────── */}
-      <div className="px-8">
-        <h3 className={`text-xs font-black uppercase tracking-widest mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Level Up Your Knowledge 📚
-        </h3>
-        <div className="space-y-3">
-          {[
-            { icon: '🏦', title: 'Why diversify?', body: 'Different accounts serve different purposes — checking for daily use, savings for safety, investments for growth.' },
-            { icon: '📈', title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth. NASDAQ focuses on tech for higher risk and reward.' },
-            { icon: '💡', title: '50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.' },
-          ].map((tip, i) => (
-            <motion.details
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.48 + i * 0.08 }}
-              className={`group rounded-2xl border transition-colors ${
-                isDark
-                  ? 'bg-white/[0.04] border-white/[0.06] hover:border-white/[0.12]'
-                  : 'bg-white border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <summary className={`flex items-center gap-3 px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden ${
-                isDark ? 'hover:bg-white/[0.02]' : 'hover:bg-gray-50'
-              }`}>
-                <span className="text-lg">{tip.icon}</span>
-                <span className={`text-sm font-bold flex-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  {tip.title}
-                </span>
-                <ChevronRight className={`w-4 h-4 transition-transform group-open:rotate-90 ${isDark ? 'text-white/40' : 'text-gray-400'}`} />
-              </summary>
-              <div className={`px-5 pb-4 text-sm leading-relaxed border-t transition-colors ${
-                isDark
-                  ? 'text-white/60 border-white/[0.06]'
-                  : 'text-gray-600 border-gray-100'
-              } pt-4`}>
-                {tip.body}
-              </div>
-            </motion.details>
-          ))}
-        </div>
-      </div>
+          <p className="text-[11px] text-gray-400 dark:text-white/30 mt-2 text-center">
+            {formatCurrency(nextLevel.min - totalBalance)} to{' '}
+            <span className="font-semibold">{nextLevel.name}</span>
+          </p>
+        </motion.section>
+      )}
     </div>
   )
 }
