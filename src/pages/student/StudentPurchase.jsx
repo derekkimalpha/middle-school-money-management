@@ -125,14 +125,14 @@ export const StudentPurchase = () => {
 
   if (!profile) {
     return (
-      <div className="flex items-center justify-center h-screen dark:bg-gray-950">
+      <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-400"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 p-6 pb-20">
+    <div className="space-y-6 p-8">
       <Toast message={toast} />
 
       <motion.div
@@ -140,10 +140,10 @@ export const StudentPurchase = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+        <h1 className="text-2xl font-bold text-[#1a1a2e] dark:text-white/90 tracking-[-0.02em] mb-2">
           Purchase Request
         </h1>
-        <p className="text-slate-600 dark:text-gray-400">
+        <p className="text-[13px] text-black/50 dark:text-white/40">
           Ask for permission to buy something
         </p>
       </motion.div>
@@ -164,14 +164,14 @@ export const StudentPurchase = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-sage-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border-2 border-sage-200 dark:border-emerald-800 rounded-xl p-6"
+          className="bg-white dark:bg-[#111118] border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-slate-600 dark:text-gray-400 mb-1">
+              <p className="text-[12px] font-semibold text-black/50 dark:text-white/40 uppercase tracking-wider mb-1">
                 Checking Balance (For Purchases)
               </p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-white">
+              <p className="text-3xl font-bold text-[#1a1a2e] dark:text-white/90 tabular-nums">
                 <AnimNum value={checkingBalance} prefix="$" />
               </p>
             </div>
@@ -185,9 +185,9 @@ export const StudentPurchase = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 space-y-6"
+          className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-6 space-y-5"
         >
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">New Request</h2>
+          <h2 className="text-[15px] font-semibold text-[#1a1a2e] dark:text-white/90">New Request</h2>
 
           <Field label="What do you want to buy?">
             <Input
@@ -231,9 +231,9 @@ export const StudentPurchase = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8"
+            className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-6"
           >
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-[15px] font-semibold text-[#1a1a2e] dark:text-white/90 mb-4">
               Your Requests
             </h2>
 
@@ -244,19 +244,19 @@ export const StudentPurchase = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 border-2 border-slate-200 dark:border-gray-800 rounded-lg hover:border-sage-300 dark:hover:border-gray-600 transition-colors"
+                  className="p-4 border border-black/[0.06] dark:border-white/[0.06] rounded-xl hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-bold text-slate-900 dark:text-white">
+                        <h3 className="font-semibold text-[#1a1a2e] dark:text-white/90">
                           {purchase.item_name}
                         </h3>
                         {getStatusTag(purchase.status)}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-gray-400 mb-2">
-                        <div className="font-semibold text-slate-900 dark:text-white">
+                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-black/50 dark:text-white/40 mb-2">
+                        <div className="font-semibold text-[#1a1a2e] dark:text-white/90">
                           {formatCurrency(purchase.price)}
                         </div>
 
@@ -276,7 +276,7 @@ export const StudentPurchase = () => {
                             href={purchase.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sage-600 hover:text-sage-700 flex items-center gap-1"
+                            className="text-[#1a1a2e] dark:text-white/60 hover:text-[#1a1a2e] dark:hover:text-white/90 flex items-center gap-1"
                           >
                             View Link
                             <ExternalLink className="w-3 h-3" />
@@ -288,7 +288,7 @@ export const StudentPurchase = () => {
                     {purchase.status === 'pending' && (
                       <button
                         onClick={() => handleDelete(purchase.id)}
-                        className="p-2 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-800 rounded-lg transition-colors flex-shrink-0"
+                        className="p-2 text-black/30 dark:text-white/30 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -299,8 +299,8 @@ export const StudentPurchase = () => {
             </div>
 
             {/* Status Legend */}
-            <div className="mt-6 pt-6 border-t border-slate-200 dark:border-gray-800 text-sm text-slate-600 dark:text-gray-400 space-y-2">
-              <p className="font-semibold text-slate-900 dark:text-white">Status Meanings:</p>
+            <div className="mt-6 pt-6 border-t border-black/[0.06] dark:border-white/[0.06] text-sm text-black/50 dark:text-white/40 space-y-2">
+              <p className="font-semibold text-[#1a1a2e] dark:text-white/90">Status Meanings:</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-amber-400" />
@@ -327,7 +327,7 @@ export const StudentPurchase = () => {
             className="text-center py-12"
           >
             <div className="text-4xl mb-3">🛒</div>
-            <p className="text-slate-600 dark:text-gray-400 text-lg">No purchase requests yet</p>
+            <p className="text-black/50 dark:text-white/40 text-[15px]">No purchase requests yet</p>
             <p className="text-slate-500 dark:text-gray-500 text-sm">
               Submit a request above to get started
             </p>

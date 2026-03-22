@@ -19,12 +19,12 @@ import {
 import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight, BookOpen } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 
-// Consistent account color system
+// Refined account color system
 const ACCOUNT_COLORS = {
-  checking: { hex: '#10b981', bg: 'bg-emerald-50 dark:bg-emerald-950/30', border: 'border-emerald-200 dark:border-emerald-800', text: 'text-emerald-700 dark:text-emerald-400' },
-  savings: { hex: '#06b6d4', bg: 'bg-cyan-50 dark:bg-cyan-950/30', border: 'border-cyan-200 dark:border-cyan-800', text: 'text-cyan-700 dark:text-cyan-400' },
-  sp500: { hex: '#f59e0b', bg: 'bg-amber-50 dark:bg-amber-950/30', border: 'border-amber-200 dark:border-amber-800', text: 'text-amber-700 dark:text-amber-400' },
-  nasdaq: { hex: '#8b5cf6', bg: 'bg-violet-50 dark:bg-violet-950/30', border: 'border-violet-200 dark:border-violet-800', text: 'text-violet-700 dark:text-violet-400' },
+  checking: { hex: '#10b981', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-emerald-500' },
+  savings: { hex: '#06b6d4', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-cyan-500' },
+  sp500: { hex: '#f59e0b', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-amber-500' },
+  nasdaq: { hex: '#8b5cf6', bg: 'bg-white dark:bg-[#111118]', border: 'border-black/[0.06] dark:border-white/[0.06]', accent: 'bg-violet-500' },
 }
 
 const ACCOUNT_ICONS = {
@@ -68,9 +68,9 @@ export const StudentDashboard = () => {
 
   if (loading || !accounts || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-50">
+      <div className="flex items-center justify-center h-screen bg-[#f8f9fb] dark:bg-[#0a0a0f]">
         <motion.div
-          className="w-10 h-10 border-[3px] border-slate-200 border-t-slate-800 rounded-full"
+          className="w-10 h-10 border-[3px] border-black/[0.08] dark:border-white/[0.08] border-t-black/20 dark:border-t-white/20 rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -96,57 +96,58 @@ export const StudentDashboard = () => {
   const firstName = profile?.full_name?.split(' ')[0] || 'Friend'
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 pb-24 transition-colors duration-300">
+    <div className="min-h-screen pb-24 transition-colors duration-300">
       <Toast message={toast} />
 
-      {/* ── Hero Section ──────────────────────────────── */}
-      <div className="bg-slate-900 dark:bg-gray-900 text-white px-6 pt-8 pb-16 relative overflow-hidden">
-        {/* Animated mesh gradient background */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 -left-20 w-72 h-72 bg-emerald-500 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
-          <div className="absolute bottom-0 right-0 w-60 h-60 bg-violet-500 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
-          <div className="absolute top-10 right-20 w-40 h-40 bg-cyan-500 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
-        </div>
-        {/* Subtle dot pattern */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-          backgroundSize: '20px 20px'
-        }} />
-
+      {/* ── Header Section ────────────────────────────── */}
+      <div className="px-8 pt-8 pb-8">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-10"
+          transition={{ duration: 0.5 }}
+          className="mb-8"
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-baseline justify-between mb-6">
             <div>
-              <p className="text-slate-400 text-sm font-medium">Welcome back</p>
-              <h1 className="text-2xl font-bold mt-0.5">{firstName}</h1>
+              <p className="text-black/50 dark:text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">
+                Welcome back
+              </p>
+              <h1 className="text-3xl font-semibold text-[#1a1a2e] dark:text-white/90">
+                {firstName}
+              </h1>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
+            <div className="flex items-center gap-2.5 bg-black/[0.04] dark:bg-white/[0.06] rounded-lg px-3.5 py-2">
               <span className="text-base">{currentLevel?.icon}</span>
-              <span className="text-xs font-semibold">{currentLevel?.name}</span>
+              <span className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90">
+                {currentLevel?.name}
+              </span>
             </div>
           </div>
 
-          {/* Balance display */}
-          <div className="mb-2">
-            <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Total Balance</p>
-            <h2 className="text-4xl font-bold tracking-tight">
+          {/* Balance Display */}
+          <div>
+            <p className="text-black/40 dark:text-white/30 text-xs font-semibold uppercase tracking-widest mb-2.5">
+              Total Balance
+            </p>
+            <h2 className="text-5xl font-semibold text-[#1a1a2e] dark:text-white/90 tracking-tight tabular-nums">
               <AnimNum value={totalBalance} prefix="$" />
             </h2>
           </div>
 
-          {/* Level progress */}
+          {/* Level Progress */}
           {nextLevel && (
-            <div className="mt-4">
-              <div className="flex justify-between items-center mb-1.5">
-                <span className="text-xs text-slate-400">{currentLevel?.name}</span>
-                <span className="text-xs text-slate-400">{nextLevel.name} · {formatCurrency(nextLevelThreshold - totalBalance)} to go</span>
+            <div className="mt-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs font-medium text-black/50 dark:text-white/40">
+                  {currentLevel?.name}
+                </span>
+                <span className="text-xs font-medium text-black/50 dark:text-white/40">
+                  {nextLevel.name} · {formatCurrency(nextLevelThreshold - totalBalance)} to go
+                </span>
               </div>
-              <div className="w-full bg-white/10 rounded-full h-1.5">
+              <div className="w-full bg-black/[0.06] dark:bg-white/[0.06] rounded-full h-1">
                 <motion.div
-                  className="bg-emerald-400 h-1.5 rounded-full"
+                  className="h-1 rounded-full bg-emerald-500"
                   initial={{ width: 0 }}
                   animate={{ width: `${levelProgress}%` }}
                   transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
@@ -157,21 +158,25 @@ export const StudentDashboard = () => {
         </motion.div>
       </div>
 
-      {/* ── Portfolio Breakdown Card ──────────────────── */}
-      <div className="px-6 -mt-8 relative z-10">
+      {/* ── Portfolio Breakdown Card ────────────────────── */}
+      <div className="px-8 mb-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800 p-6 transition-colors duration-300"
+          transition={{ delay: 0.12, duration: 0.5 }}
+          className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-8 transition-colors duration-300"
         >
-          <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Portfolio</h3>
-            <span className="text-xs text-slate-500">{donutData.length} accounts</span>
+          <div className="flex items-center justify-between mb-7">
+            <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest">
+              Portfolio
+            </h3>
+            <span className="text-xs font-medium text-black/50 dark:text-white/40">
+              {donutData.length} accounts
+            </span>
           </div>
 
-          <div className="flex items-center gap-6">
-            {/* Donut chart */}
+          <div className="flex items-center gap-12">
+            {/* Donut Chart */}
             <div className="flex-shrink-0">
               {donutData.length > 0 ? (
                 <DonutChart
@@ -182,38 +187,47 @@ export const StudentDashboard = () => {
                   centerLabel="Total"
                 />
               ) : (
-                <div className="w-[140px] h-[140px] rounded-full bg-slate-100 flex items-center justify-center">
-                  <span className="text-slate-400 text-sm">No funds</span>
+                <div className="w-[140px] h-[140px] rounded-full bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center">
+                  <span className="text-xs font-medium text-black/40 dark:text-white/30">No funds</span>
                 </div>
               )}
             </div>
 
-            {/* Account legend */}
-            <div className="flex-1 space-y-3">
+            {/* Account Legend */}
+            <div className="flex-1 space-y-4">
               {Object.entries(ACCOUNT_COLORS).map(([key, colors]) => {
                 const balance = accounts[key] || 0
                 const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
 
                 return (
-                  <div key={key} className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: colors.hex }} />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-slate-700 dark:text-gray-300">{ACCOUNT_META[key]?.label}</span>
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white tabular-nums">{formatCurrency(balance)}</span>
+                  <div key={key} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: colors.hex }}
+                        />
+                        <span className="text-sm font-medium text-[#1a1a2e] dark:text-white/90">
+                          {ACCOUNT_META[key]?.label}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <div className="flex-1 bg-slate-100 dark:bg-gray-800 rounded-full h-1">
-                          <motion.div
-                            className="h-1 rounded-full"
-                            style={{ backgroundColor: colors.hex }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${pct}%` }}
-                            transition={{ duration: 0.8, delay: 0.3 }}
-                          />
-                        </div>
-                        <span className="text-[10px] text-slate-400 font-medium tabular-nums w-7 text-right">{pct}%</span>
+                      <span className="text-sm font-semibold text-[#1a1a2e] dark:text-white/90 tabular-nums">
+                        {formatCurrency(balance)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex-1 bg-black/[0.04] dark:bg-white/[0.06] rounded-full h-1.5">
+                        <motion.div
+                          className="h-1.5 rounded-full"
+                          style={{ backgroundColor: colors.hex }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: 0.8, delay: 0.3 }}
+                        />
                       </div>
+                      <span className="text-[11px] font-medium text-black/50 dark:text-white/40 tabular-nums w-6 text-right">
+                        {pct}%
+                      </span>
                     </div>
                   </div>
                 )
@@ -223,13 +237,13 @@ export const StudentDashboard = () => {
         </motion.div>
       </div>
 
-      {/* ── Account Cards ─────────────────────────────── */}
-      <div className="px-6 mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Accounts</h3>
-        </div>
+      {/* ── Account Cards ──────────────────────────────── */}
+      <div className="px-8 mb-8">
+        <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest mb-4">
+          Accounts
+        </h3>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           {Object.entries(ACCOUNT_COLORS).map(([key, colors], index) => {
             const balance = accounts[key] || 0
             const Icon = ACCOUNT_ICONS[key]
@@ -239,83 +253,101 @@ export const StudentDashboard = () => {
                 key={key}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + index * 0.08 }}
-                className={`${colors.bg} ${colors.border} border rounded-xl p-4 relative overflow-hidden`}
+                transition={{ delay: 0.18 + index * 0.06, duration: 0.5 }}
+                className="group"
               >
-                <div className="absolute -right-3 -top-3 w-16 h-16 rounded-full opacity-10 dark:opacity-20" style={{ backgroundColor: colors.hex }} />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon className={`w-4 h-4 ${colors.text}`} />
-                    <span className={`text-xs font-semibold ${colors.text} uppercase tracking-wide`}>
-                      {ACCOUNT_META[key]?.label}
-                    </span>
+                <button
+                  onClick={() => navigate(`/account/${key}`)}
+                  className="w-full bg-white dark:bg-[#111118] border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6 transition-all duration-200 hover:border-black/[0.12] dark:hover:border-white/[0.12] hover:bg-black/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.98]"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div
+                      className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: colors.hex + '15' }}
+                    >
+                      <Icon className="w-4.5 h-4.5" style={{ color: colors.hex }} />
+                    </div>
                   </div>
-                  <p className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
+                  <p className="text-xs font-semibold text-black/50 dark:text-white/40 uppercase tracking-widest mb-1.5">
+                    {ACCOUNT_META[key]?.label}
+                  </p>
+                  <p className="text-xl font-semibold text-[#1a1a2e] dark:text-white/90 tabular-nums">
                     <AnimNum value={balance} prefix="$" />
                   </p>
-                </div>
+                </button>
               </motion.div>
             )
           })}
         </div>
       </div>
 
-      {/* ── Quick Actions ─────────────────────────────── */}
-      <div className="px-6 mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Quick Actions</h3>
-        </div>
+      {/* ── Quick Actions ──────────────────────────────── */}
+      <div className="px-8 mb-8">
+        <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest mb-4">
+          Quick Actions
+        </h3>
 
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {[
-            { label: 'Log Paycheck', desc: 'Submit your weekly earnings', icon: DollarSign, color: 'bg-emerald-600', route: '/paycheck' },
-            { label: 'Transfer Funds', desc: 'Move money between accounts', icon: Send, color: 'bg-slate-900', route: '/transfer' },
-            { label: 'Purchase Request', desc: 'Ask to buy something', icon: ShoppingCart, color: 'bg-amber-600', route: '/purchase' },
+            { label: 'Log Paycheck', desc: 'Submit your weekly earnings', icon: DollarSign, color: '#10b981', route: '/paycheck' },
+            { label: 'Transfer Funds', desc: 'Move money between accounts', icon: Send, color: '#1a1a2e', route: '/transfer' },
+            { label: 'Purchase Request', desc: 'Ask to buy something', icon: ShoppingCart, color: '#f59e0b', route: '/purchase' },
           ].map((action, index) => (
             <motion.button
               key={action.label}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 + index * 0.08 }}
+              transition={{ delay: 0.36 + index * 0.06, duration: 0.5 }}
               onClick={() => navigate(action.route)}
-              className="w-full flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 hover:shadow-sm transition-all text-left group"
+              className="w-full flex items-center gap-4 px-5 py-4 bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] hover:border-black/[0.12] dark:hover:border-white/[0.12] hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-all text-left group active:scale-[0.98]"
             >
-              <div className={`${action.color} w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                <action.icon className="w-5 h-5 text-white" />
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: action.color + '20' }}
+              >
+                <action.icon className="w-4.5 h-4.5" style={{ color: action.color }} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-slate-900 dark:text-white">{action.label}</p>
-                <p className="text-xs text-slate-500 dark:text-gray-500">{action.desc}</p>
+                <p className="text-sm font-semibold text-[#1a1a2e] dark:text-white/90">
+                  {action.label}
+                </p>
+                <p className="text-xs text-black/50 dark:text-white/40">
+                  {action.desc}
+                </p>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-400 dark:text-gray-600 group-hover:text-slate-600 dark:group-hover:text-gray-300 transition-colors" />
+              <ChevronRight className="w-4 h-4 text-black/30 dark:text-white/20 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
             </motion.button>
           ))}
         </div>
       </div>
 
-      {/* ── Achievements ──────────────────────────────── */}
+      {/* ── Achievements ────────────────────────────────── */}
       {badges.length > 0 && (
-        <div className="px-6 mt-6">
+        <div className="px-8 mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Achievements</h3>
-            <span className="text-xs text-slate-500">{badges.length} earned</span>
+            <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest">
+              Achievements
+            </h3>
+            <span className="text-xs font-medium text-black/50 dark:text-white/40">
+              {badges.length} earned
+            </span>
           </div>
-          <div className="overflow-x-auto pb-2 -mx-6 px-6">
-            <div className="flex gap-3 min-w-max">
+          <div className="overflow-x-auto pb-2 -mx-8 px-8">
+            <div className="flex gap-4 min-w-max">
               {badges.slice(0, 8).map((badge, index) => (
-                <Badge key={badge.id} badge={badge} delay={index * 0.08} />
+                <Badge key={badge.id} badge={badge} delay={index * 0.06} />
               ))}
             </div>
           </div>
         </div>
       )}
 
-      {/* ── Learn Section ─────────────────────────────── */}
-      <div className="px-6 mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Learn</h3>
-        </div>
-        <div className="space-y-2.5">
+      {/* ── Learn Section ────────────────────────────── */}
+      <div className="px-8">
+        <h3 className="text-xs font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-widest mb-4">
+          Learn
+        </h3>
+        <div className="space-y-3">
           {[
             { icon: '🏦', title: 'Why diversify?', body: 'Different accounts serve different purposes — checking for daily use, savings for safety, investments for growth.' },
             { icon: '📈', title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth. NASDAQ focuses on tech for higher risk and reward.' },
@@ -325,15 +357,17 @@ export const StudentDashboard = () => {
               key={i}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 + i * 0.08 }}
-              className="bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 group"
+              transition={{ delay: 0.48 + i * 0.06, duration: 0.5 }}
+              className="group bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06]"
             >
-              <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                <span className="text-lg">{tip.icon}</span>
-                <span className="text-sm font-semibold text-slate-800 dark:text-white flex-1">{tip.title}</span>
-                <ChevronRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90" />
+              <summary className="flex items-center gap-3 px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors rounded-xl">
+                <span className="text-base">{tip.icon}</span>
+                <span className="text-sm font-semibold text-[#1a1a2e] dark:text-white/90 flex-1">
+                  {tip.title}
+                </span>
+                <ChevronRight className="w-4 h-4 text-black/30 dark:text-white/20 transition-transform group-open:rotate-90" />
               </summary>
-              <div className="px-4 pb-4 text-sm text-slate-600 dark:text-gray-400 leading-relaxed border-t border-slate-100 dark:border-gray-800 pt-3">
+              <div className="px-5 pb-4 text-sm text-black/50 dark:text-white/40 leading-relaxed border-t border-black/[0.06] dark:border-white/[0.06] pt-4">
                 {tip.body}
               </div>
             </motion.details>

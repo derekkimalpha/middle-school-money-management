@@ -5,30 +5,30 @@ export const FinTip = ({
   icon = '💡',
   title = 'Tip',
   children,
-  color = 'from-sage-50 to-green-50'
+  color
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <motion.div
-      className={`rounded-lg p-4 cursor-pointer transition-all bg-gradient-to-br ${color} border border-slate-200`}
+      className="rounded-xl p-4 cursor-pointer transition-all duration-150 bg-[#f1f2f4] dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.04] hover:border-black/[0.08] dark:hover:border-white/[0.08]"
       onClick={() => setIsOpen(!isOpen)}
-      whileHover={{ translateY: -2 }}
+      whileHover={{ y: -1 }}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">{icon}</span>
-          <h3 className="font-semibold text-slate-800">{title}</h3>
+          <span className="text-xl">{icon}</span>
+          <h3 className="font-semibold text-[13px] text-[#1a1a2e] dark:text-white/90">{title}</h3>
         </div>
         <motion.svg
-          className="w-5 h-5 text-slate-600"
+          className="w-4 h-4 text-black/30 dark:text-white/30"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </motion.svg>
       </div>
       <AnimatePresence>
@@ -37,8 +37,8 @@ export const FinTip = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mt-3 pt-3 border-t border-slate-200 text-sm text-slate-700"
+            transition={{ duration: 0.2 }}
+            className="mt-3 pt-3 border-t border-black/[0.06] dark:border-white/[0.06] text-[13px] text-black/60 dark:text-white/50 leading-relaxed"
           >
             {children}
           </motion.div>
