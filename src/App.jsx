@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck, Trophy, BarChart2, AlertTriangle } from 'lucide-react'
+import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck, Trophy, BarChart2, AlertTriangle, MapPin } from 'lucide-react'
 import { useAuth } from './hooks/useAuth'
 import { useAccounts } from './hooks/useAccounts'
 import { useGrowthEngine } from './hooks/useGrowthEngine'
@@ -31,6 +31,7 @@ import { GuideSettings } from './pages/guide/GuideSettings'
 import { GuidePaychecks } from './pages/guide/GuidePaychecks'
 import { GuideClassStats } from './pages/guide/GuideClassStats'
 import { GuideFines } from './pages/guide/GuideFines'
+import { GuideMAP } from './pages/guide/GuideMAP'
 
 const LoadingSpinner = ({ debugMsg }) => (
   <div className="min-h-screen flex flex-col items-center justify-center bg-[#faf9f7] dark:bg-[#141211]">
@@ -98,6 +99,7 @@ function AppInner() {
       { id: 'purchases', label: 'Purchases', icon: Package, path: '/purchases' },
       { id: 'stats', label: 'Class Stats', icon: BarChart2, path: '/stats' },
       { id: 'fines', label: 'Fines', icon: AlertTriangle, path: '/fines' },
+      { id: 'map', label: 'MAP', icon: MapPin, path: '/map' },
       { id: 'session', label: 'Session', icon: Timer, path: '/session' },
       { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
     ],
@@ -166,6 +168,7 @@ function AppInner() {
             <Route path="/purchases" element={<GuidePurchases />} />
             <Route path="/stats" element={<GuideClassStats />} />
             <Route path="/fines" element={<GuideFines />} />
+            <Route path="/map" element={<GuideMAP />} />
             <Route path="/session" element={<GuideSession />} />
             <Route path="/settings" element={<GuideSettings />} />
             <Route path="*" element={<Navigate to="/" replace />} />

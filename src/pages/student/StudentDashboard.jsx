@@ -24,8 +24,9 @@ import {
   TrendingUp, Send, ShoppingCart, Wallet, PiggyBank,
   BarChart3, ChevronRight, Banknote, ArrowUpRight,
   Sprout, Trophy, Flame, Target, Sparkles, BookOpen,
-  Clock, Star, X, Info,
+  Clock, Star, X, Info, Lock, MapPin,
 } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 const ACCOUNT_COLORS = {
   checking: { hex: '#7c8c78', light: 'rgba(124,140,120,0.08)', accent: 'text-sage dark:text-sage-300' },
@@ -124,6 +125,18 @@ export const StudentDashboard = () => {
   const growthLog = useGrowthLog(profile?.id)
   const { leaderboard, myRank } = useLeaderboard(profile?.id, false)
   const { streak } = useStreak(profile?.id)
+  const [mapTests, setMapTests] = useState([])
+
+  useEffect(() => {
+    if (!profile?.id) return
+    supabase.from('map_tests')
+      .select('*')
+      .eq('student_id', profile.id)
+      .order('test_date', { ascending: false })
+      .then(({ data }) => { if (data) setMapTests(data) })
+  }, [profile?.id])
+
+  const mapTotal = mapTests.reduce((s, t) => s + (t.payout || 0), 0)
 
   // Get daily story based on day of year
   const dailyStory = useMemo(() => {
@@ -759,6 +772,48 @@ export const StudentDashboard = () => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ── MAP Rewards (locked) ── */}
+      {mapTests.length > 0 && (
+        <div className="px-8 mb-8">
+          <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
+            MAP Rewards
+          </h3>
+          <div className="rounded-xl border border-amber-200/60 dark:border-amber-700/20 bg-gradient-to-r from-amber-50/80 to-orange-50/60 dark:from-amber-900/10 dark:to-orange-900/10 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-amber-500" />
+                <span className="text-sm font-bold text-amber-800 dark:text-amber-300">
+                  {formatCurrency(mapTotal)} earned
+                </span>
+              </div>
+              <span className="text-[10px] px-2 py-1 rounded-full bg-amber-200/50 dark:bg-amber-800/30 text-amber-700 dark:text-amber-400 font-semibold">
+                Locked until graduation
+              </span>
+            </div>
+            <div className="space-y-2">
+              {mapTests.map(test => (
+                <div key={test.id} className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs">
+                      {test.subject === 'math' ? '🔢' : test.subject === 'reading' ? '📖' : test.subject === 'language' ? '✏️' : '🔬'}
+                    </span>
+                    <span className="text-amber-900/80 dark:text-amber-200/70 capitalize">{test.subject}</span>
+                    <span className="text-[10px] text-amber-600/50 dark:text-amber-400/40">
+                      {test.percentile}th %ile · {test.grade_level}
+                    </span>
+                  </div>
+                  {test.payout > 0 ? (
+                    <span className="font-semibold text-amber-700 dark:text-amber-400">{formatCurrency(test.payout)}</span>
+                  ) : (
+                    <span className="text-[11px] text-gray-300 dark:text-white/15">—</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

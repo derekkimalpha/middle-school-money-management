@@ -272,13 +272,20 @@ export const StudentPaycheck = () => {
   }, [autoSave])
 
   // Update handlers that trigger auto-save
+  const EPIC_DAY_XP = 145 // >145 XP = epic day
+
   const updateXp = (dayKey, value) => {
-    const updated = { ...xpByDay, [dayKey]: parseInt(value) || 0 }
+    const xpVal = parseInt(value) || 0
+    const updated = { ...xpByDay, [dayKey]: xpVal }
     setXpByDay(updated)
-    debouncedSave(updated, undefined, undefined, undefined)
+    // Auto-set epic day when XP > 145
+    const updatedEpic = { ...epicDays, [dayKey]: xpVal > EPIC_DAY_XP }
+    setEpicDays(updatedEpic)
+    debouncedSave(updated, updatedEpic, undefined, undefined)
   }
 
   const toggleEpic = (dayKey) => {
+    // Epic days are now auto-calculated from XP, but allow manual override
     const updated = { ...epicDays, [dayKey]: !epicDays[dayKey] }
     setEpicDays(updated)
     debouncedSave(undefined, updated, undefined, undefined)
