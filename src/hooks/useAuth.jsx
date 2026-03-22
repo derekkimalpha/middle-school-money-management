@@ -43,13 +43,21 @@ export const useAuth = () => {
 
     const init = async () => {
       try {
-        // Check if we have a code in the URL (PKCE flow callback)
+        // Check if we have a code or error in the URL (PKCE flow callback)
         const params = new URLSearchParams(window.location.search)
         const hashParams = new URLSearchParams(window.location.hash.substring(1))
         const code = params.get('code')
         const accessToken = hashParams.get('access_token')
+        const error = params.get('error')
+        const errorDesc = params.get('error_description')
 
-        setDebugMsg(`Init: code=${!!code}, token=${!!accessToken}`)
+        if (error) {
+          console.error('[Auth] OAuth error:', error, errorDesc)
+          setDebugMsg(`OAuth error: ${error} - ${errorDesc}`)
+          window.history.replaceState({}, '', window.location.pathname)
+        }
+
+        setDebugMsg(`Init: code=${!!code}, token=${!!accessToken}, error=${error || 'none'}`)
 
         if (code) {
           // Exchange the code for a session (PKCE flow)
@@ -107,7 +115,7 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
+          redirectTo: 'https://middle-school-money-management.vercel.app'
         }
       })
       if (error) throw error
