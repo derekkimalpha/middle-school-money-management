@@ -5,16 +5,17 @@ export const useAuth = () => {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [debugMsg, setDebugMsg] = useState('Starting...')
 
   useEffect(() => {
     const initAuth = async () => {
       try {
-        console.log('[AUTH] Starting initAuth...')
+        setDebugMsg('Calling getSession...')
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-        console.log('[AUTH] Session:', session ? 'exists' : 'none', 'Error:', sessionError)
+        setDebugMsg(`Session: ${session ? 'exists' : 'none'}, Error: ${sessionError?.message || 'none'}`)
 
         if (session?.user) {
-          console.log('[AUTH] User found:', session.user.email)
+          setDebugMsg(`User: ${session.user.email}, fetching profile...`)
           setUser({
             id: session.user.id,
             email: session.user.email,
@@ -109,6 +110,7 @@ export const useAuth = () => {
     user,
     profile,
     loading,
+    debugMsg,
     signInWithGoogle,
     signOut
   }

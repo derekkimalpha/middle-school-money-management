@@ -20,18 +20,19 @@ import { GuidePurchases } from './pages/guide/GuidePurchases'
 import { GuideSession } from './pages/guide/GuideSession'
 import { GuideSettings } from './pages/guide/GuideSettings'
 
-const LoadingSpinner = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-sage-bg to-slate-50">
+const LoadingSpinner = ({ debugMsg }) => (
+  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-sage-bg to-slate-50">
     <motion.div
       animate={{ rotate: 360 }}
       transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
       className="w-12 h-12 border-4 border-sage-light border-t-sage rounded-full"
     />
+    {debugMsg && <p className="mt-4 text-xs text-gray-400 font-mono max-w-md text-center">{debugMsg}</p>}
   </div>
 )
 
 export default function App() {
-  const { user, profile, loading, signInWithGoogle, signOut } = useAuth()
+  const { user, profile, loading, debugMsg, signInWithGoogle, signOut } = useAuth()
   const [currentPage, setCurrentPage] = useState('home')
 
   const studentNavItems = useMemo(
@@ -56,7 +57,7 @@ export default function App() {
   )
 
   if (loading) {
-    return <LoadingSpinner />
+    return <LoadingSpinner debugMsg={debugMsg} />
   }
 
   if (!user || !profile) {
