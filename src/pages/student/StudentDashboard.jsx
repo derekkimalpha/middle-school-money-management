@@ -112,6 +112,29 @@ const DAILY_STORIES = [
   { title: 'How Kids Your Age Made Millions', story: 'Moziah Bridges started a bow tie business at age 9. By 15, he\'d made over $600k and appeared on Shark Tank. He didn\'t wait to be "old enough." He started small, reinvested profits, and grew. That\'s what you\'re doing right now.', icon: '🎀' },
 ]
 
+const DAILY_FUN_FACTS = [
+  { fact: 'The average American has $65,000 in savings by age 30 — but the median is only $20,000. Averages can be misleading!', icon: '📊' },
+  { fact: 'A dollar bill lasts about 6.6 years in circulation before it\'s too worn out and gets shredded by the Federal Reserve.', icon: '💵' },
+  { fact: 'The stock market has returned an average of ~10% per year since 1926. But no single year is ever exactly "average."', icon: '📈' },
+  { fact: 'There\'s more Monopoly money printed each year than real U.S. currency. About $30 billion in Monopoly cash vs $7 billion real.', icon: '🎲' },
+  { fact: 'Credit cards were invented by accident in 1949 when a man forgot his wallet at a restaurant and felt embarrassed.', icon: '💳' },
+  { fact: 'If you saved a penny and doubled it every day for 30 days, you\'d have over $5.3 million. That\'s the power of compounding.', icon: '🪙' },
+  { fact: 'The word "budget" comes from the French word "bougette" — a small leather purse. Budgeting = knowing what\'s in your purse.', icon: '👛' },
+  { fact: 'About 78% of NFL players go broke within 5 years of retirement. Earning big doesn\'t matter without financial habits.', icon: '🏈' },
+  { fact: 'The first ATM was installed in London in 1967. Before that, you could only get cash during bank hours (9-3pm, no weekends).', icon: '🏧' },
+  { fact: 'Warren Buffett still lives in the same house he bought in 1958 for $31,500. It\'s now worth about $1.4 million.', icon: '🏠' },
+  { fact: 'The S&P 500 was only 500 companies when it started in 1957. Today it represents about 80% of total U.S. stock market value.', icon: '🏢' },
+  { fact: 'Teens who learn about money before 18 are 75% more likely to save regularly as adults. You\'re ahead of the game.', icon: '🎓' },
+  { fact: 'The NASDAQ is named after the National Association of Securities Dealers Automated Quotations. It was the first electronic stock exchange.', icon: '⚡' },
+  { fact: 'Inflation means $100 today will only buy about $74 worth of stuff in 10 years (at 3% inflation). Saving alone isn\'t enough — you need to invest.', icon: '🔥' },
+  { fact: 'The richest person in modern history was Mansa Musa, a 14th-century African king worth an estimated $400 billion in today\'s dollars.', icon: '👑' },
+  { fact: 'Americans spend an average of $219/month on subscriptions — but think they only spend about $86. Hidden spending adds up fast.', icon: '📱' },
+  { fact: 'Compound interest was called the "eighth wonder of the world" by Albert Einstein. Whether or not he actually said it, the math checks out.', icon: '🌍' },
+  { fact: 'The New York Stock Exchange started in 1792 under a buttonwood tree when 24 stockbrokers signed an agreement on Wall Street.', icon: '🌳' },
+  { fact: 'Only about 12% of Americans have a written financial plan. People with written plans save 2x more than those without one.', icon: '📝' },
+  { fact: 'The 50/30/20 rule: 50% of income to needs, 30% to wants, 20% to savings. It\'s the simplest budget that actually works.', icon: '🧮' },
+]
+
 const MILESTONES = [100, 250, 500, 1000, 2000, 5000]
 
 export const StudentDashboard = () => {
@@ -138,11 +161,16 @@ export const StudentDashboard = () => {
 
   const mapTotal = mapTests.reduce((s, t) => s + (t.payout || 0), 0)
 
-  // Get daily story based on day of year
+  // Get daily story + fun fact based on day of year
   const dailyStory = useMemo(() => {
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24))
     const dayNumber = dayOfYear % DAILY_STORIES.length
     return { ...DAILY_STORIES[dayNumber], dayNumber: dayNumber + 1 }
+  }, [])
+
+  const dailyFact = useMemo(() => {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24))
+    return DAILY_FUN_FACTS[(dayOfYear + 7) % DAILY_FUN_FACTS.length] // offset so it's different from story
   }, [])
 
   // Calculate estimated monthly earnings
@@ -220,35 +248,8 @@ export const StudentDashboard = () => {
       <Toast message={toast} />
       {showConfetti && <Confetti />}
 
-      {/* ── Daily Story Banner (top of page) ── */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="mx-6 mt-6 mb-2 rounded-2xl overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, rgba(166,139,91,0.12) 0%, rgba(107,138,135,0.08) 100%)',
-          border: '1px solid rgba(166,139,91,0.15)',
-        }}
-      >
-        <div className="px-5 py-4 flex gap-4 items-start">
-          <span className="text-3xl flex-shrink-0 mt-0.5">{dailyStory.icon}</span>
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-amber/70 dark:text-amber/50 mb-0.5">
-              Today's Money Story
-            </p>
-            <p className="text-[13px] font-bold text-ink dark:text-chalk-white mb-1">
-              {dailyStory.title}
-            </p>
-            <p className="text-[12px] leading-relaxed text-ink-light dark:text-white/60 line-clamp-3">
-              {dailyStory.story}
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
       {/* ── Header with Streak ── */}
-      <div className="px-8 pt-4 pb-2">
+      <div className="px-8 pt-6 pb-2">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -440,6 +441,61 @@ export const StudentDashboard = () => {
                 </div>
               )
             })}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ── Money Story + Fun Fact (side by side) ── */}
+      <div className="px-8 mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.5 }}
+          className="grid grid-cols-2 gap-3"
+        >
+          {/* Fun Fact */}
+          <div
+            className="rounded-xl p-4 overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(107,138,135,0.10) 0%, rgba(107,138,135,0.04) 100%)',
+              border: '1px solid rgba(107,138,135,0.15)',
+            }}
+          >
+            <div className="flex items-start gap-2.5">
+              <span className="text-xl flex-shrink-0">{dailyFact.icon}</span>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-teal/70 dark:text-teal/50 mb-1">
+                  Fun Fact
+                </p>
+                <p className="text-[11.5px] leading-relaxed text-ink-light dark:text-white/60">
+                  {dailyFact.fact}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Money Story */}
+          <div
+            className="rounded-xl p-4 overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(166,139,91,0.10) 0%, rgba(166,139,91,0.04) 100%)',
+              border: '1px solid rgba(166,139,91,0.15)',
+            }}
+          >
+            <div className="flex items-start gap-2.5">
+              <span className="text-xl flex-shrink-0">{dailyStory.icon}</span>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-amber/70 dark:text-amber/50 mb-1">
+                  Money Story
+                </p>
+                <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-0.5 leading-snug">
+                  {dailyStory.title}
+                </p>
+                <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60 line-clamp-4">
+                  {dailyStory.story}
+                </p>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
