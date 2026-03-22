@@ -33,7 +33,7 @@ export const GuidePurchases = () => {
           price,
           status,
           created_at,
-          profiles (
+          profiles!student_id (
             full_name
           )
         `)
