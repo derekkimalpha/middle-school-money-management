@@ -169,7 +169,7 @@ export const GuidePurchases = () => {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-8">
       <Toast message={toast} />
 
       <motion.div

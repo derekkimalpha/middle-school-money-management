@@ -154,7 +154,7 @@ export const GuideRoster = () => {
   const totalBalance = students.reduce((sum, student) => sum + getStudentTotal(student.accounts), 0)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-8">
       <Toast message={toast} />
 
       <motion.div
