@@ -24,7 +24,7 @@ import {
   TrendingUp, Send, ShoppingCart, Wallet, PiggyBank,
   BarChart3, ChevronRight, Banknote, ArrowUpRight,
   Sprout, Trophy, Flame, Target, Sparkles, BookOpen,
-  Clock, Star,
+  Clock, Star, X, Info,
 } from 'lucide-react'
 
 const ACCOUNT_COLORS = {
@@ -48,22 +48,67 @@ const ACCOUNT_SUBTITLES = {
   nasdaq: 'Tech & growth companies',
 }
 
-const DAILY_TIPS = [
-  { tip: 'Saving $5 a week for a year = $260. That\'s a PS5 controller, AirPods, or 52 boba teas.', icon: '💰' },
-  { tip: 'Jeff Bezos made his first investment at age 12. You\'re literally on track.', icon: '🚀' },
-  { tip: 'The S&P 500 has turned $100 into $30,000+ over 50 years. Patience pays.', icon: '📈' },
-  { tip: 'Warren Buffett started investing at age 11 and regretted not starting earlier.', icon: '🧓' },
-  { tip: 'Compound interest is the 8th wonder of the world — Einstein said it (probably).', icon: '✨' },
-  { tip: 'The earlier you invest, the more time compound interest has to grow your money.', icon: '⏰' },
-  { tip: 'A budget isn\'t a restriction — it\'s a plan for your money.', icon: '📋' },
-  { tip: 'Diversifying means not putting all your eggs in one basket.', icon: '🥚' },
-  { tip: 'An emergency fund should cover 3-6 months of expenses. Future you will thank present you.', icon: '🛡️' },
-  { tip: 'The 50/30/20 rule: 50% needs, 30% wants, 20% savings. Adults use this too.', icon: '✂️' },
-  { tip: 'Dollar-cost averaging means investing the same amount regularly, regardless of price.', icon: '💳' },
-  { tip: 'Tech stocks can grow fast, but they can also fall fast. That\'s volatility, baby.', icon: '🎢' },
-  { tip: 'A stock is a tiny piece of a company. You\'re literally an owner.', icon: '🏢' },
-  { tip: 'Time in the market beats timing the market. Start now, not later.', icon: '🕐' },
-  { tip: 'Inflation means your money loses buying power over time — investing fights back.', icon: '🔥' },
+const ACCOUNT_LEARN = {
+  checking: {
+    title: 'What is a Checking Account?',
+    emoji: '💳',
+    body: 'A checking account is your everyday spending money. In real life, this is the account connected to your debit card. You use it to buy things, pay bills, and handle daily expenses. It doesn\'t earn interest, so it\'s not for growing money — it\'s for using money.',
+    funFact: 'The average American uses their debit card 23 times per month.',
+  },
+  savings: {
+    title: 'What is a Savings Account?',
+    emoji: '🏦',
+    body: 'A savings account is where you park money you don\'t need right now. Banks pay you interest (free money!) for keeping it there, because they use your deposit to make loans to other people. It\'s low risk — your balance only goes up. Think of it as your "safe growth" account.',
+    funFact: 'The highest savings rate in US history was 33% during WWII — people had nothing to buy!',
+  },
+  sp500: {
+    title: 'What is the S&P 500?',
+    emoji: '🏛️',
+    body: 'An index is a collection of stocks bundled together. The S&P 500 tracks the 500 biggest companies in America — Apple, Amazon, Google, McDonald\'s, Nike, and more. Instead of picking one company, you invest in ALL of them. It\'s considered lower-risk investing because if one company drops, the others balance it out. Historically returns ~10% per year.',
+    funFact: 'If you invested $100 in the S&P 500 in 1980, it would be worth over $10,000 today.',
+    riskLabel: 'Moderate Risk',
+    riskColor: 'text-amber',
+  },
+  nasdaq: {
+    title: 'What is the NASDAQ?',
+    emoji: '💻',
+    body: 'The NASDAQ-100 is an index focused on the 100 biggest tech and growth companies — Apple, Microsoft, Tesla, Meta, Netflix. It\'s higher-risk than the S&P 500 because tech stocks are more volatile (bigger ups AND bigger downs). But historically, higher risk = higher reward over long periods. Great for people who can handle the ride.',
+    funFact: 'The NASDAQ has outperformed the S&P 500 in 7 of the last 10 years.',
+    riskLabel: 'Higher Risk / Higher Reward',
+    riskColor: 'text-rose',
+  },
+}
+
+const LEVEL_DISPLAY = {
+  Rookie:   { emoji: '🌱', color: 'from-stone-300 to-stone-400' },
+  Saver:    { emoji: '🌿', color: 'from-sage to-teal' },
+  Investor: { emoji: '📈', color: 'from-teal to-sage' },
+  Baller:   { emoji: '💎', color: 'from-amber to-pencil' },
+  Tycoon:   { emoji: '👑', color: 'from-pencil to-amber' },
+  Legend:   { emoji: '🏆', color: 'from-amber to-rose' },
+}
+
+const DAILY_STORIES = [
+  { title: 'The Janitor Who Died a Millionaire', story: 'Ronald Read was a gas station attendant and janitor in Vermont. He never earned more than $25/hour. But he quietly invested in stocks for decades. When he died at 92, he was worth $8 million. He left most of it to his local library and hospital. Patience beats salary.', icon: '🧹' },
+  { title: 'Why Netflix Almost Sold for $50M', story: 'In 2000, Netflix offered to sell itself to Blockbuster for $50 million. Blockbuster laughed them out of the room. Today Netflix is worth over $250 billion. Blockbuster went bankrupt. The lesson? Don\'t sleep on small things that are growing.', icon: '📺' },
+  { title: 'The $1 That Became $10,000', story: 'If you invested $1 in the S&P 500 in 1970, it would be worth over $200 today — and that\'s after crashes, recessions, and pandemics. The market always recovered. Every. Single. Time.', icon: '📈' },
+  { title: 'Warren Buffett\'s Biggest Regret', story: 'Warren Buffett bought his first stock at age 11. He\'s now worth $130+ billion. But he says his biggest regret is not starting EARLIER. He spent years wishing he\'d invested his paper route money at age 6.', icon: '🧓' },
+  { title: 'The Latte Factor', story: 'Spending $5/day on drinks = $1,825/year. Invested at 10% for 30 years, that\'s over $300,000. David Bach calls this "The Latte Factor" — small daily spending habits that secretly cost you a fortune over time.', icon: '☕' },
+  { title: 'How a Pizza Cost $100 Million', story: 'In 2010, someone bought two pizzas for 10,000 Bitcoin. At today\'s prices, those pizzas cost over $600 million. It\'s now celebrated as "Bitcoin Pizza Day" every May 22nd. Every financial decision has a future cost.', icon: '🍕' },
+  { title: 'The Psychology of Losing Money', story: 'Scientists found that losing $100 feels twice as painful as gaining $100 feels good. That\'s why people panic-sell during crashes. Smart investors know: the pain is temporary, but selling locks in the loss forever.', icon: '🧠' },
+  { title: 'The World\'s Greatest Investor Started Young', story: 'Peter Lynch ran the best-performing mutual fund in history from 1977-1990 — turning $1,000 into $28,000. His secret? "Invest in what you know." He bought stocks of stores and products he actually used.', icon: '🎯' },
+  { title: 'Why Rich People Stay Rich', story: 'Morgan Housel says wealth isn\'t about how much you earn — it\'s about what you DON\'T spend. A doctor earning $300k who spends $300k is broke. A teacher saving 20% of $50k is building real wealth. Wealth = what you don\'t see.', icon: '👀' },
+  { title: 'The Magic of Compounding', story: 'If you put $100 in an account earning 10% a year and never add another dollar: after 10 years you\'d have $259. After 30 years: $1,745. After 50 years: $11,739. All from one $100 bill. Time is the real investment.', icon: '✨' },
+  { title: 'How a Teenager Built a $5B Company', story: 'At 15, Catherine Cook and her brother saw their high school yearbook and thought "this should be online." They built myYearbook.com, grew it to 33 million users, and sold it for over $100 million. Ideas + action = wealth.', icon: '💡' },
+  { title: 'The 72 Rule', story: 'Want to know how long it takes to double your money? Divide 72 by your interest rate. At 10% returns, your money doubles every 7.2 years. At 4% savings interest, every 18 years. This is why investments grow faster than savings.', icon: '🔢' },
+  { title: 'Why Crashes Are Actually Good', story: 'The S&P 500 has crashed 20%+ about once every 4 years since 1950. But it\'s also gone up 10,000%+ total. Every crash was a sale — stocks at a discount. The people who kept investing during crashes are the richest.', icon: '🎢' },
+  { title: 'The Marshmallow Test (For Money)', story: 'In a famous experiment, kids who could wait 15 minutes to get TWO marshmallows instead of one ended up more successful in life. Money works the same way — the ability to delay spending is the #1 predictor of wealth.', icon: '🍬' },
+  { title: 'Jay-Z\'s Financial Lesson', story: 'Jay-Z went from selling CDs out of his car to a net worth of $2.5 billion. He says: "I\'m not a businessman — I\'m a business, man." He invested in companies (Tidal, Uber, Ace of Spades) instead of just spending. Ownership > paychecks.', icon: '🎤' },
+  { title: 'The Savings Secret Nobody Talks About', story: 'Most people think getting rich requires a huge salary. But studies show your savings RATE matters more than your income. Someone saving 50% of a $40k salary will retire before someone saving 5% of $200k. It\'s math, not magic.', icon: '🔑' },
+  { title: 'Apple Was Almost Bankrupt', story: 'In 1997, Apple was 90 days from going bankrupt. Steve Jobs came back and made one bet: simplify everything. If you invested $1,000 in Apple that year, it would be worth over $1,000,000 today. Sometimes the biggest winners look like losers first.', icon: '🍎' },
+  { title: 'Why Your Brain Hates Investing', story: 'Your brain is wired to avoid risk — it kept your ancestors alive. But in investing, taking zero risk is actually the riskiest move. Inflation eats your cash at ~3%/year. Not investing is choosing to lose money slowly.', icon: '🧠' },
+  { title: 'The Two Types of Money People', story: 'Morgan Housel says there are people who have money and people who look like they have money. The person driving a $80k car might be in $80k of debt. The person driving a Honda might have $2 million saved. You can\'t judge wealth by appearances.', icon: '🚗' },
+  { title: 'How Kids Your Age Made Millions', story: 'Moziah Bridges started a bow tie business at age 9. By 15, he\'d made over $600k and appeared on Shark Tank. He didn\'t wait to be "old enough." He started small, reinvested profits, and grew. That\'s what you\'re doing right now.', icon: '🎀' },
 ]
 
 const MILESTONES = [100, 250, 500, 1000, 2000, 5000]
@@ -73,17 +118,18 @@ export const StudentDashboard = () => {
   const { user, profile } = useAuth()
   const [toast, setToast] = useState(null)
   const [showConfetti, setShowConfetti] = useState(false)
+  const [learnPopup, setLearnPopup] = useState(null) // which account card popup is open
   const { accounts, loading } = useAccounts(profile?.id)
   const { settings } = usePaycheckSettings()
   const growthLog = useGrowthLog(profile?.id)
   const { leaderboard, myRank } = useLeaderboard(profile?.id, false)
   const { streak } = useStreak(profile?.id)
 
-  // Get daily tip based on day of year
-  const dailyTip = useMemo(() => {
+  // Get daily story based on day of year
+  const dailyStory = useMemo(() => {
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24))
-    const dayNumber = dayOfYear % DAILY_TIPS.length
-    return { ...DAILY_TIPS[dayNumber], dayNumber: dayNumber + 1 }
+    const dayNumber = dayOfYear % DAILY_STORIES.length
+    return { ...DAILY_STORIES[dayNumber], dayNumber: dayNumber + 1 }
   }, [])
 
   // Calculate estimated monthly earnings
@@ -161,12 +207,39 @@ export const StudentDashboard = () => {
       <Toast message={toast} />
       {showConfetti && <Confetti />}
 
+      {/* ── Daily Story Banner (top of page) ── */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mx-6 mt-6 mb-2 rounded-2xl overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, rgba(166,139,91,0.12) 0%, rgba(107,138,135,0.08) 100%)',
+          border: '1px solid rgba(166,139,91,0.15)',
+        }}
+      >
+        <div className="px-5 py-4 flex gap-4 items-start">
+          <span className="text-3xl flex-shrink-0 mt-0.5">{dailyStory.icon}</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-amber/70 dark:text-amber/50 mb-0.5">
+              Today's Money Story
+            </p>
+            <p className="text-[13px] font-bold text-ink dark:text-chalk-white mb-1">
+              {dailyStory.title}
+            </p>
+            <p className="text-[12px] leading-relaxed text-ink-light dark:text-white/60 line-clamp-3">
+              {dailyStory.story}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
       {/* ── Header with Streak ── */}
-      <div className="px-8 pt-10 pb-2">
+      <div className="px-8 pt-4 pb-2">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.05 }}
         >
           <div className="flex items-start justify-between">
             <div>
@@ -282,45 +355,83 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── Level Progress ── */}
-      <div className="px-8 mb-8">
+      {/* ── Tier Badge ── */}
+      <div className="px-8 mb-6">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 120 }}
+          className="rounded-xl p-4 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06]"
         >
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Star className="w-3.5 h-3.5 text-pencil" />
-              <span className="text-xs font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider">
-                {currentLevel?.name}
-              </span>
+          <div className="flex items-center gap-4">
+            {/* Current tier badge */}
+            <div className="flex-shrink-0">
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${LEVEL_DISPLAY[currentLevel?.name]?.color || 'from-stone-300 to-stone-400'} flex items-center justify-center shadow-sm`}>
+                <span className="text-2xl">{LEVEL_DISPLAY[currentLevel?.name]?.emoji || '🌱'}</span>
+              </div>
             </div>
-            {nextLevel ? (
-              <span className="text-xs font-medium text-ink-faint dark:text-white/30">
-                {formatCurrency(nextLevel.min - totalBalance)} to {nextLevel.name}
-              </span>
-            ) : (
-              <span className="text-xs font-medium text-pencil">Max Level!</span>
-            )}
+
+            <div className="flex-1 min-w-0">
+              {/* Level name + net worth requirement */}
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[15px] font-bold text-ink dark:text-chalk-white">
+                  {currentLevel?.name}
+                </span>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-pencil/10 text-pencil font-semibold">
+                  {formatCurrency(currentLevel?.min)}+
+                </span>
+              </div>
+
+              {/* Progress to next level */}
+              {nextLevel ? (
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] text-ink-muted dark:text-white/40">
+                      Next: <span className="font-semibold">{LEVEL_DISPLAY[nextLevel.name]?.emoji} {nextLevel.name}</span> at {formatCurrency(nextLevel.min)}
+                    </span>
+                    <span className="text-[11px] font-bold text-pencil">
+                      {formatCurrency(nextLevel.min - totalBalance)} to go
+                    </span>
+                  </div>
+                  <div className="h-2.5 rounded-full overflow-hidden bg-surface-3 dark:bg-white/[0.06]">
+                    <motion.div
+                      className={`h-full rounded-full bg-gradient-to-r ${LEVEL_DISPLAY[nextLevel.name]?.color || 'from-pencil-dark to-pencil'}`}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${levelProgress}%` }}
+                      transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[12px] text-pencil font-semibold">Max Level Reached!</p>
+              )}
+            </div>
           </div>
-          <div className="h-2 rounded-full overflow-hidden bg-surface-3 dark:bg-white/[0.06]">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-pencil-dark to-pencil"
-              initial={{ width: 0 }}
-              animate={{ width: `${levelProgress}%` }}
-              transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
-            />
+
+          {/* All tiers mini-map */}
+          <div className="flex items-center gap-1 mt-3 pt-3 border-t border-black/[0.04] dark:border-white/[0.04]">
+            {LEVELS.map((level, i) => {
+              const isActive = currentLevel?.name === level.name
+              const isPast = totalBalance >= level.min
+              return (
+                <div key={level.name} className="flex-1 flex flex-col items-center gap-1">
+                  <span className={`text-sm ${isActive ? '' : isPast ? 'opacity-60' : 'opacity-25 grayscale'}`}>
+                    {LEVEL_DISPLAY[level.name]?.emoji}
+                  </span>
+                  <span className={`text-[9px] font-bold ${isActive ? 'text-pencil' : isPast ? 'text-ink-muted dark:text-white/40' : 'text-ink-faint dark:text-white/20'}`}>
+                    {level.name}
+                  </span>
+                  <span className={`text-[8px] ${isActive ? 'text-ink-muted dark:text-white/40' : 'text-ink-faint dark:text-white/15'}`}>
+                    ${level.min}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </motion.div>
       </div>
 
-      {/* ── Divider ── */}
-      <div className="px-8 mb-6">
-        <div className="border-t border-black/[0.06] dark:border-white/[0.06]" />
-      </div>
-
-      {/* ── Account Cards (tappable for investments) ── */}
+      {/* ── Account Cards with Learn Popups ── */}
       <div className="px-8 mb-8">
         <div className="grid grid-cols-2 gap-3">
           {Object.entries(ACCOUNT_COLORS).map(([key, colors], index) => {
@@ -338,11 +449,13 @@ export const StudentDashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.24 + index * 0.05 }}
                 whileHover={{ y: -2 }}
-                whileTap={isInvestment ? { scale: 0.97 } : undefined}
-                onClick={isInvestment ? () => navigate(`/invest/${key}`) : undefined}
-                className={`group ${isInvestment ? 'cursor-pointer' : 'cursor-default'}`}
+                className="group relative"
               >
-                <div className={`rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-shadow hover:shadow-sm ${isInvestment ? 'hover:border-black/[0.12] dark:hover:border-white/[0.12]' : ''}`}>
+                <div
+                  className={`rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-shadow hover:shadow-sm ${isInvestment ? 'hover:border-black/[0.12] dark:hover:border-white/[0.12]' : ''}`}
+                  onClick={isInvestment ? () => navigate(`/invest/${key}`) : undefined}
+                  style={{ cursor: isInvestment ? 'pointer' : 'default' }}
+                >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div
@@ -355,9 +468,12 @@ export const StudentDashboard = () => {
                         {ACCOUNT_META[key]?.label}
                       </span>
                     </div>
-                    {isInvestment && (
-                      <ChevronRight className="w-3.5 h-3.5 text-ink-faint dark:text-white/20 group-hover:translate-x-0.5 transition-transform" />
-                    )}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setLearnPopup(learnPopup === key ? null : key) }}
+                      className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors"
+                    >
+                      <Info className="w-3.5 h-3.5 text-ink-faint dark:text-white/25" />
+                    </button>
                   </div>
 
                   <p className="text-2xl font-black tabular-nums text-ink dark:text-chalk-white mb-1">
@@ -379,6 +495,76 @@ export const StudentDashboard = () => {
           })}
         </div>
       </div>
+
+      {/* ── Account Learn Popup (overlay) ── */}
+      <AnimatePresence>
+        {learnPopup && ACCOUNT_LEARN[learnPopup] && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
+            onClick={() => setLearnPopup(null)}
+          >
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
+
+            {/* Popup Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-10 w-full max-w-md mx-4 mb-4 sm:mb-0 rounded-2xl bg-white dark:bg-[#1c1b19] border border-black/[0.08] dark:border-white/[0.08] shadow-xl overflow-hidden"
+            >
+              {/* Header */}
+              <div className="px-6 pt-5 pb-4 flex items-start justify-between"
+                style={{ background: `linear-gradient(135deg, ${ACCOUNT_COLORS[learnPopup]?.light} 0%, transparent 100%)` }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{ACCOUNT_LEARN[learnPopup].emoji}</span>
+                  <h3 className="text-[16px] font-bold text-ink dark:text-chalk-white">
+                    {ACCOUNT_LEARN[learnPopup].title}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setLearnPopup(null)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors flex-shrink-0"
+                >
+                  <X className="w-4 h-4 text-ink-muted dark:text-white/40" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="px-6 pb-6">
+                <p className="text-[13px] leading-relaxed text-ink-light dark:text-white/60 mb-4">
+                  {ACCOUNT_LEARN[learnPopup].body}
+                </p>
+
+                {/* Risk label for investments */}
+                {ACCOUNT_LEARN[learnPopup].riskLabel && (
+                  <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-surface-3 dark:bg-white/[0.04]">
+                    <div className={`w-2 h-2 rounded-full ${learnPopup === 'sp500' ? 'bg-amber' : 'bg-rose'}`} />
+                    <span className={`text-[12px] font-bold ${ACCOUNT_LEARN[learnPopup].riskColor}`}>
+                      {ACCOUNT_LEARN[learnPopup].riskLabel}
+                    </span>
+                  </div>
+                )}
+
+                {/* Fun fact */}
+                <div className="rounded-lg p-3 bg-pencil/[0.06] dark:bg-pencil/[0.04] border border-pencil/10">
+                  <p className="text-[11px] font-bold text-pencil uppercase tracking-wider mb-1">Fun Fact</p>
+                  <p className="text-[12px] text-ink-light dark:text-white/55 leading-relaxed">
+                    {ACCOUNT_LEARN[learnPopup].funFact}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Quick Actions ── */}
       <div className="px-8 mb-8">
@@ -509,93 +695,36 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── Daily Discovery Card (Daily Tip Redesigned) ── */}
-      <div className="px-8 mb-8">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.52, type: 'spring', stiffness: 100 }}
-          className="rounded-2xl p-6 overflow-hidden relative"
-          style={{
-            background: 'linear-gradient(135deg, rgba(166,139,91,0.15) 0%, rgba(124,140,120,0.1) 100%)',
-            border: '1px solid rgba(166,139,91,0.2)',
-          }}
-        >
-          {/* Subtle background accent */}
-          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl bg-amber/10 -mr-16 -mt-16 pointer-events-none" />
-
-          <div className="relative z-10">
-            {/* Big emoji */}
-            <div className="text-6xl mb-4">{dailyTip.icon}</div>
-
-            {/* Header */}
-            <h3 className="text-[18px] font-hand font-bold text-ink dark:text-chalk-white mb-3">
-              Money Moves
-            </h3>
-
-            {/* Tip text */}
-            <p className="text-base leading-relaxed text-ink-light dark:text-white/70 mb-4">
-              {dailyTip.tip}
-            </p>
-
-            {/* Day indicator */}
-            <p className="text-[12px] font-medium text-ink-muted dark:text-white/40">
-              Day {dailyTip.dayNumber} of your journey
-            </p>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* ── Milestones (Goals) ── */}
-      {nextLevel && (
+      {/* ── Next Goals ── */}
+      {(nextLevel || streak < 5) && (
         <div className="px-8 mb-8">
           <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
-            Milestones
+            Next Up
           </h3>
           <div className="space-y-2">
-            {/* Next level */}
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
-              <div className="w-8 h-8 rounded-lg bg-pencil/10 flex items-center justify-center flex-shrink-0">
-                <Target className="w-4 h-4 text-pencil" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
-                  Reach {nextLevel.name} level
-                </p>
-                <p className="text-[11px] text-ink-faint dark:text-white/30">
-                  {formatCurrency(nextLevel.min - totalBalance)} to go
-                </p>
-              </div>
-              <div className="w-16">
-                <div className="h-1.5 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-pencil"
-                    style={{ width: `${levelProgress}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-
             {/* Next monetary milestone */}
             {(() => {
               const nextMilestone = MILESTONES.find(m => totalBalance < m)
               if (!nextMilestone) return null
-              const pct = (totalBalance / nextMilestone) * 100
+              const prevMilestone = [...MILESTONES].reverse().find(m => totalBalance >= m) || 0
+              const pct = prevMilestone === 0
+                ? (totalBalance / nextMilestone) * 100
+                : ((totalBalance - prevMilestone) / (nextMilestone - prevMilestone)) * 100
               return (
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
-                  <div className="w-8 h-8 rounded-lg bg-amber-bg flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-4 h-4 text-amber" />
+                <div className="flex items-center gap-3 p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
+                  <div className="w-9 h-9 rounded-lg bg-amber-bg flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-4.5 h-4.5 text-amber" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
-                      ${nextMilestone} milestone
+                      Reach ${nextMilestone} net worth
                     </p>
                     <p className="text-[11px] text-ink-faint dark:text-white/30">
-                      {formatCurrency(nextMilestone - totalBalance)} to go
+                      You have {formatCurrency(totalBalance)} — {formatCurrency(nextMilestone - totalBalance)} more to hit this milestone
                     </p>
                   </div>
                   <div className="w-16">
-                    <div className="h-1.5 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
+                    <div className="h-2 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
                       <div
                         className="h-full rounded-full bg-amber"
                         style={{ width: `${Math.min(pct, 100)}%` }}
@@ -606,22 +735,22 @@ export const StudentDashboard = () => {
               )
             })()}
 
-            {/* Streak milestone */}
+            {/* Streak goal — explain what it means */}
             {streak < 5 && (
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
-                <div className="w-8 h-8 rounded-lg bg-rose-bg flex items-center justify-center flex-shrink-0">
-                  <Flame className="w-4 h-4 text-rose" />
+              <div className="flex items-center gap-3 p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
+                <div className="w-9 h-9 rounded-lg bg-rose-bg flex items-center justify-center flex-shrink-0">
+                  <Flame className="w-4.5 h-4.5 text-rose" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
-                    5-week streak
+                    5-week paycheck streak
                   </p>
                   <p className="text-[11px] text-ink-faint dark:text-white/30">
-                    {5 - streak} more week{5 - streak !== 1 ? 's' : ''} to go
+                    Log your paycheck 5 weeks in a row — you're at {streak} week{streak !== 1 ? 's' : ''} ({5 - streak} to go)
                   </p>
                 </div>
                 <div className="w-16">
-                  <div className="h-1.5 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
+                  <div className="h-2 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
                     <div
                       className="h-full rounded-full bg-rose"
                       style={{ width: `${(streak / 5) * 100}%` }}
