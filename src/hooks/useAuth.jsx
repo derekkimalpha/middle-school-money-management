@@ -1,114 +1,93 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
 export const useAuth = () => {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [debugMsg, setDebugMsg] = useState('Initializing...')
 
-  const fetchProfile = async (userId) => {
+  const fetchProfile = useCallback(async (userId) => {
     try {
+      console.log('[Auth] Fetching profile for:', userId)
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single()
       if (data && !error) {
+        console.log('[Auth] Profile loaded:', data.email, data.role)
         setProfile(data)
+        return data
       } else {
-        setDebugMsg(`Profile error: ${error?.message || 'not found'}`)
+        console.error('[Auth] Profile error:', error?.message)
+        return null
       }
     } catch (err) {
-      setDebugMsg(`Profile fetch failed: ${err.message}`)
+      console.error('[Auth] Profile fetch failed:', err.message)
+      return null
     }
-  }
-
-  const handleSession = async (session) => {
-    if (session?.user) {
-      setUser({
-        id: session.user.id,
-        email: session.user.email,
-        name: session.user.user_metadata?.name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User'
-      })
-      await fetchProfile(session.user.id)
-    } else {
-      setUser(null)
-      setProfile(null)
-    }
-  }
+  }, [])
 
   useEffect(() => {
     let mounted = true
 
-    const init = async () => {
-      try {
-        // Check if we have a code or error in the URL (PKCE flow callback)
-        const params = new URLSearchParams(window.location.search)
-        const hashParams = new URLSearchParams(window.location.hash.substring(1))
-        const code = params.get('code')
-        const accessToken = hashParams.get('access_token')
-        const error = params.get('error')
-        const errorDesc = params.get('error_description')
-
-        if (error) {
-          console.error('[Auth] OAuth error:', error, errorDesc)
-          setDebugMsg(`OAuth error: ${error} - ${errorDesc}`)
-          window.history.replaceState({}, '', window.location.pathname)
-        }
-
-        setDebugMsg(`Init: code=${!!code}, token=${!!accessToken}, error=${error || 'none'}`)
-
-        if (code) {
-          // Exchange the code for a session (PKCE flow)
-          setDebugMsg('Exchanging code for session...')
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-          if (error) {
-            setDebugMsg(`Code exchange error: ${error.message}`)
-          } else if (data?.session) {
-            setDebugMsg(`Code exchange success: ${data.session.user.email}`)
-            if (mounted) {
-              await handleSession(data.session)
-              // Clean up the URL
-              window.history.replaceState({}, '', window.location.pathname)
-            }
-          }
-        } else {
-          // No code, just check for existing session
-          setDebugMsg('Checking existing session...')
-          const { data: { session }, error } = await supabase.auth.getSession()
-          setDebugMsg(`Session check: ${session ? session.user.email : 'none'}, error: ${error?.message || 'none'}`)
-          if (mounted && session) {
-            await handleSession(session)
-          }
-        }
-      } catch (err) {
-        setDebugMsg(`Init error: ${err.message}`)
-      } finally {
-        if (mounted) {
-          setLoading(false)
-        }
-      }
-    }
-
-    init()
-
-    // Also listen for auth state changes
+    // Single source of truth: onAuthStateChange handles everything
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setDebugMsg(`Auth event: ${event}`)
-        if (mounted) {
-          await handleSession(session)
-          if (loading) setLoading(false)
+        console.log('[Auth] Event:', event, session?.user?.email)
+
+        if (!mounted) return
+
+        if (session?.user) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.name ||
+                  session.user.user_metadata?.full_name ||
+                  session.user.email?.split('@')[0] || 'User'
+          })
+
+          // Use setTimeout to avoid Supabase client deadlock
+          // The auth state change callback can block the client
+          setTimeout(async () => {
+            if (!mounted) return
+            await fetchProfile(session.user.id)
+            if (mounted) setLoading(false)
+          }, 0)
+        } else {
+          setUser(null)
+          setProfile(null)
+          setLoading(false)
         }
       }
     )
 
+    // Also handle PKCE code exchange if we have a code in URL
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    if (code) {
+      console.log('[Auth] Exchanging PKCE code...')
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (error) console.error('[Auth] Code exchange error:', error.message)
+        // Clean up URL regardless
+        window.history.replaceState({}, '', window.location.pathname)
+      })
+    }
+
+    // Safety timeout: if loading hasn't resolved after 5 seconds, force it
+    const timeout = setTimeout(() => {
+      if (mounted && loading) {
+        console.warn('[Auth] Loading timeout - forcing load complete')
+        setLoading(false)
+      }
+    }, 5000)
+
     return () => {
       mounted = false
       subscription?.unsubscribe()
+      clearTimeout(timeout)
     }
-  }, [])
+  }, [fetchProfile])
 
   const signInWithGoogle = async () => {
     try {
@@ -137,12 +116,5 @@ export const useAuth = () => {
     }
   }
 
-  return {
-    user,
-    profile,
-    loading,
-    debugMsg,
-    signInWithGoogle,
-    signOut
-  }
+  return { user, profile, loading, signInWithGoogle, signOut }
 }

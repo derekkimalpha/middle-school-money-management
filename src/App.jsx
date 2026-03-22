@@ -30,7 +30,7 @@ const LoadingSpinner = ({ debugMsg }) => (
 )
 
 export default function App() {
-  const { user, profile, loading, debugMsg, signInWithGoogle, signOut } = useAuth()
+  const { user, profile, loading, signInWithGoogle, signOut } = useAuth()
   const [currentPage, setCurrentPage] = useState('home')
 
   const studentNavItems = useMemo(
@@ -55,7 +55,7 @@ export default function App() {
   )
 
   if (loading) {
-    return <LoadingSpinner debugMsg={debugMsg} />
+    return <LoadingSpinner />
   }
 
   if (!user || !profile) {
