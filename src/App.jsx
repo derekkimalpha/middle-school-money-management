@@ -4,8 +4,6 @@ import { motion } from 'framer-motion'
 import { useAuth } from './hooks/useAuth'
 import { Layout } from './components/shared/Layout'
 import { LoginPage } from './pages/LoginPage'
-import { AuthCallback } from './pages/AuthCallback'
-
 // Student pages
 import { StudentDashboard } from './pages/student/StudentDashboard'
 import { StudentPaycheck } from './pages/student/StudentPaycheck'
@@ -61,12 +59,7 @@ export default function App() {
   }
 
   if (!user || !profile) {
-    return (
-      <Routes>
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="*" element={<LoginPage onSignInWithGoogle={signInWithGoogle} loading={loading} />} />
-      </Routes>
-    )
+    return <LoginPage onSignInWithGoogle={signInWithGoogle} loading={loading} />
   }
 
   const isGuide = profile.role === 'guide'
