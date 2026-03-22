@@ -33,11 +33,55 @@ const ACCOUNT_ICONS = {
   nasdaq: BarChart3,
 }
 
+const ACCOUNT_TIPS = {
+  checking: {
+    emoji: '🎒',
+    title: 'Checking Account',
+    body: "Your everyday spending money — like the cash in your backpack, but digital. Use it to buy stuff!",
+  },
+  savings: {
+    emoji: '🐷',
+    title: 'Savings Account',
+    body: "Your piggy bank that actually grows! Money here earns interest — it's like getting paid for NOT spending.",
+  },
+  sp500: {
+    emoji: '🏢',
+    title: 'S&P 500 Index',
+    body: "You own a tiny slice of the 500 biggest companies in America — Apple, Nike, Disney, you name it. Slow and steady wins the race!",
+  },
+  nasdaq: {
+    emoji: '🚀',
+    title: 'NASDAQ Index',
+    body: "The tech-heavy one! Think Google, Tesla, and Netflix. It can zoom up fast, but also dip — that's the thrill of investing.",
+  },
+}
+
+const AccountTooltip = ({ tip, isVisible }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+    animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 8, scale: 0.95 }}
+    transition={{ duration: 0.2, ease: 'easeOut' }}
+    className="absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 pointer-events-none"
+    style={{ display: isVisible ? 'block' : 'none' }}
+  >
+    <div className="relative bg-ink dark:bg-chalk-white rounded-sm p-4 shadow-[4px_4px_0px_rgba(0,0,0,0.15)] border-2 border-pencil/40">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-lg">{tip.emoji}</span>
+        <span className="text-sm font-hand font-bold text-chalk-white dark:text-ink">{tip.title}</span>
+      </div>
+      <p className="text-xs leading-relaxed text-chalk-white/80 dark:text-ink-light">{tip.body}</p>
+      {/* little arrow */}
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-3 h-3 rotate-45 bg-ink dark:bg-chalk-white border-r-2 border-b-2 border-pencil/40" />
+    </div>
+  </motion.div>
+)
+
 export const StudentDashboard = () => {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
   const [badges, setBadges] = useState([])
   const [toast, setToast] = useState(null)
+  const [hoveredAccount, setHoveredAccount] = useState(null)
   const { accounts, loading } = useAccounts(profile?.id)
   const { isDark } = useTheme()
 
@@ -219,8 +263,11 @@ export const StudentDashboard = () => {
                 transition={{ delay: 0.16 + index * 0.06 }}
                 whileHover={{ y: -4, rotate: index % 2 === 0 ? -0.5 : 0.5 }}
                 whileTap={{ scale: 0.98 }}
-                className="cursor-pointer"
+                className="cursor-pointer relative"
+                onMouseEnter={() => setHoveredAccount(key)}
+                onMouseLeave={() => setHoveredAccount(null)}
               >
+                <AccountTooltip tip={ACCOUNT_TIPS[key]} isVisible={hoveredAccount === key} />
                 <div className="relative rounded-sm p-5 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)] dark:shadow-[2px_2px_0px_rgba(0,0,0,0.2)] overflow-hidden">
                   {/* Colored tape strip at top */}
                   <div
