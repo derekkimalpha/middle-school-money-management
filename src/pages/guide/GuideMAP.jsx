@@ -30,7 +30,7 @@ export const GuideMAP = () => {
     try {
       setLoading(true)
       const [studentsRes, testsRes, settingsRes] = await Promise.all([
-        supabase.from('profiles').select('id, full_name, grade_level').eq('role', 'student').order('full_name'),
+        supabase.from('profiles').select('id, full_name').eq('role', 'student').order('full_name'),
         supabase.from('map_tests').select('*').order('created_at', { ascending: false }),
         supabase.from('map_payout_settings').select('*'),
       ])
