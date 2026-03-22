@@ -320,6 +320,10 @@ export const StudentTransfer = () => {
             </div>
           </div>
         </motion.div>
+
+        <FinTip icon="🧠" title="Real-World Connection: Early Withdrawal Penalties" color="from-purple-50 to-pink-50">
+          In real life, retirement accounts like 401(k)s and IRAs charge a 10% penalty if you withdraw money before age 59½. That's why our investment accounts have a transfer fee — it teaches you that taking money out of investments early costs you. The best investors think long-term!
+        </FinTip>
       </div>
     </div>
   )

@@ -333,6 +333,10 @@ export const StudentPurchase = () => {
             </p>
           </motion.div>
         )}
+
+        <FinTip icon="💡" title="The 24-Hour Rule" color="from-amber-50 to-orange-50">
+          Before making a big purchase, wait 24 hours. This is a real strategy that millionaires use! If you still want it after a day, it might be worth buying. But often, the urge passes and you save your money for something better.
+        </FinTip>
       </div>
     </div>
   )

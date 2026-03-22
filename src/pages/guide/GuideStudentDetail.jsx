@@ -269,65 +269,84 @@ export const GuideStudentDetail = () => {
           {paychecks.length === 0 ? (
             <p className="text-slate-600">No paychecks yet</p>
           ) : (
-            paychecks.map(paycheck => (
-              <motion.div
-                key={paycheck.id}
-                className="p-4 rounded-lg border border-slate-200 space-y-3"
-                whileHover={{ y: -2 }}
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <p className="font-semibold text-slate-900">
-                      Week of {new Date(paycheck.created_at).toLocaleDateString()}
-                    </p>
-                    <div className="mt-2 space-y-1 text-sm text-slate-600">
-                      {paycheck.base_pay > 0 && <p>Base: ${paycheck.base_pay}</p>}
-                      {paycheck.epic_week_bonus > 0 && <p>Epic: ${paycheck.epic_week_bonus}</p>}
-                      {paycheck.bonus_xp > 0 && <p>Bonus XP: ${paycheck.bonus_xp}</p>}
-                      {paycheck.mastery_pay > 0 && <p>Mastery: ${paycheck.mastery_pay}</p>}
-                      {paycheck.job_earnings > 0 && <p>Job: ${paycheck.job_earnings}</p>}
-                      {paycheck.smart_spending_bonus > 0 && <p>Smart Spending: ${paycheck.smart_spending_bonus}</p>}
-                      {paycheck.other_earnings > 0 && <p>Other: ${paycheck.other_earnings}</p>}
+            paychecks.map(paycheck => {
+              const totalXp = (paycheck.xp_mon || 0) + (paycheck.xp_tue || 0) + (paycheck.xp_wed || 0) + (paycheck.xp_thu || 0) + (paycheck.xp_fri || 0)
+              const epicCount = [paycheck.epic_mon, paycheck.epic_tue, paycheck.epic_wed, paycheck.epic_thu, paycheck.epic_fri].filter(Boolean).length
+
+              return (
+                <motion.div
+                  key={paycheck.id}
+                  className="p-4 rounded-lg border border-slate-200 space-y-3"
+                  whileHover={{ y: -2 }}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="font-semibold text-slate-900">
+                        {paycheck.week_label || new Date(paycheck.created_at).toLocaleDateString()}
+                      </p>
+                      <p className="text-lg font-bold text-sage mt-1">{formatCurrency(paycheck.total_earnings || 0)}</p>
+                      <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                        {totalXp > 0 && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full">XP: {totalXp}</span>}
+                        {epicCount > 0 && <span className="px-2 py-1 bg-amber-50 text-amber-600 rounded-full">🔥 {epicCount} epic</span>}
+                        {paycheck.base_pay > 0 && <span className="px-2 py-1 bg-green-50 text-green-600 rounded-full">Base: ${paycheck.base_pay}</span>}
+                        {paycheck.epic_bonus > 0 && <span className="px-2 py-1 bg-amber-50 text-amber-600 rounded-full">Epic: ${paycheck.epic_bonus}</span>}
+                        {paycheck.xp_bonus > 0 && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full">XP Bonus: ${paycheck.xp_bonus}</span>}
+                        {paycheck.mastery_pay > 0 && <span className="px-2 py-1 bg-purple-50 text-purple-600 rounded-full">Mastery: ${paycheck.mastery_pay}</span>}
+                        {paycheck.job_pay > 0 && <span className="px-2 py-1 bg-teal-50 text-teal-600 rounded-full">Job: ${paycheck.job_pay}</span>}
+                        {paycheck.smart_goal > 0 && <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full">SMART: ${paycheck.smart_goal}</span>}
+                        {paycheck.other_pay > 0 && <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full">Other: ${paycheck.other_pay}</span>}
+                      </div>
                     </div>
+
+                    <Tag color={getStatusColor(paycheck.status)}>
+                      {paycheck.status}
+                    </Tag>
                   </div>
 
-                  <Tag color={getStatusColor(paycheck.status)}>
-                    {paycheck.status}
-                  </Tag>
-                </div>
+                  {paycheck.status === 'submitted' && (
+                    <div className="border-t border-slate-200 pt-3 flex gap-2">
+                      <Button
+                        onClick={() => verifyPaycheck(paycheck.id, paycheck.total_earnings)}
+                        disabled={verifyingPaycheck === paycheck.id}
+                        size="sm"
+                      >
+                        <Check className="w-4 h-4 mr-1 inline" />
+                        Approve ({formatCurrency(paycheck.total_earnings || 0)})
+                      </Button>
+                      <div className="flex items-center gap-2 flex-1">
+                        <input
+                          type="number"
+                          value={verifiedAmounts[paycheck.id] || ''}
+                          onChange={(e) => setVerifiedAmounts(prev => ({
+                            ...prev,
+                            [paycheck.id]: e.target.value
+                          }))}
+                          placeholder="Or adjust amount..."
+                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-slate-300 focus:outline-none focus:border-sage"
+                        />
+                        {verifiedAmounts[paycheck.id] && (
+                          <Button
+                            onClick={() => verifyPaycheck(paycheck.id, parseFloat(verifiedAmounts[paycheck.id]))}
+                            disabled={verifyingPaycheck === paycheck.id}
+                            size="sm"
+                            variant="ghost"
+                          >
+                            Approve Adjusted
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
-                {paycheck.status === 'submitted' && (
-                  <div className="border-t border-slate-200 pt-3 space-y-3">
-                    <Field label="Verified Amount ($)">
-                      <input
-                        type="number"
-                        value={verifiedAmounts[paycheck.id] || ''}
-                        onChange={(e) => setVerifiedAmounts(prev => ({
-                          ...prev,
-                          [paycheck.id]: e.target.value
-                        }))}
-                        placeholder="Enter verified amount"
-                        className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                      />
-                    </Field>
-                    <Button
-                      onClick={() => verifyPaycheck(paycheck.id, parseFloat(verifiedAmounts[paycheck.id]))}
-                      disabled={verifyingPaycheck === paycheck.id}
-                      size="sm"
-                    >
-                      Verify ✓
-                    </Button>
-                  </div>
-                )}
-
-                {(paycheck.status === 'verified' || paycheck.status === 'allocated') && paycheck.verified_amount && (
-                  <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                    <Check className="w-4 h-4" />
-                    Verified: ${paycheck.verified_amount}
-                  </div>
-                )}
-              </motion.div>
-            ))
+                  {(paycheck.status === 'verified' || paycheck.status === 'allocated') && (
+                    <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
+                      <Check className="w-4 h-4" />
+                      Approved: {formatCurrency(paycheck.verified_amount || paycheck.total_earnings)}
+                    </div>
+                  )}
+                </motion.div>
+              )
+            }))
           )}
         </div>
       </motion.div>
@@ -386,17 +405,19 @@ export const GuideStudentDetail = () => {
                 whileHover={{ x: 2 }}
               >
                 <div className="flex-1">
-                  <p className="font-semibold text-slate-900 capitalize">{trans.type}</p>
-                  <p className="text-sm text-slate-600">{trans.description}</p>
+                  <p className="font-semibold text-slate-900">{trans.description}</p>
                   <p className="text-xs text-slate-500 mt-1">
                     {new Date(trans.created_at).toLocaleDateString()}
+                    {trans.category && <span className="ml-2 capitalize text-slate-400">{trans.category}</span>}
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className={`font-bold ${trans.amount >= 0 ? 'text-green-600' : 'text-rose-600'}`}>
                     {trans.amount >= 0 ? '+' : ''}{formatCurrency(trans.amount)}
                   </p>
-                  <p className="text-xs text-slate-500 capitalize">{trans.account_type}</p>
+                  {trans.balance_after != null && (
+                    <p className="text-xs text-slate-500">Bal: {formatCurrency(trans.balance_after)}</p>
+                  )}
                 </div>
               </motion.div>
             ))

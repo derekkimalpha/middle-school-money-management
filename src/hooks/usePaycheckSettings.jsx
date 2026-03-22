@@ -2,26 +2,49 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
 const DEFAULT_SETTINGS = {
-  xp_threshold: 100,
+  xp_threshold: 600,
   base_pay: 10,
-  bonus_multiplier: 1.5,
-  challenge_reward: 50,
-  max_level: 10,
-  daily_limit: 100
+  epic_week_bonus: 5,
+  bonus_xp_rate: 0.01,
+  bonus_xp_per: 50,
+  mastery_pass_pay: 20,
+  mastery_perfect_pay: 100,
+  mastery_min_score: 90,
+  transfer_fee_pct: 10,
+  smart_goal_pay: 6,
+  custom_bonuses: []
 }
 
 export const usePaycheckSettings = () => {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS)
+  const [activeSession, setActiveSession] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
+        // First find the active session
+        const { data: sessions, error: sessionError } = await supabase
+          .from('sessions')
+          .select('id')
+          .eq('is_active', true)
+          .limit(1)
+
+        if (sessionError) throw sessionError
+        if (!sessions || sessions.length === 0) {
+          setSettings(DEFAULT_SETTINGS)
+          setLoading(false)
+          return
+        }
+
+        const sessionId = sessions[0].id
+        setActiveSession(sessions[0])
+
+        // Then fetch settings for that session
         const { data, error } = await supabase
           .from('paycheck_settings')
           .select('*')
-          .eq('sessions.is_active', true)
-          .limit(1)
+          .eq('session_id', sessionId)
           .single()
 
         if (error && error.code !== 'PGRST116') {
@@ -29,15 +52,7 @@ export const usePaycheckSettings = () => {
         }
 
         if (data) {
-          setSettings({
-            xp_threshold: data.xp_threshold || DEFAULT_SETTINGS.xp_threshold,
-            base_pay: data.base_pay || DEFAULT_SETTINGS.base_pay,
-            bonus_multiplier: data.bonus_multiplier || DEFAULT_SETTINGS.bonus_multiplier,
-            challenge_reward: data.challenge_reward || DEFAULT_SETTINGS.challenge_reward,
-            max_level: data.max_level || DEFAULT_SETTINGS.max_level,
-            daily_limit: data.daily_limit || DEFAULT_SETTINGS.daily_limit,
-            ...data
-          })
+          setSettings({ ...DEFAULT_SETTINGS, ...data })
         } else {
           setSettings(DEFAULT_SETTINGS)
         }
@@ -54,6 +69,7 @@ export const usePaycheckSettings = () => {
 
   return {
     settings,
+    activeSession,
     loading
   }
 }
