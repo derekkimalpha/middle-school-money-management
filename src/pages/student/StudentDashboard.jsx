@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   AnimNum,
   DonutChart,
-  Badge,
   Toast,
   Confetti,
 } from '../../components/shared'
@@ -14,7 +13,6 @@ import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 import { useGrowthLog } from '../../hooks/useGrowthLog'
 import { useLeaderboard } from '../../hooks/useLeaderboard'
 import { useStreak } from '../../hooks/useStreak'
-import { supabase } from '../../lib/supabase'
 import {
   ACCOUNT_META,
   formatCurrency,
@@ -51,20 +49,21 @@ const ACCOUNT_SUBTITLES = {
 }
 
 const DAILY_TIPS = [
-  { tip: 'Pay yourself first — put money into savings before spending on wants.', icon: '💡' },
-  { tip: 'The earlier you invest, the more time compound interest has to grow your money.', icon: '📈' },
+  { tip: 'Saving $5 a week for a year = $260. That\'s a PS5 controller, AirPods, or 52 boba teas.', icon: '💰' },
+  { tip: 'Jeff Bezos made his first investment at age 12. You\'re literally on track.', icon: '🚀' },
+  { tip: 'The S&P 500 has turned $100 into $30,000+ over 50 years. Patience pays.', icon: '📈' },
+  { tip: 'Warren Buffett started investing at age 11 and regretted not starting earlier.', icon: '🧓' },
+  { tip: 'Compound interest is the 8th wonder of the world — Einstein said it (probably).', icon: '✨' },
+  { tip: 'The earlier you invest, the more time compound interest has to grow your money.', icon: '⏰' },
   { tip: 'A budget isn\'t a restriction — it\'s a plan for your money.', icon: '📋' },
   { tip: 'Diversifying means not putting all your eggs in one basket.', icon: '🥚' },
-  { tip: 'Warren Buffett started investing at age 11 and regretted not starting earlier.', icon: '🧓' },
-  { tip: 'The S&P 500 has averaged ~10% annual returns over the past 50+ years.', icon: '📊' },
-  { tip: 'An emergency fund should cover 3-6 months of expenses.', icon: '🛡️' },
-  { tip: 'The 50/30/20 rule: 50% needs, 30% wants, 20% savings.', icon: '✂️' },
-  { tip: 'Compound interest is the 8th wonder of the world — Einstein (maybe).', icon: '✨' },
-  { tip: 'Dollar-cost averaging means investing the same amount regularly, regardless of price.', icon: '⏱️' },
-  { tip: 'Tech stocks can grow fast, but they can also fall fast. That\'s volatility.', icon: '🎢' },
+  { tip: 'An emergency fund should cover 3-6 months of expenses. Future you will thank present you.', icon: '🛡️' },
+  { tip: 'The 50/30/20 rule: 50% needs, 30% wants, 20% savings. Adults use this too.', icon: '✂️' },
+  { tip: 'Dollar-cost averaging means investing the same amount regularly, regardless of price.', icon: '💳' },
+  { tip: 'Tech stocks can grow fast, but they can also fall fast. That\'s volatility, baby.', icon: '🎢' },
   { tip: 'A stock is a tiny piece of a company. You\'re literally an owner.', icon: '🏢' },
-  { tip: 'Time in the market beats timing the market.', icon: '🕐' },
-  { tip: 'Inflation means your money loses buying power over time — investing fights that.', icon: '🔥' },
+  { tip: 'Time in the market beats timing the market. Start now, not later.', icon: '🕐' },
+  { tip: 'Inflation means your money loses buying power over time — investing fights back.', icon: '🔥' },
 ]
 
 const MILESTONES = [100, 250, 500, 1000, 2000, 5000]
@@ -72,8 +71,6 @@ const MILESTONES = [100, 250, 500, 1000, 2000, 5000]
 export const StudentDashboard = () => {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
-  const [badges, setBadges] = useState([])
-  const [allBadges, setAllBadges] = useState([])
   const [toast, setToast] = useState(null)
   const [showConfetti, setShowConfetti] = useState(false)
   const { accounts, loading } = useAccounts(profile?.id)
@@ -85,55 +82,13 @@ export const StudentDashboard = () => {
   // Get daily tip based on day of year
   const dailyTip = useMemo(() => {
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24))
-    return DAILY_TIPS[dayOfYear % DAILY_TIPS.length]
+    const dayNumber = dayOfYear % DAILY_TIPS.length
+    return { ...DAILY_TIPS[dayNumber], dayNumber: dayNumber + 1 }
   }, [])
-
-  useEffect(() => {
-    if (!profile?.id) return
-    const fetchBadges = async () => {
-      try {
-        // Fetch earned badges
-        const { data: badgeData } = await supabase
-          .from('student_badges')
-          .select('badge_id, badges:badge_definitions(*)')
-          .eq('student_id', profile.id)
-
-        // Fetch all badge definitions
-        const { data: allBadgeDefs } = await supabase
-          .from('badge_definitions')
-          .select('*')
-
-        const earnedIds = new Set((badgeData || []).map(b => b.badge_id))
-
-        if (badgeData) {
-          setBadges(badgeData.map((sb) => ({
-            id: sb.badge_id,
-            title: sb.badges?.title || '',
-            icon: sb.badges?.icon || '',
-            description: sb.badges?.description || '',
-            earned: true,
-          })))
-        }
-
-        if (allBadgeDefs) {
-          setAllBadges(allBadgeDefs.map(bd => ({
-            id: bd.id,
-            title: bd.title,
-            icon: bd.icon,
-            description: bd.description,
-            earned: earnedIds.has(bd.id),
-          })))
-        }
-      } catch (error) {
-        console.error('Error fetching badges:', error)
-      }
-    }
-    fetchBadges()
-  }, [profile?.id])
 
   // Calculate estimated monthly earnings
   const earningsEstimate = useMemo(() => {
-    if (!accounts) return { monthly: 0, savingsRate: 0 }
+    if (!accounts) return { monthly: 0, savingsRate: 0, breakdown: {} }
     const savingsBalance = accounts.savings || 0
     const savingsApy = settings?.savings_interest_rate ?? 4.5
     const monthlyInterest = savingsBalance * (savingsApy / 100 / 12)
@@ -143,6 +98,11 @@ export const StudentDashboard = () => {
     return {
       monthly: Math.round(total * 100) / 100,
       savingsRate: savingsApy,
+      breakdown: {
+        savings: Math.round(monthlyInterest * 100) / 100,
+        sp500: Math.round(sp500Monthly * 100) / 100,
+        nasdaq: Math.round(nasdaqMonthly * 100) / 100,
+      }
     }
   }, [accounts, settings])
 
@@ -477,81 +437,120 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── Earnings Snapshot ── */}
+      {/* ── Enhanced Earnings Snapshot ── */}
       {(growthLog.total > 0 || earningsEstimate.monthly > 0) && (
         <div className="px-8 mb-8">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="rounded-xl p-5 border border-sage/20 dark:border-sage/10 bg-sage-bg dark:bg-sage/[0.04]"
+            className="rounded-xl p-6 border border-sage/20 dark:border-sage/10 bg-sage-bg dark:bg-sage/[0.04]"
           >
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Sprout className="w-4 h-4 text-sage-dark dark:text-sage-300" />
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-lg bg-sage/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Sprout className="w-5 h-5 text-sage-dark dark:text-sage-300" />
               </div>
-              <div>
-                <p className="text-sm font-bold text-ink dark:text-chalk-white mb-1">
-                  Your money is working for you
+              <div className="flex-1">
+                <p className="text-sm font-bold text-ink dark:text-chalk-white mb-3">
+                  Your Money is Growing
                 </p>
-                {growthLog.total > 0 && (
-                  <p className="text-[13px] font-semibold text-sage-dark dark:text-sage-300 mb-1">
-                    +{formatCurrency(growthLog.total)} earned so far
-                  </p>
-                )}
-                <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-                  {earningsEstimate.monthly > 0 && (
-                    <>Projected: <span className="font-bold text-sage-dark dark:text-sage-300">{formatCurrency(earningsEstimate.monthly)}/mo</span> from {earningsEstimate.savingsRate}% savings APY + market returns.</>
+
+                <div className="space-y-2.5">
+                  {growthLog.total > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[13px] text-ink-light dark:text-white/60">Earned so far</span>
+                      <span className="text-[14px] font-bold text-sage-dark dark:text-sage-300">
+                        +{formatCurrency(growthLog.total)}
+                      </span>
+                    </div>
                   )}
-                </p>
+
+                  {earningsEstimate.monthly > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[13px] text-ink-light dark:text-white/60">Projected monthly</span>
+                      <span className="text-[14px] font-bold text-sage-dark dark:text-sage-300">
+                        ~{formatCurrency(earningsEstimate.monthly)}/mo
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {(earningsEstimate.breakdown.savings > 0 || earningsEstimate.breakdown.sp500 > 0 || earningsEstimate.breakdown.nasdaq > 0) && (
+                  <div className="mt-3 pt-3 border-t border-sage/20 dark:border-sage/10 space-y-1.5">
+                    {earningsEstimate.breakdown.savings > 0 && (
+                      <div className="flex items-center justify-between text-[12px]">
+                        <span className="text-ink-light dark:text-white/50">Savings interest</span>
+                        <span className="text-sage-dark dark:text-sage-300 font-semibold">
+                          +{formatCurrency(earningsEstimate.breakdown.savings)}/mo
+                        </span>
+                      </div>
+                    )}
+                    {earningsEstimate.breakdown.sp500 > 0 && (
+                      <div className="flex items-center justify-between text-[12px]">
+                        <span className="text-ink-light dark:text-white/50">S&P 500 gains</span>
+                        <span className="text-sage-dark dark:text-sage-300 font-semibold">
+                          +{formatCurrency(earningsEstimate.breakdown.sp500)}/mo
+                        </span>
+                      </div>
+                    )}
+                    {earningsEstimate.breakdown.nasdaq > 0 && (
+                      <div className="flex items-center justify-between text-[12px]">
+                        <span className="text-ink-light dark:text-white/50">NASDAQ gains</span>
+                        <span className="text-sage-dark dark:text-sage-300 font-semibold">
+                          +{formatCurrency(earningsEstimate.breakdown.nasdaq)}/mo
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
         </div>
       )}
 
-      {/* ── Daily Tip ── */}
+      {/* ── Daily Discovery Card (Daily Tip Redesigned) ── */}
       <div className="px-8 mb-8">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.52 }}
-          className="rounded-xl p-4 border border-plum/15 dark:border-plum/10 bg-plum-bg dark:bg-plum/[0.04]"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.52, type: 'spring', stiffness: 100 }}
+          className="rounded-2xl p-6 overflow-hidden relative"
+          style={{
+            background: 'linear-gradient(135deg, rgba(166,139,91,0.15) 0%, rgba(124,140,120,0.1) 100%)',
+            border: '1px solid rgba(166,139,91,0.2)',
+          }}
         >
-          <div className="flex items-start gap-3">
-            <span className="text-lg flex-shrink-0">{dailyTip.icon}</span>
-            <div>
-              <p className="text-[10px] font-bold text-plum uppercase tracking-wider mb-0.5">Tip of the Day</p>
-              <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">{dailyTip.tip}</p>
-            </div>
+          {/* Subtle background accent */}
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl bg-amber/10 -mr-16 -mt-16 pointer-events-none" />
+
+          <div className="relative z-10">
+            {/* Big emoji */}
+            <div className="text-6xl mb-4">{dailyTip.icon}</div>
+
+            {/* Header */}
+            <h3 className="text-[18px] font-hand font-bold text-ink dark:text-chalk-white mb-3">
+              Money Moves
+            </h3>
+
+            {/* Tip text */}
+            <p className="text-base leading-relaxed text-ink-light dark:text-white/70 mb-4">
+              {dailyTip.tip}
+            </p>
+
+            {/* Day indicator */}
+            <p className="text-[12px] font-medium text-ink-muted dark:text-white/40">
+              Day {dailyTip.dayNumber} of your journey
+            </p>
           </div>
         </motion.div>
       </div>
 
-      {/* ── Achievements ── */}
-      <div className="px-8 mb-8">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider">
-            Achievements
-          </h3>
-          <span className="text-xs font-medium text-ink-faint dark:text-white/30">
-            {badges.length}/{allBadges.length} earned
-          </span>
-        </div>
-        <div className="overflow-x-auto pb-2 -mx-8 px-8">
-          <div className="flex gap-3 min-w-max">
-            {allBadges.map((badge, index) => (
-              <Badge key={badge.id} badge={badge} delay={index * 0.04} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Next Milestones ── */}
+      {/* ── Milestones (Goals) ── */}
       {nextLevel && (
         <div className="px-8 mb-8">
           <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
-            Goals
+            Milestones
           </h3>
           <div className="space-y-2">
             {/* Next level */}
@@ -607,7 +606,7 @@ export const StudentDashboard = () => {
               )
             })()}
 
-            {/* Streak goal */}
+            {/* Streak milestone */}
             {streak < 5 && (
               <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
                 <div className="w-8 h-8 rounded-lg bg-rose-bg flex items-center justify-center flex-shrink-0">

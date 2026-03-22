@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Trash2, Edit2, Save, X } from 'lucide-react'
+import { Plus, Trash2, Edit2, Save, X, UserPlus, Shield, Crown } from 'lucide-react'
 import { Button, Field, Toast } from '../../components/shared'
 import { supabase } from '../../lib/supabase'
 
@@ -18,6 +18,9 @@ export const GuideSettings = () => {
   const [newJob, setNewJob] = useState({ title: '', description: '', icon: '', weekly_pay: '' })
   const [toast, setToast] = useState(null)
   const [activeTab, setActiveTab] = useState('classroom')
+  const [guides, setGuides] = useState([])
+  const [newGuideEmail, setNewGuideEmail] = useState('')
+  const [addingGuide, setAddingGuide] = useState(false)
 
   useEffect(() => {
     fetchData()
@@ -69,6 +72,17 @@ export const GuideSettings = () => {
       }
 
       setProfiles(profilesRes.data || [])
+
+      // Fetch guides from guide_classrooms
+      if (sessionRes.data && sessionRes.data.length > 0) {
+        const guidesRes = await supabase
+          .from('guide_classrooms')
+          .select('*, guide:profiles!guide_id(id, full_name, email)')
+          .eq('session_id', sessionRes.data[0].id)
+          .order('created_at')
+
+        setGuides(guidesRes.data || [])
+      }
 
       const studentJobMap = {}
       profilesRes.data?.forEach(profile => {
@@ -231,6 +245,76 @@ export const GuideSettings = () => {
     }
   }
 
+  const addGuide = async (email) => {
+    if (!email.trim() || !activeSession) {
+      setToast({ type: 'error', text: 'Please enter an email address' })
+      return
+    }
+
+    try {
+      setAddingGuide(true)
+
+      // Look up profile by email
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .eq('email', email.toLowerCase())
+        .single()
+
+      if (profileError || !profileData) {
+        setToast({ type: 'error', text: 'Profile not found for this email' })
+        return
+      }
+
+      // Insert into guide_classrooms with role 'guide'
+      const { data: newGuideData, error: insertError } = await supabase
+        .from('guide_classrooms')
+        .insert({
+          session_id: activeSession.id,
+          guide_id: profileData.id,
+          role: 'guide'
+        })
+        .select('*, guide:profiles!guide_id(id, full_name, email)')
+
+      if (insertError) throw insertError
+
+      setGuides([...guides, newGuideData[0]])
+      setNewGuideEmail('')
+      setToast({ type: 'success', text: 'Guide added successfully' })
+    } catch (err) {
+      setToast({ type: 'error', text: 'Failed to add guide' })
+    } finally {
+      setAddingGuide(false)
+    }
+  }
+
+  const removeGuide = async (guideId, role) => {
+    if (role === 'lead_guide') {
+      setToast({ type: 'error', text: 'Cannot remove the lead guide' })
+      return
+    }
+
+    if (!window.confirm('Remove this guide?')) return
+
+    try {
+      setSaving(true)
+
+      const { error } = await supabase
+        .from('guide_classrooms')
+        .delete()
+        .eq('id', guideId)
+
+      if (error) throw error
+
+      setGuides(guides.filter(g => g.id !== guideId))
+      setToast({ type: 'success', text: 'Guide removed' })
+    } catch (err) {
+      setToast({ type: 'error', text: 'Failed to remove guide' })
+    } finally {
+      setSaving(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -327,6 +411,15 @@ export const GuideSettings = () => {
                   className="w-full px-3 py-2 rounded-sm border border-black/[0.08] dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                 />
               </Field>
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={savePaycheckSettings}
+                  disabled={saving}
+                  className="px-4 py-2 text-sm font-semibold bg-ink dark:bg-chalk-white text-white dark:text-ink rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {saving ? 'Saving...' : 'Update'}
+                </button>
+              </div>
             </div>
 
             <div>
@@ -345,6 +438,75 @@ export const GuideSettings = () => {
               ) : (
                 <p className="text-ink-faint dark:text-white/40 italic">No students in this classroom yet</p>
               )}
+            </div>
+
+            {/* Co-Guides Section */}
+            <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-4">
+              <h3 className="font-semibold text-ink dark:text-chalk-white mb-3 font-hand">Co-Guides ({guides.length})</h3>
+
+              {guides.length > 0 ? (
+                <div className="space-y-2 mb-4">
+                  {guides.map(guide => (
+                    <div
+                      key={guide.id}
+                      className="flex items-center justify-between p-3 rounded-sm border border-black/[0.08] dark:border-white/[0.06] dark:bg-white/5 bg-gray-50"
+                    >
+                      <div className="flex items-center gap-3">
+                        {guide.role === 'lead_guide' ? (
+                          <Crown className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                        ) : (
+                          <Shield className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                        )}
+                        <div>
+                          <p className="text-ink dark:text-chalk-white font-medium">{guide.guide.full_name}</p>
+                          <p className="text-xs text-ink-muted dark:text-white/40">{guide.guide.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs px-2 py-1 rounded bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-semibold">
+                          {guide.role === 'lead_guide' ? 'Lead Guide' : 'Guide'}
+                        </span>
+                        {guide.role !== 'lead_guide' && (
+                          <button
+                            onClick={() => removeGuide(guide.id, guide.role)}
+                            disabled={saving}
+                            className="p-1.5 rounded hover:bg-rose-100 dark:hover:bg-rose-900/20 text-rose-600 dark:text-rose-400 transition-colors disabled:opacity-50"
+                            title="Remove guide"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-ink-faint dark:text-white/40 italic mb-4">No co-guides added yet</p>
+              )}
+
+              {/* Add Guide Form */}
+              <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-4 mt-4">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <input
+                      type="email"
+                      value={newGuideEmail}
+                      onChange={(e) => setNewGuideEmail(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && addGuide(newGuideEmail)}
+                      placeholder="Enter guide email address"
+                      className="w-full px-3 py-2 rounded-sm border border-black/[0.08] dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10 text-sm"
+                    />
+                  </div>
+                  <button
+                    onClick={() => addGuide(newGuideEmail)}
+                    disabled={addingGuide || !newGuideEmail.trim()}
+                    className="px-4 py-2 text-sm font-semibold bg-teal-600 dark:bg-teal-500 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    {addingGuide ? 'Adding...' : 'Add Guide'}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
