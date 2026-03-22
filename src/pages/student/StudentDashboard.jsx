@@ -1,23 +1,33 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   AnimNum,
   DonutChart,
   Badge,
   Toast,
+  Confetti,
 } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
 import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
+import { useGrowthLog } from '../../hooks/useGrowthLog'
+import { useLeaderboard } from '../../hooks/useLeaderboard'
+import { useStreak } from '../../hooks/useStreak'
 import { supabase } from '../../lib/supabase'
 import {
   ACCOUNT_META,
   formatCurrency,
   getLevel,
   getNextLevel,
+  LEVELS,
 } from '../../lib/constants'
-import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight, Banknote, ArrowUpRight, Sprout } from 'lucide-react'
+import {
+  TrendingUp, Send, ShoppingCart, Wallet, PiggyBank,
+  BarChart3, ChevronRight, Banknote, ArrowUpRight,
+  Sprout, Trophy, Flame, Target, Sparkles, BookOpen,
+  Clock, Star,
+} from 'lucide-react'
 
 const ACCOUNT_COLORS = {
   checking: { hex: '#7c8c78', light: 'rgba(124,140,120,0.08)', accent: 'text-sage dark:text-sage-300' },
@@ -40,22 +50,61 @@ const ACCOUNT_SUBTITLES = {
   nasdaq: 'Tech & growth companies',
 }
 
+const DAILY_TIPS = [
+  { tip: 'Pay yourself first — put money into savings before spending on wants.', icon: '💡' },
+  { tip: 'The earlier you invest, the more time compound interest has to grow your money.', icon: '📈' },
+  { tip: 'A budget isn\'t a restriction — it\'s a plan for your money.', icon: '📋' },
+  { tip: 'Diversifying means not putting all your eggs in one basket.', icon: '🥚' },
+  { tip: 'Warren Buffett started investing at age 11 and regretted not starting earlier.', icon: '🧓' },
+  { tip: 'The S&P 500 has averaged ~10% annual returns over the past 50+ years.', icon: '📊' },
+  { tip: 'An emergency fund should cover 3-6 months of expenses.', icon: '🛡️' },
+  { tip: 'The 50/30/20 rule: 50% needs, 30% wants, 20% savings.', icon: '✂️' },
+  { tip: 'Compound interest is the 8th wonder of the world — Einstein (maybe).', icon: '✨' },
+  { tip: 'Dollar-cost averaging means investing the same amount regularly, regardless of price.', icon: '⏱️' },
+  { tip: 'Tech stocks can grow fast, but they can also fall fast. That\'s volatility.', icon: '🎢' },
+  { tip: 'A stock is a tiny piece of a company. You\'re literally an owner.', icon: '🏢' },
+  { tip: 'Time in the market beats timing the market.', icon: '🕐' },
+  { tip: 'Inflation means your money loses buying power over time — investing fights that.', icon: '🔥' },
+]
+
+const MILESTONES = [100, 250, 500, 1000, 2000, 5000]
+
 export const StudentDashboard = () => {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
   const [badges, setBadges] = useState([])
+  const [allBadges, setAllBadges] = useState([])
   const [toast, setToast] = useState(null)
+  const [showConfetti, setShowConfetti] = useState(false)
   const { accounts, loading } = useAccounts(profile?.id)
   const { settings } = usePaycheckSettings()
+  const growthLog = useGrowthLog(profile?.id)
+  const { leaderboard, myRank } = useLeaderboard(profile?.id, false)
+  const { streak } = useStreak(profile?.id)
+
+  // Get daily tip based on day of year
+  const dailyTip = useMemo(() => {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24))
+    return DAILY_TIPS[dayOfYear % DAILY_TIPS.length]
+  }, [])
 
   useEffect(() => {
     if (!profile?.id) return
     const fetchBadges = async () => {
       try {
+        // Fetch earned badges
         const { data: badgeData } = await supabase
           .from('student_badges')
           .select('badge_id, badges:badge_definitions(*)')
           .eq('student_id', profile.id)
+
+        // Fetch all badge definitions
+        const { data: allBadgeDefs } = await supabase
+          .from('badge_definitions')
+          .select('*')
+
+        const earnedIds = new Set((badgeData || []).map(b => b.badge_id))
+
         if (badgeData) {
           setBadges(badgeData.map((sb) => ({
             id: sb.badge_id,
@@ -63,6 +112,16 @@ export const StudentDashboard = () => {
             icon: sb.badges?.icon || '',
             description: sb.badges?.description || '',
             earned: true,
+          })))
+        }
+
+        if (allBadgeDefs) {
+          setAllBadges(allBadgeDefs.map(bd => ({
+            id: bd.id,
+            title: bd.title,
+            icon: bd.icon,
+            description: bd.description,
+            earned: earnedIds.has(bd.id),
           })))
         }
       } catch (error) {
@@ -77,9 +136,7 @@ export const StudentDashboard = () => {
     if (!accounts) return { monthly: 0, savingsRate: 0 }
     const savingsBalance = accounts.savings || 0
     const savingsApy = settings?.savings_interest_rate ?? 4.5
-    // Monthly interest from savings
     const monthlyInterest = savingsBalance * (savingsApy / 100 / 12)
-    // Avg monthly return for S&P (~0.8%) and NASDAQ (~1%)
     const sp500Monthly = (accounts.sp500 || 0) * 0.008
     const nasdaqMonthly = (accounts.nasdaq || 0) * 0.01
     const total = monthlyInterest + sp500Monthly + nasdaqMonthly
@@ -88,6 +145,26 @@ export const StudentDashboard = () => {
       savingsRate: savingsApy,
     }
   }, [accounts, settings])
+
+  // Check for milestone celebrations
+  useEffect(() => {
+    if (!accounts) return
+    const total = Object.entries(accounts)
+      .filter(([key]) => key !== 'bonus')
+      .reduce((sum, [, bal]) => sum + bal, 0)
+
+    const lastMilestone = localStorage.getItem('lastMilestone') || '0'
+    const currentMilestone = MILESTONES.filter(m => total >= m).pop() || 0
+
+    if (currentMilestone > parseInt(lastMilestone)) {
+      localStorage.setItem('lastMilestone', String(currentMilestone))
+      if (parseInt(lastMilestone) > 0) {
+        setShowConfetti(true)
+        setToast({ type: 'success', text: `Milestone reached: $${currentMilestone}!` })
+        setTimeout(() => setShowConfetti(false), 3000)
+      }
+    }
+  }, [accounts])
 
   if (loading || !accounts || !profile) {
     return (
@@ -106,8 +183,9 @@ export const StudentDashboard = () => {
     .reduce((sum, [, bal]) => sum + bal, 0)
   const currentLevel = getLevel(totalBalance)
   const nextLevel = getNextLevel(totalBalance)
-  const nextLevelThreshold = nextLevel?.min || totalBalance
-  const levelProgress = nextLevel ? Math.min((totalBalance / nextLevelThreshold) * 100, 100) : 100
+  const levelProgress = nextLevel
+    ? Math.min(((totalBalance - currentLevel.min) / (nextLevel.min - currentLevel.min)) * 100, 100)
+    : 100
 
   const donutData = Object.entries(ACCOUNT_COLORS)
     .filter(([key]) => (accounts[key] || 0) > 0)
@@ -121,18 +199,34 @@ export const StudentDashboard = () => {
   return (
     <div className="pb-24 max-w-3xl mx-auto">
       <Toast message={toast} />
+      {showConfetti && <Confetti />}
 
-      {/* ── Header ── */}
+      {/* ── Header with Streak ── */}
       <div className="px-8 pt-10 pb-2">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-[13px] text-ink-muted dark:text-white/40 mb-1">Welcome back,</p>
-          <h1 className="text-4xl font-hand font-bold text-ink dark:text-chalk-white leading-tight">
-            {firstName}
-          </h1>
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-[13px] text-ink-muted dark:text-white/40 mb-1">Welcome back,</p>
+              <h1 className="text-4xl font-hand font-bold text-ink dark:text-chalk-white leading-tight">
+                {firstName}
+              </h1>
+            </div>
+            {streak > 0 && (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.3, type: 'spring' }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pencil/10 border border-pencil/20"
+              >
+                <Flame className="w-4 h-4 text-pencil" />
+                <span className="text-sm font-hand font-bold text-pencil">{streak}</span>
+              </motion.div>
+            )}
+          </div>
         </motion.div>
       </div>
 
@@ -162,11 +256,20 @@ export const StudentDashboard = () => {
               </motion.span>
             )}
           </div>
-          {earningsEstimate.monthly > 0 && (
-            <p className="text-[11px] text-ink-faint dark:text-white/30 mt-1">
-              Estimated from {earningsEstimate.savingsRate}% savings APY + market returns
-            </p>
-          )}
+
+          {/* Real vs Projected earnings */}
+          <div className="flex items-center gap-4 mt-2">
+            {growthLog.total > 0 && (
+              <span className="text-[11px] text-sage-dark dark:text-sage-300 font-semibold">
+                +{formatCurrency(growthLog.total)} earned
+              </span>
+            )}
+            {earningsEstimate.monthly > 0 && (
+              <span className="text-[11px] text-ink-faint dark:text-white/30">
+                {earningsEstimate.savingsRate}% APY + market returns
+              </span>
+            )}
+          </div>
         </motion.div>
       </div>
 
@@ -220,44 +323,53 @@ export const StudentDashboard = () => {
       )}
 
       {/* ── Level Progress ── */}
-      {nextLevel && (
-        <div className="px-8 mb-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="flex items-center justify-between mb-2">
+      <div className="px-8 mb-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Star className="w-3.5 h-3.5 text-pencil" />
               <span className="text-xs font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider">
                 {currentLevel?.name}
               </span>
+            </div>
+            {nextLevel ? (
               <span className="text-xs font-medium text-ink-faint dark:text-white/30">
-                {formatCurrency(nextLevelThreshold - totalBalance)} to {nextLevel.name}
+                {formatCurrency(nextLevel.min - totalBalance)} to {nextLevel.name}
               </span>
-            </div>
-            <div className="h-1.5 rounded-full overflow-hidden bg-surface-3 dark:bg-white/[0.06]">
-              <motion.div
-                className="h-full rounded-full bg-ink dark:bg-chalk-white"
-                initial={{ width: 0 }}
-                animate={{ width: `${levelProgress}%` }}
-                transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
-              />
-            </div>
-          </motion.div>
-        </div>
-      )}
+            ) : (
+              <span className="text-xs font-medium text-pencil">Max Level!</span>
+            )}
+          </div>
+          <div className="h-2 rounded-full overflow-hidden bg-surface-3 dark:bg-white/[0.06]">
+            <motion.div
+              className="h-full rounded-full bg-gradient-to-r from-pencil-dark to-pencil"
+              initial={{ width: 0 }}
+              animate={{ width: `${levelProgress}%` }}
+              transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+            />
+          </div>
+        </motion.div>
+      </div>
 
       {/* ── Divider ── */}
       <div className="px-8 mb-6">
         <div className="border-t border-black/[0.06] dark:border-white/[0.06]" />
       </div>
 
-      {/* ── Account Cards ── */}
+      {/* ── Account Cards (tappable for investments) ── */}
       <div className="px-8 mb-8">
         <div className="grid grid-cols-2 gap-3">
           {Object.entries(ACCOUNT_COLORS).map(([key, colors], index) => {
             const balance = accounts[key] || 0
             const Icon = ACCOUNT_ICONS[key]
+            const isInvestment = key === 'sp500' || key === 'nasdaq'
+            const earnedForType = key === 'sp500' ? growthLog.sp500 :
+                                  key === 'nasdaq' ? growthLog.nasdaq :
+                                  key === 'savings' ? growthLog.savings : 0
 
             return (
               <motion.div
@@ -266,27 +378,41 @@ export const StudentDashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.24 + index * 0.05 }}
                 whileHover={{ y: -2 }}
-                className="group cursor-default"
+                whileTap={isInvestment ? { scale: 0.97 } : undefined}
+                onClick={isInvestment ? () => navigate(`/invest/${key}`) : undefined}
+                className={`group ${isInvestment ? 'cursor-pointer' : 'cursor-default'}`}
               >
-                <div className="rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-shadow hover:shadow-sm">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div
-                      className="w-7 h-7 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: colors.light }}
-                    >
-                      <Icon className="w-3.5 h-3.5" style={{ color: colors.hex }} />
+                <div className={`rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-shadow hover:shadow-sm ${isInvestment ? 'hover:border-black/[0.12] dark:hover:border-white/[0.12]' : ''}`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-7 h-7 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: colors.light }}
+                      >
+                        <Icon className="w-3.5 h-3.5" style={{ color: colors.hex }} />
+                      </div>
+                      <span className="text-[11px] font-semibold text-ink-muted dark:text-white/50 uppercase tracking-wider">
+                        {ACCOUNT_META[key]?.label}
+                      </span>
                     </div>
-                    <span className="text-[11px] font-semibold text-ink-muted dark:text-white/50 uppercase tracking-wider">
-                      {ACCOUNT_META[key]?.label}
-                    </span>
+                    {isInvestment && (
+                      <ChevronRight className="w-3.5 h-3.5 text-ink-faint dark:text-white/20 group-hover:translate-x-0.5 transition-transform" />
+                    )}
                   </div>
 
                   <p className="text-2xl font-black tabular-nums text-ink dark:text-chalk-white mb-1">
                     <AnimNum value={balance} prefix="$" />
                   </p>
-                  <p className="text-[10px] text-ink-faint dark:text-white/25">
-                    {ACCOUNT_SUBTITLES[key]}
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] text-ink-faint dark:text-white/25">
+                      {ACCOUNT_SUBTITLES[key]}
+                    </p>
+                    {earnedForType > 0 && (
+                      <span className="text-[10px] font-semibold text-sage dark:text-sage-300">
+                        +{formatCurrency(earnedForType)}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )
@@ -319,8 +445,40 @@ export const StudentDashboard = () => {
         </div>
       </div>
 
+      {/* ── Leaderboard Teaser ── */}
+      {myRank && leaderboard.length > 1 && (
+        <div className="px-8 mb-8">
+          <motion.button
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.46 }}
+            onClick={() => navigate('/leaderboard')}
+            className="w-full text-left"
+          >
+            <div className="rounded-xl p-4 border border-pencil/20 dark:border-pencil/10 bg-pencil/[0.04] hover:bg-pencil/[0.07] transition-colors group">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-pencil/15 flex items-center justify-center">
+                    <Trophy className="w-4.5 h-4.5 text-pencil" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
+                      You're ranked #{myRank}
+                    </p>
+                    <p className="text-[11px] text-ink-muted dark:text-white/40">
+                      out of {leaderboard.length} students
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-ink-faint dark:text-white/20 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </motion.button>
+        </div>
+      )}
+
       {/* ── Earnings Snapshot ── */}
-      {earningsEstimate.monthly > 0 && (
+      {(growthLog.total > 0 || earningsEstimate.monthly > 0) && (
         <div className="px-8 mb-8">
           <motion.div
             initial={{ opacity: 0 }}
@@ -333,12 +491,18 @@ export const StudentDashboard = () => {
                 <Sprout className="w-4 h-4 text-sage-dark dark:text-sage-300" />
               </div>
               <div>
-                <p className="text-sm font-bold text-ink dark:text-chalk-white mb-0.5">
+                <p className="text-sm font-bold text-ink dark:text-chalk-white mb-1">
                   Your money is working for you
                 </p>
+                {growthLog.total > 0 && (
+                  <p className="text-[13px] font-semibold text-sage-dark dark:text-sage-300 mb-1">
+                    +{formatCurrency(growthLog.total)} earned so far
+                  </p>
+                )}
                 <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-                  Your savings earn {earningsEstimate.savingsRate}% interest per year, and your investments track real market performance.
-                  At this rate, you'll earn about <span className="font-bold text-sage-dark dark:text-sage-300">{formatCurrency(earningsEstimate.monthly)}/month</span> without lifting a finger.
+                  {earningsEstimate.monthly > 0 && (
+                    <>Projected: <span className="font-bold text-sage-dark dark:text-sage-300">{formatCurrency(earningsEstimate.monthly)}/mo</span> from {earningsEstimate.savingsRate}% savings APY + market returns.</>
+                  )}
                 </p>
               </div>
             </div>
@@ -346,36 +510,148 @@ export const StudentDashboard = () => {
         </div>
       )}
 
-      {/* ── Achievements ── */}
-      {badges.length > 0 && (
-        <div className="px-8 mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider">
-              Achievements
-            </h3>
-            <span className="text-xs font-medium text-ink-faint dark:text-white/30">
-              {badges.length} earned
-            </span>
-          </div>
-          <div className="overflow-x-auto pb-2 -mx-8 px-8">
-            <div className="flex gap-3 min-w-max">
-              {badges.slice(0, 8).map((badge, index) => (
-                <Badge key={badge.id} badge={badge} delay={index * 0.06} />
-              ))}
+      {/* ── Daily Tip ── */}
+      <div className="px-8 mb-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.52 }}
+          className="rounded-xl p-4 border border-plum/15 dark:border-plum/10 bg-plum-bg dark:bg-plum/[0.04]"
+        >
+          <div className="flex items-start gap-3">
+            <span className="text-lg flex-shrink-0">{dailyTip.icon}</span>
+            <div>
+              <p className="text-[10px] font-bold text-plum uppercase tracking-wider mb-0.5">Tip of the Day</p>
+              <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">{dailyTip.tip}</p>
             </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ── Achievements ── */}
+      <div className="px-8 mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider">
+            Achievements
+          </h3>
+          <span className="text-xs font-medium text-ink-faint dark:text-white/30">
+            {badges.length}/{allBadges.length} earned
+          </span>
+        </div>
+        <div className="overflow-x-auto pb-2 -mx-8 px-8">
+          <div className="flex gap-3 min-w-max">
+            {allBadges.map((badge, index) => (
+              <Badge key={badge.id} badge={badge} delay={index * 0.04} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Next Milestones ── */}
+      {nextLevel && (
+        <div className="px-8 mb-8">
+          <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
+            Goals
+          </h3>
+          <div className="space-y-2">
+            {/* Next level */}
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
+              <div className="w-8 h-8 rounded-lg bg-pencil/10 flex items-center justify-center flex-shrink-0">
+                <Target className="w-4 h-4 text-pencil" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
+                  Reach {nextLevel.name} level
+                </p>
+                <p className="text-[11px] text-ink-faint dark:text-white/30">
+                  {formatCurrency(nextLevel.min - totalBalance)} to go
+                </p>
+              </div>
+              <div className="w-16">
+                <div className="h-1.5 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-pencil"
+                    style={{ width: `${levelProgress}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Next monetary milestone */}
+            {(() => {
+              const nextMilestone = MILESTONES.find(m => totalBalance < m)
+              if (!nextMilestone) return null
+              const pct = (totalBalance / nextMilestone) * 100
+              return (
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
+                  <div className="w-8 h-8 rounded-lg bg-amber-bg flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-4 h-4 text-amber" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
+                      ${nextMilestone} milestone
+                    </p>
+                    <p className="text-[11px] text-ink-faint dark:text-white/30">
+                      {formatCurrency(nextMilestone - totalBalance)} to go
+                    </p>
+                  </div>
+                  <div className="w-16">
+                    <div className="h-1.5 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-amber"
+                        style={{ width: `${Math.min(pct, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Streak goal */}
+            {streak < 5 && (
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06]">
+                <div className="w-8 h-8 rounded-lg bg-rose-bg flex items-center justify-center flex-shrink-0">
+                  <Flame className="w-4 h-4 text-rose" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
+                    5-week streak
+                  </p>
+                  <p className="text-[11px] text-ink-faint dark:text-white/30">
+                    {5 - streak} more week{5 - streak !== 1 ? 's' : ''} to go
+                  </p>
+                </div>
+                <div className="w-16">
+                  <div className="h-1.5 rounded-full bg-surface-3 dark:bg-white/[0.06] overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-rose"
+                      style={{ width: `${(streak / 5) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {/* ── Learn Section ── */}
       <div className="px-8">
-        <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
-          Learn
-        </h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider">
+            Learn
+          </h3>
+          <button
+            onClick={() => navigate('/learn')}
+            className="text-[11px] font-medium text-sage dark:text-sage-300 flex items-center gap-1 hover:opacity-70"
+          >
+            View all <ChevronRight className="w-3 h-3" />
+          </button>
+        </div>
         <div className="space-y-2">
           {[
             { title: 'Why spread your money around?', body: 'Diversifying means spreading your money across different account types for different goals — checking for daily use, savings for safety, investments for growth.' },
-            { title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth — think of it like owning a tiny piece of Apple, Microsoft, and hundreds of other stable businesses. NASDAQ focuses on tech companies, which can grow faster but are riskier. Both are great for long-term investing!' },
+            { title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth. NASDAQ focuses on tech companies, which can grow faster but are riskier. Both are great for long-term investing!' },
             { title: 'The 50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.' },
           ].map((tip, i) => (
             <motion.details

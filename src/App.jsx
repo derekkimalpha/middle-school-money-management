@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck } from 'lucide-react'
+import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck, Trophy, BarChart2 } from 'lucide-react'
 import { useAuth } from './hooks/useAuth'
 import { useAccounts } from './hooks/useAccounts'
 import { useGrowthEngine } from './hooks/useGrowthEngine'
+import { useStreak } from './hooks/useStreak'
+import { useAutoGrant } from './hooks/useAutoGrant'
 import { ThemeProvider } from './hooks/useTheme'
 import { Layout } from './components/shared/Layout'
+import { AchievementToast } from './components/shared/AchievementToast'
 import { getLevel, getNextLevel } from './lib/constants'
 import { LoginPage } from './pages/LoginPage'
 // Student pages
@@ -16,6 +19,8 @@ import { StudentTransfer } from './pages/student/StudentTransfer'
 import { StudentPurchase } from './pages/student/StudentPurchase'
 import { StudentHistory } from './pages/student/StudentHistory'
 import { StudentLearn } from './pages/student/StudentLearn'
+import { StudentLeaderboard } from './pages/student/StudentLeaderboard'
+import { InvestmentDetail } from './pages/student/InvestmentDetail'
 
 // Guide pages
 import { GuideRoster } from './pages/guide/GuideRoster'
@@ -24,6 +29,7 @@ import { GuidePurchases } from './pages/guide/GuidePurchases'
 import { GuideSession } from './pages/guide/GuideSession'
 import { GuideSettings } from './pages/guide/GuideSettings'
 import { GuidePaychecks } from './pages/guide/GuidePaychecks'
+import { GuideClassStats } from './pages/guide/GuideClassStats'
 
 const LoadingSpinner = ({ debugMsg }) => (
   <div className="min-h-screen flex flex-col items-center justify-center bg-[#faf9f7] dark:bg-[#141211]">
@@ -47,7 +53,17 @@ function AppInner() {
   // Run growth engine once per day (applies savings interest + market returns)
   useGrowthEngine(!!profile)
 
-  // Compute level / XP progress / streak for student sidebar
+  // Fetch student streak
+  const { streak } = useStreak(isStudent ? profile?.id : null)
+
+  // Auto-grant badges when conditions are met
+  const { newBadges, dismissBadge } = useAutoGrant(
+    isStudent ? profile?.id : null,
+    accounts,
+    streak
+  )
+
+  // Compute level / XP progress for student sidebar
   const studentMeta = useMemo(() => {
     if (!isStudent || !accounts) return { level: null, xpProgress: 0, streak: 0 }
     const total = Object.entries(accounts)
@@ -58,8 +74,8 @@ function AppInner() {
     const xpProgress = next
       ? Math.min(((total - level.min) / (next.min - level.min)) * 100, 100)
       : 100
-    return { level, xpProgress, streak: 0 }
-  }, [isStudent, accounts])
+    return { level, xpProgress, streak }
+  }, [isStudent, accounts, streak])
 
   const studentNavItems = useMemo(
     () => [
@@ -67,6 +83,7 @@ function AppInner() {
       { id: 'paycheck', label: 'Paycheck', icon: Banknote, path: '/paycheck' },
       { id: 'transfer', label: 'Transfer', icon: ArrowLeftRight, path: '/transfer' },
       { id: 'purchase', label: 'Buy', icon: ShoppingBag, path: '/purchase' },
+      { id: 'leaderboard', label: 'Ranks', icon: Trophy, path: '/leaderboard' },
       { id: 'learn', label: 'Learn', icon: BookOpen, path: '/learn' },
       { id: 'history', label: 'History', icon: ClipboardList, path: '/history' },
     ],
@@ -78,6 +95,7 @@ function AppInner() {
       { id: 'home', label: 'Students', icon: Users, path: '/' },
       { id: 'paychecks', label: 'Paychecks', icon: FileCheck, path: '/paychecks' },
       { id: 'purchases', label: 'Purchases', icon: Package, path: '/purchases' },
+      { id: 'stats', label: 'Class Stats', icon: BarChart2, path: '/stats' },
       { id: 'session', label: 'Session', icon: Timer, path: '/session' },
       { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
     ],
@@ -109,40 +127,61 @@ function AppInner() {
     await signOut()
   }
 
+  // Transform new badges for achievement toast
+  const achievementsToShow = newBadges.map(b => ({
+    type: 'badge',
+    icon: b.icon,
+    title: b.title,
+    description: b.description,
+  }))
+
   return (
-    <Layout
-      user={user}
-      role={profile.role}
-      navItems={navItems}
-      activePage={activePage}
-      onNavigate={handleNavigate}
-      onSignOut={handleSignOut}
-      level={studentMeta.level}
-      xpProgress={studentMeta.xpProgress}
-      streak={studentMeta.streak}
-    >
-      {isGuide ? (
-        <Routes>
-          <Route path="/" element={<GuideRoster />} />
-          <Route path="/student/:id" element={<GuideStudentDetail />} />
-          <Route path="/paychecks" element={<GuidePaychecks />} />
-          <Route path="/purchases" element={<GuidePurchases />} />
-          <Route path="/session" element={<GuideSession />} />
-          <Route path="/settings" element={<GuideSettings />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      ) : (
-        <Routes>
-          <Route path="/" element={<StudentDashboard />} />
-          <Route path="/paycheck" element={<StudentPaycheck />} />
-          <Route path="/transfer" element={<StudentTransfer />} />
-          <Route path="/purchase" element={<StudentPurchase />} />
-          <Route path="/learn" element={<StudentLearn />} />
-          <Route path="/history" element={<StudentHistory />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+    <>
+      {/* Achievement celebration overlay */}
+      {achievementsToShow.length > 0 && (
+        <AchievementToast
+          achievements={achievementsToShow}
+          onDismiss={() => newBadges.forEach(b => dismissBadge(b.id))}
+        />
       )}
-    </Layout>
+
+      <Layout
+        user={user}
+        role={profile.role}
+        navItems={navItems}
+        activePage={activePage}
+        onNavigate={handleNavigate}
+        onSignOut={handleSignOut}
+        level={studentMeta.level}
+        xpProgress={studentMeta.xpProgress}
+        streak={studentMeta.streak}
+      >
+        {isGuide ? (
+          <Routes>
+            <Route path="/" element={<GuideRoster />} />
+            <Route path="/student/:id" element={<GuideStudentDetail />} />
+            <Route path="/paychecks" element={<GuidePaychecks />} />
+            <Route path="/purchases" element={<GuidePurchases />} />
+            <Route path="/stats" element={<GuideClassStats />} />
+            <Route path="/session" element={<GuideSession />} />
+            <Route path="/settings" element={<GuideSettings />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path="/" element={<StudentDashboard />} />
+            <Route path="/paycheck" element={<StudentPaycheck />} />
+            <Route path="/transfer" element={<StudentTransfer />} />
+            <Route path="/purchase" element={<StudentPurchase />} />
+            <Route path="/leaderboard" element={<StudentLeaderboard />} />
+            <Route path="/learn" element={<StudentLearn />} />
+            <Route path="/history" element={<StudentHistory />} />
+            <Route path="/invest/:type" element={<InvestmentDetail />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        )}
+      </Layout>
+    </>
   )
 }
 
