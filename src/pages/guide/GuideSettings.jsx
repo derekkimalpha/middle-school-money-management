@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react'
-import { FinTip, Button, Field, Toast } from '../../components/shared'
+import { Button, Field, Toast } from '../../components/shared'
 import { supabase } from '../../lib/supabase'
 
 export const GuideSettings = () => {
   const [activeSession, setActiveSession] = useState(null)
   const [settings, setSettings] = useState(null)
+  const [className, setClassName] = useState('')
   const [jobs, setJobs] = useState([])
   const [profiles, setProfiles] = useState([])
   const [studentJobs, setStudentJobs] = useState({})
@@ -25,15 +26,13 @@ export const GuideSettings = () => {
     try {
       setLoading(true)
 
-      const [sessionRes, settingsRes, jobsRes, profilesRes] = await Promise.all([
+      const [sessionRes, profilesRes] = await Promise.all([
         supabase
           .from('sessions')
           .select('*')
           .eq('is_active', true)
           .order('created_at', { ascending: false })
           .limit(1),
-        null,
-        null,
         supabase
           .from('profiles')
           .select(`
@@ -49,8 +48,9 @@ export const GuideSettings = () => {
       if (sessionRes.data && sessionRes.data.length > 0) {
         const session = sessionRes.data[0]
         setActiveSession(session)
+        setClassName(session.class_name || '')
 
-        const [settingsRes2, jobsRes2] = await Promise.all([
+        const [settingsRes, jobsRes] = await Promise.all([
           supabase
             .from('paycheck_settings')
             .select('*')
@@ -63,8 +63,8 @@ export const GuideSettings = () => {
             .order('title')
         ])
 
-        setSettings(settingsRes2.data)
-        setJobs(jobsRes2.data || [])
+        setSettings(settingsRes.data)
+        setJobs(jobsRes.data || [])
       }
 
       setProfiles(profilesRes.data || [])
@@ -88,23 +88,37 @@ export const GuideSettings = () => {
 
     try {
       setSaving(true)
-      const { error } = await supabase
+
+      // Save paycheck settings
+      const { error: settingsError } = await supabase
         .from('paycheck_settings')
         .update({
           xp_threshold: parseFloat(settings.xp_threshold) || 0,
           base_pay: parseFloat(settings.base_pay) || 0,
+          epic_days_required: parseFloat(settings.epic_days_required) || 5,
           epic_week_bonus: parseFloat(settings.epic_week_bonus) || 0,
+          bonus_xp_per: parseFloat(settings.bonus_xp_per) || 50,
           bonus_xp_rate: parseFloat(settings.bonus_xp_rate) || 0,
+          mastery_min_score: parseFloat(settings.mastery_min_score) || 0,
           mastery_pass_pay: parseFloat(settings.mastery_pass_pay) || 0,
           mastery_perfect_pay: parseFloat(settings.mastery_perfect_pay) || 0,
-          mastery_min_score: parseFloat(settings.mastery_min_score) || 0,
+          transfer_fee_invest_pct: parseFloat(settings.transfer_fee_invest_pct) || 10,
+          transfer_fee_savings_pct: parseFloat(settings.transfer_fee_savings_pct) || 0,
           transfer_fee_pct: parseFloat(settings.transfer_fee_pct) || 0,
-          smart_goal_pay: parseFloat(settings.smart_goal_pay) || 0,
-          bonus_xp_per: parseFloat(settings.bonus_xp_per) || 50
+          smart_goal_pay: parseFloat(settings.smart_goal_pay) || 0
         })
         .eq('session_id', activeSession.id)
 
-      if (error) throw error
+      if (settingsError) throw settingsError
+
+      // Save class name to sessions table
+      const { error: sessionError } = await supabase
+        .from('sessions')
+        .update({ class_name: className })
+        .eq('id', activeSession.id)
+
+      if (sessionError) throw sessionError
+
       setToast({ type: 'success', text: 'Settings saved successfully' })
     } catch (err) {
       setToast({ type: 'error', text: 'Failed to save settings' })
@@ -214,24 +228,6 @@ export const GuideSettings = () => {
     }
   }
 
-  const toggleRole = async (profileId, newRole) => {
-    try {
-      setSaving(true)
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: newRole })
-        .eq('id', profileId)
-
-      if (error) throw error
-      setProfiles(profiles.map(p => p.id === profileId ? { ...p, role: newRole } : p))
-      setToast({ type: 'success', text: `User promoted to ${newRole}` })
-    } catch (err) {
-      setToast({ type: 'error', text: 'Failed to update role' })
-    } finally {
-      setSaving(false)
-    }
-  }
-
   if (loading) {
     return (
       <div className="space-y-6">
@@ -262,138 +258,268 @@ export const GuideSettings = () => {
         className="space-y-2"
       >
         <h1 className="text-4xl font-bold text-slate-900">Settings</h1>
-        <p className="text-lg text-slate-600">Configure game rules and job assignments</p>
+        <p className="text-lg text-slate-600">Configure classroom, game rules, and job assignments</p>
       </motion.div>
 
+      {/* My Classroom Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
         className="space-y-4"
       >
+        <h2 className="text-2xl font-bold text-slate-900">My Classroom</h2>
+
+        {activeSession && (
+          <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
+            <div>
+              <Field label="Class Name">
+                <input
+                  type="text"
+                  value={className}
+                  onChange={(e) => setClassName(e.target.value)}
+                  placeholder="e.g., 3rd Period Economics"
+                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                />
+              </Field>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-slate-900 mb-3">Students in Class ({students.length})</h3>
+              {students.length > 0 ? (
+                <div className="space-y-2">
+                  {students.map(student => (
+                    <div
+                      key={student.id}
+                      className="flex items-center p-3 rounded-lg border border-slate-200 bg-slate-50"
+                    >
+                      <span className="text-slate-900 font-medium">{student.full_name}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-500 italic">No students in this classroom yet</p>
+              )}
+            </div>
+          </div>
+        )}
+      </motion.div>
+
+      {/* Paycheck Rules Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="space-y-4"
+      >
         <h2 className="text-2xl font-bold text-slate-900">Paycheck Rules</h2>
 
-        <FinTip
-          icon="⚙️"
-          title="Understanding Paycheck Settings"
-          color="from-sage-50 to-green-50"
-        >
-          <p className="space-y-2">
-            <div><strong>XP Threshold:</strong> Minimum XP needed to earn bonus XP pay</div>
-            <div><strong>Base Pay:</strong> Weekly earning for completing assignments</div>
-            <div><strong>Epic Week Bonus:</strong> Bonus for completing all assignments</div>
-            <div><strong>Bonus XP Rate:</strong> Pay per XP above threshold (e.g., $0.01 per XP)</div>
-            <div><strong>Mastery:</strong> Pay for passing/perfect scores on skill mastery</div>
-            <div><strong>Transfer Fee:</strong> Percentage cost to transfer between accounts</div>
-            <div><strong>SMART Goal Pay:</strong> Bonus for completing a SMART goal each week</div>
-            <div><strong>Bonus XP Per:</strong> Every X XP above threshold earns the bonus rate</div>
-          </p>
-        </FinTip>
-
         {settings && (
-          <div className="space-y-4 p-6 rounded-lg border border-slate-200 bg-slate-50">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="XP Threshold">
-                <input
-                  type="number"
-                  value={settings.xp_threshold || ''}
-                  onChange={(e) => setSettings({ ...settings, xp_threshold: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
-              <Field label="Base Pay ($)">
-                <input
-                  type="number"
-                  step="0.01"
-                  value={settings.base_pay || ''}
-                  onChange={(e) => setSettings({ ...settings, base_pay: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
-              <Field label="Epic Week Bonus ($)">
-                <input
-                  type="number"
-                  step="0.01"
-                  value={settings.epic_week_bonus || ''}
-                  onChange={(e) => setSettings({ ...settings, epic_week_bonus: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
-              <Field label="Bonus XP Rate ($ per XP)">
-                <input
-                  type="number"
-                  step="0.001"
-                  value={settings.bonus_xp_rate || ''}
-                  onChange={(e) => setSettings({ ...settings, bonus_xp_rate: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
-              <Field label="Mastery Pass Pay ($)">
-                <input
-                  type="number"
-                  step="0.01"
-                  value={settings.mastery_pass_pay || ''}
-                  onChange={(e) => setSettings({ ...settings, mastery_pass_pay: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
-              <Field label="Mastery Perfect Pay ($)">
-                <input
-                  type="number"
-                  step="0.01"
-                  value={settings.mastery_perfect_pay || ''}
-                  onChange={(e) => setSettings({ ...settings, mastery_perfect_pay: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
-              <Field label="Mastery Min Score (%)">
-                <input
-                  type="number"
-                  value={settings.mastery_min_score || ''}
-                  onChange={(e) => setSettings({ ...settings, mastery_min_score: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
-              <Field label="Transfer Fee (%)">
-                <input
-                  type="number"
-                  step="0.1"
-                  value={settings.transfer_fee_pct ?? ''}
-                  onChange={(e) => setSettings({ ...settings, transfer_fee_pct: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
-              </Field>
+          <div className="space-y-4">
+            {/* Base Pay Section */}
+            <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-900">Base Pay</h3>
+                <p className="text-sm text-slate-600">Students earn base pay when they reach the weekly XP threshold</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="XP Threshold">
+                  <input
+                    type="number"
+                    value={settings.xp_threshold || ''}
+                    onChange={(e) => setSettings({ ...settings, xp_threshold: e.target.value })}
+                    placeholder="e.g., 500"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Minimum weekly XP to earn base pay</p>
+                </Field>
+                <Field label="Base Pay ($)">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={settings.base_pay || ''}
+                    onChange={(e) => setSettings({ ...settings, base_pay: e.target.value })}
+                    placeholder="e.g., 10.00"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Amount earned when threshold is met</p>
+                </Field>
+              </div>
+            </div>
+
+            {/* Epic Bonus Section */}
+            <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-900">Epic Bonus</h3>
+                <p className="text-sm text-slate-600">Reward students for having epic (productive) days</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Epic Days Required">
+                  <input
+                    type="number"
+                    value={settings.epic_days_required || 5}
+                    onChange={(e) => setSettings({ ...settings, epic_days_required: e.target.value })}
+                    placeholder="e.g., 5"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">How many epic days needed for the bonus</p>
+                </Field>
+                <Field label="Epic Week Bonus ($)">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={settings.epic_week_bonus || ''}
+                    onChange={(e) => setSettings({ ...settings, epic_week_bonus: e.target.value })}
+                    placeholder="e.g., 5.00"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Bonus amount when epic day goal is met</p>
+                </Field>
+              </div>
+            </div>
+
+            {/* Bonus XP Section */}
+            <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-900">Bonus XP</h3>
+                <p className="text-sm text-slate-600">Extra pay for XP earned above the threshold</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Bonus XP Per">
+                  <input
+                    type="number"
+                    value={settings.bonus_xp_per || 50}
+                    onChange={(e) => setSettings({ ...settings, bonus_xp_per: e.target.value })}
+                    placeholder="e.g., 50"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Every X XP above the threshold...</p>
+                </Field>
+                <Field label="Bonus XP Rate ($ per XP)">
+                  <input
+                    type="number"
+                    step="0.001"
+                    value={settings.bonus_xp_rate || ''}
+                    onChange={(e) => setSettings({ ...settings, bonus_xp_rate: e.target.value })}
+                    placeholder="e.g., 0.01"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">...earns this amount</p>
+                </Field>
+              </div>
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                <p className="text-sm text-slate-700">
+                  <strong>Example:</strong> Every {settings.bonus_xp_per || 50} XP above {settings.xp_threshold || 0} = ${(parseFloat(settings.bonus_xp_rate || 0) * (parseFloat(settings.bonus_xp_per || 50))).toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            {/* Mastery Tests Section */}
+            <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-900">Mastery Tests</h3>
+                <p className="text-sm text-slate-600">Reward students for mastery test performance</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Field label="Mastery Min Score (%)">
+                  <input
+                    type="number"
+                    value={settings.mastery_min_score || ''}
+                    onChange={(e) => setSettings({ ...settings, mastery_min_score: e.target.value })}
+                    placeholder="e.g., 70"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Minimum score to earn pass pay</p>
+                </Field>
+                <Field label="Mastery Pass Pay ($)">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={settings.mastery_pass_pay || ''}
+                    onChange={(e) => setSettings({ ...settings, mastery_pass_pay: e.target.value })}
+                    placeholder="e.g., 2.50"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Reward for passing</p>
+                </Field>
+                <Field label="Mastery Perfect Pay ($)">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={settings.mastery_perfect_pay || ''}
+                    onChange={(e) => setSettings({ ...settings, mastery_perfect_pay: e.target.value })}
+                    placeholder="e.g., 5.00"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Reward for 100%</p>
+                </Field>
+              </div>
+            </div>
+
+            {/* Transfer Fees Section */}
+            <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-900">Transfer Fees</h3>
+                <p className="text-sm text-slate-600">Fees charged when students move money between accounts</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Investment → Checking Fee (%)">
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={settings.transfer_fee_invest_pct ?? 10}
+                    onChange={(e) => setSettings({ ...settings, transfer_fee_invest_pct: e.target.value })}
+                    placeholder="e.g., 10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Fee for withdrawing from S&P 500 or NASDAQ to Checking</p>
+                </Field>
+                <Field label="Savings → Checking Fee (%)">
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={settings.transfer_fee_savings_pct ?? 0}
+                    onChange={(e) => setSettings({ ...settings, transfer_fee_savings_pct: e.target.value })}
+                    placeholder="e.g., 0"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Fee for early withdrawal from Savings</p>
+                </Field>
+              </div>
+            </div>
+
+            {/* Other Bonuses Section */}
+            <div className="p-6 rounded-lg border border-slate-200 bg-white space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-900">Other Bonuses</h3>
+                <p className="text-sm text-slate-600">Additional rewards for student achievements</p>
+              </div>
               <Field label="SMART Goal Pay ($)">
                 <input
                   type="number"
                   step="0.01"
                   value={settings.smart_goal_pay ?? ''}
                   onChange={(e) => setSettings({ ...settings, smart_goal_pay: e.target.value })}
+                  placeholder="e.g., 3.00"
                   className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
                 />
-              </Field>
-              <Field label="Bonus XP Per (XP above threshold)">
-                <input
-                  type="number"
-                  value={settings.bonus_xp_per ?? ''}
-                  onChange={(e) => setSettings({ ...settings, bonus_xp_per: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
-                />
+                <p className="text-xs text-slate-500 mt-1">Weekly bonus for completing a SMART goal</p>
               </Field>
             </div>
 
             <Button onClick={savePaycheckSettings} disabled={saving} full>
               <Save className="w-4 h-4 mr-2 inline" />
-              Save Settings
+              Save All Settings
             </Button>
           </div>
         )}
       </motion.div>
 
+      {/* Job Manager Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.15 }}
         className="space-y-4"
       >
         <h2 className="text-2xl font-bold text-slate-900">Job Manager</h2>
@@ -497,10 +623,11 @@ export const GuideSettings = () => {
         )}
       </motion.div>
 
+      {/* Job Assignments Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
+        transition={{ delay: 0.2 }}
         className="space-y-4"
       >
         <h2 className="text-2xl font-bold text-slate-900">Job Assignments</h2>
@@ -525,48 +652,6 @@ export const GuideSettings = () => {
                   </option>
                 ))}
               </select>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-4"
-      >
-        <h2 className="text-2xl font-bold text-slate-900">Role Management</h2>
-
-        <div className="space-y-2">
-          {profiles.map(profile => (
-            <motion.div
-              key={profile.id}
-              className="flex items-center justify-between p-4 rounded-lg border border-slate-200"
-              whileHover={{ x: 2 }}
-            >
-              <div>
-                <p className="font-semibold text-slate-900">{profile.full_name}</p>
-                <p className="text-sm text-slate-600 capitalize">{profile.role}</p>
-              </div>
-              <div className="space-x-2">
-                {profile.role !== 'student' && (
-                  <button
-                    onClick={() => toggleRole(profile.id, 'student')}
-                    className="px-3 py-1 rounded-lg text-sm font-semibold bg-slate-100 hover:bg-slate-200 transition-colors"
-                  >
-                    Make Student
-                  </button>
-                )}
-                {profile.role !== 'guide' && (
-                  <button
-                    onClick={() => toggleRole(profile.id, 'guide')}
-                    className="px-3 py-1 rounded-lg text-sm font-semibold bg-sage-bg text-sage hover:bg-sage-100 transition-colors"
-                  >
-                    Make Guide
-                  </button>
-                )}
-              </div>
             </motion.div>
           ))}
         </div>

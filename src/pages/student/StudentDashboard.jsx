@@ -6,7 +6,6 @@ import {
   DonutChart,
   FinTip,
   LevelRing,
-  Streak,
   Badge,
   Button,
   TiltCard,
@@ -37,7 +36,6 @@ const QUIPS = [
 export const StudentDashboard = () => {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
-  const [streak, setStreak] = useState(0)
   const [badges, setBadges] = useState([])
   const [toast, setToast] = useState(null)
   const { accounts, loading } = useAccounts(profile?.id)
@@ -51,17 +49,6 @@ export const StudentDashboard = () => {
 
     const fetchStreakAndBadges = async () => {
       try {
-        // Fetch streak
-        const { data: streakData } = await supabase
-          .from('student_streaks')
-          .select('current_streak')
-          .eq('student_id', profile.id)
-          .single()
-
-        if (streakData) {
-          setStreak(streakData.current_streak || 0)
-        }
-
         // Fetch badges
         const { data: badgeData } = await supabase
           .from('student_badges')
@@ -79,7 +66,7 @@ export const StudentDashboard = () => {
           setBadges(formattedBadges)
         }
       } catch (error) {
-        console.error('Error fetching streak and badges:', error)
+        console.error('Error fetching badges:', error)
       }
     }
 
@@ -100,30 +87,6 @@ export const StudentDashboard = () => {
   const nextLevel = getNextLevel(totalBalance)
 
   // Prepare donut chart data
-  const chartData = Object.entries(accounts)
-    .filter(([key]) => key !== 'bonus')
-    .map(([key, value]) => ({
-      label: ACCOUNT_META[key]?.label || key,
-      value,
-      color: ACCOUNT_META[key]?.color?.replace('text-', 'rgb(') || '#ccc',
-    }))
-    .map((item) => {
-      // Convert Tailwind color to RGB (simplified mapping)
-      const colorMap = {
-        'text-sage': '#7EA58C',
-        'text-teal': '#14B8A6',
-        'text-amber': '#F59E0B',
-        'text-plum': '#A855F7',
-      }
-      return {
-        ...item,
-        color:
-          colorMap[ACCOUNT_META[Object.keys(accounts).find((k) => ACCOUNT_META[k]?.label === item.label)]?.color] ||
-          '#ccc',
-      }
-    })
-
-  // Filter and prepare chart colors correctly
   const donutChartData = [
     { value: accounts.checking || 0, color: '#7EA58C' },
     { value: accounts.savings || 0, color: '#14B8A6' },
@@ -143,14 +106,11 @@ export const StudentDashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <h1 className="text-4xl font-bold text-slate-900">
-              Hey {profile?.full_name?.split(' ')[0] || 'Friend'}
-            </h1>
-            <p className="text-slate-600 mt-2 italic">{randomQuip}</p>
-          </div>
-          <Streak count={streak} />
+        <div>
+          <h1 className="text-4xl font-bold text-slate-900">
+            Hey {profile?.full_name?.split(' ')[0] || 'Friend'}
+          </h1>
+          <p className="text-slate-600 mt-2 italic">{randomQuip}</p>
         </div>
       </motion.div>
 
@@ -163,9 +123,41 @@ export const StudentDashboard = () => {
       >
         <div className="grid grid-cols-2 gap-8 items-center mb-8">
           {/* DonutChart */}
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center">
             {donutChartData.length > 0 ? (
-              <DonutChart data={donutChartData} size={200} stroke={16} />
+              <>
+                <DonutChart data={donutChartData} size={200} stroke={16} />
+                <div className="flex flex-col gap-2 mt-4">
+                  {accounts.checking > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#7EA58C' }}></div>
+                      <span className="text-sm text-slate-700">Checking</span>
+                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.checking)}</span>
+                    </div>
+                  )}
+                  {accounts.savings > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#14B8A6' }}></div>
+                      <span className="text-sm text-slate-700">Savings</span>
+                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.savings)}</span>
+                    </div>
+                  )}
+                  {accounts.sp500 > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#F59E0B' }}></div>
+                      <span className="text-sm text-slate-700">S&P 500</span>
+                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.sp500)}</span>
+                    </div>
+                  )}
+                  {accounts.nasdaq > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#A855F7' }}></div>
+                      <span className="text-sm text-slate-700">NASDAQ</span>
+                      <span className="text-sm font-semibold text-slate-900 ml-auto">{formatCurrency(accounts.nasdaq)}</span>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
               <div className="text-center text-slate-400">No accounts yet</div>
             )}

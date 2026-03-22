@@ -100,7 +100,8 @@ export const StudentPaycheck = () => {
   const calculateEarnings = () => {
     const epicCount = Object.values(epicDays).filter(Boolean).length
     const basePay = totalXp >= xpThreshold ? (settings.base_pay || 10) : 0
-    const epicBonus = epicCount === 5 ? (settings.epic_week_bonus || 5) : 0
+    const epicDaysRequired = settings.epic_days_required || 5
+    const epicBonus = epicCount >= epicDaysRequired ? (settings.epic_week_bonus || 5) : 0
     const bonusXp = totalXp > xpThreshold
       ? Math.floor((totalXp - xpThreshold) / (settings.bonus_xp_per || 50)) * (settings.bonus_xp_rate || 1)
       : 0

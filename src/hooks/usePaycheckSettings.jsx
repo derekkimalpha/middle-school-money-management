@@ -5,12 +5,15 @@ const DEFAULT_SETTINGS = {
   xp_threshold: 600,
   base_pay: 10,
   epic_week_bonus: 5,
-  bonus_xp_rate: 0.01,
+  epic_days_required: 5,
+  bonus_xp_rate: 1,
   bonus_xp_per: 50,
   mastery_pass_pay: 20,
   mastery_perfect_pay: 100,
   mastery_min_score: 90,
   transfer_fee_pct: 10,
+  transfer_fee_invest_pct: 10,
+  transfer_fee_savings_pct: 0,
   smart_goal_pay: 6,
   custom_bonuses: []
 }
