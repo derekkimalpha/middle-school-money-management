@@ -12,6 +12,7 @@ import {
   TiltCard,
   Toast,
 } from '../../components/shared'
+import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
 import { supabase } from '../../lib/supabase'
 import {
@@ -35,8 +36,7 @@ const QUIPS = [
 
 export const StudentDashboard = () => {
   const navigate = useNavigate()
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const { user, profile } = useAuth()
   const [streak, setStreak] = useState(0)
   const [badges, setBadges] = useState([])
   const [toast, setToast] = useState(null)
@@ -44,35 +44,6 @@ export const StudentDashboard = () => {
 
   // Get random quip
   const randomQuip = QUIPS[Math.floor(Math.random() * QUIPS.length)]
-
-  // Fetch user and profile
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-        if (user) {
-          setUser(user)
-
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single()
-
-          if (profileData) {
-            setProfile(profileData)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error)
-        setToast({ type: 'error', text: 'Failed to load profile' })
-      }
-    }
-
-    fetchUser()
-  }, [])
 
   // Fetch streak and badges
   useEffect(() => {

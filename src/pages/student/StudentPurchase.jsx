@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Field, FinTip, Input, Toast, Tag, AnimNum } from '../../components/shared'
+import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
 import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../lib/constants'
 import { ExternalLink, Trash2 } from 'lucide-react'
 
 export const StudentPurchase = () => {
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const { profile } = useAuth()
   const [itemName, setItemName] = useState('')
   const [link, setLink] = useState('')
   const [price, setPrice] = useState(0)
@@ -18,34 +18,6 @@ export const StudentPurchase = () => {
   const { accounts } = useAccounts(profile?.id)
 
   const checkingBalance = accounts?.checking || 0
-
-  // Fetch user and profile
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-        if (user) {
-          setUser(user)
-
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single()
-
-          if (profileData) {
-            setProfile(profileData)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error)
-      }
-    }
-
-    fetchUser()
-  }, [])
 
   // Fetch purchase requests
   useEffect(() => {

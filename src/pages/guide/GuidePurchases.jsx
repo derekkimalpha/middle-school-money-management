@@ -77,7 +77,7 @@ export const GuidePurchases = () => {
 
       const newBalance = checkingAccount.balance - purchase.price
 
-      const [updateError, transError] = await Promise.all([
+      const [updateResult, statusResult] = await Promise.all([
         supabase
           .from('accounts')
           .update({ balance: newBalance })
@@ -88,7 +88,7 @@ export const GuidePurchases = () => {
           .eq('id', purchase.id)
       ])
 
-      if (updateError[1] || transError[1]) throw new Error('Failed to update')
+      if (updateResult.error || statusResult.error) throw new Error('Failed to update')
 
       const { error: logError } = await supabase
         .from('transactions')

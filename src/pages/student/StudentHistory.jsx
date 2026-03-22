@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FinTip, Toast, Tag, AnimNum } from '../../components/shared'
+import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, formatCurrency } from '../../lib/constants'
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 
 export const StudentHistory = () => {
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const { profile } = useAuth()
   const [transactions, setTransactions] = useState([])
   const [filteredTransactions, setFilteredTransactions] = useState([])
   const [selectedFilter, setSelectedFilter] = useState('all')
@@ -22,35 +22,6 @@ export const StudentHistory = () => {
     { id: 'nasdaq', label: 'NASDAQ' },
     { id: 'bonus', label: 'Bonus' },
   ]
-
-  // Fetch user and profile
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-        if (user) {
-          setUser(user)
-
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single()
-
-          if (profileData) {
-            setProfile(profileData)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error)
-        setToast({ type: 'error', text: 'Failed to load profile' })
-      }
-    }
-
-    fetchUser()
-  }, [])
 
   // Fetch transactions
   useEffect(() => {

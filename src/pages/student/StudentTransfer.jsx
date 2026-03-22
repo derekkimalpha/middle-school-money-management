@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   AccountPicker,
@@ -8,14 +8,14 @@ import {
   Input,
   Toast,
 } from '../../components/shared'
+import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, TRANSFER_RULES, formatCurrency } from '../../lib/constants'
 import { ArrowDownUp, AlertCircle } from 'lucide-react'
 
 export const StudentTransfer = () => {
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const { profile } = useAuth()
   const [fromAccount, setFromAccount] = useState(null)
   const [toAccount, setToAccount] = useState(null)
   const [amount, setAmount] = useState(0)
@@ -24,35 +24,6 @@ export const StudentTransfer = () => {
   const { accounts, loading: accountsLoading, refreshAccounts } = useAccounts(
     profile?.id
   )
-
-  // Fetch user and profile
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-        if (user) {
-          setUser(user)
-
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single()
-
-          if (profileData) {
-            setProfile(profileData)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error)
-        setToast({ type: 'error', text: 'Failed to load profile' })
-      }
-    }
-
-    fetchUser()
-  }, [])
 
   // Get valid transfer targets
   const validTargets = fromAccount ? TRANSFER_RULES[fromAccount] || [] : []

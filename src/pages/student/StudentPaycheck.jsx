@@ -10,6 +10,7 @@ import {
   Input,
   Toast,
 } from '../../components/shared'
+import { useAuth } from '../../hooks/useAuth'
 import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, GRADES, formatCurrency } from '../../lib/constants'
@@ -18,9 +19,8 @@ import { ChevronRight, Trash2 } from 'lucide-react'
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
 export const StudentPaycheck = () => {
+  const { user, profile } = useAuth()
   const { settings } = usePaycheckSettings()
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
   const [step, setStep] = useState(1)
   const [toast, setToast] = useState(null)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -44,34 +44,6 @@ export const StudentPaycheck = () => {
     bonus: 0,
   })
   const [allocView, setAllocView] = useState('chart')
-
-  // Fetch user and profile
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-        if (user) {
-          setUser(user)
-
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single()
-
-          if (profileData) {
-            setProfile(profileData)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error)
-      }
-    }
-
-    fetchUser()
-  }, [])
 
   // Fetch student's job
   useEffect(() => {

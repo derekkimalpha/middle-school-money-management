@@ -3,12 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Check } from 'lucide-react'
 import { AnimNum, Button, Tag, Toast, Field } from '../../components/shared'
+import { useAuth } from '../../hooks/useAuth'
 import { formatCurrency, ACCOUNT_META } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
 
 export const GuideStudentDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [student, setStudent] = useState(null)
   const [paychecks, setPaychecks] = useState([])
   const [transactions, setTransactions] = useState([])
@@ -74,6 +76,11 @@ export const GuideStudentDetail = () => {
       return
     }
 
+    if (!user?.id) {
+      setToast({ type: 'error', text: 'User not authenticated' })
+      return
+    }
+
     try {
       setVerifyingPaycheck(paycheckId)
       const { error } = await supabase
@@ -81,7 +88,7 @@ export const GuideStudentDetail = () => {
         .update({
           status: 'verified',
           verified_amount: amount,
-          verified_by: (await supabase.auth.getUser()).data.user.id,
+          verified_by: user.id,
           verified_at: new Date().toISOString()
         })
         .eq('id', paycheckId)
