@@ -98,7 +98,7 @@ export const GuideSettings = () => {
           mastery_pass_pay: parseFloat(settings.mastery_pass_pay) || 0,
           mastery_perfect_pay: parseFloat(settings.mastery_perfect_pay) || 0,
           mastery_min_score: parseFloat(settings.mastery_min_score) || 0,
-          transfer_fee_percent: parseFloat(settings.transfer_fee_percent) || 0
+          transfer_fee_pct: parseFloat(settings.transfer_fee_pct) || 0
         })
         .eq('session_id', activeSession.id)
 
@@ -354,8 +354,8 @@ export const GuideSettings = () => {
                 <input
                   type="number"
                   step="0.1"
-                  value={settings.transfer_fee_percent || ''}
-                  onChange={(e) => setSettings({ ...settings, transfer_fee_percent: e.target.value })}
+                  value={settings.transfer_fee_pct || ''}
+                  onChange={(e) => setSettings({ ...settings, transfer_fee_pct: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
                 />
               </Field>
