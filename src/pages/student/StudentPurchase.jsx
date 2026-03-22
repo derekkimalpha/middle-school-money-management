@@ -115,7 +115,7 @@ export const StudentPurchase = () => {
   const getStatusTag = (status) => {
     switch (status) {
       case 'approved':
-        return <Tag color="bg-sage-100 text-sage-700">Approved</Tag>
+        return <Tag color="bg-emerald-100 text-emerald-700">Approved</Tag>
       case 'rejected':
         return <Tag color="bg-rose-100 text-rose-700">Rejected</Tag>
       default:
@@ -126,7 +126,7 @@ export const StudentPurchase = () => {
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-400"></div>
       </div>
     )
   }
@@ -140,10 +140,10 @@ export const StudentPurchase = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-[#1a1a2e] dark:text-white/90 tracking-[-0.02em] mb-2">
+        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-[-0.02em] mb-2">
           Purchase Request
         </h1>
-        <p className="text-[13px] text-black/50 dark:text-white/40">
+        <p className="text-[13px] text-gray-500 dark:text-white/50">
           Ask for permission to buy something
         </p>
       </motion.div>
@@ -164,14 +164,14 @@ export const StudentPurchase = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-[#111118] border border-black/[0.06] dark:border-white/[0.06] rounded-xl p-6"
+          className="bg-white dark:bg-[#1a1625] border border-gray-200 dark:border-white/[0.08] rounded-xl p-6"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[12px] font-semibold text-black/50 dark:text-white/40 uppercase tracking-wider mb-1">
+              <p className="text-[12px] font-semibold text-gray-500 dark:text-white/50 uppercase tracking-wider mb-1">
                 Checking Balance (For Purchases)
               </p>
-              <p className="text-3xl font-bold text-[#1a1a2e] dark:text-white/90 tabular-nums">
+              <p className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
                 <AnimNum value={checkingBalance} prefix="$" />
               </p>
             </div>
@@ -185,9 +185,9 @@ export const StudentPurchase = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-6 space-y-5"
+          className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6 space-y-5"
         >
-          <h2 className="text-[15px] font-semibold text-[#1a1a2e] dark:text-white/90">New Request</h2>
+          <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white">New Request</h2>
 
           <Field label="What do you want to buy?">
             <Input
@@ -231,9 +231,9 @@ export const StudentPurchase = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-6"
+            className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6"
           >
-            <h2 className="text-[15px] font-semibold text-[#1a1a2e] dark:text-white/90 mb-4">
+            <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">
               Your Requests
             </h2>
 
@@ -244,19 +244,19 @@ export const StudentPurchase = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 border border-black/[0.06] dark:border-white/[0.06] rounded-xl hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-colors"
+                  className="p-4 border border-gray-200 dark:border-white/[0.08] rounded-xl hover:border-violet-300 dark:hover:border-violet-500/30 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-[#1a1a2e] dark:text-white/90">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">
                           {purchase.item_name}
                         </h3>
                         {getStatusTag(purchase.status)}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-black/50 dark:text-white/40 mb-2">
-                        <div className="font-semibold text-[#1a1a2e] dark:text-white/90">
+                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-gray-500 dark:text-white/50 mb-2">
+                        <div className="font-semibold text-gray-900 dark:text-white">
                           {formatCurrency(purchase.price)}
                         </div>
 
@@ -276,7 +276,7 @@ export const StudentPurchase = () => {
                             href={purchase.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#1a1a2e] dark:text-white/60 hover:text-[#1a1a2e] dark:hover:text-white/90 flex items-center gap-1"
+                            className="text-gray-900 dark:text-white/50 hover:text-gray-900 dark:hover:text-white/90 flex items-center gap-1"
                           >
                             View Link
                             <ExternalLink className="w-3 h-3" />
@@ -288,7 +288,7 @@ export const StudentPurchase = () => {
                     {purchase.status === 'pending' && (
                       <button
                         onClick={() => handleDelete(purchase.id)}
-                        className="p-2 text-black/30 dark:text-white/30 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
+                        className="p-2 text-gray-300 dark:text-white/40 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -299,15 +299,15 @@ export const StudentPurchase = () => {
             </div>
 
             {/* Status Legend */}
-            <div className="mt-6 pt-6 border-t border-black/[0.06] dark:border-white/[0.06] text-sm text-black/50 dark:text-white/40 space-y-2">
-              <p className="font-semibold text-[#1a1a2e] dark:text-white/90">Status Meanings:</p>
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-white/[0.08] text-sm text-gray-500 dark:text-white/50 space-y-2">
+              <p className="font-semibold text-gray-900 dark:text-white">Status Meanings:</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-amber-400" />
                   <span>Pending - Awaiting decision</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-sage-400" />
+                  <div className="w-3 h-3 rounded-full bg-emerald-400" />
                   <span>Approved - Ready to buy!</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -327,8 +327,8 @@ export const StudentPurchase = () => {
             className="text-center py-12"
           >
             <div className="text-4xl mb-3">🛒</div>
-            <p className="text-black/50 dark:text-white/40 text-[15px]">No purchase requests yet</p>
-            <p className="text-slate-500 dark:text-gray-500 text-sm">
+            <p className="text-gray-500 dark:text-white/50 text-[15px]">No purchase requests yet</p>
+            <p className="text-gray-400 dark:text-white/40 text-sm">
               Submit a request above to get started
             </p>
           </motion.div>

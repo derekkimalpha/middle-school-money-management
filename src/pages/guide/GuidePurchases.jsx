@@ -134,10 +134,10 @@ export const GuidePurchases = () => {
   const getStatusColor = (status) => {
     const colors = {
       pending: 'bg-amber-100 text-amber-800',
-      approved: 'bg-green-100 text-green-800',
+      approved: 'bg-emerald-100 text-emerald-800',
       rejected: 'bg-rose-100 text-rose-800'
     }
-    return colors[status] || 'bg-slate-100 text-slate-700'
+    return colors[status] || 'bg-gray-100 text-gray-700'
   }
 
   const initials = (name) => {
@@ -177,14 +177,14 @@ export const GuidePurchases = () => {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-1"
       >
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Purchases</h1>
-        <p className="text-lg text-slate-600 dark:text-gray-400">Student requests</p>
+        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Purchases</h1>
+        <p className="text-lg text-gray-500 dark:text-white/50">Student requests</p>
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex gap-2 border-b border-slate-200 dark:border-gray-800"
+        className="flex gap-2 border-b border-gray-200 dark:border-white/[0.08]"
       >
         {filterTabs.map(tab => (
           <button
@@ -192,13 +192,13 @@ export const GuidePurchases = () => {
             onClick={() => setFilter(tab.value)}
             className={`px-4 py-3 font-semibold text-sm transition-all border-b-2 ${
               filter === tab.value
-                ? 'border-sage text-sage'
-                : 'border-transparent text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'border-violet-500 text-violet-600 dark:text-violet-400'
+                : 'border-transparent text-gray-500 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             {tab.label}
             {tab.count > 0 && (
-              <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300 text-xs font-bold">
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-white/70 text-xs font-bold">
                 {tab.count}
               </span>
             )}
@@ -209,7 +209,7 @@ export const GuidePurchases = () => {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-24 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div key={i} className="h-24 bg-gray-100 dark:bg-white/5 rounded-lg animate-pulse" />
           ))}
         </div>
       ) : filteredPurchases.length === 0 ? (
@@ -218,7 +218,7 @@ export const GuidePurchases = () => {
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <p className="text-slate-600 dark:text-gray-400 text-lg">No purchases found</p>
+          <p className="text-gray-500 dark:text-white/50 text-lg">No purchases found</p>
         </motion.div>
       ) : (
         <div className="space-y-4">
@@ -229,18 +229,18 @@ export const GuidePurchases = () => {
               variants={cardVariants}
               initial="hidden"
               animate="visible"
-              className="p-6 rounded-lg border border-slate-200 dark:border-gray-800 dark:bg-gray-900 hover:border-sage transition-colors"
+              className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-[#1a1625] hover:border-violet-400 transition-colors"
             >
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4 flex-1">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-sage to-teal flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
                       {initials(purchase.profiles.full_name)}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-900 dark:text-white">{purchase.profiles.full_name}</p>
-                      <p className="text-sm text-slate-600 dark:text-gray-400">
+                      <p className="font-semibold text-gray-900 dark:text-white">{purchase.profiles.full_name}</p>
+                      <p className="text-sm text-gray-500 dark:text-white/50">
                         {new Date(purchase.created_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -251,15 +251,15 @@ export const GuidePurchases = () => {
                   </Tag>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-gray-800 pt-4">
-                  <p className="text-3xl font-bold text-slate-900 dark:text-white">{purchase.item_name}</p>
-                  <p className="text-2xl font-bold text-sage mt-2">
+                <div className="border-t border-gray-200 dark:border-white/[0.08] pt-4">
+                  <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{purchase.item_name}</p>
+                  <p className="text-2xl font-bold text-violet-600 mt-2">
                     {formatCurrency(purchase.price)}
                   </p>
                 </div>
 
                 {purchase.status === 'pending' && (
-                  <div className="border-t border-slate-200 dark:border-gray-800 pt-4 flex gap-3">
+                  <div className="border-t border-gray-200 dark:border-white/[0.08] pt-4 flex gap-3">
                     <Button
                       onClick={() => approvePurchase(purchase)}
                       disabled={processingId === purchase.id}

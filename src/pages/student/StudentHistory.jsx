@@ -71,7 +71,7 @@ export const StudentHistory = () => {
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-400"></div>
       </div>
     )
   }
@@ -85,10 +85,10 @@ export const StudentHistory = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-[#1a1a2e] dark:text-white/90 tracking-[-0.02em] mb-2">
+        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-[-0.02em] mb-2">
           Transaction History
         </h1>
-        <p className="text-[13px] text-black/50 dark:text-white/40">
+        <p className="text-[13px] text-gray-500 dark:text-white/50">
           Track all your transactions and account activity
         </p>
       </motion.div>
@@ -110,7 +110,7 @@ export const StudentHistory = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-3"
+          className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-3"
         >
           <div className="flex gap-2 overflow-x-auto pb-2">
             {filters.map((filter) => (
@@ -119,8 +119,8 @@ export const StudentHistory = () => {
                 onClick={() => handleFilterChange(filter.id)}
                 className={`px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
                   selectedFilter === filter.id
-                    ? 'bg-[#1a1a2e] dark:bg-white/[0.12] text-white dark:text-white/90'
-                    : 'bg-black/[0.03] dark:bg-white/[0.04] text-black/50 dark:text-white/40 hover:bg-black/[0.06] dark:hover:bg-white/[0.07]'
+                    ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white dark:text-white'
+                    : 'bg-gray-100 dark:bg-white/[0.04] text-gray-500 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-white/[0.07]'
                 }`}
               >
                 {filter.label}
@@ -134,25 +134,25 @@ export const StudentHistory = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] overflow-hidden"
+          className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] overflow-hidden"
         >
           {loading ? (
-            <div className="p-8 text-center dark:bg-[#111118]">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-400 mx-auto mb-4"></div>
-              <p className="text-[13px] text-black/50 dark:text-white/40">Loading transactions...</p>
+            <div className="p-8 text-center dark:bg-[#1a1625]">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-400 mx-auto mb-4"></div>
+              <p className="text-[13px] text-gray-500 dark:text-white/50">Loading transactions...</p>
             </div>
           ) : filteredTransactions.length === 0 ? (
-            <div className="p-12 text-center dark:bg-[#111118]">
+            <div className="p-12 text-center dark:bg-[#1a1625]">
               <div className="text-4xl mb-3">📭</div>
-              <p className="text-[13px] text-black/50 dark:text-white/40 text-lg">No transactions yet</p>
-              <p className="text-[13px] text-black/40 dark:text-white/30 text-sm">
+              <p className="text-[13px] text-gray-500 dark:text-white/50 text-lg">No transactions yet</p>
+              <p className="text-[13px] text-gray-400 dark:text-white/40 text-sm">
                 {selectedFilter === 'all'
                   ? 'Your transactions will appear here'
                   : `No transactions in ${selectedFilter}`}
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
+            <div className="divide-y divide-gray-100 dark:divide-white/[0.06]">
               {filteredTransactions.map((transaction, index) => {
                 const isCredit = transaction.type === 'credit'
                 const isDebit = transaction.type === 'debit'
@@ -166,7 +166,7 @@ export const StudentHistory = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="p-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                    className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                   >
                     <div className="flex items-center justify-between gap-4">
                       {/* Left: Icon and Description */}
@@ -177,7 +177,7 @@ export const StudentHistory = () => {
                               ? 'bg-emerald-500/[0.08] dark:bg-emerald-400/[0.08]'
                               : isDebit
                                 ? 'bg-red-500/[0.08] dark:bg-red-400/[0.08]'
-                                : 'bg-black/[0.04] dark:bg-white/[0.04]'
+                                : 'bg-gray-100 dark:bg-white/[0.04]'
                           }`}
                         >
                           <Icon
@@ -192,10 +192,10 @@ export const StudentHistory = () => {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-[13px] text-[#1a1a2e] dark:text-white/90 truncate">
+                          <p className="font-semibold text-[13px] text-gray-900 dark:text-white truncate">
                             {transaction.description || 'Transaction'}
                           </p>
-                          <div className="flex items-center gap-2 text-[11px] text-black/40 dark:text-white/30 mt-1">
+                          <div className="flex items-center gap-2 text-[11px] text-gray-400 dark:text-white/40 mt-1">
                             <span>{accountMeta?.label || accountType}</span>
                             <span>•</span>
                             <span>
@@ -220,13 +220,13 @@ export const StudentHistory = () => {
                               ? 'text-green-600 dark:text-green-400'
                               : isDebit
                                 ? 'text-rose-600 dark:text-rose-400'
-                                : 'text-slate-900 dark:text-white'
+                                : 'text-gray-900 dark:text-white'
                           }`}
                         >
                           {isCredit ? '+' : isDebit ? '-' : ''}
                           {formatCurrency(Math.abs(transaction.amount))}
                         </p>
-                        <p className="text-[11px] text-black/40 dark:text-white/30 mt-1">
+                        <p className="text-[11px] text-gray-400 dark:text-white/40 mt-1">
                           {formatCurrency(transaction.balance_after)}
                         </p>
                       </div>
@@ -244,9 +244,9 @@ export const StudentHistory = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-[#111118] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-6"
+            className="bg-white dark:bg-[#1a1625] rounded-xl border border-gray-200 dark:border-white/[0.08] p-6"
           >
-            <h3 className="text-[13px] font-semibold text-[#1a1a2e] dark:text-white/90 uppercase tracking-wider mb-4">Summary</h3>
+            <h3 className="text-[13px] font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Summary</h3>
 
             {(() => {
               const credits = filteredTransactions
@@ -279,8 +279,8 @@ export const StudentHistory = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 bg-black/[0.02] dark:bg-white/[0.03] rounded-xl border border-black/[0.06] dark:border-white/[0.06]">
-                    <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  <div className="p-4 bg-black/[0.02] dark:bg-white/[0.03] rounded-xl border border-gray-200 dark:border-white/[0.08]">
+                    <p className="text-[11px] font-semibold text-gray-500 dark:text-white/50 uppercase tracking-wider mb-1">
                       Net Flow
                     </p>
                     <p
@@ -289,7 +289,7 @@ export const StudentHistory = () => {
                           ? 'text-emerald-700 dark:text-emerald-400'
                           : net < 0
                             ? 'text-red-700 dark:text-red-400'
-                            : 'text-slate-900 dark:text-white'
+                            : 'text-gray-900 dark:text-white'
                       }`}
                     >
                       <AnimNum value={net} prefix="$" />

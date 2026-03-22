@@ -156,8 +156,8 @@ export const GuideSession = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-32 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-        <div className="h-64 bg-slate-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        <div className="h-32 bg-gray-100 dark:bg-white/5 rounded-lg animate-pulse" />
+        <div className="h-64 bg-gray-100 dark:bg-white/5 rounded-lg animate-pulse" />
       </div>
     )
   }
@@ -171,8 +171,8 @@ export const GuideSession = () => {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-2"
       >
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Session Management</h1>
-        <p className="text-lg text-slate-600 dark:text-gray-400">Configure and manage finance sessions</p>
+        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Session Management</h1>
+        <p className="text-lg text-gray-500 dark:text-white/50">Configure and manage finance sessions</p>
       </motion.div>
 
       <FinTip
@@ -197,7 +197,7 @@ export const GuideSession = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <div className="p-6 rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-2 border-green-300 dark:border-green-900/50 space-y-4">
+          <div className="p-6 rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-300 dark:border-green-800/30 space-y-4">
             <div className="flex items-center gap-3">
               <div className="relative w-3 h-3">
                 <motion.div
@@ -207,7 +207,7 @@ export const GuideSession = () => {
                 />
                 <div className="absolute inset-0 bg-green-500 rounded-full" />
               </div>
-              <h2 className="text-2xl font-bold text-green-900 dark:text-green-300">{activeSession.name}</h2>
+              <h2 className="text-2xl font-extrabold text-green-900 dark:text-green-300">{activeSession.name}</h2>
             </div>
 
             <p className="text-green-800 dark:text-green-300">
@@ -216,14 +216,14 @@ export const GuideSession = () => {
               </span>
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-green-300 dark:border-green-900/50">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-green-300 dark:border-green-800/30">
               <Field label="Savings Interest Rate (%)">
                 <input
                   type="number"
                   value={savingsRate}
                   onChange={(e) => setSavingsRate(e.target.value)}
                   placeholder="e.g., 2.5"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
                 />
               </Field>
               <Field label="S&P 500 Return Rate (%)">
@@ -232,7 +232,7 @@ export const GuideSession = () => {
                   value={spRate}
                   onChange={(e) => setSpRate(e.target.value)}
                   placeholder="e.g., 10"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
                 />
               </Field>
               <Field label="NASDAQ Return Rate (%)">
@@ -241,7 +241,7 @@ export const GuideSession = () => {
                   value={nasdaqRate}
                   onChange={(e) => setNasdaqRate(e.target.value)}
                   placeholder="e.g., 12"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
                 />
               </Field>
             </div>
@@ -267,10 +267,10 @@ export const GuideSession = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-lg border-2 border-dashed border-slate-300 dark:border-gray-700 dark:bg-gray-900/50 space-y-4"
+          className="p-6 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10 dark:bg-[#1a1625]/50 space-y-4"
         >
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Start New Session</h2>
-          <p className="text-slate-600 dark:text-gray-400">Create a new finance session for your students.</p>
+          <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Start New Session</h2>
+          <p className="text-gray-500 dark:text-white/50">Create a new finance session for your students.</p>
 
           <div className="space-y-4">
             <Field label="Session Name">
@@ -279,7 +279,7 @@ export const GuideSession = () => {
                 value={sessionName}
                 onChange={(e) => setSessionName(e.target.value)}
                 placeholder="e.g., Spring 2024"
-                className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
               />
             </Field>
 
@@ -288,7 +288,7 @@ export const GuideSession = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-500/10"
               />
             </Field>
 
