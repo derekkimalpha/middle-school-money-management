@@ -34,4 +34,10 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- 4. Clear emoji icons from fine_definitions
 UPDATE fine_definitions SET icon = '' WHERE icon IS NOT NULL AND icon != '';
 
+-- 5. Grant permissions on MAP tables to authenticated and anon roles
+GRANT ALL ON map_tests TO authenticated;
+GRANT ALL ON map_tests TO anon;
+GRANT ALL ON map_payout_settings TO authenticated;
+GRANT ALL ON map_payout_settings TO anon;
+
 SELECT 'Migration 009 complete' as status;
