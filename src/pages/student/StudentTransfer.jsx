@@ -10,7 +10,6 @@ import {
 } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
-import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, TRANSFER_RULES, formatCurrency } from '../../lib/constants'
 import { ArrowDownUp, AlertCircle } from 'lucide-react'
@@ -25,27 +24,9 @@ export const StudentTransfer = () => {
   const { accounts, loading: accountsLoading, refreshAccounts } = useAccounts(
     profile?.id
   )
-  const { settings } = usePaycheckSettings()
 
   // Get valid transfer targets
   const validTargets = fromAccount ? TRANSFER_RULES[fromAccount] || [] : []
-
-  // Calculate fee based on transfer type and settings
-  const getFeePct = () => {
-    if (!fromAccount || !toAccount) return 0
-    if (['sp500', 'nasdaq'].includes(fromAccount) && toAccount === 'checking') {
-      return settings?.transfer_fee_invest_pct ?? 10
-    }
-    if (fromAccount === 'savings' && toAccount === 'checking') {
-      return settings?.transfer_fee_savings_pct ?? 0
-    }
-    return 0
-  }
-
-  const feePct = getFeePct()
-  const hasFee = feePct > 0
-  const feeAmount = hasFee ? Math.round(amount * (feePct / 100) * 100) / 100 : 0
-  const amountAfterFee = amount - feeAmount
 
   // Validate form
   const isValid =
@@ -58,31 +39,19 @@ export const StudentTransfer = () => {
 
   const handleTransfer = async () => {
     if (!fromAccount) {
-      setToast({
-        type: 'error',
-        text: 'Pick an account to transfer from',
-      })
+      setToast({ type: 'error', text: 'Pick an account to transfer from' })
       return
     }
     if (!toAccount) {
-      setToast({
-        type: 'error',
-        text: 'Pick an account to transfer to',
-      })
+      setToast({ type: 'error', text: 'Pick an account to transfer to' })
       return
     }
     if (amount <= 0) {
-      setToast({
-        type: 'error',
-        text: 'Enter an amount to transfer',
-      })
+      setToast({ type: 'error', text: 'Enter an amount to transfer' })
       return
     }
     if (!isValid) {
-      setToast({
-        type: 'error',
-        text: 'Please check your transfer details',
-      })
+      setToast({ type: 'error', text: 'Please check your transfer details' })
       return
     }
 
@@ -100,7 +69,7 @@ export const StudentTransfer = () => {
 
       setToast({
         type: 'success',
-        text: `Transferred ${formatCurrency(amountAfterFee)} to ${ACCOUNT_META[toAccount]?.label}`,
+        text: `Transferred ${formatCurrency(amount)} to ${ACCOUNT_META[toAccount]?.label}`,
       })
 
       // Reset form
@@ -142,7 +111,7 @@ export const StudentTransfer = () => {
           Transfer Funds
         </h1>
         <p className="text-[13px] text-ink-muted dark:text-white/50">
-          Move money between your accounts
+          Move money between your accounts — no fees
         </p>
       </motion.div>
 
@@ -152,14 +121,7 @@ export const StudentTransfer = () => {
           title="How Transfers Work"
           color="from-stone-50 to-stone-100"
         >
-          You can move money between your accounts to manage your finances.
-          {settings?.transfer_fee_invest_pct > 0 && (
-            <> Moving money from investments (S&P 500, NASDAQ) to Checking has a {settings.transfer_fee_invest_pct}% withdrawal fee to encourage long-term investing.</>
-          )}
-          {settings?.transfer_fee_savings_pct > 0 && (
-            <> Savings to Checking transfers have a {settings.transfer_fee_savings_pct}% fee.</>
-          )}
-          {' '}Keep these fees in mind when planning your transfers!
+          Move money freely between your accounts to manage your finances. There are no fees — transfer as much as you want, whenever you want!
         </FinTip>
 
         <motion.div
@@ -227,7 +189,7 @@ export const StudentTransfer = () => {
             </motion.div>
           )}
 
-          {/* Amount and Fee */}
+          {/* Amount */}
           {fromAccount && toAccount && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -265,32 +227,10 @@ export const StudentTransfer = () => {
                         {formatCurrency(amount)}
                       </span>
                     </div>
-
-                    {hasFee && (
-                      <>
-                        <div className="flex justify-between text-sm border-t border-black/[0.08] dark:border-white/[0.06] pt-2">
-                          <span className="text-ink-muted dark:text-white/50 font-semibold">
-                            {feePct}% Transfer Fee
-                          </span>
-                          <span className="font-semibold text-ink-muted dark:text-white/50">
-                            -{formatCurrency(feeAmount)}
-                          </span>
-                        </div>
-                        <span className="text-[10px] text-ink-faint dark:text-white/30 block mt-0.5">Fees teach real-world investing costs</span>
-
-                        <div className="text-xs text-ink-muted dark:text-white/50 mt-2 p-2 bg-stone-100 dark:bg-stone-900/30 rounded-sm">
-                          {['sp500', 'nasdaq'].includes(fromAccount)
-                            ? `Transferring from an investment account to Checking incurs a ${feePct}% fee to encourage long-term investing.`
-                            : `Transferring from Savings to Checking incurs a ${feePct}% fee.`
-                          }
-                        </div>
-                      </>
-                    )}
-
                     <div className="flex justify-between text-base font-bold pt-2 border-t border-black/[0.08] dark:border-white/[0.06]">
-                      <span className="text-ink dark:text-chalk-white">You'll receive</span>
-                      <span className="text-ink-muted dark:text-white/50">
-                        {formatCurrency(amountAfterFee)}
+                      <span className="text-ink dark:text-chalk-white">They'll receive</span>
+                      <span className="text-ink dark:text-chalk-white">
+                        {formatCurrency(amount)}
                       </span>
                     </div>
                   </motion.div>
@@ -324,12 +264,11 @@ export const StudentTransfer = () => {
           )}
         </motion.div>
 
-        {/* Info Cards */}
+        {/* Current Balances Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           <div className="bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] rounded-sm p-4 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]">
             <h3 className="font-semibold text-[13px] text-ink dark:text-chalk-white font-hand mb-2 uppercase tracking-wider">Current Balances</h3>
@@ -349,19 +288,10 @@ export const StudentTransfer = () => {
                 ))}
             </div>
           </div>
-
-          <div className="bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] rounded-sm p-4 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]">
-            <h3 className="font-semibold text-[13px] text-ink dark:text-chalk-white font-hand mb-2 uppercase tracking-wider">Transfer Fees</h3>
-            <div className="space-y-1 text-xs text-ink-muted dark:text-white/50">
-              <p>• Investment → Checking: {settings?.transfer_fee_invest_pct ?? 10}% fee</p>
-              <p>• Savings → Checking: {settings?.transfer_fee_savings_pct ?? 0}% fee</p>
-              <p>• All other transfers: No fee</p>
-            </div>
-          </div>
         </motion.div>
 
-        <FinTip icon="🧠" title="Real-World Connection: Early Withdrawal Penalties" color="from-stone-50 to-stone-100">
-          In real life, retirement accounts like 401(k)s and IRAs charge a 10% penalty if you withdraw money before age 59½. That's why our investment accounts have a transfer fee — it teaches you that taking money out of investments early costs you. The best investors think long-term!
+        <FinTip icon="🧠" title="Think Before You Transfer" color="from-stone-50 to-stone-100">
+          In real life, moving money between accounts is easy — but having a plan matters. Think about your goals: savings for safety, investments for growth, and checking for spending. The best money managers are intentional about every move!
         </FinTip>
       </div>
     </div>

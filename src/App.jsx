@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck } from 'lucide-react'
 import { useAuth } from './hooks/useAuth'
 import { useAccounts } from './hooks/useAccounts'
+import { useGrowthEngine } from './hooks/useGrowthEngine'
 import { ThemeProvider } from './hooks/useTheme'
 import { Layout } from './components/shared/Layout'
 import { getLevel, getNextLevel } from './lib/constants'
@@ -42,6 +43,9 @@ function AppInner() {
 
   const isStudent = profile?.role === 'student'
   const { accounts } = useAccounts(isStudent ? profile?.id : null)
+
+  // Run growth engine once per day (applies savings interest + market returns)
+  useGrowthEngine(!!profile)
 
   // Compute level / XP progress / streak for student sidebar
   const studentMeta = useMemo(() => {

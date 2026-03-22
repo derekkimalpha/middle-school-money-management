@@ -16,14 +16,14 @@ import {
   getLevel,
   getNextLevel,
 } from '../../lib/constants'
-import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight, Banknote } from 'lucide-react'
+import { TrendingUp, Send, ShoppingCart, Wallet, PiggyBank, BarChart3, DollarSign, ChevronRight, Banknote, Zap, Star, ArrowUpRight } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 
 const ACCOUNT_COLORS = {
-  checking: { hex: '#7c8c78', label: 'text-sage-600 dark:text-sage-300' },
-  savings: { hex: '#6b8a87', label: 'text-stone-600 dark:text-stone-400' },
-  sp500: { hex: '#a68b5b', label: 'text-amber dark:text-amber' },
-  nasdaq: { hex: '#78716c', label: 'text-stone-600 dark:text-stone-400' },
+  checking: { hex: '#22c55e', gradient: 'from-emerald-500 to-green-600', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-600 dark:text-emerald-400' },
+  savings: { hex: '#3b82f6', gradient: 'from-blue-500 to-indigo-600', bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-600 dark:text-blue-400' },
+  sp500: { hex: '#f59e0b', gradient: 'from-amber-400 to-orange-500', bg: 'bg-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-600 dark:text-amber-400' },
+  nasdaq: { hex: '#8b5cf6', gradient: 'from-violet-500 to-purple-600', bg: 'bg-violet-500/10', border: 'border-violet-500/20', text: 'text-violet-600 dark:text-violet-400' },
 }
 
 const ACCOUNT_ICONS = {
@@ -68,18 +68,17 @@ const AccountTooltip = ({ tip, isVisible }) => (
     className="absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 pointer-events-none"
     style={{ display: isVisible ? 'block' : 'none' }}
   >
-    <div className="relative bg-ink dark:bg-chalk-white rounded-sm p-4 shadow-[4px_4px_0px_rgba(0,0,0,0.15)] border-2 border-pencil/40">
+    <div className="relative bg-gray-900 dark:bg-white rounded-xl p-4 shadow-xl">
       <div className="flex items-center gap-2 mb-2">
-        <tip.Icon className="w-4 h-4 text-pencil" />
-        <span className="text-sm font-hand font-bold text-chalk-white dark:text-ink">{tip.title}</span>
+        <tip.Icon className="w-4 h-4 text-amber-400 dark:text-amber-500" />
+        <span className="text-sm font-bold text-white dark:text-gray-900">{tip.title}</span>
       </div>
-      <p className="text-[11px] leading-relaxed text-chalk-white/90 dark:text-ink">{tip.definition}</p>
-      <div className="mt-2 pt-2 border-t border-chalk-white/20 dark:border-ink/20">
-        <p className="text-[10px] font-bold text-pencil dark:text-pencil-dark uppercase tracking-wider mb-0.5">Example</p>
-        <p className="text-[11px] leading-relaxed text-chalk-white/70 dark:text-ink-light">{tip.example}</p>
+      <p className="text-[11px] leading-relaxed text-gray-300 dark:text-gray-600">{tip.definition}</p>
+      <div className="mt-2 pt-2 border-t border-white/10 dark:border-gray-200">
+        <p className="text-[10px] font-bold text-amber-400 dark:text-amber-600 uppercase tracking-wider mb-0.5">Example</p>
+        <p className="text-[11px] leading-relaxed text-gray-400 dark:text-gray-500">{tip.example}</p>
       </div>
-      {/* little arrow */}
-      <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-3 h-3 rotate-45 bg-ink dark:bg-chalk-white border-r-2 border-b-2 border-pencil/40" />
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-3 h-3 rotate-45 bg-gray-900 dark:bg-white" />
     </div>
   </motion.div>
 )
@@ -121,7 +120,7 @@ export const StudentDashboard = () => {
     return (
       <div className="flex items-center justify-center h-screen">
         <motion.div
-          className="w-12 h-12 border-4 border-gray-200 dark:border-white/[0.12] border-t-pencil dark:border-t-pencil rounded-full"
+          className="w-12 h-12 border-4 border-gray-200 dark:border-white/[0.12] border-t-amber-500 dark:border-t-amber-400 rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -150,65 +149,56 @@ export const StudentDashboard = () => {
     <div className="pb-24">
       <Toast message={toast} />
 
-      {/* ── Header ── */}
-      <div className="px-8 pt-8 pb-6">
+      {/* ── Hero Balance Card ── */}
+      <div className="px-6 pt-6 pb-2">
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-gray-800 dark:via-gray-900 dark:to-black p-6"
         >
-          <div>
-            <p className="text-xs font-medium text-ink-muted dark:text-white/50">
-              Welcome back
-            </p>
-            <h1 className="text-4xl font-hand font-bold text-ink dark:text-chalk-white mt-1">
-              {firstName}
-            </h1>
+          {/* Decorative gradient orbs */}
+          <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-amber-400/20 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-blue-500/15 blur-3xl" />
+          <div className="absolute top-1/2 right-1/4 w-32 h-32 rounded-full bg-emerald-400/10 blur-2xl" />
+
+          {/* Header row */}
+          <div className="relative flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs font-medium text-white/50 mb-0.5">Welcome back</p>
+              <h1 className="text-2xl font-black text-white">{firstName}</h1>
+            </div>
+            <motion.div
+              whileHover={{ scale: 1.08, rotate: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/30"
+            >
+              <Zap className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-xs font-bold text-amber-300">{currentLevel?.name}</span>
+            </motion.div>
           </div>
 
-          {/* Level badge */}
-          <motion.div
-            className="flex items-center gap-2 rounded-sm px-4 py-2 bg-pencil/10 border-2 border-pencil/30 dark:bg-pencil/10 dark:border-pencil/20"
-            whileHover={{ scale: 1.05, rotate: -2 }}
-          >
-            <DollarSign className="w-4 h-4 text-pencil-dark dark:text-pencil" />
-            <span className="text-sm font-hand font-bold text-pencil-dark dark:text-pencil">
-              {currentLevel?.name}
-            </span>
-          </motion.div>
-        </motion.div>
-      </div>
+          {/* Big balance */}
+          <div className="relative mb-6">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1">Total Balance</p>
+            <h2 className="text-5xl font-black tabular-nums text-white tracking-tight">
+              <AnimNum value={totalBalance} prefix="$" />
+            </h2>
+          </div>
 
-      {/* ── Balance Card with Donut + Legend ── */}
-      <div className="px-8 mb-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08 }}
-          className="rounded-sm p-8 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[3px_3px_0px_rgba(0,0,0,0.08)] dark:shadow-[3px_3px_0px_rgba(0,0,0,0.3)]"
-        >
-          <p className="text-xs font-hand font-bold uppercase tracking-widest mb-2 text-ink-muted dark:text-white/60">
-            Total Balance
-          </p>
-          <h2 className="text-5xl font-black tabular-nums text-ink dark:text-chalk-white">
-            <AnimNum value={totalBalance} prefix="$" />
-          </h2>
-          <span className="text-[11px] text-ink-muted dark:text-white/50 mt-1 block">across all accounts</span>
-
+          {/* Donut + Legend row */}
           {donutData.length > 0 && (
-            <div className="flex items-center gap-8 mt-6">
-              {/* Donut */}
+            <div className="relative flex items-center gap-6">
               <div className="flex-shrink-0">
                 <DonutChart
                   data={donutData}
-                  size={140}
-                  stroke={12}
+                  size={120}
+                  stroke={14}
                   centerValue={formatCurrency(totalBalance)}
                   centerLabel="Total"
                 />
               </div>
-              {/* Legend */}
-              <div className="flex-1 space-y-3">
+              <div className="flex-1 space-y-2.5">
                 {Object.entries(ACCOUNT_COLORS).map(([key, colors]) => {
                   const balance = accounts[key] || 0
                   const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
@@ -216,18 +206,18 @@ export const StudentDashboard = () => {
                     <div key={key} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div
-                          className="w-2.5 h-2.5 rounded-full"
+                          className="w-2.5 h-2.5 rounded-full ring-2 ring-white/10"
                           style={{ backgroundColor: colors.hex }}
                         />
-                        <span className="text-sm text-ink-light dark:text-white/70">
+                        <span className="text-xs font-medium text-white/60">
                           {ACCOUNT_META[key]?.label}
                         </span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-bold tabular-nums text-ink dark:text-chalk-white">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold tabular-nums text-white">
                           {formatCurrency(balance)}
                         </span>
-                        <span className="text-xs tabular-nums text-ink-muted dark:text-white/40 w-8 text-right">
+                        <span className="text-[10px] tabular-nums text-white/30 w-7 text-right font-medium">
                           {pct}%
                         </span>
                       </div>
@@ -237,101 +227,103 @@ export const StudentDashboard = () => {
               </div>
             </div>
           )}
+
+          {/* Level progress bar */}
+          {nextLevel && (
+            <div className="relative mt-5 pt-4 border-t border-white/[0.08]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold text-white/40 uppercase tracking-wider">{currentLevel?.name}</span>
+                <span className="text-[10px] font-bold text-amber-400/80">{formatCurrency(nextLevelThreshold - totalBalance)} to {nextLevel.name}</span>
+              </div>
+              <div className="h-2 rounded-full overflow-hidden bg-white/[0.08]">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-300"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${levelProgress}%` }}
+                  transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+                />
+              </div>
+            </div>
+          )}
         </motion.div>
       </div>
 
-      {/* ── Progress — pencil-filled progress bar ── */}
-      {nextLevel && (
-        <div className="px-8 mb-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12 }}
-            className="rounded-sm p-6 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
-          >
-            <p className="text-xs font-hand font-bold uppercase tracking-widest mb-4 text-ink-muted dark:text-white/60">
-              Progress to Next Level
-            </p>
-
-            <div className="flex items-center gap-4 mb-3">
-              <div className="w-8 h-8 rounded-sm bg-pencil/15 dark:bg-pencil/10 border border-pencil/30 dark:border-pencil/20 flex items-center justify-center flex-shrink-0">
-                <DollarSign className="w-4 h-4 text-pencil-dark dark:text-pencil" />
+      {/* ── Quick Actions ── */}
+      <div className="px-6 py-4">
+        <div className="flex gap-2">
+          {[
+            { label: 'Log Pay', Icon: Banknote, route: '/paycheck', color: 'from-emerald-500 to-green-600' },
+            { label: 'Transfer', Icon: Send, route: '/transfer', color: 'from-blue-500 to-indigo-600' },
+            { label: 'Buy', Icon: ShoppingCart, route: '/purchase', color: 'from-violet-500 to-purple-600' },
+          ].map((action, index) => (
+            <motion.button
+              key={action.label}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + index * 0.08 }}
+              onClick={() => navigate(action.route)}
+              whileHover={{ y: -2, scale: 1.02 }}
+              whileTap={{ scale: 0.96 }}
+              className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl bg-white dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.06] shadow-sm hover:shadow-md transition-all"
+            >
+              <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center shadow-sm`}>
+                <action.Icon className="w-4 h-4 text-white" />
               </div>
-              <div className="flex-1">
-                <div className="h-4 rounded-sm overflow-hidden bg-paper-warm dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.06]">
-                  <motion.div
-                    className="h-full rounded-sm"
-                    style={{
-                      background: 'repeating-linear-gradient(45deg, #e8c840, #e8c840 4px, #d4b84c 4px, #d4b84c 8px)',
-                    }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${levelProgress}%` }}
-                    transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-                  />
-                </div>
-              </div>
-              <div className="w-8 h-8 rounded-sm bg-pencil/15 dark:bg-pencil/10 border border-pencil/30 dark:border-pencil/20 flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-4 h-4 text-pencil-dark dark:text-pencil" />
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-hand font-bold text-ink-muted dark:text-white/50">
-                {currentLevel?.name}
-              </span>
-              <span className="text-xs font-hand font-bold text-ink-muted dark:text-white/50">
-                {nextLevel.name} · {formatCurrency(nextLevelThreshold - totalBalance)} to go
-              </span>
-            </div>
-          </motion.div>
+              <span className="text-[11px] font-bold text-ink dark:text-white/80">{action.label}</span>
+            </motion.button>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* ── Account Cards ── */}
-      <div className="px-8 mb-6">
-        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4">
-          Your Accounts
-        </h3>
+      <div className="px-6 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-bold text-ink dark:text-chalk-white">Your Accounts</h3>
+          <span className="text-[10px] font-semibold text-ink-muted dark:text-white/40 uppercase tracking-wider">Tap for details</span>
+        </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-2 gap-3">
           {Object.entries(ACCOUNT_COLORS).map(([key, colors], index) => {
             const balance = accounts[key] || 0
             const Icon = ACCOUNT_ICONS[key]
+            const pct = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(0) : 0
 
             return (
               <motion.div
                 key={key}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.16 + index * 0.06 }}
-                whileHover={{ y: -4, rotate: index % 2 === 0 ? -0.5 : 0.5 }}
-                whileTap={{ scale: 0.98 }}
+                transition={{ delay: 0.3 + index * 0.06 }}
+                whileHover={{ y: -3, scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 className="cursor-pointer relative"
                 onMouseEnter={() => setHoveredAccount(key)}
                 onMouseLeave={() => setHoveredAccount(null)}
               >
                 <AccountTooltip tip={ACCOUNT_TIPS[key]} isVisible={hoveredAccount === key} />
-                <div className="relative rounded-sm p-5 bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)] dark:shadow-[2px_2px_0px_rgba(0,0,0,0.2)] overflow-hidden">
-                  {/* Colored tape strip at top */}
-                  <div
-                    className="absolute top-0 left-0 right-0 h-1.5"
-                    style={{ backgroundColor: colors.hex }}
-                  />
+                <div className={`relative rounded-xl p-4 bg-white dark:bg-white/[0.04] border ${colors.border} dark:border-white/[0.08] shadow-sm hover:shadow-md transition-all overflow-hidden`}>
+                  {/* Subtle gradient background */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-[0.03] dark:opacity-[0.06]`} />
 
-                  <div className="flex items-center gap-2 mb-4 mt-1">
-                    <Icon className="w-4 h-4 text-ink-muted dark:text-white/50" />
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-ink-muted dark:text-white/60 block">
-                        {ACCOUNT_META[key]?.label}
-                      </span>
-                      {key === 'sp500' && <span className="text-[9px] text-ink-faint dark:text-white/30 block">Top 500 companies</span>}
-                      {key === 'nasdaq' && <span className="text-[9px] text-ink-faint dark:text-white/30 block">Tech-heavy index</span>}
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
+                        <Icon className={`w-4 h-4 ${colors.text}`} />
+                      </div>
+                      <span className={`text-[10px] font-bold ${colors.text} bg-white/80 dark:bg-white/5 px-1.5 py-0.5 rounded-md`}>{pct}%</span>
                     </div>
-                  </div>
 
-                  <p className="text-2xl font-black tabular-nums text-ink dark:text-chalk-white">
-                    <AnimNum value={balance} prefix="$" />
-                  </p>
+                    <p className="text-[11px] font-semibold text-ink-muted dark:text-white/50 mb-0.5">
+                      {ACCOUNT_META[key]?.label}
+                    </p>
+                    <p className="text-xl font-black tabular-nums text-ink dark:text-chalk-white">
+                      <AnimNum value={balance} prefix="$" />
+                    </p>
+
+                    {key === 'sp500' && <span className="text-[9px] text-ink-faint dark:text-white/30 mt-0.5 block">Top 500 companies</span>}
+                    {key === 'nasdaq' && <span className="text-[9px] text-ink-faint dark:text-white/30 mt-0.5 block">Tech-heavy index</span>}
+                    {key === 'savings' && <span className="text-[9px] text-emerald-600 dark:text-emerald-400 mt-0.5 block flex items-center gap-0.5"><ArrowUpRight className="w-2.5 h-2.5" />Earning interest</span>}
+                  </div>
                 </div>
               </motion.div>
             )
@@ -339,48 +331,20 @@ export const StudentDashboard = () => {
         </div>
       </div>
 
-      {/* ── Quick Actions ── */}
-      <div className="px-8 mb-6">
-        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4">
-          Quick Actions
-        </h3>
-
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 mt-4">
-          {[
-            { label: 'Log Pay', Icon: Banknote, route: '/paycheck' },
-            { label: 'Transfer', Icon: Send, route: '/transfer' },
-            { label: 'Buy', Icon: ShoppingCart, route: '/purchase' },
-          ].map((action, index) => (
-            <motion.button
-              key={action.label}
-              initial={{ opacity: 0, x: -15 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.32 + index * 0.08 }}
-              onClick={() => navigate(action.route)}
-              whileHover={{ scale: 1.05, rotate: -1 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-5 py-3 rounded-sm font-hand font-bold text-[15px] whitespace-nowrap flex-shrink-0 bg-pencil/10 border-2 border-pencil/30 text-pencil-dark dark:bg-pencil/10 dark:border-pencil/20 dark:text-pencil hover:bg-pencil/20 transition-colors"
-            >
-              <action.Icon className="w-4 h-4" />
-              {action.label}
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
       {/* ── Achievements ── */}
       {badges.length > 0 && (
-        <div className="px-8 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white">
-              Achievements
-            </h3>
-            <span className="text-xs font-hand font-bold text-pencil-dark dark:text-pencil">
+        <div className="px-6 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Star className="w-4 h-4 text-amber-500" />
+              <h3 className="text-sm font-bold text-ink dark:text-chalk-white">Achievements</h3>
+            </div>
+            <span className="text-xs font-bold text-amber-500">
               {badges.length} earned
             </span>
           </div>
-          <div className="overflow-x-auto pb-2 -mx-8 px-8">
-            <div className="flex gap-4 min-w-max">
+          <div className="overflow-x-auto pb-2 -mx-6 px-6">
+            <div className="flex gap-3 min-w-max">
               {badges.slice(0, 8).map((badge, index) => (
                 <Badge key={badge.id} badge={badge} delay={index * 0.06} />
               ))}
@@ -390,33 +354,33 @@ export const StudentDashboard = () => {
       )}
 
       {/* ── Learn Section ── */}
-      <div className="px-8">
-        <h3 className="text-base font-hand font-bold text-ink dark:text-chalk-white mb-4">
+      <div className="px-6">
+        <h3 className="text-sm font-bold text-ink dark:text-chalk-white mb-3">
           Level Up Your Knowledge
         </h3>
-        <div className="space-y-3 mt-4">
+        <div className="space-y-2">
           {[
-            { Icon: PiggyBank, title: 'Why spread your money around?', body: 'Diversifying means spreading your money across different account types for different goals — checking for daily use, savings for safety, investments for growth.' },
-            { Icon: TrendingUp, title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth — think of it like owning a tiny piece of Apple, Microsoft, and hundreds of other stable businesses. NASDAQ focuses on tech companies, which can grow faster but are riskier. Both are great for long-term investing!' },
-            { Icon: DollarSign, title: '50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.' },
+            { Icon: PiggyBank, title: 'Why spread your money around?', body: 'Diversifying means spreading your money across different account types for different goals — checking for daily use, savings for safety, investments for growth.', color: 'from-blue-500 to-indigo-600' },
+            { Icon: TrendingUp, title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth — think of it like owning a tiny piece of Apple, Microsoft, and hundreds of other stable businesses. NASDAQ focuses on tech companies, which can grow faster but are riskier. Both are great for long-term investing!', color: 'from-amber-400 to-orange-500' },
+            { Icon: DollarSign, title: '50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.', color: 'from-emerald-500 to-green-600' },
           ].map((tip, i) => (
             <motion.details
               key={i}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.48 + i * 0.08 }}
-              className="group rounded-sm border border-black/[0.08] dark:border-white/[0.06] bg-white dark:bg-white/[0.04] shadow-[2px_2px_0px_rgba(0,0,0,0.04)]"
+              className="group rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.04] shadow-sm overflow-hidden"
             >
-              <summary className="flex items-center gap-3 px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-paper-warm dark:hover:bg-white/[0.02]">
-                <div className="w-8 h-8 rounded-sm bg-pencil/10 dark:bg-pencil/10 border border-pencil/20 flex items-center justify-center flex-shrink-0">
-                  <tip.Icon className="w-4 h-4 text-pencil-dark dark:text-pencil" />
+              <summary className="flex items-center gap-3 px-4 py-3.5 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${tip.color} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                  <tip.Icon className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-sm font-bold flex-1 text-ink dark:text-chalk-white">
                   {tip.title}
                 </span>
                 <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-ink-faint dark:text-white/30" />
               </summary>
-              <div className="px-5 pb-4 text-sm leading-relaxed border-t border-black/[0.06] dark:border-white/[0.06] pt-4 text-ink-light dark:text-white/60">
+              <div className="px-4 pb-4 text-sm leading-relaxed border-t border-black/[0.04] dark:border-white/[0.04] pt-3 text-ink-light dark:text-white/60">
                 {tip.body}
               </div>
             </motion.details>

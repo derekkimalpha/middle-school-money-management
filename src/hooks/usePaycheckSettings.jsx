@@ -11,9 +11,10 @@ const DEFAULT_SETTINGS = {
   mastery_pass_pay: 20,
   mastery_perfect_pay: 100,
   mastery_min_score: 90,
-  transfer_fee_pct: 10,
-  transfer_fee_invest_pct: 10,
+  transfer_fee_pct: 0,
+  transfer_fee_invest_pct: 0,
   transfer_fee_savings_pct: 0,
+  savings_interest_rate: 4.5,
   smart_goal_pay: 6,
   custom_bonuses: [
     { id: 'smart_goal', name: 'SMART Goal', amount: 6, type: 'checkbox' }

@@ -103,9 +103,10 @@ export const GuideSettings = () => {
           mastery_min_score: parseFloat(settings.mastery_min_score) || 0,
           mastery_pass_pay: parseFloat(settings.mastery_pass_pay) || 0,
           mastery_perfect_pay: parseFloat(settings.mastery_perfect_pay) || 0,
-          transfer_fee_invest_pct: parseFloat(settings.transfer_fee_invest_pct) || 10,
-          transfer_fee_savings_pct: parseFloat(settings.transfer_fee_savings_pct) || 0,
-          transfer_fee_pct: parseFloat(settings.transfer_fee_pct) || 0,
+          transfer_fee_invest_pct: 0,
+          transfer_fee_savings_pct: 0,
+          transfer_fee_pct: 0,
+          savings_interest_rate: parseFloat(settings.savings_interest_rate) || 4.5,
           smart_goal_pay: parseFloat(settings.smart_goal_pay) || 0,
           custom_bonuses: settings.custom_bonuses || []
         })
@@ -505,35 +506,32 @@ export const GuideSettings = () => {
               </div>
             </div>
 
-            {/* Transfer Fees Section */}
+            {/* Growth & Interest Section */}
             <div className="p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] dark:bg-white/[0.04] bg-white space-y-4">
               <div>
-                <h3 className="font-semibold text-ink dark:text-chalk-white">Transfer Fees</h3>
-                <p className="text-sm text-ink-muted dark:text-white/50">Fees charged when students move money between accounts</p>
+                <h3 className="font-semibold text-ink dark:text-chalk-white">Growth & Interest</h3>
+                <p className="text-sm text-ink-muted dark:text-white/50">Controls how student savings grow over time. Investments track real market performance automatically.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Field label="Investment → Checking Fee (%)">
+                <Field label="Savings Interest Rate (APY %)">
                   <input
                     type="number"
                     step="0.1"
-                    value={settings.transfer_fee_invest_pct ?? 10}
-                    onChange={(e) => setSettings({ ...settings, transfer_fee_invest_pct: e.target.value })}
-                    placeholder="e.g., 10"
+                    min="0"
+                    max="20"
+                    value={settings.savings_interest_rate ?? 4.5}
+                    onChange={(e) => setSettings({ ...settings, savings_interest_rate: e.target.value })}
+                    placeholder="e.g., 4.5"
                     className="w-full px-3 py-2 rounded-sm border border-black/[0.08] dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
-                  <p className="text-xs text-ink-faint dark:text-white/40 mt-1">Fee for withdrawing from S&P 500 or NASDAQ to Checking</p>
+                  <p className="text-xs text-ink-faint dark:text-white/40 mt-1">Annual interest rate applied daily to savings accounts (default: 4.5%)</p>
                 </Field>
-                <Field label="Savings → Checking Fee (%)">
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={settings.transfer_fee_savings_pct ?? 0}
-                    onChange={(e) => setSettings({ ...settings, transfer_fee_savings_pct: e.target.value })}
-                    placeholder="e.g., 0"
-                    className="w-full px-3 py-2 rounded-sm border border-black/[0.08] dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
-                  />
-                  <p className="text-xs text-ink-faint dark:text-white/40 mt-1">Fee for early withdrawal from Savings</p>
-                </Field>
+                <div className="p-4 bg-stone-50 dark:bg-white/[0.03] rounded-sm border border-black/[0.05] dark:border-white/[0.04]">
+                  <p className="text-xs font-semibold text-ink dark:text-chalk-white mb-1">How it works</p>
+                  <p className="text-xs text-ink-muted dark:text-white/50 leading-relaxed">
+                    Savings earn daily compound interest at this rate. S&P 500 and NASDAQ accounts automatically track real market performance — no setup needed. Transfers between accounts are free.
+                  </p>
+                </div>
               </div>
             </div>
 
