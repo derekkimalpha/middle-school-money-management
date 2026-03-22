@@ -134,9 +134,9 @@ export const GuidePurchases = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: 'bg-amber-100 text-amber-800',
-      approved: 'bg-emerald-100 text-emerald-800',
-      rejected: 'bg-rose-100 text-rose-800'
+      pending: 'bg-stone-100 text-stone-700',
+      approved: 'bg-sage-bg text-sage-700',
+      rejected: 'bg-red-100 text-red-800'
     }
     return colors[status] || 'bg-gray-100 text-gray-700'
   }
@@ -193,7 +193,7 @@ export const GuidePurchases = () => {
             onClick={() => setFilter(tab.value)}
             className={`px-4 py-3 font-semibold text-sm transition-all border-b-2 ${
               filter === tab.value
-                ? 'border-teal-500 text-teal-600 dark:text-teal-400'
+                ? 'border-stone-800 dark:border-stone-300 text-stone-800 dark:text-stone-300'
                 : 'border-transparent text-gray-500 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
@@ -236,7 +236,7 @@ export const GuidePurchases = () => {
               variants={cardVariants}
               initial="hidden"
               animate="visible"
-              className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] hover:border-teal-400 transition-colors"
+              className="p-6 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] hover:border-stone-400 transition-colors"
             >
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-4">
@@ -260,7 +260,7 @@ export const GuidePurchases = () => {
 
                 <div className="border-t border-gray-200 dark:border-white/[0.08] pt-4">
                   <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{purchase.item_name}</p>
-                  <p className="text-2xl font-bold text-teal-600 mt-2">
+                  <p className="text-2xl font-bold text-stone-600 mt-2">
                     {formatCurrency(purchase.price)}
                   </p>
                 </div>

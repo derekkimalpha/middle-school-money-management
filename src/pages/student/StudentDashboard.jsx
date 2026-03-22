@@ -21,10 +21,10 @@ import { useTheme } from '../../hooks/useTheme'
 
 // Clean account colors — no gradients on the cards themselves
 const ACCOUNT_COLORS = {
-  checking: { hex: '#10b981', label: 'text-emerald-600 dark:text-emerald-400' },
-  savings: { hex: '#06b6d4', label: 'text-cyan-600 dark:text-cyan-400' },
-  sp500: { hex: '#f59e0b', label: 'text-amber-600 dark:text-amber-400' },
-  nasdaq: { hex: '#3b82f6', label: 'text-blue-600 dark:text-blue-400' },
+  checking: { hex: '#7c8c78', label: 'text-sage-600 dark:text-sage-300' },
+  savings: { hex: '#6b8a87', label: 'text-stone-600 dark:text-stone-400' },
+  sp500: { hex: '#a68b5b', label: 'text-amber dark:text-amber' },
+  nasdaq: { hex: '#78716c', label: 'text-stone-600 dark:text-stone-400' },
 }
 
 const ACCOUNT_ICONS = {
@@ -70,7 +70,7 @@ export const StudentDashboard = () => {
     return (
       <div className="flex items-center justify-center h-screen">
         <motion.div
-          className="w-12 h-12 border-4 border-gray-200 dark:border-white/[0.12] border-t-teal-600 dark:border-t-teal-400 rounded-full"
+          className="w-12 h-12 border-4 border-gray-200 dark:border-white/[0.12] border-t-stone-600 dark:border-t-stone-400 rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -96,11 +96,11 @@ export const StudentDashboard = () => {
   const firstName = profile?.full_name?.split(' ')[0] || 'Friend'
 
   return (
-    <div className={`pb-24 ${isDark ? 'bg-[#09090b]' : 'bg-[#f5f5f7]'}`}>
+    <div className={`pb-24 ${isDark ? 'dark:bg-[#141211]' : 'bg-[#faf9f7]'}`}>
       <Toast message={toast} />
 
       {/* ── Clean Status Bar ─────────────────────── */}
-      <div className={`${isDark ? 'bg-[#09090b]' : 'bg-[#f5f5f7]'} px-8 pt-8 pb-6`}>
+      <div className={`${isDark ? 'dark:bg-[#141211]' : 'bg-[#faf9f7]'} px-8 pt-8 pb-6`}>
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -191,7 +191,7 @@ export const StudentDashboard = () => {
               <div className="flex-1">
                 <div className={`h-3 rounded-full overflow-hidden ${isDark ? 'bg-white/[0.06]' : 'bg-gray-100'}`}>
                   <motion.div
-                    className="h-3 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600"
+                    className="h-3 rounded-full bg-stone-500"
                     initial={{ width: 0 }}
                     animate={{ width: `${levelProgress}%` }}
                     transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
@@ -277,9 +277,9 @@ export const StudentDashboard = () => {
 
         <div className="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8">
           {[
-            { label: 'Paycheck', icon: '💵', color: '#10b981', route: '/paycheck' },
-            { label: 'Transfer', icon: '🔄', color: '#06b6d4', route: '/transfer' },
-            { label: 'Purchase', icon: '🛒', color: '#f59e0b', route: '/purchase' },
+            { label: 'Paycheck', icon: '💵', color: '#7c8c78', route: '/paycheck' },
+            { label: 'Transfer', icon: '🔄', color: '#6b8a87', route: '/transfer' },
+            { label: 'Purchase', icon: '🛒', color: '#a68b5b', route: '/purchase' },
           ].map((action, index) => (
             <motion.button
               key={action.label}
@@ -309,7 +309,7 @@ export const StudentDashboard = () => {
             <h3 className={`text-xs font-black uppercase tracking-widest ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Achievements 🏆
             </h3>
-            <span className={`text-xs font-bold ${isDark ? 'text-teal-400' : 'text-teal-600'}`}>
+            <span className={`text-xs font-bold ${isDark ? 'text-stone-400' : 'text-stone-600'}`}>
               {badges.length} earned
             </span>
           </div>

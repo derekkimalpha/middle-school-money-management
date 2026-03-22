@@ -166,7 +166,7 @@ export const GuideRoster = () => {
           <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Students</h1>
           <p className="text-lg text-gray-500 dark:text-white/50">
             {filteredStudents.length} {filteredStudents.length === 1 ? 'student' : 'students'} •{' '}
-            <span className="font-bold text-teal-600 dark:text-teal-400">
+            <span className="font-bold text-stone-600 dark:text-stone-400">
               <AnimNum value={totalBalance} prefix="$" duration={600} />
             </span>
           </p>
@@ -189,12 +189,12 @@ export const GuideRoster = () => {
             initial="initial"
             animate="animate"
             transition={{ delay: 0.1 }}
-            className="bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-400 p-4 rounded-xl flex items-start gap-3"
+            className="bg-stone-100 dark:bg-stone-500/10 border-l-4 border-stone-300 p-4 rounded-xl flex items-start gap-3"
           >
-            <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 text-stone-600 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="font-semibold text-amber-900">{paycheck_count} Paychecks to Verify</p>
-              <p className="text-sm text-amber-700">Student submissions pending review</p>
+              <p className="font-semibold text-stone-700">{paycheck_count} Paychecks to Verify</p>
+              <p className="text-sm text-stone-600">Student submissions pending review</p>
             </div>
           </motion.div>
         )}
@@ -205,25 +205,25 @@ export const GuideRoster = () => {
             initial="initial"
             animate="animate"
             transition={{ delay: 0.15 }}
-            className="bg-rose-50 dark:bg-rose-500/10 border-l-4 border-rose-400 p-4 rounded-xl flex items-start gap-3"
+            className="bg-red-50 dark:bg-red-500/10 border-l-4 border-red-300 p-4 rounded-xl flex items-start gap-3"
           >
-            <AlertCircle className="w-5 h-5 text-rose-600 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 text-red-700 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="font-semibold text-rose-900">{purchase_count} Purchase Requests</p>
-              <p className="text-sm text-rose-700">Items awaiting approval</p>
+              <p className="font-semibold text-red-800">{purchase_count} Purchase Requests</p>
+              <p className="text-sm text-red-700">Items awaiting approval</p>
             </div>
           </motion.div>
         )}
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-gray-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400 dark:text-gray-500" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by name or email..."
-          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 transition-all"
+          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10 transition-all"
         />
       </div>
 
@@ -264,7 +264,7 @@ export const GuideRoster = () => {
                 className="w-full text-left"
               >
                 <motion.div
-                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] hover:border-teal-300 dark:hover:border-teal-500/30 hover:shadow-md hover:shadow-teal-500/5 transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] hover:border-stone-300 dark:hover:border-stone-500/30 hover:shadow-sm transition-all group"
                   whileHover={{ x: 4 }}
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center text-white dark:text-gray-900 font-bold text-sm shadow-md shadow-black/10">

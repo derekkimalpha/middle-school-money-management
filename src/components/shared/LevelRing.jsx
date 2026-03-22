@@ -41,7 +41,7 @@ export const LevelRing = ({ total = 0 }) => {
             cy={center}
             r={radius}
             fill="none"
-            stroke="#e2e8f0"
+            stroke="#d4d0cb"
             strokeWidth={4}
           />
           {/* Progress ring */}
@@ -50,7 +50,7 @@ export const LevelRing = ({ total = 0 }) => {
             cy={center}
             r={radius}
             fill="none"
-            stroke="#78a391"
+            stroke="#7c8c78"
             strokeWidth={4}
             strokeDasharray={circumference}
             strokeDashoffset={circumference - dashLength}

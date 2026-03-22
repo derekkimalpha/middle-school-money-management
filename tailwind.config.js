@@ -9,45 +9,58 @@ export default {
     extend: {
       colors: {
         sage: {
-          DEFAULT: '#7EA58C',
-          200: '#C2D8C9',
-          300: '#A8C5B0',
-          400: '#7EA58C',
-          500: '#5E8A6C',
-          600: '#4A7058',
-          700: '#385644',
-          dark: '#5E8A6C',
-          light: '#A8C5B0',
-          bg: 'rgba(126,165,140,0.08)',
+          DEFAULT: '#7c8c78',
+          200: '#c4ccc2',
+          300: '#a3ada0',
+          400: '#7c8c78',
+          500: '#5f6d5b',
+          600: '#4b5648',
+          700: '#3a4337',
+          dark: '#5f6d5b',
+          light: '#a3ada0',
+          bg: 'rgba(124,140,120,0.07)',
         },
         teal: {
-          DEFAULT: '#5BA3A0',
-          bg: 'rgba(91,163,160,0.08)',
+          DEFAULT: '#6b8a87',
+          bg: 'rgba(107,138,135,0.07)',
         },
         plum: {
           DEFAULT: '#8B7BA8',
           bg: 'rgba(139,123,168,0.08)',
         },
         amber: {
-          DEFAULT: '#C49A5C',
-          bg: 'rgba(196,154,92,0.08)',
+          DEFAULT: '#a68b5b',
+          bg: 'rgba(166,139,91,0.07)',
         },
         rose: {
-          DEFAULT: '#C47070',
-          bg: 'rgba(196,112,112,0.08)',
+          DEFAULT: '#a67272',
+          bg: 'rgba(166,114,114,0.07)',
+        },
+        // Paper-like surface palette
+        paper: {
+          DEFAULT: '#faf9f7',
+          warm: '#f5f3ef',
+          dark: '#141211',
+          sidebar: '#1c1b19',
         },
         surface: {
           1: '#FFFFFF',
-          2: '#EAEDE5',
-          3: '#DDE1D8',
-          4: '#C5C9C0',
+          2: '#f0eeeb',
+          3: '#e5e2de',
+          4: '#d4d0cb',
+        },
+        ink: {
+          DEFAULT: '#2c2a27',
+          light: '#6b6862',
+          muted: '#9c9890',
+          faint: '#c7c3bc',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       backgroundColor: {
-        base: '#F5F5F0',
+        base: '#faf9f7',
       },
       animation: {
         slideUp: 'slideUp 0.5s ease-out forwards',

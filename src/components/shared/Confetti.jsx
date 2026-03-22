@@ -5,7 +5,7 @@ export const Confetti = ({ active = false }) => {
   const confettiPieces = useMemo(() => {
     return Array.from({ length: 50 }).map(() => ({
       id: Math.random(),
-      color: ['bg-green-300', 'bg-teal-300', 'bg-cyan-300', 'bg-amber-300', 'bg-rose-300', 'bg-yellow-300', 'bg-pink-300'][
+      color: ['bg-stone-300', 'bg-sage-300', 'bg-amber-300', 'bg-rose-300', 'bg-stone-400', 'bg-stone-200', 'bg-stone-400'][
         Math.floor(Math.random() * 7)
       ],
       left: Math.random() * 100,

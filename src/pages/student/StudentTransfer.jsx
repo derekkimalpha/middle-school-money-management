@@ -103,7 +103,7 @@ export const StudentTransfer = () => {
   if (accountsLoading || !accounts || !profile) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div>
       </div>
     )
   }
@@ -129,7 +129,7 @@ export const StudentTransfer = () => {
         <FinTip
           icon="💸"
           title="How Transfers Work"
-          color="from-blue-50 to-cyan-50"
+          color="from-stone-50 to-stone-100"
         >
           You can move money between your accounts to manage your finances.
           {settings?.transfer_fee_invest_pct > 0 && (
@@ -196,9 +196,9 @@ export const StudentTransfer = () => {
               />
 
               {validTargets.length === 0 && (
-                <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-lg flex gap-3">
-                  <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-amber-800 dark:text-amber-300">
+                <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 rounded-lg flex gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-800 dark:text-red-300">
                     Cannot transfer from this account
                   </p>
                 </div>
@@ -248,15 +248,15 @@ export const StudentTransfer = () => {
                     {hasFee && (
                       <>
                         <div className="flex justify-between text-sm border-t border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06] pt-2">
-                          <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                          <span className="text-stone-600 dark:text-stone-400 font-semibold">
                             {feePct}% Transfer Fee
                           </span>
-                          <span className="font-semibold text-amber-600 dark:text-amber-400">
+                          <span className="font-semibold text-stone-600 dark:text-stone-400">
                             -{formatCurrency(feeAmount)}
                           </span>
                         </div>
 
-                        <div className="text-xs text-amber-600 dark:text-amber-400 mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 rounded">
+                        <div className="text-xs text-stone-600 dark:text-stone-400 mt-2 p-2 bg-stone-100 dark:bg-stone-900/30 rounded">
                           {['sp500', 'nasdaq'].includes(fromAccount)
                             ? `Transferring from an investment account to Checking incurs a ${feePct}% fee to encourage long-term investing.`
                             : `Transferring from Savings to Checking incurs a ${feePct}% fee.`
@@ -267,7 +267,7 @@ export const StudentTransfer = () => {
 
                     <div className="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-white/[0.08] dark:border-white/[0.06]">
                       <span className="text-gray-900 dark:text-white">You'll receive</span>
-                      <span className="text-teal-600 dark:text-teal-400">
+                      <span className="text-stone-600 dark:text-stone-400">
                         {formatCurrency(amountAfterFee)}
                       </span>
                     </div>
@@ -278,10 +278,10 @@ export const StudentTransfer = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-4 p-4 bg-rose-50 dark:bg-rose-950/30 border-2 border-rose-200 dark:border-rose-800 rounded-lg flex gap-3"
+                    className="mt-4 p-4 bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 rounded-lg flex gap-3"
                   >
-                    <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-rose-800 dark:text-rose-300">
+                    <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-800 dark:text-red-300">
                       Insufficient balance. You have{' '}
                       {formatCurrency(accounts[fromAccount] || 0)}.
                     </p>
@@ -338,7 +338,7 @@ export const StudentTransfer = () => {
           </div>
         </motion.div>
 
-        <FinTip icon="🧠" title="Real-World Connection: Early Withdrawal Penalties" color="from-blue-50 to-cyan-50">
+        <FinTip icon="🧠" title="Real-World Connection: Early Withdrawal Penalties" color="from-stone-50 to-stone-100">
           In real life, retirement accounts like 401(k)s and IRAs charge a 10% penalty if you withdraw money before age 59½. That's why our investment accounts have a transfer fee — it teaches you that taking money out of investments early costs you. The best investors think long-term!
         </FinTip>
       </div>

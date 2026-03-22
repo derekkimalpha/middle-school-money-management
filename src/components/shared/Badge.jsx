@@ -11,8 +11,8 @@ export const Badge = ({
     <motion.div
       className={`flex flex-col items-center gap-3 p-4 rounded-lg transition-all ${
         earned
-          ? 'bg-gradient-to-br from-sage-50 to-green-50'
-          : 'bg-slate-100 grayscale opacity-50'
+          ? 'bg-stone-100 dark:bg-stone-800'
+          : 'bg-stone-200 dark:bg-stone-700 grayscale opacity-50'
       }`}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}

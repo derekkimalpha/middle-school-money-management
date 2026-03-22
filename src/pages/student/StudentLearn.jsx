@@ -14,7 +14,7 @@ const StudentLearn = () => {
     {
       id: 0,
       title: 'Money Basics',
-      color: 'from-blue-500 to-blue-600',
+      color: 'from-stone-500 to-stone-600',
       icon: '💰',
       locked: false,
       lessons: [
@@ -59,7 +59,7 @@ const StudentLearn = () => {
     {
       id: 1,
       title: 'Banking & Saving',
-      color: 'from-green-500 to-green-600',
+      color: 'from-sage-500 to-sage-600',
       icon: '🏦',
       locked: false,
       lessons: [
@@ -104,7 +104,7 @@ const StudentLearn = () => {
     {
       id: 2,
       title: 'Investing Fundamentals',
-      color: 'from-teal-500 to-teal-600',
+      color: 'from-stone-500 to-stone-600',
       icon: '📊',
       locked: true,
       lessons: [
@@ -149,7 +149,7 @@ const StudentLearn = () => {
     {
       id: 3,
       title: 'Real-World Skills',
-      color: 'from-orange-500 to-orange-600',
+      color: 'from-stone-500 to-stone-600',
       icon: '🎯',
       locked: true,
       lessons: [
@@ -265,10 +265,10 @@ const StudentLearn = () => {
   return (
     <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900 text-white sticky top-0 z-10 shadow-lg">
+      <div className="bg-slate-900 dark:bg-slate-950 text-white sticky top-0 z-10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-3">
-            <BookOpen size={32} className="text-blue-400" />
+            <BookOpen size={32} className="text-stone-400" />
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold">Financial Literacy</h1>
               <p className="text-slate-300 mt-1">Alpha School's interactive money management curriculum</p>
@@ -299,11 +299,11 @@ const StudentLearn = () => {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(completedLessons.size / 20) * 100}%` }}
-                  className="h-full bg-gradient-to-r from-blue-500 to-blue-600"
+                  className="h-full bg-stone-500"
                   transition={{ duration: 0.5 }}
                 />
               </div>
-              <span className="text-sm font-medium text-blue-500 w-10">
+              <span className="text-sm font-medium text-stone-500 w-10">
                 {Math.round((completedLessons.size / 20) * 100)}%
               </span>
             </div>
@@ -329,7 +329,7 @@ const StudentLearn = () => {
                 } shadow-md border-l-4 ${
                   unit.locked
                     ? `border-gray-500 ${isDark ? 'opacity-75' : 'opacity-90'}`
-                    : `border-blue-500`
+                    : `border-stone-500`
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -351,7 +351,7 @@ const StudentLearn = () => {
                   >
                     <ChevronDown
                       size={24}
-                      className={unit.locked ? 'text-gray-500' : 'text-blue-500'}
+                      className={unit.locked ? 'text-gray-500' : 'text-stone-500'}
                     />
                   </motion.div>
                 </div>
@@ -440,19 +440,19 @@ const StudentLearn = () => {
                                   transition={{ delay: 0.1 }}
                                   className={`p-3 rounded-lg flex items-start gap-3 ${
                                     isDark
-                                      ? 'bg-blue-900/30 border border-blue-700'
-                                      : 'bg-blue-50 border border-blue-200'
+                                      ? 'bg-stone-900/30 border border-stone-700'
+                                      : 'bg-stone-50 border border-stone-200'
                                   }`}
                                 >
                                   <Star
                                     size={18}
-                                    className={`flex-shrink-0 mt-0.5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}
+                                    className={`flex-shrink-0 mt-0.5 ${isDark ? 'text-stone-400' : 'text-stone-600'}`}
                                   />
                                   <div>
-                                    <p className={`text-xs font-semibold ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>
+                                    <p className={`text-xs font-semibold ${isDark ? 'text-stone-300' : 'text-stone-600'}`}>
                                       Key Takeaway
                                     </p>
-                                    <p className={`text-sm mt-1 ${isDark ? 'text-blue-200' : 'text-blue-700'}`}>
+                                    <p className={`text-sm mt-1 ${isDark ? 'text-stone-200' : 'text-stone-700'}`}>
                                       {lesson.keyTakeaway}
                                     </p>
                                   </div>
@@ -466,8 +466,8 @@ const StudentLearn = () => {
                                     onClick={() => toggleLessonComplete(lesson.id)}
                                     className={`flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all ${
                                       completedLessons.has(lesson.id)
-                                        ? `${isDark ? 'bg-green-600/20 text-green-400 border border-green-600/40' : 'bg-green-100 text-green-700 border border-green-300'}`
-                                        : `${isDark ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600'}`
+                                        ? `${isDark ? 'bg-sage-600/20 text-sage-400 border border-sage-600/40' : 'bg-sage-100 text-sage-700 border border-sage-300'}`
+                                        : `${isDark ? 'bg-stone-600 text-white hover:bg-stone-700' : 'bg-stone-500 text-white hover:bg-stone-600'}`
                                     }`}
                                   >
                                     {completedLessons.has(lesson.id) ? '✓ Completed' : 'Mark Complete'}

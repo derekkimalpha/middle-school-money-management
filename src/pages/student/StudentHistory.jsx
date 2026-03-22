@@ -71,7 +71,7 @@ export const StudentHistory = () => {
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div>
       </div>
     )
   }
@@ -97,7 +97,7 @@ export const StudentHistory = () => {
         <FinTip
           icon="📋"
           title="Track Your Transactions"
-          color="from-blue-50 to-cyan-50"
+          color="from-stone-50 to-stone-100"
         >
           Every deposit, transfer, and purchase is recorded here. Reviewing your
           transaction history helps you understand your spending patterns and
@@ -138,7 +138,7 @@ export const StudentHistory = () => {
         >
           {loading ? (
             <div className="p-8 text-center dark:bg-white/[0.04]">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400 mx-auto mb-4"></div>
               <p className="text-[13px] text-gray-500 dark:text-white/50">Loading transactions...</p>
             </div>
           ) : filteredTransactions.length === 0 ? (
@@ -170,7 +170,7 @@ export const StudentHistory = () => {
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                             isCredit
-                              ? 'bg-emerald-500/[0.08] dark:bg-emerald-400/[0.08]'
+                              ? 'bg-sage-500/[0.08] dark:bg-sage-400/[0.08]'
                               : isDebit
                                 ? 'bg-red-500/[0.08] dark:bg-red-400/[0.08]'
                                 : 'bg-gray-100 dark:bg-white/[0.04]'
@@ -179,9 +179,9 @@ export const StudentHistory = () => {
                           <Icon
                             className={`w-5 h-5 ${
                               isCredit
-                                ? 'text-green-600'
+                                ? 'text-sage-600'
                                 : isDebit
-                                  ? 'text-rose-600'
+                                  ? 'text-red-600'
                                   : 'text-slate-600'
                             }`}
                           />
@@ -213,9 +213,9 @@ export const StudentHistory = () => {
                         <p
                           className={`font-bold ${
                             isCredit
-                              ? 'text-green-600 dark:text-green-400'
+                              ? 'text-sage-600 dark:text-sage-400'
                               : isDebit
-                                ? 'text-rose-600 dark:text-rose-400'
+                                ? 'text-red-600 dark:text-red-400'
                                 : 'text-gray-900 dark:text-white'
                           }`}
                         >
@@ -257,11 +257,11 @@ export const StudentHistory = () => {
 
               return (
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="p-4 bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06] rounded-xl border border-emerald-500/20 dark:border-emerald-400/10">
-                    <p className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+                  <div className="p-4 bg-sage-500/[0.04] dark:bg-sage-400/[0.06] rounded-xl border border-sage-500/20 dark:border-sage-400/10">
+                    <p className="text-[11px] font-semibold text-sage-600 dark:text-sage-400 uppercase tracking-wider mb-1">
                       Total In
                     </p>
-                    <p className="text-xl font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+                    <p className="text-xl font-bold text-sage-700 dark:text-sage-400 tabular-nums">
                       <AnimNum value={credits} prefix="$" />
                     </p>
                   </div>
@@ -282,7 +282,7 @@ export const StudentHistory = () => {
                     <p
                       className={`text-xl font-bold tabular-nums ${
                         net > 0
-                          ? 'text-emerald-700 dark:text-emerald-400'
+                          ? 'text-sage-700 dark:text-sage-400'
                           : net < 0
                             ? 'text-red-700 dark:text-red-400'
                             : 'text-gray-900 dark:text-white'

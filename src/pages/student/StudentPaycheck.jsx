@@ -19,9 +19,9 @@ const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
 const STATUS_CONFIG = {
   draft: { label: 'Draft', color: 'bg-black/[0.05] dark:bg-white/[0.06] text-black/60 dark:text-white/50' },
-  submitted: { label: 'Submitted', color: 'bg-amber-500/10 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400' },
-  verified: { label: 'Approved', color: 'bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400' },
-  allocated: { label: 'Allocated', color: 'bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400' },
+  submitted: { label: 'Submitted', color: 'bg-stone-100/50 dark:bg-stone-500/[0.06] text-stone-700 dark:text-stone-400' },
+  verified: { label: 'Approved', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
+  allocated: { label: 'Allocated', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
   rejected: { label: 'Needs Changes', color: 'bg-red-500/10 dark:bg-red-400/10 text-red-600 dark:text-red-400' },
 }
 
@@ -269,7 +269,7 @@ export const StudentPaycheck = () => {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-gray-950">
         <motion.div
-          className="w-10 h-10 border-[3px] border-gray-200 border-t-teal-600 rounded-full dark:border-white/10 dark:border-t-teal-400"
+          className="w-10 h-10 border-[3px] border-gray-200 border-t-stone-600 rounded-full dark:border-white/10 dark:border-t-stone-400"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -305,7 +305,7 @@ export const StudentPaycheck = () => {
                         setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
                         setView('allocate')
                       }}
-                      className="ml-2 text-emerald-600 font-semibold hover:underline"
+                      className="ml-2 text-sage-600 font-semibold hover:underline"
                     >
                       Allocate now →
                     </button>
@@ -467,12 +467,12 @@ export const StudentPaycheck = () => {
             <div className="space-y-2 border-t border-gray-200 dark:border-white/[0.06] pt-4">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Breakdown</h3>
               {p.base_pay > 0 && <div className="flex justify-between text-sm"><span className="text-gray-500 dark:text-white/40">Base Pay</span><span className="font-semibold">{formatCurrency(p.base_pay)}</span></div>}
-              {p.epic_bonus > 0 && <div className="flex justify-between text-sm text-amber-600 dark:text-amber-400"><span>🔥 Epic Bonus</span><span className="font-semibold">{formatCurrency(p.epic_bonus)}</span></div>}
-              {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-blue-600 dark:text-blue-400"><span>📈 XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
-              {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-emerald-600 dark:text-emerald-400"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
-              {p.job_pay > 0 && <div className="flex justify-between text-sm text-teal-600 dark:text-teal-400"><span>💼 Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
-              {p.smart_goal > 0 && <div className="flex justify-between text-sm text-blue-600 dark:text-blue-400"><span>🎯 SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
-              {p.other_pay > 0 && <div className="flex justify-between text-sm text-teal-600 dark:text-teal-400"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
+              {p.epic_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>🔥 Epic Bonus</span><span className="font-semibold">{formatCurrency(p.epic_bonus)}</span></div>}
+              {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>📈 XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
+              {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-sage-600 dark:text-sage-400"><span>📚 Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
+              {p.job_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>💼 Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
+              {p.smart_goal > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>🎯 SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
+              {p.other_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>⭐ Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
             </div>
 
             {/* Allocation (if already allocated) */}
@@ -506,7 +506,7 @@ export const StudentPaycheck = () => {
             )}
 
             {p.status === 'submitted' && (
-              <div className="mt-4 p-3 rounded-lg bg-amber-500/[0.06] dark:bg-amber-400/[0.06] border border-amber-500/20 dark:border-amber-400/10 text-sm text-amber-600 dark:text-amber-400">
+              <div className="mt-4 p-3 rounded-lg bg-stone-500/[0.06] dark:bg-stone-400/[0.06] border border-stone-500/20 dark:border-stone-400/10 text-sm text-stone-600 dark:text-stone-400">
                 <Clock className="w-4 h-4 inline mr-1" />
                 Waiting for your guide to approve this paycheck.
               </div>
@@ -545,7 +545,7 @@ export const StudentPaycheck = () => {
             </p>
           </div>
 
-          <FinTip icon="📍" title="Smart Allocation" color="from-green-50 to-teal-50">
+          <FinTip icon="📍" title="Smart Allocation" color="from-stone-50 to-stone-100">
             Think about your goals. Need something soon? Put more in checking. Building an emergency fund? Boost savings. Playing the long game? Feed your investments.
           </FinTip>
 
@@ -573,7 +573,7 @@ export const StudentPaycheck = () => {
                       step="0.01"
                       value={value || ''}
                       onChange={(e) => setAllocation({ ...allocation, [account]: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 bg-white dark:bg-white/[0.04] dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-stone-400 dark:focus:border-stone-500 focus:ring-stone-200 dark:focus:ring-stone-500/10 bg-white dark:bg-white/[0.04] dark:text-white"
                       placeholder="0.00"
                     />
                   </div>
@@ -592,11 +592,11 @@ export const StudentPaycheck = () => {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="font-bold">Remaining</span>
-                <span className={`font-bold ${isAllocValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                <span className={`font-bold ${isAllocValid ? 'text-sage-600 dark:text-sage-400' : 'text-red-600 dark:text-red-400'}`}>
                   {formatCurrency(Math.abs(total - allocTotal))}
                 </span>
               </div>
-              {isAllocValid && <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">✓ All funds allocated</p>}
+              {isAllocValid && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold">✓ All funds allocated</p>}
             </div>
           </div>
 
@@ -647,12 +647,12 @@ export const StudentPaycheck = () => {
                       max="300"
                       value={xpByDay[dayKey] || ''}
                       onChange={(e) => setXpByDay({ ...xpByDay, [dayKey]: parseInt(e.target.value) || 0 })}
-                      className="w-full px-2 py-2 text-center text-lg font-bold border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 bg-white dark:bg-white/[0.04] dark:text-white"
+                      className="w-full px-2 py-2 text-center text-lg font-bold border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-stone-400 dark:focus:border-stone-500 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10 bg-white dark:bg-white/[0.04] dark:text-white"
                       placeholder="0"
                     />
                     <button
                       onClick={() => setEpicDays({ ...epicDays, [dayKey]: !isEpic })}
-                      className={`text-xs font-semibold py-1 rounded-lg transition-all ${isEpic ? 'bg-amber-300 text-amber-900' : 'bg-gray-100 dark:bg-white/[0.04] text-gray-400 dark:text-white/30'}`}
+                      className={`text-xs font-semibold py-1 rounded-lg transition-all ${isEpic ? 'bg-stone-300 text-stone-800' : 'bg-gray-100 dark:bg-white/[0.04] text-gray-400 dark:text-white/30'}`}
                     >
                       {isEpic ? '🔥 Epic' : 'Epic'}
                     </button>
@@ -669,20 +669,20 @@ export const StudentPaycheck = () => {
               </div>
               <div className="w-full bg-gray-100 dark:bg-white/[0.06] rounded-full h-3">
                 <motion.div
-                  className="bg-emerald-500 dark:bg-emerald-400 h-3 rounded-full"
+                  className="bg-stone-700 dark:bg-stone-300 h-3 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(xpProgress, 100)}%` }}
                   transition={{ duration: 0.5 }}
                 />
               </div>
-              {xpProgress >= 100 && <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-2">✓ XP threshold reached — base pay earned!</p>}
+              {xpProgress >= 100 && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold mt-2">✓ XP threshold reached — base pay earned!</p>}
             </div>
           </div>
 
           {/* ── Job Card ── */}
           {studentJob && (
             <motion.div
-              className={`border rounded-xl p-4 cursor-pointer transition-all ${jobDone ? 'bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06] border-emerald-500/30 dark:border-emerald-400/20' : 'bg-white dark:bg-white/[0.04] border-gray-200 dark:border-white/[0.06]'}`}
+              className={`border rounded-xl p-4 cursor-pointer transition-all ${jobDone ? 'bg-sage-500/[0.04] dark:bg-sage-400/[0.06] border-sage-500/30 dark:border-sage-400/20' : 'bg-white dark:bg-white/[0.04] border-gray-200 dark:border-white/[0.06]'}`}
               onClick={() => setJobDone(!jobDone)}
               whileHover={{ scale: 1.01 }}
             >
@@ -694,7 +694,7 @@ export const StudentPaycheck = () => {
                     <p className="text-[13px] text-gray-500 dark:text-white/40">+{formatCurrency(studentJob.weekly_pay || 0)}/week</p>
                   </div>
                 </div>
-                <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${jobDone ? 'bg-emerald-500 dark:bg-emerald-400 border-emerald-500 dark:border-emerald-400' : 'border-black/[0.15] dark:border-white/[0.15]'}`}>
+                <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${jobDone ? 'bg-stone-700 dark:bg-stone-300 border-stone-700 dark:border-stone-300' : 'border-black/[0.15] dark:border-white/[0.15]'}`}>
                   {jobDone && <span className="text-white text-sm">✓</span>}
                 </div>
               </div>
@@ -715,17 +715,17 @@ export const StudentPaycheck = () => {
                 <motion.div key={idx} className="p-3 border border-gray-200 dark:border-white/[0.06] rounded-lg mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 grid grid-cols-3 gap-3">
-                      <input type="text" value={test.subject} onChange={(e) => { const u = [...masteryTests]; u[idx].subject = e.target.value; setMasteryTests(u) }} placeholder="Subject" className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
-                      <select value={test.grade} onChange={(e) => { const u = [...masteryTests]; u[idx].grade = e.target.value; setMasteryTests(u) }} className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white">
+                      <input type="text" value={test.subject} onChange={(e) => { const u = [...masteryTests]; u[idx].subject = e.target.value; setMasteryTests(u) }} placeholder="Subject" className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-stone-400 dark:focus:border-stone-500 focus:ring-stone-200 dark:focus:ring-stone-500/10 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
+                      <select value={test.grade} onChange={(e) => { const u = [...masteryTests]; u[idx].grade = e.target.value; setMasteryTests(u) }} className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-stone-400 dark:focus:border-stone-500 focus:ring-stone-200 dark:focus:ring-stone-500/10 text-sm bg-white dark:bg-white/[0.04] dark:text-white">
                         {GRADES.map(g => <option key={g} value={g}>{g}</option>)}
                       </select>
-                      <input type="number" min="0" max="100" value={test.score || ''} onChange={(e) => { const u = [...masteryTests]; u[idx].score = parseInt(e.target.value) || 0; setMasteryTests(u) }} placeholder="Score %" className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-teal-400 dark:focus:border-teal-500/50 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
+                      <input type="number" min="0" max="100" value={test.score || ''} onChange={(e) => { const u = [...masteryTests]; u[idx].score = parseInt(e.target.value) || 0; setMasteryTests(u) }} placeholder="Score %" className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-stone-400 dark:focus:border-stone-500 focus:ring-stone-200 dark:focus:ring-stone-500/10 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
                     </div>
                     <button onClick={() => setMasteryTests(masteryTests.filter((_, i) => i !== idx))} className="p-1 text-gray-300 dark:text-white/20 hover:text-rose-500 dark:hover:text-rose-400">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                  {reward > 0 && <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1">+{formatCurrency(reward)}</p>}
+                  {reward > 0 && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold mt-1">+{formatCurrency(reward)}</p>}
                 </motion.div>
               )
             })}
@@ -748,7 +748,7 @@ export const StudentPaycheck = () => {
                     return (
                       <motion.div
                         key={bonus.id}
-                        className={`border rounded-xl p-4 cursor-pointer transition-all ${entry.claimed ? 'bg-emerald-500/[0.04] dark:bg-emerald-400/[0.06] border-emerald-500/30 dark:border-emerald-400/20' : 'bg-white dark:bg-white/[0.04] border-gray-200 dark:border-white/[0.06]'}`}
+                        className={`border rounded-xl p-4 cursor-pointer transition-all ${entry.claimed ? 'bg-sage-500/[0.04] dark:bg-sage-400/[0.06] border-sage-500/30 dark:border-sage-400/20' : 'bg-white dark:bg-white/[0.04] border-gray-200 dark:border-white/[0.06]'}`}
                         onClick={() => setCustomBonuses({ ...customBonuses, [bonus.id]: { ...entry, claimed: !entry.claimed } })}
                         whileHover={{ scale: 1.01 }}
                       >
@@ -757,7 +757,7 @@ export const StudentPaycheck = () => {
                             <p className="font-semibold text-gray-900 dark:text-white">{bonus.name}</p>
                             <p className="text-[13px] text-gray-500 dark:text-white/40">+{formatCurrency(bonus.amount)}</p>
                           </div>
-                          <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${entry.claimed ? 'bg-emerald-500 dark:bg-emerald-400 border-emerald-500 dark:border-emerald-400' : 'border-black/[0.15] dark:border-white/[0.15]'}`}>
+                          <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${entry.claimed ? 'bg-stone-700 dark:bg-stone-300 border-stone-700 dark:border-stone-300' : 'border-black/[0.15] dark:border-white/[0.15]'}`}>
                             {entry.claimed && <span className="text-white text-sm">✓</span>}
                           </div>
                         </div>
@@ -797,11 +797,11 @@ export const StudentPaycheck = () => {
             {totalPaycheck > 0 && (
               <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
                 {earnings.basePay > 0 && <span className="text-[10px] text-gray-400 dark:text-white/30">Base {formatCurrency(earnings.basePay)}</span>}
-                {earnings.epicBonus > 0 && <span className="text-[10px] text-amber-500">🔥 {formatCurrency(earnings.epicBonus)}</span>}
-                {earnings.bonusXp > 0 && <span className="text-[10px] text-blue-500">XP +{formatCurrency(earnings.bonusXp)}</span>}
-                {earnings.masteryRewards > 0 && <span className="text-[10px] text-emerald-500">📚 {formatCurrency(earnings.masteryRewards)}</span>}
-                {earnings.jobPay > 0 && <span className="text-[10px] text-teal-500">💼 {formatCurrency(earnings.jobPay)}</span>}
-                {earnings.customBonusTotal > 0 && <span className="text-[10px] text-teal-500">⭐ {formatCurrency(earnings.customBonusTotal)}</span>}
+                {earnings.epicBonus > 0 && <span className="text-[10px] text-stone-500">🔥 {formatCurrency(earnings.epicBonus)}</span>}
+                {earnings.bonusXp > 0 && <span className="text-[10px] text-stone-500">XP +{formatCurrency(earnings.bonusXp)}</span>}
+                {earnings.masteryRewards > 0 && <span className="text-[10px] text-sage-500">📚 {formatCurrency(earnings.masteryRewards)}</span>}
+                {earnings.jobPay > 0 && <span className="text-[10px] text-stone-500">💼 {formatCurrency(earnings.jobPay)}</span>}
+                {earnings.customBonusTotal > 0 && <span className="text-[10px] text-stone-500">⭐ {formatCurrency(earnings.customBonusTotal)}</span>}
               </div>
             )}
           </div>

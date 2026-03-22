@@ -117,18 +117,18 @@ export const StudentPurchase = () => {
   const getStatusTag = (status) => {
     switch (status) {
       case 'approved':
-        return <Tag color="bg-emerald-100 text-emerald-700">Approved</Tag>
+        return <Tag color="bg-sage-100 text-sage-700">Approved</Tag>
       case 'rejected':
-        return <Tag color="bg-rose-100 text-rose-700">Rejected</Tag>
+        return <Tag color="bg-red-100 text-red-700">Rejected</Tag>
       default:
-        return <Tag color="bg-amber-100 text-amber-700">Pending</Tag>
+        return <Tag color="bg-stone-100 text-stone-700">Pending</Tag>
     }
   }
 
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div>
       </div>
     )
   }
@@ -154,7 +154,7 @@ export const StudentPurchase = () => {
         <FinTip
           icon="🛍️"
           title="Needs vs Wants"
-          color="from-blue-50 to-cyan-50"
+          color="from-stone-50 to-stone-100"
         >
           Before requesting a purchase, ask yourself: Is this a need (essential)
           or a want (nice-to-have)? Understanding the difference helps you make
@@ -305,15 +305,15 @@ export const StudentPurchase = () => {
               <p className="font-semibold text-gray-900 dark:text-white">Status Meanings:</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-amber-400" />
+                  <div className="w-3 h-3 rounded-full bg-stone-400" />
                   <span>Pending - Awaiting decision</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                  <div className="w-3 h-3 rounded-full bg-sage-400" />
                   <span>Approved - Ready to buy!</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-400" />
+                  <div className="w-3 h-3 rounded-full bg-red-400" />
                   <span>Rejected - Not approved</span>
                 </div>
               </div>
@@ -334,7 +334,7 @@ export const StudentPurchase = () => {
           </motion.div>
         )}
 
-        <FinTip icon="💡" title="The 24-Hour Rule" color="from-amber-50 to-orange-50">
+        <FinTip icon="💡" title="The 24-Hour Rule" color="from-stone-50 to-stone-100">
           Before making a big purchase, wait 24 hours. This is a real strategy that millionaires use! If you still want it after a day, it might be worth buying. But often, the urge passes and you save your money for something better.
         </FinTip>
       </div>

@@ -41,7 +41,7 @@ export const DonutChart = ({
           cy={center}
           r={radius}
           fill="none"
-          stroke="#f1f5f9"
+          stroke="#d4d0cb"
           strokeWidth={stroke}
         />
         {/* Data segments */}

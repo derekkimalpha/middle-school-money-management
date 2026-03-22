@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { ACCOUNT_META } from '../../lib/constants';
 
 const PICKER_COLORS = {
-  checking: { dot: '#10b981', bg: 'bg-emerald-500/[0.06] dark:bg-emerald-400/[0.08]', border: 'border-emerald-500/30 dark:border-emerald-400/30', text: 'text-emerald-700 dark:text-emerald-400' },
-  savings: { dot: '#06b6d4', bg: 'bg-cyan-500/[0.06] dark:bg-cyan-400/[0.08]', border: 'border-cyan-500/30 dark:border-cyan-400/30', text: 'text-cyan-700 dark:text-cyan-400' },
-  sp500: { dot: '#f59e0b', bg: 'bg-amber-500/[0.06] dark:bg-amber-400/[0.08]', border: 'border-amber-500/30 dark:border-amber-400/30', text: 'text-amber-700 dark:text-amber-400' },
-  nasdaq: { dot: '#3b82f6', bg: 'bg-blue-500/[0.06] dark:bg-blue-400/[0.08]', border: 'border-blue-500/30 dark:border-blue-400/30', text: 'text-blue-700 dark:text-blue-400' },
+  checking: { dot: '#7c8c78', bg: 'bg-sage/[0.06]', border: 'border-sage/30', text: 'text-sage-600 dark:text-sage-300' },
+  savings: { dot: '#6b8a87', bg: 'bg-teal/[0.06]', border: 'border-teal/30', text: 'text-teal dark:text-teal' },
+  sp500: { dot: '#a68b5b', bg: 'bg-amber/[0.06]', border: 'border-amber/30', text: 'text-amber dark:text-amber' },
+  nasdaq: { dot: '#78716c', bg: 'bg-stone-500/[0.06]', border: 'border-stone-400/30', text: 'text-stone-600 dark:text-stone-400' },
 };
 
 export const AccountPicker = ({

@@ -173,18 +173,18 @@ export const GuideStudentDetail = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      submitted: 'bg-amber-100 text-amber-800',
-      verified: 'bg-green-100 text-green-800',
-      allocated: 'bg-teal-100 text-teal-700'
+      submitted: 'bg-stone-100 text-stone-700',
+      verified: 'bg-sage-bg text-sage-700',
+      allocated: 'bg-stone-100 text-stone-700'
     }
-    return colors[status] || 'bg-slate-100 text-slate-700'
+    return colors[status] || 'bg-stone-100 text-stone-700'
   }
 
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-24 bg-slate-200 dark:bg-white/5 rounded-lg animate-pulse" />
-        <div className="h-64 bg-slate-200 dark:bg-white/5 rounded-lg animate-pulse" />
+        <div className="h-24 bg-stone-200 dark:bg-white/5 rounded-lg animate-pulse" />
+        <div className="h-64 bg-stone-200 dark:bg-white/5 rounded-lg animate-pulse" />
       </div>
     )
   }
@@ -205,7 +205,7 @@ export const GuideStudentDetail = () => {
 
       <motion.button
         onClick={() => navigate('/')}
-        className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+        className="flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
         whileHover={{ x: -4 }}
       >
         <ArrowLeft className="w-5 h-5" />
@@ -225,7 +225,7 @@ export const GuideStudentDetail = () => {
           <div className="flex-1">
             <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">{student.full_name}</h1>
             <p className="text-gray-500 dark:text-white/50">{student.email}</p>
-            <p className="text-2xl font-extrabold text-teal-600 dark:text-teal-400 mt-2">
+            <p className="text-2xl font-extrabold text-stone-600 dark:text-stone-400 mt-2">
               <AnimNum value={total} prefix="$" duration={600} />
             </p>
           </div>
@@ -285,17 +285,17 @@ export const GuideStudentDetail = () => {
                       <p className="font-semibold text-gray-900 dark:text-white">
                         {paycheck.week_label || new Date(paycheck.created_at).toLocaleDateString()}
                       </p>
-                      <p className="text-lg font-bold text-teal-600 dark:text-teal-400 mt-1">{formatCurrency(paycheck.total_earnings || 0)}</p>
+                      <p className="text-lg font-bold text-stone-600 dark:text-stone-400 mt-1">{formatCurrency(paycheck.total_earnings || 0)}</p>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs">
                         {totalXp > 0 && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full">XP: {totalXp}</span>}
-                        {epicCount > 0 && <span className="px-2 py-1 bg-amber-50 text-amber-600 rounded-full">🔥 {epicCount} epic</span>}
-                        {paycheck.base_pay > 0 && <span className="px-2 py-1 bg-green-50 text-green-600 rounded-full">Base: ${paycheck.base_pay}</span>}
-                        {paycheck.epic_bonus > 0 && <span className="px-2 py-1 bg-amber-50 text-amber-600 rounded-full">Epic: ${paycheck.epic_bonus}</span>}
+                        {epicCount > 0 && <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded-full">🔥 {epicCount} epic</span>}
+                        {paycheck.base_pay > 0 && <span className="px-2 py-1 bg-sage-bg text-sage-700 rounded-full">Base: ${paycheck.base_pay}</span>}
+                        {paycheck.epic_bonus > 0 && <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded-full">Epic: ${paycheck.epic_bonus}</span>}
                         {paycheck.xp_bonus > 0 && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full">XP Bonus: ${paycheck.xp_bonus}</span>}
-                        {paycheck.mastery_pay > 0 && <span className="px-2 py-1 bg-teal-50 text-teal-600 rounded-full">Mastery: ${paycheck.mastery_pay}</span>}
-                        {paycheck.job_pay > 0 && <span className="px-2 py-1 bg-teal-50 text-teal-600 rounded-full">Job: ${paycheck.job_pay}</span>}
+                        {paycheck.mastery_pay > 0 && <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded-full">Mastery: ${paycheck.mastery_pay}</span>}
+                        {paycheck.job_pay > 0 && <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded-full">Job: ${paycheck.job_pay}</span>}
                         {paycheck.smart_goal > 0 && <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full">SMART: ${paycheck.smart_goal}</span>}
-                        {paycheck.other_pay > 0 && <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full">Other: ${paycheck.other_pay}</span>}
+                        {paycheck.other_pay > 0 && <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded-full">Other: ${paycheck.other_pay}</span>}
                       </div>
                     </div>
 
@@ -323,7 +323,7 @@ export const GuideStudentDetail = () => {
                             [paycheck.id]: e.target.value
                           }))}
                           placeholder="Or adjust amount..."
-                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400"
+                          className="flex-1 px-3 py-1 text-sm rounded-lg border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400"
                         />
                         {verifiedAmounts[paycheck.id] && (
                           <Button
@@ -340,7 +340,7 @@ export const GuideStudentDetail = () => {
                   )}
 
                   {(paycheck.status === 'verified' || paycheck.status === 'allocated') && (
-                    <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
+                    <div className="flex items-center gap-2 text-sage-700 text-sm font-semibold">
                       <Check className="w-4 h-4" />
                       Approved: {formatCurrency(paycheck.verified_amount || paycheck.total_earnings)}
                     </div>
@@ -366,7 +366,7 @@ export const GuideStudentDetail = () => {
               value={bonusAmount}
               onChange={(e) => setBonusAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
             />
           </Field>
           <Field label="Description (optional)">
@@ -375,7 +375,7 @@ export const GuideStudentDetail = () => {
               value={bonusDescription}
               onChange={(e) => setBonusDescription(e.target.value)}
               placeholder="e.g., Extra credit bonus"
-              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
             />
           </Field>
           <Button
@@ -413,7 +413,7 @@ export const GuideStudentDetail = () => {
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className={`font-bold ${trans.amount >= 0 ? 'text-green-600' : 'text-rose-600'}`}>
+                  <p className={`font-bold ${trans.amount >= 0 ? 'text-sage-700' : 'text-red-700'}`}>
                     {trans.amount >= 0 ? '+' : ''}{formatCurrency(trans.amount)}
                   </p>
                   {trans.balance_after != null && (

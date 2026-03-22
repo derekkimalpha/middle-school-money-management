@@ -35,9 +35,9 @@ export const ACCOUNT_META = {
   nasdaq: {
     label: 'NASDAQ',
     tag: 'nasdaq',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/[0.08]',
-    borderColor: 'border-blue-500',
+    color: 'text-stone-600 dark:text-stone-400',
+    bgColor: 'bg-stone-500/[0.06]',
+    borderColor: 'border-stone-400',
     icon: BarChart3,
   },
   bonus: {

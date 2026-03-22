@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 export const LoginPage = ({ onSignInWithGoogle, loading }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 to-gray-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#141211] px-4">
       {/* Card */}
       <motion.div
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -19,7 +19,7 @@ export const LoginPage = ({ onSignInWithGoogle, loading }) => {
             transition={{ delay: 0.15, duration: 0.5, type: 'spring', stiffness: 200 }}
             className="flex justify-center mb-6"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-500/20">
+            <div className="w-16 h-16 rounded-2xl bg-stone-700 flex items-center justify-center shadow-sm">
               <span className="text-3xl">$</span>
             </div>
           </motion.div>

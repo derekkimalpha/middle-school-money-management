@@ -23,11 +23,11 @@ import { GuideSession } from './pages/guide/GuideSession'
 import { GuideSettings } from './pages/guide/GuideSettings'
 
 const LoadingSpinner = ({ debugMsg }) => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-gray-950">
+  <div className="min-h-screen flex flex-col items-center justify-center bg-[#faf9f7] dark:bg-[#141211]">
     <motion.div
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-      className="w-10 h-10 border-[3px] border-slate-200 dark:border-gray-700 border-t-slate-800 dark:border-t-emerald-400 rounded-full"
+      className="w-10 h-10 border-[3px] border-stone-200 dark:border-stone-700 border-t-stone-700 dark:border-t-stone-400 rounded-full"
     />
     {debugMsg && <p className="mt-4 text-xs text-gray-400 font-mono max-w-md text-center">{debugMsg}</p>}
   </div>

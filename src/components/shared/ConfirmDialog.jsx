@@ -15,7 +15,7 @@ export const ConfirmDialog = ({
   if (!open) return null;
 
   const btnClass = variant === 'danger'
-    ? 'bg-red-500 hover:bg-red-600 text-white'
+    ? 'bg-red-700 hover:bg-red-800 text-white'
     : 'bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900';
 
   return (

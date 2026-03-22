@@ -323,7 +323,7 @@ export const GuideSettings = () => {
                   value={className}
                   onChange={(e) => setClassName(e.target.value)}
                   placeholder="e.g., Alpha Middle School San Francisco"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                 />
               </Field>
             </div>
@@ -378,7 +378,7 @@ export const GuideSettings = () => {
                     value={settings.xp_threshold || ''}
                     onChange={(e) => setSettings({ ...settings, xp_threshold: e.target.value })}
                     placeholder="e.g., 500"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Minimum weekly XP to earn base pay</p>
                 </Field>
@@ -389,7 +389,7 @@ export const GuideSettings = () => {
                     value={settings.base_pay || ''}
                     onChange={(e) => setSettings({ ...settings, base_pay: e.target.value })}
                     placeholder="e.g., 10.00"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Amount earned when threshold is met</p>
                 </Field>
@@ -409,7 +409,7 @@ export const GuideSettings = () => {
                     value={settings.epic_days_required || 5}
                     onChange={(e) => setSettings({ ...settings, epic_days_required: e.target.value })}
                     placeholder="e.g., 5"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">How many epic days needed for the bonus</p>
                 </Field>
@@ -420,7 +420,7 @@ export const GuideSettings = () => {
                     value={settings.epic_week_bonus || ''}
                     onChange={(e) => setSettings({ ...settings, epic_week_bonus: e.target.value })}
                     placeholder="e.g., 5.00"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Bonus amount when epic day goal is met</p>
                 </Field>
@@ -440,7 +440,7 @@ export const GuideSettings = () => {
                     value={settings.bonus_xp_per || 50}
                     onChange={(e) => setSettings({ ...settings, bonus_xp_per: e.target.value })}
                     placeholder="e.g., 50"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Every X XP above the threshold...</p>
                 </Field>
@@ -451,7 +451,7 @@ export const GuideSettings = () => {
                     value={settings.bonus_xp_rate || ''}
                     onChange={(e) => setSettings({ ...settings, bonus_xp_rate: e.target.value })}
                     placeholder="e.g., 0.01"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">...earns this amount</p>
                 </Field>
@@ -476,7 +476,7 @@ export const GuideSettings = () => {
                     value={settings.mastery_min_score || ''}
                     onChange={(e) => setSettings({ ...settings, mastery_min_score: e.target.value })}
                     placeholder="e.g., 70"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Minimum score to earn pass pay</p>
                 </Field>
@@ -487,7 +487,7 @@ export const GuideSettings = () => {
                     value={settings.mastery_pass_pay || ''}
                     onChange={(e) => setSettings({ ...settings, mastery_pass_pay: e.target.value })}
                     placeholder="e.g., 2.50"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Reward for passing</p>
                 </Field>
@@ -498,7 +498,7 @@ export const GuideSettings = () => {
                     value={settings.mastery_perfect_pay || ''}
                     onChange={(e) => setSettings({ ...settings, mastery_perfect_pay: e.target.value })}
                     placeholder="e.g., 5.00"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Reward for 100%</p>
                 </Field>
@@ -519,7 +519,7 @@ export const GuideSettings = () => {
                     value={settings.transfer_fee_invest_pct ?? 10}
                     onChange={(e) => setSettings({ ...settings, transfer_fee_invest_pct: e.target.value })}
                     placeholder="e.g., 10"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Fee for withdrawing from S&P 500 or NASDAQ to Checking</p>
                 </Field>
@@ -530,7 +530,7 @@ export const GuideSettings = () => {
                     value={settings.transfer_fee_savings_pct ?? 0}
                     onChange={(e) => setSettings({ ...settings, transfer_fee_savings_pct: e.target.value })}
                     placeholder="e.g., 0"
-                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
                   />
                   <p className="text-xs text-gray-400 dark:text-white/40 mt-1">Fee for early withdrawal from Savings</p>
                 </Field>
@@ -555,7 +555,7 @@ export const GuideSettings = () => {
                     })
                     setSettings({ ...settings, custom_bonuses: bonuses })
                   }}
-                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-teal-300 dark:border-white/10 rounded-lg hover:bg-teal-50 dark:hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-stone-600 dark:text-stone-400 border-2 border-stone-300 dark:border-white/10 rounded-lg hover:bg-stone-50 dark:hover:bg-white/5 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Add Bonus
@@ -583,7 +583,7 @@ export const GuideSettings = () => {
                                 setSettings({ ...settings, custom_bonuses: bonuses })
                               }}
                               placeholder="e.g., SMART Goal"
-                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 text-sm"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10 text-sm"
                             />
                           </div>
                           <div>
@@ -600,7 +600,7 @@ export const GuideSettings = () => {
                                 setSettings({ ...settings, custom_bonuses: bonuses })
                               }}
                               placeholder="0.00"
-                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 text-sm"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10 text-sm"
                             />
                           </div>
                           <div>
@@ -612,7 +612,7 @@ export const GuideSettings = () => {
                                 bonuses[idx] = { ...bonuses[idx], type: e.target.value }
                                 setSettings({ ...settings, custom_bonuses: bonuses })
                               }}
-                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10 text-sm"
+                              className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/[0.04] dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10 text-sm"
                             >
                               <option value="checkbox">Checkbox (fixed amount)</option>
                               <option value="student_amount">Student sets amount</option>
@@ -624,9 +624,9 @@ export const GuideSettings = () => {
                             const bonuses = settings.custom_bonuses.filter((_, i) => i !== idx)
                             setSettings({ ...settings, custom_bonuses: bonuses })
                           }}
-                          className="p-2 rounded-lg hover:bg-rose-100 transition-colors mt-5"
+                          className="p-2 rounded-lg hover:bg-red-100 transition-colors mt-5"
                         >
-                          <Trash2 className="w-4 h-4 text-rose-500" />
+                          <Trash2 className="w-4 h-4 text-red-600" />
                         </button>
                       </div>
                       <p className="text-xs text-gray-400 dark:text-white/40">
@@ -667,7 +667,7 @@ export const GuideSettings = () => {
           {jobs.map(job => (
             <motion.div
               key={job.id}
-              className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] hover:border-teal-400 transition-colors"
+              className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] dark:bg-white/[0.04] hover:border-stone-400 transition-colors"
               whileHover={{ x: 2 }}
             >
               <div className="flex-1">
@@ -680,7 +680,7 @@ export const GuideSettings = () => {
                 </div>
               </div>
               <div className="flex-shrink-0 text-right mr-4">
-                <p className="font-bold text-lg text-teal-600 dark:text-teal-400">${job.weekly_pay}</p>
+                <p className="font-bold text-lg text-stone-600 dark:text-stone-400">${job.weekly_pay}</p>
                 <p className="text-xs text-gray-400 dark:text-white/40">per week</p>
               </div>
               <div className="flex gap-2">
@@ -692,9 +692,9 @@ export const GuideSettings = () => {
                 </button>
                 <button
                   onClick={() => deleteJob(job.id)}
-                  className="p-2 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-950/30 transition-colors"
+                  className="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-950/30 transition-colors"
                 >
-                  <Trash2 className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                  <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
                 </button>
               </div>
             </motion.div>
@@ -713,7 +713,7 @@ export const GuideSettings = () => {
                 value={newJob.title}
                 onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
                 placeholder="e.g., Tutor"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
               />
             </Field>
             <Field label="Description">
@@ -722,7 +722,7 @@ export const GuideSettings = () => {
                 value={newJob.description}
                 onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
                 placeholder="Job description"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
               />
             </Field>
             <Field label="Icon (emoji)">
@@ -732,7 +732,7 @@ export const GuideSettings = () => {
                 onChange={(e) => setNewJob({ ...newJob, icon: e.target.value })}
                 placeholder="💼"
                 maxLength="2"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
               />
             </Field>
             <Field label="Weekly Pay ($)">
@@ -742,7 +742,7 @@ export const GuideSettings = () => {
                 value={newJob.weekly_pay}
                 onChange={(e) => setNewJob({ ...newJob, weekly_pay: e.target.value })}
                 placeholder="0.00"
-                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-500/10"
+                className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-200 dark:focus:ring-stone-500/10"
               />
             </Field>
             <div className="flex gap-2">
@@ -782,7 +782,7 @@ export const GuideSettings = () => {
               <select
                 value={studentJobs[student.id] || ''}
                 onChange={(e) => assignJobToStudent(student.id, e.target.value || null)}
-                className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-teal-400"
+                className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400"
               >
                 <option value="">No job</option>
                 {jobs.map(job => (
