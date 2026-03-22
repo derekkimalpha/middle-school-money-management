@@ -1,507 +1,437 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronRight, ChevronDown, BookOpen, Lock, CheckCircle, Star } from 'lucide-react'
+import { Search, BookOpen, ChevronRight, Sparkles } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
-import { Toast } from '../../components/shared'
 
+/* ────────────────────────────────────────────
+   Glossary data — organized by topic
+   ──────────────────────────────────────────── */
+const TOPICS = [
+  {
+    id: 'basics',
+    label: 'Money Basics',
+    emoji: '💰',
+    color: '#a68b5b',
+    terms: [
+      {
+        term: 'Money',
+        emoji: '🏛️',
+        short: 'A system for trading value',
+        full: 'Money is a medium of exchange that lets us trade goods and services. It has existed for thousands of years — from shells and salt to coins and digital currency. Today, money enables our entire economy and allows us to store value over time.',
+        funFact: 'The world's largest bill ever printed was a 100-trillion-dollar note from Zimbabwe. It could barely buy a loaf of bread!',
+      },
+      {
+        term: 'Income',
+        emoji: '💵',
+        short: 'Money coming in',
+        full: 'Income is any money you earn or receive. It can come from a job, allowance, selling things, or even interest on savings. The more sources of income you have, the stronger your financial position.',
+        funFact: 'The average American earns about $1.7 million over their entire lifetime.',
+      },
+      {
+        term: 'Expenses',
+        emoji: '🛒',
+        short: 'Money going out',
+        full: "Expenses are anything you spend money on — food, rent, games, clothes. Tracking expenses is the first step to taking control of your money. If you spend more than you earn, you're in trouble!",
+        funFact: 'The average person makes about 35,000 decisions a day — many of them are tiny spending choices.',
+      },
+      {
+        term: 'Budget',
+        emoji: '📋',
+        short: 'A plan for your money',
+        full: "A budget is a roadmap that tells your money where to go. The popular 50/30/20 rule suggests: 50% on needs, 30% on wants, 20% on savings. It doesn't have to be perfect — just having one puts you ahead of most people.",
+        funFact: 'Only about 1 in 3 Americans actually keep a detailed budget. Be the 1!',
+      },
+      {
+        term: 'Needs vs Wants',
+        emoji: '🤔',
+        short: 'Essentials vs nice-to-haves',
+        full: "Needs are things you must have to survive — food, shelter, clothing. Wants are things you'd like but can live without — video games, eating out, new sneakers. Knowing the difference is a money superpower.",
+        funFact: "The average teen spends about $2,150 a year — and most of it goes to wants, not needs.",
+      },
+    ],
+  },
+  {
+    id: 'banking',
+    label: 'Banking & Saving',
+    emoji: '🏦',
+    color: '#6b8a87',
+    terms: [
+      {
+        term: 'Bank',
+        emoji: '🏦',
+        short: 'A safe place for your money',
+        full: 'Banks accept your deposits and pay you interest for keeping money with them. They lend your deposits to other people and earn profit on the difference. The FDIC insures deposits up to $250,000, so your money is protected even if the bank fails.',
+        funFact: 'The oldest bank still operating today was founded in Italy in 1472 — over 550 years ago!',
+      },
+      {
+        term: 'Checking Account',
+        emoji: '💳',
+        short: 'Your everyday spending account',
+        full: "A checking account is where you keep money for daily use. You can withdraw anytime, pay bills, and use a debit card. It's like the cash in your backpack — easy to access whenever you need it.",
+        funFact: "The word \"check\" comes from the game of chess — it means to verify or confirm something.",
+      },
+      {
+        term: 'Savings Account',
+        emoji: '🐷',
+        short: 'Your money-growing account',
+        full: "A savings account pays you interest for keeping money deposited. It's designed for money you don't need right away. The trade-off: it's slightly harder to access than checking, but your money actually grows while it sits there.",
+        funFact: 'If you saved just $5 a week starting at age 13, you\'d have over $13,000 by age 30 (with interest)!',
+      },
+      {
+        term: 'Interest',
+        emoji: '📈',
+        short: 'Money your money earns',
+        full: "Interest is what the bank pays you for keeping money with them — think of it as rent they pay for borrowing your cash. Compound interest is even cooler: you earn interest ON your interest. It's like a snowball rolling downhill, getting bigger and bigger.",
+        funFact: 'Albert Einstein reportedly called compound interest "the eighth wonder of the world."',
+      },
+      {
+        term: 'Emergency Fund',
+        emoji: '🚨',
+        short: 'Your financial safety net',
+        full: "An emergency fund is money set aside for unexpected expenses — car repairs, medical bills, or losing a job. Experts recommend saving 3-6 months of expenses. It's the difference between a minor inconvenience and a financial crisis.",
+        funFact: 'About 56% of Americans can\'t cover a $1,000 emergency. Having even a small fund puts you way ahead.',
+      },
+    ],
+  },
+  {
+    id: 'investing',
+    label: 'Investing',
+    emoji: '📊',
+    color: '#7c8c78',
+    terms: [
+      {
+        term: 'Stock',
+        emoji: '📈',
+        short: 'A tiny piece of a company',
+        full: "When you buy a stock, you own a small piece of that company. If the company does well, your stock becomes more valuable. If it does poorly, it loses value. It's like betting on a horse — but with research, not luck.",
+        funFact: 'If you bought $1,000 of Apple stock when the iPhone launched in 2007, it would be worth over $40,000 today.',
+      },
+      {
+        term: 'S&P 500',
+        emoji: '🏢',
+        short: 'The top 500 U.S. companies',
+        full: 'The S&P 500 is an index that tracks 500 of the biggest companies in America — Apple, Google, Nike, Disney, and more. Instead of picking one company, you can invest in all 500 at once through an index fund. This spreads your risk across the whole economy.',
+        funFact: 'The S&P 500 has returned an average of about 10% per year since 1957. Patience pays!',
+      },
+      {
+        term: 'NASDAQ',
+        emoji: '🚀',
+        short: 'The tech-heavy stock index',
+        full: 'NASDAQ is a stock index loaded with technology companies — think Google, Tesla, Netflix, and Amazon. It can shoot up fast when tech is booming, but it can also drop harder during downturns. Higher risk, higher potential reward.',
+        funFact: 'NASDAQ stands for "National Association of Securities Dealers Automated Quotations." Try saying that five times fast.',
+      },
+      {
+        term: 'Diversification',
+        emoji: '🥚',
+        short: "Don't put all your eggs in one basket",
+        full: "Diversification means spreading your money across different investments so one bad pick doesn't wipe you out. If you own stocks in tech, healthcare, AND food companies, a crash in one area won't destroy your whole portfolio.",
+        funFact: 'The saying "don\'t put all your eggs in one basket" dates back to at least the 1600s!',
+      },
+      {
+        term: 'Risk vs Reward',
+        emoji: '⚡',
+        short: 'Bigger gains = bigger chances of loss',
+        full: "In investing, higher potential returns always come with higher risk. Savings accounts are safe but grow slowly. Stocks are riskier but grow faster over time. Your age matters too — if you're young, you have time to recover from dips.",
+        funFact: 'The stock market has crashed and recovered over 10 times in the last 100 years. It always came back.',
+      },
+    ],
+  },
+  {
+    id: 'real-world',
+    label: 'Real-World Money',
+    emoji: '🎯',
+    color: '#78716c',
+    terms: [
+      {
+        term: 'Paycheck',
+        emoji: '📝',
+        short: 'What you earn from work',
+        full: "Your gross pay is what you earn before deductions. Your net pay (take-home pay) is what's left after taxes, Social Security, and other deductions. The gap between gross and net surprises most people getting their first real paycheck!",
+        funFact: 'The very first minimum wage in the U.S. was $0.25 per hour, set in 1938.',
+      },
+      {
+        term: 'Credit Score',
+        emoji: '⭐',
+        short: 'Your financial reputation number',
+        full: "Your credit score (300-850) tells lenders how trustworthy you are with borrowed money. Pay bills on time and keep debt low to build a high score. A score of 700+ can save you tens of thousands of dollars in interest over your lifetime.",
+        funFact: 'Your credit score can affect whether you get an apartment, a car loan, or even some jobs!',
+      },
+      {
+        term: 'Debt',
+        emoji: '⚖️',
+        short: 'Money you owe someone',
+        full: "Not all debt is bad. \"Good debt\" (student loans, mortgages) helps you build value over time. \"Bad debt\" (credit cards, payday loans) costs you money on things that lose value. The key is the interest rate — the higher it is, the more expensive the debt.",
+        funFact: 'The average American has about $104,000 in debt. Understanding debt now helps you avoid that trap.',
+      },
+      {
+        term: 'Taxes',
+        emoji: '🏛️',
+        short: 'Money that funds public services',
+        full: "Taxes are mandatory payments to the government that fund schools, roads, hospitals, and defense. Income tax is based on what you earn. Sales tax is added when you buy things. Understanding taxes helps you see where your money goes in the bigger picture.",
+        funFact: 'Tax Day in the U.S. is April 15. If it falls on a weekend, you get an extra day or two!',
+      },
+      {
+        term: 'Entrepreneurship',
+        emoji: '💡',
+        short: 'Starting your own business',
+        full: "Entrepreneurship means creating something people want to buy. Revenue is total money coming in; profit is what's left after expenses. Every massive company — Apple, Nike, Amazon — started as one person's small idea.",
+        funFact: "Most successful entrepreneurs failed multiple times before making it. Walt Disney was fired for 'lacking imagination.'",
+      },
+      {
+        term: 'Net Worth',
+        emoji: '💎',
+        short: 'What you own minus what you owe',
+        full: "Net worth = assets (stuff you own) minus liabilities (stuff you owe). It's the single best number to track your financial health. You build it through saving, investing, and being smart about debt. Even billionaires started with a net worth of zero.",
+        funFact: "The world's first trillionaire might happen within your lifetime. Could it be you?",
+      },
+    ],
+  },
+]
+
+/* ────────────────────────────────────────────
+   Component
+   ──────────────────────────────────────────── */
 const StudentLearn = () => {
   const { isDark } = useTheme()
-  const [expandedUnits, setExpandedUnits] = useState({ 0: true, 1: false })
-  const [expandedLessons, setExpandedLessons] = useState({})
-  const [completedLessons, setCompletedLessons] = useState(new Set())
+  const [search, setSearch] = useState('')
+  const [activeTopic, setActiveTopic] = useState(null) // null = all
+  const [expandedTerm, setExpandedTerm] = useState(null)
 
-  const curriculumData = [
-    {
-      id: 0,
-      title: 'Money Basics',
-      color: 'from-stone-500 to-stone-600',
-      icon: '💰',
-      locked: false,
-      lessons: [
-        {
-          id: '1-1',
-          number: '1.1',
-          title: 'What Is Money?',
-          emoji: '🏛️',
-          explanation: 'Money is a medium of exchange that lets us trade goods and services. It has existed for thousands of years in many forms—from shells and salt to coins and digital currency. Today, money enables our entire economy and allows us to store value over time.',
-          keyTakeaway: 'Money is trust in a system of exchange.',
-          icon: '📜'
-        },
-        {
-          id: '1-2',
-          number: '1.2',
-          title: 'Earning vs Spending',
-          emoji: '💵',
-          explanation: 'Earning is money coming in (income), while spending is money going out (expenses). The difference between them is your balance. Smart money management means tracking both carefully so you don\'t spend more than you make.',
-          keyTakeaway: 'Income minus expenses equals your financial health.',
-          icon: '⚖️'
-        },
-        {
-          id: '1-3',
-          number: '1.3',
-          title: 'Budgeting 101',
-          emoji: '📋',
-          explanation: 'A budget is a plan for your money. The popular 50/30/20 rule suggests spending 50% of income on needs, 30% on wants, and 20% on savings. Tracking where your money goes helps you reach your goals and avoid overspending.',
-          keyTakeaway: 'A budget is your financial roadmap.',
-          icon: '🗺️'
-        },
-        {
-          id: '1-4',
-          number: '1.4',
-          title: 'Needs vs Wants',
-          emoji: '🤔',
-          explanation: 'Needs are essentials like food, shelter, and clothing. Wants are things you desire but don\'t require to survive, like video games or restaurants. Knowing the difference helps you make smarter spending choices and save money for what truly matters.',
-          keyTakeaway: 'Distinguish needs from wants to control spending.',
-          icon: '✂️'
-        }
-      ]
-    },
-    {
-      id: 1,
-      title: 'Banking & Saving',
-      color: 'from-sage-500 to-sage-600',
-      icon: '🏦',
-      locked: false,
-      lessons: [
-        {
-          id: '2-1',
-          number: '2.1',
-          title: 'How Banks Work',
-          emoji: '🏦',
-          explanation: 'Banks accept your deposits (money you store with them) and pay you interest on your balance. They use your deposits to make loans to others and earn profit on the difference. The FDIC insures deposits up to $250,000, protecting your money even if a bank fails.',
-          keyTakeaway: 'Banks are guardians of your money and your financial partners.',
-          icon: '🛡️'
-        },
-        {
-          id: '2-2',
-          number: '2.2',
-          title: 'Types of Accounts',
-          emoji: '🎫',
-          explanation: 'Checking accounts let you withdraw money easily and pay bills. Savings accounts offer interest but limit withdrawals. CDs (Certificates of Deposit) lock your money for a set period but pay higher interest. Choose based on how soon you need your money.',
-          keyTakeaway: 'Different accounts serve different financial goals.',
-          icon: '🔐'
-        },
-        {
-          id: '2-3',
-          number: '2.3',
-          title: 'Compound Interest',
-          emoji: '📈',
-          explanation: 'Compound interest is "interest on interest"—your interest earnings start earning interest themselves. Even small amounts grow dramatically over time. Albert Einstein allegedly called it the 8th wonder of the world. Start saving early to maximize this powerful effect.',
-          keyTakeaway: 'Time is your greatest asset in building wealth.',
-          icon: '⏰'
-        },
-        {
-          id: '2-4',
-          number: '2.4',
-          title: 'Emergency Funds',
-          emoji: '🚨',
-          explanation: 'An emergency fund is money set aside for unexpected expenses like car repairs or medical bills. Financial experts recommend saving 3-6 months of expenses. This safety net prevents you from going into debt when surprises happen.',
-          keyTakeaway: 'An emergency fund is your financial safety net.',
-          icon: '🥅'
-        }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Investing Fundamentals',
-      color: 'from-stone-500 to-stone-600',
-      icon: '📊',
-      locked: true,
-      lessons: [
-        {
-          id: '3-1',
-          number: '3.1',
-          title: 'What Is the Stock Market?',
-          emoji: '📈',
-          explanation: 'The stock market is where shares of companies are bought and sold. When you own a share, you own a tiny piece of a company. Companies use stock sales to raise money, and investors use stocks to grow their wealth. The stock market is open to everyone.',
-          keyTakeaway: 'Stock ownership means owning a piece of companies.',
-          icon: '🧩'
-        },
-        {
-          id: '3-2',
-          number: '3.2',
-          title: 'S&P 500 Explained',
-          emoji: '📊',
-          explanation: 'The S&P 500 is an index of 500 large U.S. companies. Instead of picking individual stocks, index funds let you invest in all 500 companies at once. This diversification (spreading risk) is why experts recommend index funds for beginners.',
-          keyTakeaway: 'Diversification spreads risk and builds wealth steadily.',
-          icon: '🌍'
-        },
-        {
-          id: '3-3',
-          number: '3.3',
-          title: 'Risk vs Reward',
-          emoji: '⚡',
-          explanation: 'Higher potential returns come with higher risk. Stocks are riskier than bonds because prices fluctuate, but they grow more over time. Your time horizon matters: you can afford more risk if you\'re investing for 20+ years.',
-          keyTakeaway: 'Risk and reward are two sides of the same coin.',
-          icon: '⚙️'
-        },
-        {
-          id: '3-4',
-          number: '3.4',
-          title: 'The Power of Starting Early',
-          emoji: '🚀',
-          explanation: 'Starting to invest at 15 versus 25 makes a massive difference thanks to compound growth. A $100 investment growing at 10% annually becomes $1,645 in 30 years, but $10,635 in 50 years. Every year matters when building wealth.',
-          keyTakeaway: 'Time in the market beats timing the market.',
-          icon: '⭐'
-        }
-      ]
-    },
-    {
-      id: 3,
-      title: 'Real-World Skills',
-      color: 'from-stone-500 to-stone-600',
-      icon: '🎯',
-      locked: true,
-      lessons: [
-        {
-          id: '4-1',
-          number: '4.1',
-          title: 'Reading a Paycheck',
-          emoji: '📝',
-          explanation: 'Your gross pay is what you earn before taxes and deductions. Your net pay is what you actually receive—it\'s lower because of income tax, Social Security, Medicare, and other deductions. Understanding your paycheck helps you budget accurately.',
-          keyTakeaway: 'Know the difference between gross and net pay.',
-          icon: '🔍'
-        },
-        {
-          id: '4-2',
-          number: '4.2',
-          title: 'Credit Scores',
-          emoji: '💳',
-          explanation: 'Your credit score (300-850) reflects how reliably you repay borrowed money. Lenders use it to decide loan interest rates. You build credit by paying bills on time and using credit responsibly. A good score (700+) saves you thousands in interest over your lifetime.',
-          keyTakeaway: 'Your credit score is your financial reputation.',
-          icon: '⭐'
-        },
-        {
-          id: '4-3',
-          number: '4.3',
-          title: 'Debt & Loans',
-          emoji: '📚',
-          explanation: 'Good debt (student loans, mortgages) funds investments that increase in value. Bad debt (credit cards, payday loans) funds consumption and often has high interest rates. Interest rates tell you how expensive borrowing is, so compare carefully.',
-          keyTakeaway: 'Not all debt is bad—it\'s about what you borrow for.',
-          icon: '✅'
-        },
-        {
-          id: '4-4',
-          number: '4.4',
-          title: 'Entrepreneurship',
-          emoji: '🚀',
-          explanation: 'Starting a business means creating something customers want to buy. Revenue is total money coming in, while profit is revenue minus expenses. Successful entrepreneurs solve problems and provide value. Every big company started as someone\'s small idea.',
-          keyTakeaway: 'Entrepreneurship turns ideas into opportunities.',
-          icon: '💡'
-        }
-      ]
-    },
-    {
-      id: 4,
-      title: 'Advanced Concepts',
-      color: 'from-red-500 to-red-600',
-      icon: '🎓',
-      locked: true,
-      lessons: [
-        {
-          id: '5-1',
-          number: '5.1',
-          title: 'Taxes 101',
-          emoji: '🏛️',
-          explanation: 'Taxes are mandatory contributions that fund public services like schools, roads, and defense. Income tax is based on your earnings, sales tax is added at purchase. Understanding taxes helps you plan financially and see where your money goes in the broader economy.',
-          keyTakeaway: 'Taxes fund the services society depends on.',
-          icon: '🛣️'
-        },
-        {
-          id: '5-2',
-          number: '5.2',
-          title: 'Insurance',
-          emoji: '🛡️',
-          explanation: 'Insurance protects you from catastrophic costs. Health insurance covers medical bills, auto insurance covers accidents, life insurance protects dependents. You pay regular premiums for protection against unlikely but expensive events.',
-          keyTakeaway: 'Insurance is protection against financial disaster.',
-          icon: '🏥'
-        },
-        {
-          id: '5-3',
-          number: '5.3',
-          title: 'Renting vs Buying',
-          emoji: '🏠',
-          explanation: 'Renting offers flexibility but builds no equity. Buying requires a down payment and mortgage but builds wealth through home equity. First apartments are usually rentals. Homeownership is a major financial decision that depends on your stability and plans.',
-          keyTakeaway: 'Your housing choice shapes your long-term finances.',
-          icon: '🗝️'
-        },
-        {
-          id: '5-4',
-          number: '5.4',
-          title: 'Building Wealth',
-          emoji: '💎',
-          explanation: 'Wealth is the difference between your assets (what you own) and liabilities (what you owe). Net worth = assets minus liabilities. Building wealth takes time through consistent saving, smart investing, and increasing income. Track your net worth annually to monitor progress.',
-          keyTakeaway: 'Wealth is built through consistent financial discipline.',
-          icon: '📈'
-        }
-      ]
-    }
-  ]
+  // Filter terms by search + topic
+  const filteredTopics = useMemo(() => {
+    const q = search.toLowerCase().trim()
+    return TOPICS.map((topic) => ({
+      ...topic,
+      terms: topic.terms.filter((t) => {
+        const matchesTopic = !activeTopic || topic.id === activeTopic
+        const matchesSearch =
+          !q ||
+          t.term.toLowerCase().includes(q) ||
+          t.short.toLowerCase().includes(q) ||
+          t.full.toLowerCase().includes(q)
+        return matchesTopic && matchesSearch
+      }),
+    })).filter((topic) => topic.terms.length > 0)
+  }, [search, activeTopic])
 
-  const toggleUnit = (unitId) => {
-    setExpandedUnits((prev) => ({
-      ...prev,
-      [unitId]: !prev[unitId]
-    }))
-  }
-
-  const toggleLesson = (lessonId) => {
-    setExpandedLessons((prev) => ({
-      ...prev,
-      [lessonId]: !prev[lessonId]
-    }))
-  }
-
-  const toggleLessonComplete = (lessonId) => {
-    const newCompleted = new Set(completedLessons)
-    if (newCompleted.has(lessonId)) {
-      newCompleted.delete(lessonId)
-    } else {
-      newCompleted.add(lessonId)
-    }
-    setCompletedLessons(newCompleted)
-  }
+  const totalTerms = TOPICS.reduce((sum, t) => sum + t.terms.length, 0)
+  const visibleTerms = filteredTopics.reduce((sum, t) => sum + t.terms.length, 0)
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-[#1e2a1e]' : 'bg-[#faf8f4]'} notebook-ruled`}>
-      {/* Header */}
-      <div className="bg-ink dark:bg-[#0f1710] text-chalk-white dark:text-chalk-white sticky top-0 z-10 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="pb-24">
+      {/* ── Header ── */}
+      <div className="notebook-ruled notebook-margin px-8 pt-8 pb-6 ml-4">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3">
-            <BookOpen size={32} className="text-stone-400" />
+            <BookOpen className="w-7 h-7 text-pencil-dark dark:text-pencil" />
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold">Financial Literacy</h1>
-              <p className="text-slate-300 mt-1">Alpha School's interactive money management curriculum</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Progress Overview */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`mb-8 p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] ${isDark ? 'bg-white/[0.04]' : 'bg-white'} shadow-[2px_2px_0px_rgba(0,0,0,0.06)]`}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className={`text-lg font-semibold font-hand ${isDark ? 'text-chalk-white' : 'text-ink'}`}>
-                Your Learning Progress
-              </h2>
-              <p className={`text-sm ${isDark ? 'text-white/50' : 'text-ink-muted'}`}>
-                {completedLessons.size} of 20 lessons completed
+              <h1 className="text-3xl font-hand font-bold text-ink dark:text-chalk-white">
+                Money Dictionary
+              </h1>
+              <p className="text-xs text-ink-muted dark:text-white/50 mt-0.5">
+                {totalTerms} terms to explore — tap any to learn more
               </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className={`w-32 h-2 rounded-full ${isDark ? 'bg-white/[0.1]' : 'bg-gray-200'} overflow-hidden`}>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(completedLessons.size / 20) * 100}%` }}
-                  className="h-full bg-pencil"
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-              <span className="text-sm font-medium text-stone-500 w-10">
-                {Math.round((completedLessons.size / 20) * 100)}%
-              </span>
             </div>
           </div>
         </motion.div>
+      </div>
 
-        {/* Curriculum Units */}
-        <div className="space-y-4">
-          {curriculumData.map((unit, index) => (
-            <motion.div
-              key={unit.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+      {/* ── Search Bar ── */}
+      <div className="px-8 mb-5">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="relative"
+        >
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted dark:text-white/40" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search terms…"
+            className="w-full pl-10 pr-4 py-3 rounded-sm bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] text-sm text-ink dark:text-chalk-white placeholder:text-ink-faint dark:placeholder:text-white/30 shadow-[2px_2px_0px_rgba(0,0,0,0.04)] focus:outline-none focus:ring-2 focus:ring-pencil/30 focus:border-pencil/50 font-hand"
+          />
+        </motion.div>
+      </div>
+
+      {/* ── Topic Filter Chips ── */}
+      <div className="px-8 mb-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="flex gap-2 overflow-x-auto pb-1 -mx-8 px-8"
+        >
+          <button
+            onClick={() => setActiveTopic(null)}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-hand font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
+              activeTopic === null
+                ? 'bg-ink dark:bg-chalk-white text-chalk-white dark:text-ink border-ink dark:border-chalk-white shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
+                : 'bg-white dark:bg-white/[0.04] text-ink-muted dark:text-white/50 border-black/[0.08] dark:border-white/[0.06] hover:border-pencil/40'
+            }`}
+          >
+            All
+          </button>
+          {TOPICS.map((topic) => (
+            <button
+              key={topic.id}
+              onClick={() => setActiveTopic(activeTopic === topic.id ? null : topic.id)}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-hand font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
+                activeTopic === topic.id
+                  ? 'bg-ink dark:bg-chalk-white text-chalk-white dark:text-ink border-ink dark:border-chalk-white shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
+                  : 'bg-white dark:bg-white/[0.04] text-ink-muted dark:text-white/50 border-black/[0.08] dark:border-white/[0.06] hover:border-pencil/40'
+              }`}
             >
-              {/* Unit Header */}
-              <button
-                onClick={() => toggleUnit(unit.id)}
-                className={`w-full p-6 rounded-sm transition-all duration-200 border border-black/[0.08] dark:border-white/[0.06] ${
-                  isDark
-                    ? 'bg-white/[0.04] hover:bg-white/[0.06] text-chalk-white'
-                    : 'bg-white hover:bg-gray-50 text-ink'
-                } shadow-[2px_2px_0px_rgba(0,0,0,0.06)] border-l-4 ${
-                  unit.locked
-                    ? `border-l-gray-400 ${isDark ? 'opacity-75' : 'opacity-90'}`
-                    : `border-l-pencil`
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-left flex-1">
-                    <span className="text-3xl">{unit.icon}</span>
-                    <div>
-                      <h3 className="text-xl font-bold font-hand flex items-center gap-2">
-                        {unit.title}
-                        {unit.locked && <Lock size={18} className={isDark ? 'text-white/40' : 'text-gray-400'} />}
-                      </h3>
-                      <p className={`text-sm ${isDark ? 'text-white/50' : 'text-ink-muted'}`}>
-                        {unit.lessons.length} lessons
-                      </p>
-                    </div>
-                  </div>
-                  <motion.div
-                    animate={{ rotate: expandedUnits[unit.id] ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <ChevronDown
-                      size={24}
-                      className={unit.locked ? (isDark ? 'text-white/40' : 'text-gray-400') : 'text-pencil-dark'}
-                    />
-                  </motion.div>
-                </div>
-              </button>
+              <span>{topic.emoji}</span>
+              {topic.label}
+            </button>
+          ))}
+        </motion.div>
+      </div>
 
-              {/* Unit Content */}
-              <AnimatePresence>
-                {expandedUnits[unit.id] && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`mt-3 space-y-3 ${isDark ? 'bg-white/[0.02]' : 'bg-gray-50/50'} p-4 rounded-sm border border-black/[0.04] dark:border-white/[0.03]`}
-                  >
-                    {unit.lessons.map((lesson) => (
-                      <motion.div
-                        key={lesson.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.2 }}
+      {/* ── Terms ── */}
+      {filteredTopics.length === 0 ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="px-8 py-16 text-center"
+        >
+          <Search className="w-10 h-10 mx-auto mb-3 text-ink-faint dark:text-white/20" />
+          <p className="text-sm font-hand font-bold text-ink-muted dark:text-white/50">
+            No terms match "{search}"
+          </p>
+          <p className="text-xs text-ink-faint dark:text-white/30 mt-1">
+            Try a different search or clear the filter
+          </p>
+        </motion.div>
+      ) : (
+        <div className="px-8 space-y-8">
+          {filteredTopics.map((topic, topicIdx) => (
+            <motion.div
+              key={topic.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: topicIdx * 0.08 }}
+            >
+              {/* Topic heading */}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg">{topic.emoji}</span>
+                <h2 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white pencil-underline">
+                  {topic.label}
+                </h2>
+                <span className="text-[10px] text-ink-faint dark:text-white/30 ml-1">
+                  {topic.terms.length} {topic.terms.length === 1 ? 'term' : 'terms'}
+                </span>
+              </div>
+
+              {/* Term cards */}
+              <div className="space-y-2">
+                {topic.terms.map((entry, i) => {
+                  const isExpanded = expandedTerm === `${topic.id}-${entry.term}`
+                  const termKey = `${topic.id}-${entry.term}`
+
+                  return (
+                    <motion.div
+                      key={termKey}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: topicIdx * 0.08 + i * 0.03 }}
+                    >
+                      <div
+                        className={`rounded-sm overflow-hidden border transition-all ${
+                          isExpanded
+                            ? 'border-pencil/40 dark:border-pencil/30 shadow-[3px_3px_0px_rgba(0,0,0,0.08)]'
+                            : 'border-black/[0.06] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.04)]'
+                        } bg-white dark:bg-white/[0.04]`}
                       >
-                        {/* Lesson Card */}
-                        <div
-                          className={`rounded-sm overflow-hidden transition-all duration-200 border ${
-                            isDark
-                              ? 'bg-white/[0.03] hover:bg-white/[0.05]'
-                              : 'bg-white hover:bg-gray-50'
-                          } ${
-                            completedLessons.has(lesson.id)
-                              ? 'border-sage-500/50 dark:border-sage-400/50'
-                              : isDark
-                                ? 'border-white/[0.06]'
-                                : 'border-black/[0.08]'
-                          } shadow-[2px_2px_0px_rgba(0,0,0,0.06)]`}
+                        {/* Term header */}
+                        <button
+                          onClick={() =>
+                            setExpandedTerm(isExpanded ? null : termKey)
+                          }
+                          className="w-full px-4 py-3.5 text-left flex items-center gap-3 hover:bg-paper-warm/50 dark:hover:bg-white/[0.02] transition-colors"
                         >
-                          {/* Lesson Header */}
-                          <button
-                            onClick={() => toggleLesson(lesson.id)}
-                            className="w-full p-4 text-left flex items-center justify-between hover:opacity-80 transition-opacity"
+                          <span className="text-xl flex-shrink-0">{entry.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <span className="text-sm font-bold text-ink dark:text-chalk-white block font-hand">
+                              {entry.term}
+                            </span>
+                            <span className="text-[11px] text-ink-muted dark:text-white/50 block truncate">
+                              {entry.short}
+                            </span>
+                          </div>
+                          <motion.div
+                            animate={{ rotate: isExpanded ? 90 : 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="flex-shrink-0"
                           >
-                            <div className="flex items-center gap-3 flex-1">
-                              {completedLessons.has(lesson.id) ? (
-                                <CheckCircle size={24} className="text-green-500 flex-shrink-0" />
-                              ) : (
-                                <span className="text-2xl flex-shrink-0">{lesson.emoji}</span>
-                              )}
-                              <div className="flex-1">
-                                <h4 className={`font-semibold font-hand ${isDark ? 'text-chalk-white' : 'text-ink'}`}>
-                                  {lesson.number}: {lesson.title}
-                                </h4>
-                              </div>
-                            </div>
+                            <ChevronRight className="w-4 h-4 text-ink-faint dark:text-white/30" />
+                          </motion.div>
+                        </button>
+
+                        {/* Expanded content */}
+                        <AnimatePresence>
+                          {isExpanded && (
                             <motion.div
-                              animate={{ rotate: expandedLessons[lesson.id] ? 90 : 0 }}
-                              transition={{ duration: 0.2 }}
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25 }}
+                              className="overflow-hidden"
                             >
-                              <ChevronRight
-                                size={20}
-                                className={isDark ? 'text-white/50' : 'text-ink-muted'}
-                              />
-                            </motion.div>
-                          </button>
+                              <div className="px-4 pb-4 pt-1 border-t border-black/[0.06] dark:border-white/[0.06]">
+                                {/* Main explanation */}
+                                <p className="text-sm leading-relaxed text-ink-light dark:text-white/70 mt-3">
+                                  {entry.full}
+                                </p>
 
-                          {/* Lesson Content */}
-                          <AnimatePresence>
-                            {expandedLessons[lesson.id] && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className={`border-t ${isDark ? 'border-white/[0.06] bg-white/[0.02]' : 'border-black/[0.08] bg-gray-50'} p-4 space-y-4`}
-                              >
-                                {/* Explanation */}
-                                <div>
-                                  <p className={`text-sm leading-relaxed ${isDark ? 'text-chalk-white/90' : 'text-ink'}`}>
-                                    {lesson.explanation}
-                                  </p>
-                                </div>
-
-                                {/* Key Takeaway */}
-                                <motion.div
-                                  initial={{ opacity: 0, scale: 0.95 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  transition={{ delay: 0.1 }}
-                                  className={`p-3 rounded-sm flex items-start gap-3 border ${
-                                    isDark
-                                      ? 'bg-white/[0.04] border-pencil/20'
-                                      : 'bg-pencil/10 border-pencil/30'
-                                  }`}
-                                >
-                                  <Star
-                                    size={18}
-                                    className={`flex-shrink-0 mt-0.5 ${isDark ? 'text-pencil' : 'text-pencil-dark'}`}
-                                  />
-                                  <div>
-                                    <p className={`text-xs font-semibold font-hand ${isDark ? 'text-pencil/80' : 'text-pencil-dark'}`}>
-                                      Key Takeaway
-                                    </p>
-                                    <p className={`text-sm mt-1 ${isDark ? 'text-chalk-white/80' : 'text-ink'}`}>
-                                      {lesson.keyTakeaway}
-                                    </p>
-                                  </div>
-                                </motion.div>
-
-                                {/* Action Buttons */}
-                                <div className="flex gap-2 pt-2">
-                                  <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => toggleLessonComplete(lesson.id)}
-                                    className={`flex-1 py-2 px-4 rounded-sm font-medium text-sm transition-all border ${
-                                      completedLessons.has(lesson.id)
-                                        ? `${isDark ? 'bg-sage-500/20 text-sage-400 border-sage-500/40' : 'bg-sage-100 text-sage-700 border-sage-300'}`
-                                        : `${isDark ? 'bg-pencil/20 text-pencil border-pencil/40 hover:bg-pencil/30' : 'bg-pencil text-ink hover:bg-pencil-dark border-pencil'}`
-                                    }`}
+                                {/* Fun fact callout */}
+                                {entry.funFact && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: 6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="mt-4 p-3 rounded-sm bg-pencil/10 dark:bg-pencil/10 border border-pencil/25 dark:border-pencil/20 flex items-start gap-2.5"
                                   >
-                                    {completedLessons.has(lesson.id) ? '✓ Learned' : 'I Learned This!'}
-                                  </motion.button>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                                    <Sparkles className="w-4 h-4 text-pencil-dark dark:text-pencil flex-shrink-0 mt-0.5" />
+                                    <div>
+                                      <span className="text-[10px] font-hand font-bold uppercase tracking-wider text-pencil-dark dark:text-pencil block mb-0.5">
+                                        Fun Fact
+                                      </span>
+                                      <p className="text-xs leading-relaxed text-ink-light dark:text-white/60">
+                                        {entry.funFact}
+                                      </p>
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
             </motion.div>
           ))}
         </div>
+      )}
 
-        {/* Coming Soon Notice */}
+      {/* ── Footer note ── */}
+      {visibleTerms === totalTerms && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className={`mt-12 p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] ${isDark ? 'bg-white/[0.04]' : 'bg-gray-50'} text-center shadow-[2px_2px_0px_rgba(0,0,0,0.06)]`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="px-8 mt-10 mb-4 text-center"
         >
-          <Lock size={32} className={`mx-auto mb-3 ${isDark ? 'text-white/40' : 'text-ink-muted'}`} />
-          <h3 className={`font-semibold font-hand ${isDark ? 'text-chalk-white/80' : 'text-ink'}`}>
-            More Units Coming Soon
-          </h3>
-          <p className={`text-sm mt-2 ${isDark ? 'text-white/50' : 'text-ink-muted'}`}>
-            Unlock advanced lessons as you progress through the curriculum. Keep learning!
+          <p className="text-[11px] text-ink-faint dark:text-white/25 font-hand">
+            More terms added as you explore new topics in class
           </p>
         </motion.div>
-      </div>
+      )}
     </div>
   )
 }
