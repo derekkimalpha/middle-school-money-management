@@ -22,7 +22,7 @@ const STATUS_CONFIG = {
   submitted: { label: 'Submitted', color: 'bg-stone-100/50 dark:bg-stone-500/[0.06] text-stone-700 dark:text-stone-400' },
   verified: { label: 'Approved', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
   allocated: { label: 'Allocated', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
-  rejected: { label: 'Needs Changes', color: 'bg-red-500/10 dark:bg-red-400/10 text-red-600 dark:text-red-400' },
+  rejected: { label: 'Returned — Please Fix', color: 'bg-red-500/10 dark:bg-red-400/10 text-red-600 dark:text-red-400' },
 }
 
 export const StudentPaycheck = () => {

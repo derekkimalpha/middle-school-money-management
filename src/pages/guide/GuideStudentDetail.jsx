@@ -238,7 +238,7 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.1 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white">Account Summary</h2>
+        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white font-hand">Account Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {Object.entries(ACCOUNT_META).map(([key, meta]) => {
             const account = student.accounts.find(a => a.account_type === key)
@@ -265,7 +265,7 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.15 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white">Paycheck History</h2>
+        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white font-hand">Paycheck History</h2>
         <div className="space-y-3">
           {paychecks.length === 0 ? (
             <p className="text-ink-muted dark:text-white/50">No paychecks yet</p>
@@ -358,7 +358,7 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.2 }}
         className="space-y-4 p-4 rounded-sm bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06]"
       >
-        <h2 className="text-lg font-bold text-ink dark:text-chalk-white">Add Manual Bonus</h2>
+        <h2 className="text-lg font-bold text-ink dark:text-chalk-white font-hand">Add Manual Bonus</h2>
         <div className="space-y-3">
           <Field label="Bonus Amount ($)">
             <input
@@ -394,7 +394,7 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.25 }}
         className="space-y-4"
       >
-        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white">Transaction History</h2>
+        <h2 className="text-xl font-extrabold text-ink dark:text-chalk-white font-hand">Transaction History</h2>
         <div className="space-y-2">
           {transactions.length === 0 ? (
             <p className="text-ink-muted dark:text-white/50">No transactions yet</p>

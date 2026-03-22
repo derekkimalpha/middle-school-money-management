@@ -36,9 +36,9 @@ export const ConfirmDialog = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-2xl p-6"
+            className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1c1c1e] rounded-sm border border-gray-200 dark:border-white/[0.08] shadow-2xl p-6"
           >
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{title}</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 font-hand">{title}</h3>
             {message && (
               <p className="text-sm text-gray-500 dark:text-white/50 mb-6">{message}</p>
             )}

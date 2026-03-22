@@ -162,7 +162,7 @@ export const Layout = ({
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
                 className={`
-                  w-full text-left px-3 py-2.5 rounded-lg transition-all duration-150 text-[13px] relative
+                  w-full text-left px-3 py-2.5 rounded-lg transition-all duration-150 text-[13px] relative focus:ring-2 focus:ring-pencil/30 focus:outline-none
                   ${isActive
                     ? 'bg-pencil/15 text-pencil font-semibold'
                     : 'text-white/40 hover:text-white/70 hover:bg-white/[0.04] font-medium'
@@ -228,8 +228,9 @@ export const Layout = ({
             {isMobile && (
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-gray-800 dark:text-white/60 hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-150"
+                className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-gray-800 dark:text-white/60 hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-150 focus:ring-2 focus:ring-pencil/30 focus:outline-none"
                 aria-label="Toggle sidebar"
+                aria-expanded={sidebarOpen}
               >
                 <Menu className="w-5 h-5" />
               </button>

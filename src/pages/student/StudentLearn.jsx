@@ -470,7 +470,7 @@ const StudentLearn = () => {
                                         : `${isDark ? 'bg-pencil/20 text-pencil border-pencil/40 hover:bg-pencil/30' : 'bg-pencil text-ink hover:bg-pencil-dark border-pencil'}`
                                     }`}
                                   >
-                                    {completedLessons.has(lesson.id) ? '✓ Completed' : 'Mark Complete'}
+                                    {completedLessons.has(lesson.id) ? '✓ Learned' : 'I Learned This!'}
                                   </motion.button>
                                 </div>
                               </motion.div>

@@ -193,7 +193,7 @@ export const GuideRoster = () => {
           >
             <AlertCircle className="w-5 h-5 text-pencil-dark dark:text-pencil mt-0.5 flex-shrink-0" />
             <div>
-              <p className="font-semibold font-hand text-pencil-dark dark:text-pencil">{paycheck_count} Paychecks to Verify</p>
+              <p className="font-semibold font-hand text-pencil-dark dark:text-pencil">{paycheck_count} Paychecks to Review</p>
               <p className="text-sm text-pencil-dark/80 dark:text-pencil/80">Student submissions pending review</p>
             </div>
           </motion.div>
@@ -209,7 +209,7 @@ export const GuideRoster = () => {
           >
             <AlertCircle className="w-5 h-5 text-red-700 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="font-semibold font-hand text-red-800">{purchase_count} Purchase Requests</p>
+              <p className="font-semibold font-hand text-red-800">{purchase_count} Purchases to Review</p>
               <p className="text-sm text-red-700">Items awaiting approval</p>
             </div>
           </motion.div>
@@ -314,7 +314,7 @@ export const GuideRoster = () => {
               className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-white/[0.04] rounded-2xl shadow-2xl shadow-black/5 z-50 w-full max-w-sm mx-4 p-6 border border-gray-200 dark:border-white/10"
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">Add Student</h2>
+                <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white font-hand">Add Student</h2>
                 <button
                   onClick={handleCloseModal}
                   className="text-gray-400 dark:text-white/30 hover:text-gray-600 dark:hover:text-white/60 transition-colors"

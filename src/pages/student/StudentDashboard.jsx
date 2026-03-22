@@ -141,6 +141,7 @@ export const StudentDashboard = () => {
           <h2 className="text-5xl font-black tabular-nums text-ink dark:text-chalk-white">
             <AnimNum value={totalBalance} prefix="$" />
           </h2>
+          <span className="text-[11px] text-ink-muted dark:text-white/50 mt-1 block">across all accounts</span>
 
           {donutData.length > 0 && (
             <div className="flex items-center justify-center mt-6">
@@ -229,9 +230,13 @@ export const StudentDashboard = () => {
 
                   <div className="flex items-center gap-2 mb-4 mt-1">
                     <Icon className="w-4 h-4 text-ink-muted dark:text-white/50" />
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted dark:text-white/50">
-                      {ACCOUNT_META[key]?.label}
-                    </span>
+                    <div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted dark:text-white/50 block">
+                        {ACCOUNT_META[key]?.label}
+                      </span>
+                      {key === 'sp500' && <span className="text-[9px] text-ink-faint dark:text-white/30 block">Top 500 companies</span>}
+                      {key === 'nasdaq' && <span className="text-[9px] text-ink-faint dark:text-white/30 block">Tech-heavy index</span>}
+                    </div>
                   </div>
 
                   <p className="text-2xl font-black tabular-nums text-ink dark:text-chalk-white">
@@ -252,9 +257,9 @@ export const StudentDashboard = () => {
 
         <div className="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 mt-4">
           {[
-            { label: 'Paycheck', icon: '💵', route: '/paycheck' },
+            { label: 'Log Pay', icon: '💵', route: '/paycheck' },
             { label: 'Transfer', icon: '🔄', route: '/transfer' },
-            { label: 'Purchase', icon: '🛒', route: '/purchase' },
+            { label: 'Buy', icon: '🛒', route: '/purchase' },
           ].map((action, index) => (
             <motion.button
               key={action.label}
@@ -297,7 +302,7 @@ export const StudentDashboard = () => {
       {/* ── Portfolio Breakdown — graph paper style ── */}
       <div className="px-8 mb-6">
         <h3 className="text-[13px] font-hand font-bold text-ink dark:text-chalk-white mb-4 pencil-underline inline-block">
-          Portfolio Breakdown
+          Where Your Money Is
         </h3>
 
         <motion.div
@@ -355,8 +360,8 @@ export const StudentDashboard = () => {
         </h3>
         <div className="space-y-3 mt-4">
           {[
-            { icon: '🏦', title: 'Why diversify?', body: 'Different accounts serve different purposes — checking for daily use, savings for safety, investments for growth.' },
-            { icon: '📈', title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth. NASDAQ focuses on tech for higher risk and reward.' },
+            { icon: '🏦', title: 'Why spread your money around?', body: 'Diversifying means spreading your money across different account types for different goals — checking for daily use, savings for safety, investments for growth.' },
+            { icon: '📈', title: 'S&P 500 vs NASDAQ', body: 'S&P 500 tracks 500 large companies for steady growth — think of it like owning a tiny piece of Apple, Microsoft, and hundreds of other stable businesses. NASDAQ focuses on tech companies, which can grow faster but are riskier. Both are great for long-term investing!' },
             { icon: '💡', title: '50/30/20 Rule', body: '50% needs, 30% wants, 20% savings. A simple framework real adults use to budget their paychecks.' },
           ].map((tip, i) => (
             <motion.details

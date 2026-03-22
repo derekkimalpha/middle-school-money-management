@@ -171,10 +171,13 @@ export const StudentPurchase = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[12px] font-semibold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-1">
-                Checking Balance (For Purchases)
+                Spending Money
               </p>
               <p className="text-3xl font-bold text-ink dark:text-chalk-white tabular-nums">
                 <AnimNum value={checkingBalance} prefix="$" />
+              </p>
+              <p className="text-[11px] text-ink-muted dark:text-white/50 mt-1">
+                from your Checking account
               </p>
             </div>
             <div className="text-4xl">💰</div>
@@ -223,7 +226,7 @@ export const StudentPurchase = () => {
           </Field>
 
           <Button full size="lg" disabled={loading}>
-            {loading ? 'Submitting...' : 'Submit Request'}
+            {loading ? 'Submitting...' : 'Submit Purchase Request'}
           </Button>
         </motion.form>
 
@@ -305,15 +308,15 @@ export const StudentPurchase = () => {
               <p className="font-semibold text-ink dark:text-chalk-white">Status Meanings:</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-stone-400" />
+                  <div className="w-3 h-3 rounded-full bg-stone-400" aria-hidden="true" />
                   <span>Pending - Awaiting decision</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-sage-400" />
+                  <div className="w-3 h-3 rounded-full bg-sage-400" aria-hidden="true" />
                   <span>Approved - Ready to buy!</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
+                  <div className="w-3 h-3 rounded-full bg-red-400" aria-hidden="true" />
                   <span>Rejected - Not approved</span>
                 </div>
               </div>
@@ -329,8 +332,8 @@ export const StudentPurchase = () => {
             className="py-16 text-center"
           >
             <div className="text-4xl mb-3">🛒</div>
-            <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No purchase requests</p>
-            <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Submit a request above to buy something</p>
+            <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No purchase requests yet</p>
+            <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Fill out the form above to request a purchase</p>
           </motion.div>
         )}
 

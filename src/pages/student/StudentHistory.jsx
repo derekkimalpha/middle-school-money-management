@@ -117,6 +117,7 @@ export const StudentHistory = () => {
               <button
                 key={filter.id}
                 onClick={() => handleFilterChange(filter.id)}
+                aria-current={selectedFilter === filter.id ? "page" : undefined}
                 className={`px-4 py-2 rounded-sm font-semibold text-sm whitespace-nowrap transition-all ${
                   selectedFilter === filter.id
                     ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink'
@@ -145,7 +146,7 @@ export const StudentHistory = () => {
             <div className="py-16 text-center">
               <div className="text-4xl mb-3">📋</div>
               <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No transactions yet</p>
-              <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Your transaction history will show up here after you log a paycheck or make a transfer</p>
+              <p className="text-xs text-ink-faint dark:text-white/25 mt-1">You'll see all your deposits, transfers, and purchases here once you start earning</p>
             </div>
           ) : (
             <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">

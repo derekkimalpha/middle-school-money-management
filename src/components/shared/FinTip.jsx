@@ -11,7 +11,7 @@ export const FinTip = ({
 
   return (
     <motion.div
-      className="rounded-2xl p-4 cursor-pointer transition-all duration-200 bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.06] hover:border-gray-300 dark:hover:border-white/[0.1] hover:shadow-md"
+      className="rounded-sm p-4 cursor-pointer transition-all duration-200 bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.06] hover:border-gray-300 dark:hover:border-white/[0.1] hover:shadow-md"
       onClick={() => setIsOpen(!isOpen)}
       whileHover={{ y: -2 }}
     >

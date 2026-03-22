@@ -36,7 +36,7 @@ export const AccountPicker = ({
             transition={{ delay: index * 0.05 }}
             onClick={() => onSelect(key)}
             className={`
-              p-4 rounded-xl border-2 text-left transition-all duration-150
+              p-4 rounded-xl border-2 text-left transition-all duration-150 focus:ring-2 focus:ring-pencil/30 focus:outline-none
               ${isSelected
                 ? `${colors.bg} ${colors.border}`
                 : 'bg-white dark:bg-white/[0.03] border-black/[0.06] dark:border-white/[0.06] hover:border-black/[0.12] dark:hover:border-white/[0.12]'

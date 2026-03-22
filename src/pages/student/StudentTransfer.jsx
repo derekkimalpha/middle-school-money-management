@@ -57,6 +57,27 @@ export const StudentTransfer = () => {
     validTargets.includes(toAccount)
 
   const handleTransfer = async () => {
+    if (!fromAccount) {
+      setToast({
+        type: 'error',
+        text: 'Pick an account to transfer from',
+      })
+      return
+    }
+    if (!toAccount) {
+      setToast({
+        type: 'error',
+        text: 'Pick an account to transfer to',
+      })
+      return
+    }
+    if (amount <= 0) {
+      setToast({
+        type: 'error',
+        text: 'Enter an amount to transfer',
+      })
+      return
+    }
     if (!isValid) {
       setToast({
         type: 'error',
@@ -226,7 +247,7 @@ export const StudentTransfer = () => {
                     step="0.01"
                     value={amount}
                     onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                    placeholder="0.00"
+                    placeholder="Enter amount"
                     prefix="$"
                     big
                   />
@@ -255,6 +276,7 @@ export const StudentTransfer = () => {
                             -{formatCurrency(feeAmount)}
                           </span>
                         </div>
+                        <span className="text-[10px] text-ink-faint dark:text-white/30 block mt-0.5">Fees teach real-world investing costs</span>
 
                         <div className="text-xs text-ink-muted dark:text-white/50 mt-2 p-2 bg-stone-100 dark:bg-stone-900/30 rounded-sm">
                           {['sp500', 'nasdaq'].includes(fromAccount)
@@ -296,7 +318,7 @@ export const StudentTransfer = () => {
                 disabled={!isValid || loading}
                 onClick={handleTransfer}
               >
-                {loading ? 'Transferring...' : 'Complete Transfer'}
+                {loading ? 'Transferring...' : 'Confirm Transfer'}
               </Button>
             </motion.div>
           )}

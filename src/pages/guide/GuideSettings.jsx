@@ -312,7 +312,7 @@ export const GuideSettings = () => {
         transition={{ delay: 0.05 }}
         className="space-y-4"
       >
-        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white">My Classroom</h2>
+        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white font-hand">My Classroom</h2>
 
         {activeSession && (
           <div className="p-6 rounded-sm border border-black/[0.08] dark:border-white/[0.06] dark:bg-white/[0.04] bg-white space-y-4">
@@ -329,7 +329,7 @@ export const GuideSettings = () => {
             </div>
 
             <div>
-              <h3 className="font-semibold text-ink dark:text-chalk-white mb-3">Students in Class ({students.length})</h3>
+              <h3 className="font-semibold text-ink dark:text-chalk-white mb-3 font-hand">Students in Class ({students.length})</h3>
               {students.length > 0 ? (
                 <div className="space-y-2">
                   {students.map(student => (
@@ -361,7 +361,7 @@ export const GuideSettings = () => {
         transition={{ delay: 0.1 }}
         className="space-y-4"
       >
-        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white">Paycheck Rules</h2>
+        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white font-hand">Paycheck Rules</h2>
 
         {settings && (
           <div className="space-y-4">
@@ -661,7 +661,7 @@ export const GuideSettings = () => {
         transition={{ delay: 0.15 }}
         className="space-y-4"
       >
-        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white">Job Manager</h2>
+        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white font-hand">Job Manager</h2>
 
         <div className="space-y-3">
           {jobs.map(job => (
@@ -769,7 +769,7 @@ export const GuideSettings = () => {
         transition={{ delay: 0.2 }}
         className="space-y-4"
       >
-        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white">Job Assignments</h2>
+        <h2 className="text-2xl font-extrabold text-ink dark:text-chalk-white font-hand">Job Assignments</h2>
 
         <div className="space-y-3">
           {students.map(student => (
