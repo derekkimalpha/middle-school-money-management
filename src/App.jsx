@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import React, { useMemo } from 'react'
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from './hooks/useAuth'
 import { Layout } from './components/shared/Layout'
@@ -31,25 +31,26 @@ const LoadingSpinner = ({ debugMsg }) => (
 
 export default function App() {
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth()
-  const [currentPage, setCurrentPage] = useState('home')
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const studentNavItems = useMemo(
     () => [
-      { id: 'home', label: 'Home', icon: '🏠' },
-      { id: 'paycheck', label: 'Paycheck', icon: '💰' },
-      { id: 'transfer', label: 'Transfer', icon: '↔️' },
-      { id: 'purchase', label: 'Buy', icon: '🛍️' },
-      { id: 'history', label: 'History', icon: '📋' }
+      { id: 'home', label: 'Home', icon: '🏠', path: '/' },
+      { id: 'paycheck', label: 'Paycheck', icon: '💰', path: '/paycheck' },
+      { id: 'transfer', label: 'Transfer', icon: '↔️', path: '/transfer' },
+      { id: 'purchase', label: 'Buy', icon: '🛍️', path: '/purchase' },
+      { id: 'history', label: 'History', icon: '📋', path: '/history' }
     ],
     []
   )
 
   const guideNavItems = useMemo(
     () => [
-      { id: 'home', label: 'Students', icon: '👥' },
-      { id: 'purchases', label: 'Purchases', icon: '📦' },
-      { id: 'session', label: 'Session', icon: '⏱️' },
-      { id: 'settings', label: 'Settings', icon: '⚙️' }
+      { id: 'home', label: 'Students', icon: '👥', path: '/' },
+      { id: 'purchases', label: 'Purchases', icon: '📦', path: '/purchases' },
+      { id: 'session', label: 'Session', icon: '⏱️', path: '/session' },
+      { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' }
     ],
     []
   )
@@ -65,8 +66,15 @@ export default function App() {
   const isGuide = profile.role === 'guide'
   const navItems = isGuide ? guideNavItems : studentNavItems
 
+  // Determine active page from current URL path
+  const currentPath = location.pathname
+  const activePage = navItems.find(item =>
+    item.path === '/' ? currentPath === '/' : currentPath.startsWith(item.path)
+  )?.id || 'home'
+
   const handleNavigate = (pageId) => {
-    setCurrentPage(pageId)
+    const item = navItems.find(n => n.id === pageId)
+    if (item) navigate(item.path)
   }
 
   const handleSignOut = async () => {
@@ -78,7 +86,7 @@ export default function App() {
       user={user}
       role={profile.role}
       navItems={navItems}
-      activePage={currentPage}
+      activePage={activePage}
       onNavigate={handleNavigate}
       onSignOut={handleSignOut}
     >
