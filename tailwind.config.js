@@ -9,6 +9,12 @@ export default {
       colors: {
         sage: {
           DEFAULT: '#7EA58C',
+          200: '#C2D8C9',
+          300: '#A8C5B0',
+          400: '#7EA58C',
+          500: '#5E8A6C',
+          600: '#4A7058',
+          700: '#385644',
           dark: '#5E8A6C',
           light: '#A8C5B0',
           bg: 'rgba(126,165,140,0.08)',

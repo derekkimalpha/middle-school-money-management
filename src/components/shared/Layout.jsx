@@ -39,7 +39,7 @@ export const Layout = ({
                   w-full text-left px-4 py-3 rounded-lg transition-all font-medium text-sm
                   ${
                     isActive
-                      ? 'bg-gradient-to-r from-sage-400 to-green-400 text-white shadow-md'
+                      ? 'bg-gradient-to-r from-sage to-sage-dark text-white shadow-md'
                       : 'text-slate-700 hover:bg-slate-100'
                   }
                 `}
