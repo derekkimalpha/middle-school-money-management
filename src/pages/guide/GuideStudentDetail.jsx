@@ -173,11 +173,74 @@ export const GuideStudentDetail = () => {
 
   const getStatusColor = (status) => {
     const colors = {
+      draft: 'bg-pencil/10 text-pencil-dark',
       submitted: 'bg-stone-100 text-stone-700',
       verified: 'bg-sage-bg text-sage-700',
-      allocated: 'bg-stone-100 text-stone-700'
+      allocated: 'bg-stone-100 text-stone-700',
+      rejected: 'bg-red-100 text-red-700',
     }
     return colors[status] || 'bg-stone-100 text-stone-700'
+  }
+
+  const getStatusLabel = (status) => {
+    const labels = {
+      draft: 'In Progress',
+      submitted: 'Locked In',
+      verified: 'Approved',
+      allocated: 'Allocated',
+      rejected: 'Returned',
+    }
+    return labels[status] || status
+  }
+
+  const returnPaycheck = async (paycheckId) => {
+    try {
+      const { error } = await supabase
+        .from('weekly_paychecks')
+        .update({ status: 'rejected' })
+        .eq('id', paycheckId)
+      if (error) throw error
+      setToast({ type: 'success', text: 'Paycheck returned to student for corrections' })
+      await fetchStudent()
+    } catch (err) {
+      setToast({ type: 'error', text: 'Failed to return paycheck' })
+    }
+  }
+
+  const [editingPaycheck, setEditingPaycheck] = useState(null)
+  const [editFields, setEditFields] = useState({})
+
+  const startEditPaycheck = (paycheck) => {
+    setEditingPaycheck(paycheck.id)
+    setEditFields({
+      total_earnings: paycheck.total_earnings || 0,
+      base_pay: paycheck.base_pay || 0,
+      epic_bonus: paycheck.epic_bonus || 0,
+      xp_bonus: paycheck.xp_bonus || 0,
+      mastery_pay: paycheck.mastery_pay || 0,
+      job_pay: paycheck.job_pay || 0,
+      other_pay: paycheck.other_pay || 0,
+    })
+  }
+
+  const saveEditPaycheck = async (paycheckId) => {
+    try {
+      const total = editFields.base_pay + editFields.epic_bonus + editFields.xp_bonus +
+        editFields.mastery_pay + editFields.job_pay + editFields.other_pay
+      const { error } = await supabase
+        .from('weekly_paychecks')
+        .update({
+          ...editFields,
+          total_earnings: Math.round(total * 100) / 100,
+        })
+        .eq('id', paycheckId)
+      if (error) throw error
+      setToast({ type: 'success', text: 'Paycheck updated' })
+      setEditingPaycheck(null)
+      await fetchStudent()
+    } catch (err) {
+      setToast({ type: 'error', text: 'Failed to update paycheck' })
+    }
   }
 
   if (loading) {
@@ -300,51 +363,104 @@ export const GuideStudentDetail = () => {
                     </div>
 
                     <Tag color={getStatusColor(paycheck.status)}>
-                      {paycheck.status}
+                      {getStatusLabel(paycheck.status)}
                     </Tag>
                   </div>
 
                   {paycheck.status === 'submitted' && (
-                    <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-3 flex gap-2">
-                      <Button
-                        onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: paycheck.total_earnings })}
-                        disabled={verifyingPaycheck === paycheck.id}
-                        size="sm"
-                      >
-                        <Check className="w-4 h-4 mr-1 inline" />
-                        Approve ({formatCurrency(paycheck.total_earnings || 0)})
-                      </Button>
-                      <div className="flex items-center gap-2 flex-1">
-                        <input
-                          type="number"
-                          value={verifiedAmounts[paycheck.id] || ''}
-                          onChange={(e) => setVerifiedAmounts(prev => ({
-                            ...prev,
-                            [paycheck.id]: e.target.value
-                          }))}
-                          placeholder="Or adjust amount..."
-                          className="flex-1 px-3 py-1 text-sm rounded-sm border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-stone-400"
-                        />
-                        {verifiedAmounts[paycheck.id] && (
-                          <Button
-                            onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: parseFloat(verifiedAmounts[paycheck.id]) })}
-                            disabled={verifyingPaycheck === paycheck.id}
-                            size="sm"
-                            variant="ghost"
-                          >
-                            Approve Adjusted
-                          </Button>
-                        )}
+                    <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-3 space-y-2">
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: paycheck.total_earnings })}
+                          disabled={verifyingPaycheck === paycheck.id}
+                          size="sm"
+                        >
+                          <Check className="w-4 h-4 mr-1 inline" />
+                          Approve ({formatCurrency(paycheck.total_earnings || 0)})
+                        </Button>
+                        <div className="flex items-center gap-2 flex-1">
+                          <input
+                            type="number"
+                            value={verifiedAmounts[paycheck.id] || ''}
+                            onChange={(e) => setVerifiedAmounts(prev => ({
+                              ...prev,
+                              [paycheck.id]: e.target.value
+                            }))}
+                            placeholder="Or adjust amount..."
+                            className="flex-1 px-3 py-1 text-sm rounded-sm border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-pencil"
+                          />
+                          {verifiedAmounts[paycheck.id] && (
+                            <Button
+                              onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: parseFloat(verifiedAmounts[paycheck.id]) })}
+                              disabled={verifyingPaycheck === paycheck.id}
+                              size="sm"
+                              variant="ghost"
+                            >
+                              Approve Adjusted
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => returnPaycheck(paycheck.id)}
+                          className="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline"
+                        >
+                          Return to Student
+                        </button>
+                        <span className="text-ink-faint">·</span>
+                        <button
+                          onClick={() => startEditPaycheck(paycheck)}
+                          className="text-xs font-semibold text-ink-muted dark:text-white/50 hover:underline"
+                        >
+                          Edit Amounts
+                        </button>
                       </div>
                     </div>
                   )}
 
-                  {(paycheck.status === 'verified' || paycheck.status === 'allocated') && (
-                    <div className="flex items-center gap-2 text-sage-700 text-sm font-semibold">
-                      <Check className="w-4 h-4" />
-                      Approved: {formatCurrency(paycheck.verified_amount || paycheck.total_earnings)}
+                  {/* Edit mode for guide */}
+                  {editingPaycheck === paycheck.id && (
+                    <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-3 space-y-2">
+                      <p className="text-xs font-semibold text-ink-muted dark:text-white/40 uppercase tracking-wider">Edit Earnings</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['base_pay', 'epic_bonus', 'xp_bonus', 'mastery_pay', 'job_pay', 'other_pay'].map(field => (
+                          <div key={field}>
+                            <label className="text-[10px] text-ink-faint dark:text-white/30 capitalize">{field.replace('_', ' ')}</label>
+                            <input
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              value={editFields[field] || ''}
+                              onChange={(e) => setEditFields(prev => ({ ...prev, [field]: parseFloat(e.target.value) || 0 }))}
+                              className="w-full px-2 py-1 text-sm rounded-sm border border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-white focus:outline-none focus:border-pencil"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex gap-2 mt-2">
+                        <Button size="sm" onClick={() => saveEditPaycheck(paycheck.id)}>Save Changes</Button>
+                        <button onClick={() => setEditingPaycheck(null)} className="text-xs text-ink-muted hover:underline">Cancel</button>
+                      </div>
                     </div>
                   )}
+
+                  {/* Guide can also edit verified/allocated paychecks */}
+                  {(paycheck.status === 'verified' || paycheck.status === 'allocated') && editingPaycheck !== paycheck.id && (
+                    <div className="border-t border-black/[0.08] dark:border-white/[0.06] pt-3 flex gap-3">
+                      <div className="flex items-center gap-2 text-sage-700 text-sm font-semibold">
+                        <Check className="w-4 h-4" />
+                        Approved: {formatCurrency(paycheck.verified_amount || paycheck.total_earnings)}
+                      </div>
+                      <button
+                        onClick={() => startEditPaycheck(paycheck)}
+                        className="text-xs font-semibold text-ink-muted dark:text-white/50 hover:underline ml-auto"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  )}
+
                 </motion.div>
               )
             }))
