@@ -119,7 +119,6 @@ export const GuideRoster = () => {
       setAddFormData({ name: '', email: '' })
       setShowAddModal(false)
 
-      // Refresh the student list
       await fetchStudents()
     } catch (err) {
       console.error('Failed to add student:', err)
@@ -134,161 +133,157 @@ export const GuideRoster = () => {
     setAddFormData({ name: '', email: '' })
   }
 
-  const alertVariants = {
-    initial: { opacity: 0, y: -20 },
-    animate: { opacity: 1, y: 0 }
-  }
-
-  const rowVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (index) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: index * 0.05,
-        duration: 0.3
-      }
-    })
-  }
-
   const totalBalance = students.reduce((sum, student) => sum + getStudentTotal(student.accounts), 0)
 
   return (
-    <div className="space-y-6 p-8">
+    <div className="max-w-3xl mx-auto px-8 py-10">
       <Toast message={toast} />
 
+      {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-start justify-between gap-4"
+        className="mb-8"
       >
-        <div className="space-y-2">
-          <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white font-hand">Students</h1>
-          <p className="text-lg text-ink-muted dark:text-white/50">
-            {filteredStudents.length} {filteredStudents.length === 1 ? 'student' : 'students'} •{' '}
-            <span className="font-bold text-pencil-dark dark:text-pencil">
-              <AnimNum value={totalBalance} prefix="$" duration={600} />
-            </span>
-          </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-hand font-bold text-ink dark:text-chalk-white">Students</h1>
+            <p className="text-[13px] text-ink-muted dark:text-white/40 mt-1">
+              {filteredStudents.length} {filteredStudents.length === 1 ? 'student' : 'students'} · <span className="font-semibold text-ink dark:text-chalk-white"><AnimNum value={totalBalance} prefix="$" duration={600} /></span> total
+            </p>
+          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Student
+          </button>
         </div>
-        <Button
-          variant="primary"
-          size="md"
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 mt-1"
-        >
-          <Plus className="w-5 h-5" />
-          Add Student
-        </Button>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {paycheck_count > 0 && (
-          <motion.div
-            variants={alertVariants}
-            initial="initial"
-            animate="animate"
-            transition={{ delay: 0.1 }}
-            className="bg-pencil/20 dark:bg-pencil/10 border-l-4 border-pencil p-4 rounded-sm flex items-start gap-3 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
-          >
-            <AlertCircle className="w-5 h-5 text-pencil-dark dark:text-pencil mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="font-semibold font-hand text-pencil-dark dark:text-pencil">{paycheck_count} Paychecks to Review</p>
-              <p className="text-sm text-pencil-dark/80 dark:text-pencil/80">Student submissions pending review</p>
-            </div>
-          </motion.div>
-        )}
+      {/* Alerts */}
+      {(paycheck_count > 0 || purchase_count > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+          {paycheck_count > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
+              className="flex items-center gap-3 p-4 rounded-xl border border-amber-200/60 dark:border-amber/20 bg-amber-bg dark:bg-amber/[0.04]"
+            >
+              <div className="w-8 h-8 rounded-lg bg-amber/10 flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="w-4 h-4 text-amber dark:text-amber" />
+              </div>
+              <div>
+                <p className="text-[13px] font-bold text-ink dark:text-chalk-white">{paycheck_count} paychecks to review</p>
+                <p className="text-[11px] text-ink-muted dark:text-white/40">Pending approval</p>
+              </div>
+            </motion.div>
+          )}
 
-        {purchase_count > 0 && (
-          <motion.div
-            variants={alertVariants}
-            initial="initial"
-            animate="animate"
-            transition={{ delay: 0.15 }}
-            className="bg-red-50 dark:bg-red-500/10 border-l-4 border-red-300 p-4 rounded-sm flex items-start gap-3 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
-          >
-            <AlertCircle className="w-5 h-5 text-red-700 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="font-semibold font-hand text-red-800">{purchase_count} Purchases to Review</p>
-              <p className="text-sm text-red-700">Items awaiting approval</p>
-            </div>
-          </motion.div>
-        )}
-      </div>
+          {purchase_count > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              className="flex items-center gap-3 p-4 rounded-xl border border-rose/20 dark:border-rose/10 bg-rose-bg dark:bg-rose/[0.04]"
+            >
+              <div className="w-8 h-8 rounded-lg bg-rose/10 flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="w-4 h-4 text-rose dark:text-rose" />
+              </div>
+              <div>
+                <p className="text-[13px] font-bold text-ink dark:text-chalk-white">{purchase_count} purchases to review</p>
+                <p className="text-[11px] text-ink-muted dark:text-white/40">Items awaiting approval</p>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      )}
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-muted dark:text-white/40" />
+      {/* Search */}
+      <div className="relative mb-6">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint dark:text-white/30" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by name or email..."
-          className="w-full pl-10 pr-4 py-3 rounded-sm border border-black/[0.08] dark:border-white/[0.06] dark:bg-white/[0.03] dark:text-chalk-white text-ink placeholder-ink-muted dark:placeholder-white/50 focus:outline-none focus:border-pencil focus:ring-2 focus:ring-pencil/20 dark:focus:border-pencil dark:focus:ring-pencil/20 transition-all"
+          placeholder="Search students..."
+          className="w-full pl-11 pr-4 py-3 rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-ink dark:text-chalk-white placeholder-ink-faint dark:placeholder-white/30 text-[13px] focus:outline-none focus:border-ink/20 dark:focus:border-white/20 focus:ring-2 focus:ring-ink/5 dark:focus:ring-white/5 transition-all"
         />
       </div>
 
+      {/* Student List */}
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-gray-100 dark:bg-white/5 rounded-sm animate-pulse" />
+            <div key={i} className="h-[72px] bg-surface-2 dark:bg-white/[0.03] rounded-xl animate-pulse" />
           ))}
         </div>
       ) : filteredStudents.length === 0 ? (
-        <div className="py-16 text-center">
+        <div className="py-20 text-center">
           {students.length === 0 ? (
             <>
-              <div className="text-4xl mb-3">👥</div>
-              <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No students yet</p>
-              <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Click '+ Add Student' to get started</p>
+              <p className="text-[13px] font-medium text-ink-muted dark:text-white/40">No students yet</p>
+              <p className="text-[11px] text-ink-faint dark:text-white/25 mt-1">Click "Add Student" to get started</p>
             </>
           ) : (
             <>
-              <div className="text-4xl mb-3">🔍</div>
-              <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No results</p>
-              <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Try a different search term</p>
+              <p className="text-[13px] font-medium text-ink-muted dark:text-white/40">No results</p>
+              <p className="text-[11px] text-ink-faint dark:text-white/25 mt-1">Try a different search term</p>
             </>
           )}
         </div>
       ) : (
-        <div className="space-y-2 overflow-hidden">
+        <div className="space-y-1.5">
           {filteredStudents.map((student, index) => {
             const total = getStudentTotal(student.accounts)
+            const accountBreakdown = {}
+            student.accounts.forEach(a => { accountBreakdown[a.account_type] = a.balance })
+
             return (
               <motion.button
                 key={student.id}
-                custom={index}
-                variants={rowVariants}
-                initial="hidden"
-                animate="visible"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.03, duration: 0.3 }}
                 onClick={() => handleStudentClick(student.id)}
-                className="w-full text-left"
+                className="w-full text-left group"
               >
-                <motion.div
-                  className="flex items-center gap-4 p-4 rounded-sm border border-black/[0.08] dark:border-white/[0.06] bg-white dark:bg-white/[0.04] hover:border-black/[0.12] dark:hover:border-white/[0.10] hover:shadow-sm transition-all group shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
-                  whileHover={{ x: 4 }}
-                >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-ink dark:bg-chalk-white flex items-center justify-center text-white dark:text-ink font-bold text-sm shadow-md shadow-black/10">
+                <div className="flex items-center gap-4 p-4 rounded-xl border border-transparent hover:border-black/[0.06] dark:hover:border-white/[0.06] bg-white dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.04] transition-all">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-surface-3 dark:bg-white/[0.08] flex items-center justify-center text-ink-light dark:text-white/50 font-bold text-xs">
                     {initials(student.full_name)}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-ink dark:text-chalk-white truncate font-hand">{student.full_name}</p>
-                    <p className="text-sm text-ink-muted dark:text-white/40 truncate">{student.email}</p>
+                    <p className="text-[13px] font-bold text-ink dark:text-chalk-white truncate">{student.full_name}</p>
+                    <p className="text-[11px] text-ink-faint dark:text-white/30 truncate">{student.email}</p>
                   </div>
 
-                  <div className="flex-shrink-0 text-right">
-                    <p className="font-extrabold text-lg text-ink dark:text-chalk-white tabular-nums">
+                  {/* Mini account breakdown */}
+                  <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+                    {['checking', 'savings', 'sp500', 'nasdaq'].map(key => {
+                      const bal = accountBreakdown[key] || 0
+                      if (bal === 0) return null
+                      return (
+                        <div key={key} className="text-right">
+                          <p className="text-[10px] text-ink-faint dark:text-white/25 uppercase tracking-wider">{ACCOUNT_META[key]?.label}</p>
+                          <p className="text-[11px] font-semibold tabular-nums text-ink-muted dark:text-white/50">{formatCurrency(bal)}</p>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <div className="flex-shrink-0 text-right ml-2">
+                    <p className="text-base font-black tabular-nums text-ink dark:text-chalk-white">
                       <AnimNum value={total} prefix="$" duration={600} />
                     </p>
-                    <p className="text-xs text-ink-faint dark:text-white/30 font-medium">Total balance</p>
                   </div>
 
-                  <div className="flex-shrink-0 text-ink-muted dark:text-white/50 group-hover:translate-x-1 transition-transform">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </motion.div>
+                  <svg className="w-4 h-4 text-ink-faint dark:text-white/20 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </motion.button>
             )
           })}
@@ -304,22 +299,22 @@ export const GuideRoster = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={handleCloseModal}
-              className="fixed inset-0 bg-black/40 z-40"
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.96, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              exit={{ opacity: 0, scale: 0.96, y: 16 }}
               transition={{ duration: 0.2 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-white/[0.04] rounded-2xl shadow-2xl shadow-black/5 z-50 w-full max-w-sm mx-4 p-6 border border-gray-200 dark:border-white/10"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#1e2a1e] rounded-2xl shadow-2xl z-50 w-full max-w-sm mx-4 p-6 border border-black/[0.08] dark:border-white/[0.08]"
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white font-hand">Add Student</h2>
+                <h2 className="text-xl font-hand font-bold text-ink dark:text-chalk-white">Add Student</h2>
                 <button
                   onClick={handleCloseModal}
-                  className="text-gray-400 dark:text-white/30 hover:text-gray-600 dark:hover:text-white/60 transition-colors"
+                  className="text-ink-faint dark:text-white/30 hover:text-ink-muted dark:hover:text-white/50 transition-colors"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
@@ -345,25 +340,21 @@ export const GuideRoster = () => {
                 </Field>
 
                 <div className="flex gap-3 pt-2">
-                  <Button
+                  <button
                     type="button"
-                    variant="secondary"
-                    size="md"
                     onClick={handleCloseModal}
                     disabled={addingStudent}
-                    className="flex-1"
+                    className="flex-1 py-2.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] text-[13px] font-bold text-ink-muted dark:text-white/50 hover:bg-surface-2 dark:hover:bg-white/[0.04] transition-colors"
                   >
                     Cancel
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     type="submit"
-                    variant="primary"
-                    size="md"
                     disabled={addingStudent}
-                    className="flex-1"
+                    className="flex-1 py-2.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors disabled:opacity-50"
                   >
                     {addingStudent ? 'Adding...' : 'Add Student'}
-                  </Button>
+                  </button>
                 </div>
               </form>
             </motion.div>
