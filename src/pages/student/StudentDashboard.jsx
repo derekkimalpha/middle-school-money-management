@@ -53,13 +53,13 @@ export const StudentDashboard = () => {
       try {
         // Fetch streak
         const { data: streakData } = await supabase
-          .from('students')
-          .select('streak')
-          .eq('id', profile.id)
+          .from('student_streaks')
+          .select('current_streak')
+          .eq('student_id', profile.id)
           .single()
 
         if (streakData) {
-          setStreak(streakData.streak || 0)
+          setStreak(streakData.current_streak || 0)
         }
 
         // Fetch badges
@@ -146,7 +146,7 @@ export const StudentDashboard = () => {
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             <h1 className="text-4xl font-bold text-slate-900">
-              Hey {profile?.first_name || 'Friend'}
+              Hey {profile?.full_name?.split(' ')[0] || 'Friend'}
             </h1>
             <p className="text-slate-600 mt-2 italic">{randomQuip}</p>
           </div>
