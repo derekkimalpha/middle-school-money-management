@@ -67,14 +67,16 @@ export const GuideSession = () => {
         .from('paycheck_settings')
         .insert({
           session_id: newSession[0].id,
-          xp_threshold: 2000,
+          xp_threshold: 600,
           base_pay: 10,
           epic_week_bonus: 5,
-          bonus_xp_rate: 0.01,
-          mastery_pass_pay: 5,
-          mastery_perfect_pay: 10,
-          mastery_min_score: 80,
-          transfer_fee_percent: 2
+          bonus_xp_rate: 1.00,
+          bonus_xp_per: 50,
+          mastery_pass_pay: 20,
+          mastery_perfect_pay: 100,
+          mastery_min_score: 90,
+          transfer_fee_pct: 10,
+          smart_goal_pay: 6
         })
 
       if (settingsError) throw settingsError
