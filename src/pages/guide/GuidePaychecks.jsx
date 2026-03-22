@@ -52,7 +52,7 @@ export const GuidePaychecks = () => {
   const sortPaychecks = () => {
     const pending = paychecks.filter(p => p.status === 'submitted')
     const recent = paychecks
-      .filter(p => p.status === 'verified' || p.status === 'returned')
+      .filter(p => p.status === 'verified' || p.status === 'allocated')
       .slice(0, 10)
 
     setPendingPaychecks(pending)
@@ -87,7 +87,7 @@ export const GuidePaychecks = () => {
       setProcessingId(paycheckId)
       const { error } = await supabase
         .from('weekly_paychecks')
-        .update({ status: 'returned' })
+        .update({ status: 'draft' })
         .eq('id', paycheckId)
 
       if (error) throw error
@@ -104,7 +104,7 @@ export const GuidePaychecks = () => {
     const colors = {
       submitted: 'bg-stone-100 dark:bg-white/[0.08] text-stone-700 dark:text-white/80',
       verified: 'bg-sage-bg dark:bg-white/[0.08] text-sage-700 dark:text-white/80',
-      returned: 'bg-red-100 dark:bg-white/[0.08] text-red-800 dark:text-red-400'
+      allocated: 'bg-sage-bg dark:bg-white/[0.08] text-sage-700 dark:text-white/80'
     }
     return colors[status] || 'bg-gray-100 dark:bg-white/[0.08] text-gray-700 dark:text-white/80'
   }
@@ -113,8 +113,8 @@ export const GuidePaychecks = () => {
     switch (status) {
       case 'verified':
         return <CheckCircle className="w-4 h-4" />
-      case 'returned':
-        return <XCircle className="w-4 h-4" />
+      case 'allocated':
+        return <CheckCircle className="w-4 h-4" />
       case 'submitted':
         return <Clock className="w-4 h-4" />
       default:
@@ -126,7 +126,7 @@ export const GuidePaychecks = () => {
     const labels = {
       submitted: 'Pending',
       verified: 'Approved',
-      returned: 'Sent Back'
+      allocated: 'Complete'
     }
     return labels[status] || status
   }

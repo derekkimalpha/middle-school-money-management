@@ -177,7 +177,7 @@ export const GuideStudentDetail = () => {
       submitted: 'bg-stone-100 text-stone-700',
       verified: 'bg-sage-bg text-sage-700',
       allocated: 'bg-stone-100 text-stone-700',
-      returned: 'bg-red-100 text-red-700',
+      draft: 'bg-pencil/10 text-pencil-dark',
     }
     return colors[status] || 'bg-stone-100 text-stone-700'
   }
@@ -188,7 +188,7 @@ export const GuideStudentDetail = () => {
       submitted: 'Locked In',
       verified: 'Approved',
       allocated: 'Allocated',
-      returned: 'Sent Back',
+      draft: 'In Progress',
     }
     return labels[status] || status
   }
@@ -197,7 +197,7 @@ export const GuideStudentDetail = () => {
     try {
       const { error } = await supabase
         .from('weekly_paychecks')
-        .update({ status: 'returned' })
+        .update({ status: 'draft' })
         .eq('id', paycheckId)
       if (error) throw error
       setToast({ type: 'success', text: 'Paycheck returned to student for corrections' })
