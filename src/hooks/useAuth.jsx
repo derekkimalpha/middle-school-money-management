@@ -116,5 +116,12 @@ export const useAuth = () => {
     }
   }
 
-  return { user, profile, loading, signInWithGoogle, signOut }
+  const refreshProfile = useCallback(async () => {
+    if (user?.id) {
+      return fetchProfile(user.id)
+    }
+    return null
+  }, [user?.id, fetchProfile])
+
+  return { user, profile, loading, signInWithGoogle, signOut, refreshProfile }
 }

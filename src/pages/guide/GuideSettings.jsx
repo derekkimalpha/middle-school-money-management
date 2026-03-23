@@ -246,7 +246,7 @@ export const GuideSettings = () => {
   }
 
   const addGuide = async (email) => {
-    if (!email.trim() || !activeSession) {
+    if (!email.trim()) {
       setToast({ type: 'error', text: 'Please enter an email address' })
       return
     }
@@ -254,35 +254,24 @@ export const GuideSettings = () => {
     try {
       setAddingGuide(true)
 
-      // Look up profile by email
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, full_name, email')
-        .eq('email', email.toLowerCase())
-        .single()
+      // Use invite_guide RPC — promotes the user to guide role and adds to guide_classrooms
+      const { data, error: rpcError } = await supabase.rpc('invite_guide', {
+        p_email: email.toLowerCase().trim(),
+      })
 
-      if (profileError || !profileData) {
-        setToast({ type: 'error', text: 'Profile not found for this email' })
-        return
-      }
+      if (rpcError) throw rpcError
+      if (data?.error) throw new Error(data.error)
 
-      // Insert into guide_classrooms with role 'guide'
-      const { data: newGuideData, error: insertError } = await supabase
+      // Refresh guides list
+      const { data: updatedGuides } = await supabase
         .from('guide_classrooms')
-        .insert({
-          session_id: activeSession.id,
-          guide_id: profileData.id,
-          role: 'guide'
-        })
         .select('*, guide:profiles!guide_id(id, full_name, email)')
 
-      if (insertError) throw insertError
-
-      setGuides([...guides, newGuideData[0]])
+      if (updatedGuides) setGuides(updatedGuides)
       setNewGuideEmail('')
-      setToast({ type: 'success', text: 'Guide added successfully' })
+      setToast({ type: 'success', text: `${data.name || 'Guide'} added successfully!` })
     } catch (err) {
-      setToast({ type: 'error', text: 'Failed to add guide' })
+      setToast({ type: 'error', text: err.message || 'Failed to add guide' })
     } finally {
       setAddingGuide(false)
     }

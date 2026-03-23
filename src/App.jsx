@@ -12,6 +12,7 @@ import { Layout } from './components/shared/Layout'
 import { AchievementToast } from './components/shared/AchievementToast'
 import { getLevel, getNextLevel } from './lib/constants'
 import { LoginPage } from './pages/LoginPage'
+import { RoleSelector } from './pages/RoleSelector'
 // Student pages
 import { StudentDashboard } from './pages/student/StudentDashboard'
 import { StudentPaycheck } from './pages/student/StudentPaycheck'
@@ -47,7 +48,7 @@ const LoadingSpinner = ({ debugMsg }) => (
 )
 
 function AppInner() {
-  const { user, profile, loading, signInWithGoogle, signOut } = useAuth()
+  const { user, profile, loading, signInWithGoogle, signOut, refreshProfile } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -114,6 +115,11 @@ function AppInner() {
 
   if (!user || !profile) {
     return <LoginPage onSignInWithGoogle={signInWithGoogle} loading={loading} />
+  }
+
+  // First-time user: show role selection
+  if (!profile.setup_complete) {
+    return <RoleSelector profile={profile} onComplete={refreshProfile} />
   }
 
   const isGuide = profile.role === 'guide'
