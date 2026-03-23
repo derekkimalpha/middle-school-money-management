@@ -25,6 +25,7 @@ import {
   BarChart3, ChevronRight, Banknote, ArrowUpRight,
   Sprout, Trophy, Flame, Target, Sparkles, BookOpen,
   Clock, Star, X, Info, Lock, MapPin, GraduationCap,
+  DollarSign, HandCoins, MessageSquare,
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
@@ -55,27 +56,32 @@ const ACCOUNT_SUBTITLES = {
 const ACCOUNT_LEARN = {
   checking: {
     title: 'What is a Checking Account?',
-    body: 'A checking account is your everyday spending money. In real life, this is the account connected to your debit card. You use it to buy things, pay bills, and handle daily expenses. It doesn\'t earn interest, so it\'s not for growing money — it\'s for using money.',
+    body: 'Your everyday spending money. In real life, this is the account connected to your debit card — you use it to buy things, pay bills, and handle daily expenses.',
     funFact: 'The average American uses their debit card 23 times per month.',
   },
   savings: {
     title: 'What is a Savings Account?',
-    body: 'A savings account is where you park money you don\'t need right now. Banks pay you interest (free money!) for keeping it there, because they use your deposit to make loans to other people. It\'s low risk — your balance only goes up. Think of it as your "safe growth" account.',
-    funFact: 'The highest savings rate in US history was 33% during WWII — people had nothing to buy!',
+    body: 'Where you park money you don\'t need right now. Banks pay you interest (free money!) for keeping it there. It\'s low risk — your balance only goes up.',
+    funFact: 'The highest savings rate in US history was 33% during WWII!',
   },
   sp500: {
     title: 'What is the S&P 500?',
-    body: 'An index is a collection of stocks bundled together. The S&P 500 tracks the 500 biggest companies in America — Apple, Amazon, Google, McDonald\'s, Nike, and more. Instead of picking one company, you invest in ALL of them. It\'s considered lower-risk investing because if one company drops, the others balance it out. Historically returns ~10% per year.',
-    funFact: 'If you invested $100 in the S&P 500 in 1980, it would be worth over $10,000 today.',
+    body: 'An index that tracks the 500 biggest U.S. companies — Apple, Amazon, Google, Nike, and more. Instead of picking one stock, you invest in ALL of them. Historically returns ~10%/year.',
+    funFact: '$100 invested in 1980 would be worth over $10,000 today.',
     riskLabel: 'Moderate Risk',
     riskColor: 'text-amber',
   },
   nasdaq: {
     title: 'What is the NASDAQ?',
-    body: 'The NASDAQ-100 is an index focused on the 100 biggest tech and growth companies — Apple, Microsoft, Tesla, Meta, Netflix. It\'s higher-risk than the S&P 500 because tech stocks are more volatile (bigger ups AND bigger downs). But historically, higher risk = higher reward over long periods. Great for people who can handle the ride.',
+    body: 'An index focused on the 100 biggest tech & growth companies — Apple, Microsoft, Tesla, Meta, Netflix. Higher risk than S&P 500 (bigger ups AND bigger downs), but historically higher reward.',
     funFact: 'The NASDAQ has outperformed the S&P 500 in 7 of the last 10 years.',
     riskLabel: 'Higher Risk / Higher Reward',
     riskColor: 'text-rose',
+  },
+  roth: {
+    title: 'What is a Roth IRA?',
+    body: 'A retirement account where your money grows tax-free. You earn this through MAP testing — the better you score, the more goes in. It\'s locked until graduation, just like a real Roth IRA is locked until retirement.',
+    funFact: 'A Roth IRA was created in 1997 and named after Senator William Roth.',
   },
 }
 
@@ -141,7 +147,7 @@ export const StudentDashboard = () => {
   const { user, profile } = useAuth()
   const [toast, setToast] = useState(null)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [learnPopup, setLearnPopup] = useState(null) // which account card popup is open
+  const [hoverTooltip, setHoverTooltip] = useState(null) // which account card tooltip is showing
   const { accounts, loading } = useAccounts(profile?.id)
   const { settings } = usePaycheckSettings()
   const growthLog = useGrowthLog(profile?.id)
@@ -534,29 +540,81 @@ export const StudentDashboard = () => {
                         {ACCOUNT_META[key]?.label}
                       </span>
                     </div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setLearnPopup(learnPopup === key ? null : key) }}
-                      className="flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide transition-all"
-                      style={{ backgroundColor: colors.light, color: colors.hex }}
+                    <div
+                      className="relative"
+                      onMouseEnter={() => setHoverTooltip(key)}
+                      onMouseLeave={() => setHoverTooltip(null)}
                     >
-                      <BookOpen className="w-3 h-3" />
-                      Learn
-                    </button>
+                      <div
+                        className="w-6 h-6 rounded-full flex items-center justify-center cursor-help transition-colors"
+                        style={{ backgroundColor: colors.light }}
+                      >
+                        <Info className="w-3 h-3" style={{ color: colors.hex }} />
+                      </div>
+                      <AnimatePresence>
+                        {hoverTooltip === key && ACCOUNT_LEARN[key] && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute right-0 top-full mt-2 z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-lg"
+                          >
+                            <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-1.5">
+                              {ACCOUNT_LEARN[key].title}
+                            </p>
+                            <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60 mb-2">
+                              {ACCOUNT_LEARN[key].body}
+                            </p>
+                            {ACCOUNT_LEARN[key].riskLabel && (
+                              <div className="flex items-center gap-1.5 mb-2">
+                                <div className={`w-1.5 h-1.5 rounded-full ${key === 'sp500' ? 'bg-amber' : 'bg-rose'}`} />
+                                <span className={`text-[10px] font-bold ${ACCOUNT_LEARN[key].riskColor}`}>{ACCOUNT_LEARN[key].riskLabel}</span>
+                              </div>
+                            )}
+                            <div className="rounded-lg px-2.5 py-2 bg-pencil/[0.06]">
+                              <p className="text-[10px] text-ink-muted dark:text-white/50">
+                                <span className="font-bold text-pencil">Fun fact:</span> {ACCOUNT_LEARN[key].funFact}
+                              </p>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
 
                   <p className="text-2xl font-black tabular-nums text-ink dark:text-chalk-white mb-1">
                     <AnimNum value={balance} prefix="$" />
                   </p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-[10px] text-ink-faint dark:text-white/25">
-                      {ACCOUNT_SUBTITLES[key]}
-                    </p>
-                    {earnedForType > 0 && (
-                      <span className="text-[10px] font-semibold text-sage dark:text-sage-300">
-                        +{formatCurrency(earnedForType)}
-                      </span>
-                    )}
-                  </div>
+                  {key === 'checking' ? (
+                    <div className="flex items-center gap-1.5 mt-1">
+                      {[
+                        { label: 'Cash Out', icon: DollarSign, route: '/cash-out' },
+                        { label: 'Buy', icon: ShoppingCart, route: '/purchase' },
+                        { label: 'Ask Guide', icon: MessageSquare, route: '/request' },
+                      ].map(action => (
+                        <button
+                          key={action.label}
+                          onClick={(e) => { e.stopPropagation(); navigate(action.route) }}
+                          className="flex items-center gap-1 px-2 py-1 rounded-md text-[9px] font-semibold text-sage-dark dark:text-sage-300 bg-sage/[0.08] hover:bg-sage/[0.15] transition-colors"
+                        >
+                          <action.icon className="w-2.5 h-2.5" />
+                          {action.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <p className="text-[10px] text-ink-faint dark:text-white/25">
+                        {ACCOUNT_SUBTITLES[key]}
+                      </p>
+                      {earnedForType > 0 && (
+                        <span className="text-[10px] font-semibold text-sage dark:text-sage-300">
+                          +{formatCurrency(earnedForType)}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )
@@ -579,10 +637,44 @@ export const StudentDashboard = () => {
                       Roth IRA
                     </span>
                   </div>
-                  <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-violet-100/60 dark:bg-violet-800/20 text-[9px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-wide">
-                    <GraduationCap className="w-3 h-3" />
-                    Locked until graduation
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-violet-100/60 dark:bg-violet-800/20 text-[9px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-wide">
+                      <GraduationCap className="w-3 h-3" />
+                      Locked until graduation
+                    </span>
+                    <div
+                      className="relative"
+                      onMouseEnter={() => setHoverTooltip('roth')}
+                      onMouseLeave={() => setHoverTooltip(null)}
+                    >
+                      <div className="w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center cursor-help">
+                        <Info className="w-3 h-3 text-violet-500" />
+                      </div>
+                      <AnimatePresence>
+                        {hoverTooltip === 'roth' && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute right-0 top-full mt-2 z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-lg"
+                          >
+                            <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-1.5">
+                              {ACCOUNT_LEARN.roth.title}
+                            </p>
+                            <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60 mb-2">
+                              {ACCOUNT_LEARN.roth.body}
+                            </p>
+                            <div className="rounded-lg px-2.5 py-2 bg-pencil/[0.06]">
+                              <p className="text-[10px] text-ink-muted dark:text-white/50">
+                                <span className="font-bold text-pencil">Fun fact:</span> {ACCOUNT_LEARN.roth.funFact}
+                              </p>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
@@ -609,75 +701,7 @@ export const StudentDashboard = () => {
         </div>
       </div>
 
-      {/* ── Account Learn Popup (overlay) ── */}
-      <AnimatePresence>
-        {learnPopup && ACCOUNT_LEARN[learnPopup] && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
-            onClick={() => setLearnPopup(null)}
-          >
-            {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
-
-            {/* Popup Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative z-10 w-full max-w-md mx-4 mb-4 sm:mb-0 rounded-2xl bg-white dark:bg-[#1c1b19] border border-black/[0.08] dark:border-white/[0.08] shadow-xl overflow-hidden"
-            >
-              {/* Header */}
-              <div className="px-6 pt-5 pb-4 flex items-start justify-between"
-                style={{ background: `linear-gradient(135deg, ${ACCOUNT_COLORS[learnPopup]?.light} 0%, transparent 100%)` }}
-              >
-                <div className="flex items-center gap-3">
-                  
-                  <h3 className="text-[16px] font-bold text-ink dark:text-chalk-white">
-                    {ACCOUNT_LEARN[learnPopup].title}
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setLearnPopup(null)}
-                  className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors flex-shrink-0"
-                >
-                  <X className="w-4 h-4 text-ink-muted dark:text-white/40" />
-                </button>
-              </div>
-
-              {/* Body */}
-              <div className="px-6 pb-6">
-                <p className="text-[13px] leading-relaxed text-ink-light dark:text-white/60 mb-4">
-                  {ACCOUNT_LEARN[learnPopup].body}
-                </p>
-
-                {/* Risk label for investments */}
-                {ACCOUNT_LEARN[learnPopup].riskLabel && (
-                  <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-surface-3 dark:bg-white/[0.04]">
-                    <div className={`w-2 h-2 rounded-full ${learnPopup === 'sp500' ? 'bg-amber' : 'bg-rose'}`} />
-                    <span className={`text-[12px] font-bold ${ACCOUNT_LEARN[learnPopup].riskColor}`}>
-                      {ACCOUNT_LEARN[learnPopup].riskLabel}
-                    </span>
-                  </div>
-                )}
-
-                {/* Fun fact */}
-                <div className="rounded-lg p-3 bg-pencil/[0.06] dark:bg-pencil/[0.04] border border-pencil/10">
-                  <p className="text-[11px] font-bold text-pencil uppercase tracking-wider mb-1">Fun Fact</p>
-                  <p className="text-[12px] text-ink-light dark:text-white/55 leading-relaxed">
-                    {ACCOUNT_LEARN[learnPopup].funFact}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* (tooltips are now inline on hover — no overlay needed) */}
 
       {/* ── Quick Actions ── */}
       <div className="px-8 mb-8">
