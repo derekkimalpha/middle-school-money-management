@@ -12,14 +12,14 @@ import { useAuth } from '../../hooks/useAuth'
 import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, GRADES, formatCurrency } from '../../lib/constants'
-import { ChevronRight, Trash2, Clock, CheckCircle, AlertCircle, DollarSign, Save, Lock } from 'lucide-react'
+import { ChevronRight, Trash2, Clock, CheckCircle, AlertCircle, DollarSign, Save, Lock, Send, Wallet, PiggyBank, TrendingUp, BarChart3, Sparkles } from 'lucide-react'
 
 const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri']
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
 const STATUS_CONFIG = {
   draft: { label: 'In Progress', color: 'bg-pencil/10 dark:bg-pencil/10 text-pencil-dark dark:text-pencil' },
-  submitted: { label: 'Locked In', color: 'bg-stone-100/50 dark:bg-stone-500/[0.06] text-stone-700 dark:text-stone-400' },
+  submitted: { label: 'Submitted', color: 'bg-stone-100/50 dark:bg-stone-500/[0.06] text-stone-700 dark:text-stone-400' },
   verified: { label: 'Approved', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
   allocated: { label: 'Allocated', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
   draft: { label: 'In Progress', color: 'bg-pencil/10 dark:bg-pencil/10 text-pencil-dark dark:text-pencil' },
@@ -36,6 +36,7 @@ export const StudentPaycheck = () => {
   const { user, profile } = useAuth()
   const { settings } = usePaycheckSettings()
   const [view, setView] = useState('tracker')
+  const [step, setStep] = useState(1) // 1=Log XP, 2=Review & Allocate, 3=Confirm
   const [pastPaychecks, setPastPaychecks] = useState([])
   const [selectedPaycheck, setSelectedPaycheck] = useState(null)
   const [loadingHistory, setLoadingHistory] = useState(true)
@@ -272,16 +273,11 @@ export const StudentPaycheck = () => {
   }, [autoSave])
 
   // Update handlers that trigger auto-save
-  const EPIC_DAY_XP = 145 // >145 XP = epic day
-
   const updateXp = (dayKey, value) => {
     const xpVal = parseInt(value) || 0
     const updated = { ...xpByDay, [dayKey]: xpVal }
     setXpByDay(updated)
-    // Auto-set epic day when XP > 145
-    const updatedEpic = { ...epicDays, [dayKey]: xpVal > EPIC_DAY_XP }
-    setEpicDays(updatedEpic)
-    debouncedSave(updated, updatedEpic, undefined, undefined)
+    debouncedSave(updated, undefined, undefined, undefined)
   }
 
   const toggleEpic = (dayKey) => {
@@ -346,7 +342,7 @@ export const StudentPaycheck = () => {
   // ── Lock In (submit) ──
   const handleLockIn = async () => {
     if (totalPaycheck <= 0) {
-      setToast({ type: 'error', text: 'No earnings to lock in yet' })
+      setToast({ type: 'error', text: 'No earnings to submit yet' })
       return
     }
     setLoading(true)
@@ -372,22 +368,29 @@ export const StudentPaycheck = () => {
         }
       }
 
-      // Set status to submitted
+      // Set status to submitted, include allocation
+      const allocData = {}
+      if (allocation.checking > 0) allocData.alloc_checking = allocation.checking
+      if (allocation.savings > 0) allocData.alloc_savings = allocation.savings
+      if (allocation.sp500 > 0) allocData.alloc_sp500 = allocation.sp500
+      if (allocation.nasdaq > 0) allocData.alloc_nasdaq = allocation.nasdaq
+      if (allocation.bonus > 0) allocData.alloc_bonus = allocation.bonus
+
       const { error } = await supabase
         .from('weekly_paychecks')
-        .update({ status: 'submitted' })
+        .update({ status: 'submitted', ...allocData })
         .eq('id', draftId)
 
       if (error) throw error
 
       setDraftStatus('submitted')
       setShowConfetti(true)
-      setToast({ type: 'success', text: 'Paycheck locked in! Your guide will review it.' })
+      setToast({ type: 'success', text: 'Paycheck submitted! Your guide will review it.' })
       setTimeout(() => setShowConfetti(false), 3000)
       await fetchPastPaychecks()
     } catch (error) {
       console.error('Error locking in paycheck:', error)
-      setToast({ type: 'error', text: 'Failed to lock in paycheck' })
+      setToast({ type: 'error', text: 'Failed to submit paycheck' })
     } finally {
       setLoading(false)
     }
@@ -481,9 +484,15 @@ export const StudentPaycheck = () => {
             </p>
           </div>
 
-          <FinTip icon="" title="Smart Allocation" color="from-stone-50 to-stone-100">
-            Think about your goals. Need something soon? Put more in checking. Building an emergency fund? Boost savings. Playing the long game? Feed your investments.
-          </FinTip>
+          <div className="rounded-xl p-4 border border-teal/20 dark:border-teal/10 bg-teal/[0.04] dark:bg-teal/[0.02]">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold text-teal bg-teal/10 uppercase tracking-wider">Learn</span>
+              <span className="text-[12px] font-bold text-ink dark:text-chalk-white">Smart Allocation</span>
+            </div>
+            <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
+              Think about your goals. Need something soon? Put more in checking. Building an emergency fund? Boost savings. Playing the long game? Feed your investments.
+            </p>
+          </div>
 
           <div className="bg-white dark:bg-white/[0.04] rounded-sm border border-gray-200 dark:border-white/[0.06] p-6">
             <div className="flex justify-between items-center mb-4">
@@ -694,8 +703,8 @@ export const StudentPaycheck = () => {
         {/* Status messages */}
         {draftStatus === 'submitted' && (
           <div className="p-3 rounded-sm bg-stone-500/[0.06] dark:bg-stone-400/[0.06] border border-stone-500/20 dark:border-stone-400/10 text-sm text-stone-600 dark:text-stone-400">
-            <Lock className="w-4 h-4 inline mr-1" />
-            Locked in! Waiting for your guide to review.
+            <Clock className="w-4 h-4 inline mr-1" />
+            Submitted! Waiting for your guide to review.
           </div>
         )}
         {draftStatus === 'verified' && (
@@ -714,7 +723,37 @@ export const StudentPaycheck = () => {
           </div>
         )}
 
+        {/* Step tabs */}
+        {isEditable && (
+          <div className="flex gap-1 bg-surface-2 dark:bg-white/[0.04] rounded-xl p-1">
+            {[
+              { num: 1, label: 'Log XP' },
+              { num: 2, label: 'Review & Allocate' },
+            ].map(({ num, label }) => (
+              <button
+                key={num}
+                onClick={() => setStep(num)}
+                className={`flex-1 py-2.5 px-3 rounded-lg text-[12px] font-bold transition-all ${
+                  step === num
+                    ? 'bg-white dark:bg-white/[0.08] text-ink dark:text-chalk-white shadow-sm'
+                    : 'text-ink-muted dark:text-white/40 hover:text-ink dark:hover:text-white/60'
+                }`}
+              >
+                <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] mr-1.5 ${
+                  step === num ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink' : 'bg-black/[0.06] dark:bg-white/[0.08] text-ink-muted dark:text-white/40'
+                }`}>
+                  {num}
+                </span>
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="max-w-2xl space-y-4">
+
+          {/* ══════ STEP 1: Log XP ══════ */}
+          {step === 1 && <>
 
           {/* ── Daily XP — the star of the show ── */}
           <div className="bg-white dark:bg-white/[0.04] rounded-sm p-6 border border-gray-200 dark:border-white/[0.06]">
@@ -780,6 +819,40 @@ export const StudentPaycheck = () => {
               </div>
               {xpProgress >= 100 && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold mt-2">XP threshold reached — base pay earned!</p>}
             </div>
+
+            {/* Extra XP Bonus Breakdown */}
+            {totalXp > xpThreshold && (
+              <div className="mt-4 p-3 rounded-lg bg-amber-50/80 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-700/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[11px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">Extra XP Bonus</p>
+                    <p className="text-[12px] text-amber-600/80 dark:text-amber-400/60 mt-0.5">
+                      {totalXp - xpThreshold} extra XP × {formatCurrency(settings.bonus_xp_rate || 1)} per {settings.bonus_xp_per || 50} XP
+                    </p>
+                  </div>
+                  <span className="text-lg font-black text-amber-700 dark:text-amber-400 tabular-nums">
+                    +{formatCurrency(earnings.bonusXp)}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Epic Days Summary */}
+            {Object.values(epicDays).some(Boolean) && (
+              <div className="mt-3 p-3 rounded-lg bg-pencil/[0.06] border border-pencil/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[11px] font-bold text-pencil-dark dark:text-pencil uppercase tracking-wider">Epic Days</p>
+                    <p className="text-[12px] text-pencil-dark/60 dark:text-pencil/60 mt-0.5">
+                      {Object.values(epicDays).filter(Boolean).length} / {settings.epic_days_required || 5} days needed for bonus
+                    </p>
+                  </div>
+                  <span className="text-lg font-black text-pencil-dark dark:text-pencil tabular-nums">
+                    {earnings.epicBonus > 0 ? `+${formatCurrency(earnings.epicBonus)}` : '$0'}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── Job Card ── */}
@@ -889,6 +962,141 @@ export const StudentPaycheck = () => {
             </div>
           )}
 
+          </>}
+
+          {/* ══════ STEP 2: Review & Allocate ══════ */}
+          {step === 2 && isEditable && <>
+            {/* Earnings Summary */}
+            <div className="bg-white dark:bg-white/[0.04] rounded-xl p-6 border border-black/[0.06] dark:border-white/[0.06]">
+              <h3 className="text-[12px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-4">Earnings Breakdown</h3>
+              <div className="space-y-3">
+                {earnings.basePay > 0 && (
+                  <div className="flex items-center justify-between py-2 border-b border-black/[0.04] dark:border-white/[0.04]">
+                    <span className="text-[13px] text-ink-light dark:text-white/60">Base Pay (XP threshold met)</span>
+                    <span className="text-[13px] font-bold text-ink dark:text-chalk-white">{formatCurrency(earnings.basePay)}</span>
+                  </div>
+                )}
+                {earnings.epicBonus > 0 && (
+                  <div className="flex items-center justify-between py-2 border-b border-black/[0.04] dark:border-white/[0.04]">
+                    <span className="text-[13px] text-ink-light dark:text-white/60">Epic Week Bonus</span>
+                    <span className="text-[13px] font-bold text-pencil">{formatCurrency(earnings.epicBonus)}</span>
+                  </div>
+                )}
+                {earnings.bonusXp > 0 && (
+                  <div className="flex items-center justify-between py-2 border-b border-black/[0.04] dark:border-white/[0.04]">
+                    <span className="text-[13px] text-ink-light dark:text-white/60">Extra XP Bonus ({totalXp - xpThreshold} extra XP)</span>
+                    <span className="text-[13px] font-bold text-amber-600 dark:text-amber-400">{formatCurrency(earnings.bonusXp)}</span>
+                  </div>
+                )}
+                {earnings.masteryRewards > 0 && (
+                  <div className="flex items-center justify-between py-2 border-b border-black/[0.04] dark:border-white/[0.04]">
+                    <span className="text-[13px] text-ink-light dark:text-white/60">Mastery Tests</span>
+                    <span className="text-[13px] font-bold text-sage">{formatCurrency(earnings.masteryRewards)}</span>
+                  </div>
+                )}
+                {earnings.jobPay > 0 && (
+                  <div className="flex items-center justify-between py-2 border-b border-black/[0.04] dark:border-white/[0.04]">
+                    <span className="text-[13px] text-ink-light dark:text-white/60">Job Pay</span>
+                    <span className="text-[13px] font-bold text-ink dark:text-chalk-white">{formatCurrency(earnings.jobPay)}</span>
+                  </div>
+                )}
+                {earnings.customBonusTotal > 0 && (
+                  <div className="flex items-center justify-between py-2 border-b border-black/[0.04] dark:border-white/[0.04]">
+                    <span className="text-[13px] text-ink-light dark:text-white/60">Bonuses</span>
+                    <span className="text-[13px] font-bold text-ink dark:text-chalk-white">{formatCurrency(earnings.customBonusTotal)}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-[15px] font-black text-ink dark:text-chalk-white">Total Paycheck</span>
+                  <span className="text-2xl font-black text-ink dark:text-chalk-white tabular-nums">{formatCurrency(totalPaycheck)}</span>
+                </div>
+              </div>
+              {totalPaycheck <= 0 && (
+                <div className="mt-4 p-3 rounded-lg bg-rose-50 dark:bg-rose-900/10 border border-rose-200/50 dark:border-rose-700/20">
+                  <p className="text-[12px] text-rose-600 dark:text-rose-400 font-semibold">No earnings yet — go back to Step 1 and log your XP!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Allocation */}
+            {totalPaycheck > 0 && (
+              <div className="bg-white dark:bg-white/[0.04] rounded-xl p-6 border border-black/[0.06] dark:border-white/[0.06]">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="text-[12px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider">Split Your Paycheck</h3>
+                    <p className="text-[11px] text-ink-faint dark:text-white/25 mt-0.5">Decide where your {formatCurrency(totalPaycheck)} goes</p>
+                  </div>
+                  <button
+                    onClick={() => useSuggestedSplit(totalPaycheck)}
+                    className="text-[11px] font-bold text-teal dark:text-teal hover:underline"
+                  >
+                    Use 20/30/25/15/10 split
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {[
+                    { key: 'checking', label: 'Checking', icon: Wallet, color: '#7c8c78', desc: 'Spending money' },
+                    { key: 'savings', label: 'Savings', icon: PiggyBank, color: '#6b8a87', desc: 'Earn interest' },
+                    { key: 'sp500', label: 'S&P 500', icon: TrendingUp, color: '#a68b5b', desc: 'Top 500 companies' },
+                    { key: 'nasdaq', label: 'NASDAQ', icon: BarChart3, color: '#78716c', desc: 'Tech & growth' },
+                  ].map(({ key, label, icon: Icon, color, desc }) => {
+                    const pct = totalPaycheck > 0 ? ((allocation[key] || 0) / totalPaycheck * 100).toFixed(0) : 0
+                    return (
+                      <div key={key} className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}15` }}>
+                          <Icon className="w-4 h-4" style={{ color }} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-[12px] font-semibold text-ink dark:text-chalk-white">{label}</span>
+                            <span className="text-[10px] text-ink-faint dark:text-white/30">{pct}%</span>
+                          </div>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={allocation[key] || ''}
+                            onChange={(e) => setAllocation({ ...allocation, [key]: parseFloat(e.target.value) || 0 })}
+                            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-white/[0.1] rounded-lg focus:outline-none focus:border-pencil dark:focus:border-pencil/60 focus:ring-2 focus:ring-pencil/20 bg-white dark:bg-white/[0.04] dark:text-white"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                {/* Allocation summary */}
+                <div className="mt-4 pt-4 border-t border-black/[0.04] dark:border-white/[0.04]">
+                  {(() => {
+                    const allocTotal = Object.entries(allocation)
+                      .filter(([k]) => k !== 'bonus')
+                      .reduce((sum, [, val]) => sum + val, 0)
+                    const remaining = totalPaycheck - allocTotal
+                    const isValid = Math.abs(remaining) < 0.01
+                    return (
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-[12px]">
+                          <span className="text-ink-muted dark:text-white/40">Allocated</span>
+                          <span className="font-bold text-ink dark:text-chalk-white">{formatCurrency(allocTotal)}</span>
+                        </div>
+                        <div className="flex justify-between text-[12px]">
+                          <span className="text-ink-muted dark:text-white/40">Remaining</span>
+                          <span className={`font-bold ${isValid ? 'text-sage' : remaining > 0 ? 'text-amber-600' : 'text-rose'}`}>
+                            {formatCurrency(Math.abs(remaining))}
+                          </span>
+                        </div>
+                        {isValid && <p className="text-[11px] text-sage font-semibold">All funds allocated</p>}
+                        {remaining > 0.01 && <p className="text-[11px] text-amber-600 dark:text-amber-400">{formatCurrency(remaining)} still needs a home</p>}
+                      </div>
+                    )
+                  })()}
+                </div>
+              </div>
+            )}
+          </>}
+
           {/* ── Past Paychecks ── */}
           <div className="mt-6">
             <h2 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-3">Past Weeks</h2>
@@ -948,21 +1156,21 @@ export const StudentPaycheck = () => {
             )}
           </div>
 
-          {/* Learn tip */}
-          <details className="bg-white dark:bg-white/[0.04] rounded-sm border border-gray-200 dark:border-white/[0.06] group">
+          {/* Learn tip — educational styling (teal/learn theme) */}
+          <details className="rounded-xl border border-teal/20 dark:border-teal/10 bg-teal/[0.04] dark:bg-teal/[0.02] group">
             <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-              <span className="text-sm font-bold text-teal">Bank</span>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold text-teal bg-teal/10 uppercase tracking-wider">Learn</span>
               <span className="text-sm font-semibold text-ink dark:text-chalk-white flex-1">Why Budget Your Paycheck?</span>
-              <ChevronRight className="w-4 h-4 text-gray-300 dark:text-white/20 transition-transform group-open:rotate-90" />
+              <ChevronRight className="w-4 h-4 text-teal/40 transition-transform group-open:rotate-90" />
             </summary>
-            <div className="px-4 pb-4 text-sm text-gray-500 dark:text-white/40 leading-relaxed border-t border-gray-200 dark:border-white/[0.06] pt-3">
+            <div className="px-4 pb-4 text-[13px] text-ink-light dark:text-white/50 leading-relaxed border-t border-teal/10 pt-3">
               In real life, your paycheck doesn't all go to one place. Learning to split your earnings now builds habits that'll serve you for life. The 50/30/20 rule suggests: 50% needs, 30% wants, 20% savings.
             </div>
           </details>
         </div>
       </div>
 
-      {/* ── Sticky bottom bar: running total + lock-in / allocate ── */}
+      {/* ── Sticky bottom bar: running total + step navigation ── */}
       {(isEditable || draftStatus === 'verified') && (
         <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-30 bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-xl border-t border-gray-200 dark:border-white/[0.06]">
           <div className="max-w-2xl mx-auto px-8 py-4 flex items-center justify-between">
@@ -974,8 +1182,8 @@ export const StudentPaycheck = () => {
               {totalPaycheck > 0 && (
                 <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
                   {earnings.basePay > 0 && <span className="text-[10px] text-gray-400 dark:text-white/30">Base {formatCurrency(earnings.basePay)}</span>}
-                  {earnings.epicBonus > 0 && <span className="text-[10px] text-stone-500">Epic {formatCurrency(earnings.epicBonus)}</span>}
-                  {earnings.bonusXp > 0 && <span className="text-[10px] text-stone-500">XP +{formatCurrency(earnings.bonusXp)}</span>}
+                  {earnings.epicBonus > 0 && <span className="text-[10px] text-pencil">Epic {formatCurrency(earnings.epicBonus)}</span>}
+                  {earnings.bonusXp > 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">XP +{formatCurrency(earnings.bonusXp)}</span>}
                   {earnings.masteryRewards > 0 && <span className="text-[10px] text-sage-500">Tests {formatCurrency(earnings.masteryRewards)}</span>}
                   {earnings.jobPay > 0 && <span className="text-[10px] text-stone-500">Job {formatCurrency(earnings.jobPay)}</span>}
                   {earnings.customBonusTotal > 0 && <span className="text-[10px] text-stone-500">Other {formatCurrency(earnings.customBonusTotal)}</span>}
@@ -988,28 +1196,49 @@ export const StudentPaycheck = () => {
                   setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
                   setView('allocate')
                 }}
-                className="rounded-sm px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 bg-pencil text-ink hover:bg-pencil-dark shadow-[2px_2px_0px_rgba(0,0,0,0.1)] animate-pulse"
+                className="rounded-xl px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 bg-pencil text-ink hover:bg-pencil-dark shadow-sm animate-pulse"
               >
                 <DollarSign className="w-4 h-4" />
                 Split to My Accounts
               </button>
-            ) : (
+            ) : step === 1 ? (
               <button
-                onClick={handleLockIn}
-                disabled={loading || totalPaycheck <= 0}
-                className={`rounded-sm px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
-                  totalPaycheck > 0 && !loading
-                    ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
+                onClick={() => setStep(2)}
+                disabled={totalPaycheck <= 0}
+                className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
+                  totalPaycheck > 0
+                    ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-sm'
                     : 'bg-gray-100 dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
                 }`}
               >
-                {loading ? 'Locking in...' : (
-                  <>
-                    <Lock className="w-4 h-4" />
-                    Lock In My Pay
-                  </>
-                )}
+                Next: Review & Allocate
+                <ChevronRight className="w-4 h-4" />
               </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setStep(1)}
+                  className="rounded-xl px-4 py-3 text-sm font-semibold text-ink-muted dark:text-white/40 hover:text-ink dark:hover:text-white/60 transition-colors"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={handleLockIn}
+                  disabled={loading || totalPaycheck <= 0}
+                  className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
+                    totalPaycheck > 0 && !loading
+                      ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-sm'
+                      : 'bg-gray-100 dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
+                  }`}
+                >
+                  {loading ? 'Submitting...' : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Submit for Guide Review
+                    </>
+                  )}
+                </button>
+              </div>
             )}
           </div>
         </div>
