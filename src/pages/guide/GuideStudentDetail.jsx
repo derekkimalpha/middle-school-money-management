@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Check, Wallet, PiggyBank, TrendingUp, BarChart3, Gift } from 'lucide-react'
+import { ArrowLeft, Check, Wallet, PiggyBank, TrendingUp, BarChart3, Gift, Lock } from 'lucide-react'
 import { AnimNum, Button, Tag, Toast, Field, ConfirmDialog } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { formatCurrency, ACCOUNT_META } from '../../lib/constants'
@@ -13,6 +13,7 @@ const ACCOUNT_ICONS = {
   sp500: TrendingUp,
   nasdaq: BarChart3,
   bonus: Gift,
+  roth: Lock,
 }
 
 const ACCOUNT_HEX = {
@@ -21,6 +22,7 @@ const ACCOUNT_HEX = {
   sp500: '#a68b5b',
   nasdaq: '#78716c',
   bonus: '#a67272',
+  roth: '#8b5cf6',
 }
 
 export const GuideStudentDetail = () => {
