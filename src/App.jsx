@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck, Trophy, BarChart2, AlertTriangle, MapPin } from 'lucide-react'
+import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck, Trophy, BarChart2, AlertTriangle, MapPin, DollarSign } from 'lucide-react'
 import { useAuth } from './hooks/useAuth'
 import { useAccounts } from './hooks/useAccounts'
 import { useGrowthEngine } from './hooks/useGrowthEngine'
@@ -86,7 +86,7 @@ function AppInner() {
       { id: 'paycheck', label: 'Paycheck', icon: Banknote, path: '/paycheck' },
       { id: 'transfer', label: 'Transfer', icon: ArrowLeftRight, path: '/transfer' },
       { id: 'purchase', label: 'Buy', icon: ShoppingBag, path: '/purchase' },
-      { id: 'leaderboard', label: 'Ranks', icon: Trophy, path: '/leaderboard' },
+      { id: 'cashout', label: 'Cash Out', icon: DollarSign, path: '/cash-out' },
       { id: 'learn', label: 'Learn', icon: BookOpen, path: '/learn' },
       { id: 'history', label: 'History', icon: ClipboardList, path: '/history' },
     ],
