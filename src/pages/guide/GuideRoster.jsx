@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, AlertCircle, Plus, X } from 'lucide-react'
+import { Search, AlertCircle, Plus, X, DollarSign, Check, XCircle } from 'lucide-react'
 import { AnimNum, Tag, Toast, Button, Input, Field } from '../../components/shared'
 import { formatCurrency, ACCOUNT_META } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
@@ -14,6 +14,7 @@ export const GuideRoster = () => {
   const [loading, setLoading] = useState(true)
   const [paycheck_count, setPaycheckCount] = useState(0)
   const [purchase_count, setPurchaseCount] = useState(0)
+  const [cashout_requests, setCashoutRequests] = useState([])
   const [toast, setToast] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
   const [addFormData, setAddFormData] = useState({ name: '', email: '' })
@@ -63,7 +64,7 @@ export const GuideRoster = () => {
 
   const fetchAlerts = async () => {
     try {
-      const [paychecks, purchases] = await Promise.all([
+      const [paychecks, purchases, cashouts] = await Promise.all([
         supabase
           .from('weekly_paychecks')
           .select('id')
@@ -71,13 +72,37 @@ export const GuideRoster = () => {
         supabase
           .from('purchase_requests')
           .select('id')
+          .eq('status', 'pending'),
+        supabase
+          .from('cash_out_requests')
+          .select('*, profiles!cash_out_requests_student_id_fkey(full_name)')
           .eq('status', 'pending')
+          .order('created_at', { ascending: true })
       ])
 
       setPaycheckCount(paychecks.data?.length || 0)
       setPurchaseCount(purchases.data?.length || 0)
+      setCashoutRequests(cashouts.data || [])
     } catch (err) {
       console.error('Failed to fetch alerts:', err)
+    }
+  }
+
+  const handleCashOutAction = async (requestId, action) => {
+    try {
+      const { data: userData } = await supabase.auth.getUser()
+      const rpcName = action === 'approve' ? 'approve_cash_out' : 'deny_cash_out'
+      const { data, error } = await supabase.rpc(rpcName, {
+        p_request_id: requestId,
+        p_guide_id: userData.user.id,
+      })
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+      setToast({ type: 'success', text: `Cash out ${action}d` })
+      fetchAlerts()
+      fetchStudents()
+    } catch (err) {
+      setToast({ type: 'error', text: err.message || `Failed to ${action}` })
     }
   }
 
@@ -163,6 +188,53 @@ export const GuideRoster = () => {
       </motion.div>
 
       {/* Alerts */}
+      {/* Cash Out Requests */}
+      {cashout_requests.length > 0 && (
+        <div className="mb-6 space-y-2">
+          <h3 className="text-[11px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-2">
+            Cash Out Requests
+          </h3>
+          {cashout_requests.map(req => (
+            <motion.div
+              key={req.id}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-between p-4 rounded-xl border border-sage/20 bg-sage/[0.04]"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-sage/15 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-sage-dark" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
+                    {req.profiles?.full_name} wants {formatCurrency(req.amount)}
+                  </p>
+                  <p className="text-[11px] text-ink-muted dark:text-white/40">
+                    {req.note || 'No note'} · {new Date(req.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleCashOutAction(req.id, 'deny')}
+                  className="w-8 h-8 rounded-lg bg-rose/10 hover:bg-rose/20 flex items-center justify-center transition-colors"
+                  title="Deny"
+                >
+                  <XCircle className="w-4 h-4 text-rose" />
+                </button>
+                <button
+                  onClick={() => handleCashOutAction(req.id, 'approve')}
+                  className="w-8 h-8 rounded-lg bg-sage/15 hover:bg-sage/25 flex items-center justify-center transition-colors"
+                  title="Approve & hand cash"
+                >
+                  <Check className="w-4 h-4 text-sage-dark" />
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
       {(paycheck_count > 0 || purchase_count > 0) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
           {paycheck_count > 0 && (

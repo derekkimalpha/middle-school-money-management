@@ -21,6 +21,7 @@ import { StudentHistory } from './pages/student/StudentHistory'
 import { StudentLearn } from './pages/student/StudentLearn'
 import { StudentLeaderboard } from './pages/student/StudentLeaderboard'
 import { InvestmentDetail } from './pages/student/InvestmentDetail'
+import { StudentCashOut } from './pages/student/StudentCashOut'
 
 // Guide pages
 import { GuideRoster } from './pages/guide/GuideRoster'
@@ -179,6 +180,7 @@ function AppInner() {
             <Route path="/paycheck" element={<StudentPaycheck />} />
             <Route path="/transfer" element={<StudentTransfer />} />
             <Route path="/purchase" element={<StudentPurchase />} />
+            <Route path="/cash-out" element={<StudentCashOut />} />
             <Route path="/leaderboard" element={<StudentLeaderboard />} />
             <Route path="/learn" element={<StudentLearn />} />
             <Route path="/history" element={<StudentHistory />} />
