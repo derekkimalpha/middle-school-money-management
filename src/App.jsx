@@ -21,6 +21,7 @@ import { StudentHistory } from './pages/student/StudentHistory'
 import { StudentLearn } from './pages/student/StudentLearn'
 import { StudentLeaderboard } from './pages/student/StudentLeaderboard'
 import { InvestmentDetail } from './pages/student/InvestmentDetail'
+import { AccountDetail } from './pages/student/AccountDetail'
 import { StudentCashOut } from './pages/student/StudentCashOut'
 
 // Guide pages
@@ -185,6 +186,7 @@ function AppInner() {
             <Route path="/learn" element={<StudentLearn />} />
             <Route path="/history" element={<StudentHistory />} />
             <Route path="/invest/:type" element={<InvestmentDetail />} />
+            <Route path="/account/:type" element={<AccountDetail />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         )}

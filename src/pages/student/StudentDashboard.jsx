@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import ReactDOM from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -147,7 +148,9 @@ export const StudentDashboard = () => {
   const { user, profile } = useAuth()
   const [toast, setToast] = useState(null)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [hoverTooltip, setHoverTooltip] = useState(null) // which account card tooltip is showing
+  const [hoverTooltip, setHoverTooltip] = useState(null)
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, side: 'right' })
+  const tooltipRefs = useRef({})
   const { accounts, loading } = useAccounts(profile?.id)
   const { settings } = usePaycheckSettings()
   const growthLog = useGrowthLog(profile?.id)
@@ -500,7 +503,7 @@ export const StudentDashboard = () => {
         </motion.div>
       </div>
 
-      {/* ── Account Cards with Learn Popups ── */}
+      {/* ── Account Cards ── */}
       <div className="px-8 mb-8">
         <div className="grid grid-cols-2 gap-3">
           {Object.entries(ACCOUNT_COLORS).filter(([key]) => key !== 'roth').map(([key, colors], index) => {
@@ -510,6 +513,7 @@ export const StudentDashboard = () => {
             const earnedForType = key === 'sp500' ? growthLog.sp500 :
                                   key === 'nasdaq' ? growthLog.nasdaq :
                                   key === 'savings' ? growthLog.savings : 0
+            const cardRoute = isInvestment ? `/invest/${key}` : `/account/${key}`
 
             return (
               <motion.div
@@ -521,8 +525,8 @@ export const StudentDashboard = () => {
                 className="group relative"
               >
                 <div
-                  className={`rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-all ${isInvestment ? 'hover:shadow-md hover:border-black/[0.15] dark:hover:border-white/[0.15] hover:bg-paper-warm/40 dark:hover:bg-white/[0.05] cursor-pointer' : ''}`}
-                  onClick={isInvestment ? () => navigate(`/invest/${key}`) : undefined}
+                  className="rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-all hover:shadow-md hover:border-black/[0.15] dark:hover:border-white/[0.15] hover:bg-paper-warm/40 dark:hover:bg-white/[0.05] cursor-pointer"
+                  onClick={() => navigate(cardRoute)}
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -537,9 +541,20 @@ export const StudentDashboard = () => {
                       </span>
                     </div>
                     <div
-                      className="relative"
-                      onMouseEnter={() => setHoverTooltip(key)}
+                      ref={el => tooltipRefs.current[key] = el}
+                      onMouseEnter={(e) => {
+                        e.stopPropagation()
+                        const rect = e.currentTarget.getBoundingClientRect()
+                        const isLeftCol = index % 2 === 0
+                        setTooltipPos({
+                          top: rect.top,
+                          left: isLeftCol ? rect.right + 12 : rect.left - 12,
+                          side: isLeftCol ? 'right' : 'left',
+                        })
+                        setHoverTooltip(key)
+                      }}
                       onMouseLeave={() => setHoverTooltip(null)}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <div
                         className="w-6 h-6 rounded-full flex items-center justify-center cursor-help transition-colors"
@@ -547,81 +562,20 @@ export const StudentDashboard = () => {
                       >
                         <Info className="w-3 h-3" style={{ color: colors.hex }} />
                       </div>
-                      <AnimatePresence>
-                        {hoverTooltip === key && ACCOUNT_LEARN[key] && (
-                          <motion.div
-                            initial={{ opacity: 0, x: index % 2 === 0 ? 4 : -4, scale: 0.96 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            exit={{ opacity: 0, x: index % 2 === 0 ? 4 : -4, scale: 0.96 }}
-                            transition={{ duration: 0.15 }}
-                            className={`absolute z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-xl ${
-                              index % 2 === 0 ? 'left-full ml-3 top-0' : 'right-full mr-3 top-0'
-                            }`}
-                          >
-                            <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-1.5">
-                              {ACCOUNT_LEARN[key].title}
-                            </p>
-                            <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60 mb-2">
-                              {ACCOUNT_LEARN[key].body}
-                            </p>
-                            {ACCOUNT_LEARN[key].riskLabel && (
-                              <div className="flex items-center gap-1.5 mb-2">
-                                <div className={`w-1.5 h-1.5 rounded-full ${key === 'sp500' ? 'bg-amber' : 'bg-rose'}`} />
-                                <span className={`text-[10px] font-bold ${ACCOUNT_LEARN[key].riskColor}`}>{ACCOUNT_LEARN[key].riskLabel}</span>
-                              </div>
-                            )}
-                            <div className="rounded-lg px-2.5 py-2 bg-pencil/[0.06]">
-                              <p className="text-[10px] text-ink-muted dark:text-white/50">
-                                <span className="font-bold text-pencil">Fun fact:</span> {ACCOUNT_LEARN[key].funFact}
-                              </p>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
                     </div>
                   </div>
 
                   <p className="text-2xl font-black tabular-nums text-ink dark:text-chalk-white mb-1">
                     <AnimNum value={balance} prefix="$" />
                   </p>
-                  {key === 'checking' ? (
-                    <div className="flex items-center gap-1.5 mt-1">
-                      {[
-                        { label: 'Cash Out', icon: DollarSign, route: '/cash-out' },
-                        { label: 'Buy', icon: ShoppingCart, route: '/purchase' },
-                        { label: 'Ask Guide', icon: MessageSquare, route: '/request' },
-                      ].map(action => (
-                        <button
-                          key={action.label}
-                          onClick={(e) => { e.stopPropagation(); navigate(action.route) }}
-                          className="flex items-center gap-1 px-2 py-1 rounded-md text-[9px] font-semibold text-sage-dark dark:text-sage-300 bg-sage/[0.08] hover:bg-sage/[0.15] transition-colors"
-                        >
-                          <action.icon className="w-2.5 h-2.5" />
-                          {action.label}
-                        </button>
-                      ))}
-                    </div>
-                  ) : isInvestment ? (
-                    <div className="flex items-center justify-between mt-1">
-                      <p className="text-[10px] text-ink-faint dark:text-white/25">
-                        {ACCOUNT_SUBTITLES[key]}
-                      </p>
-                      <span className="flex items-center gap-0.5 text-[10px] font-semibold group-hover:opacity-100 opacity-60 transition-opacity" style={{ color: colors.hex }}>
-                        View <ChevronRight className="w-3 h-3" />
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] text-ink-faint dark:text-white/25">
-                        {ACCOUNT_SUBTITLES[key]}
-                      </p>
-                      {earnedForType > 0 && (
-                        <span className="text-[10px] font-semibold text-sage dark:text-sage-300">
-                          +{formatCurrency(earnedForType)}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-[10px] text-ink-faint dark:text-white/25">
+                      {ACCOUNT_SUBTITLES[key]}
+                    </p>
+                    <span className="flex items-center gap-0.5 text-[10px] font-semibold group-hover:opacity-100 opacity-60 transition-opacity" style={{ color: colors.hex }}>
+                      View <ChevronRight className="w-3 h-3" />
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             )
@@ -650,36 +604,21 @@ export const StudentDashboard = () => {
                       Locked until graduation
                     </span>
                     <div
-                      className="relative"
-                      onMouseEnter={() => setHoverTooltip('roth')}
+                      ref={el => tooltipRefs.current['roth'] = el}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect()
+                        setTooltipPos({
+                          top: rect.top,
+                          left: rect.left - 12,
+                          side: 'left',
+                        })
+                        setHoverTooltip('roth')
+                      }}
                       onMouseLeave={() => setHoverTooltip(null)}
                     >
                       <div className="w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center cursor-help">
                         <Info className="w-3 h-3 text-violet-500" />
                       </div>
-                      <AnimatePresence>
-                        {hoverTooltip === 'roth' && (
-                          <motion.div
-                            initial={{ opacity: 0, x: -4, scale: 0.96 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            exit={{ opacity: 0, x: -4, scale: 0.96 }}
-                            transition={{ duration: 0.15 }}
-                            className="absolute right-full mr-3 top-0 z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-xl"
-                          >
-                            <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-1.5">
-                              {ACCOUNT_LEARN.roth.title}
-                            </p>
-                            <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60 mb-2">
-                              {ACCOUNT_LEARN.roth.body}
-                            </p>
-                            <div className="rounded-lg px-2.5 py-2 bg-pencil/[0.06]">
-                              <p className="text-[10px] text-ink-muted dark:text-white/50">
-                                <span className="font-bold text-pencil">Fun fact:</span> {ACCOUNT_LEARN.roth.funFact}
-                              </p>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
                     </div>
                   </div>
                 </div>
@@ -708,7 +647,46 @@ export const StudentDashboard = () => {
         </div>
       </div>
 
-      {/* (tooltips are now inline on hover — no overlay needed) */}
+      {/* ── Portal Tooltip (renders outside card boundaries) ── */}
+      {hoverTooltip && ACCOUNT_LEARN[hoverTooltip] && ReactDOM.createPortal(
+        <div
+          style={{
+            position: 'fixed',
+            top: tooltipPos.top,
+            ...(tooltipPos.side === 'right'
+              ? { left: tooltipPos.left }
+              : { left: tooltipPos.left, transform: 'translateX(-100%)' }),
+            zIndex: 9999,
+            pointerEvents: 'none',
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, x: tooltipPos.side === 'right' ? 6 : -6, scale: 0.96 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.15 }}
+            className="w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-2xl"
+          >
+            <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-1.5">
+              {ACCOUNT_LEARN[hoverTooltip].title}
+            </p>
+            <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60 mb-2">
+              {ACCOUNT_LEARN[hoverTooltip].body}
+            </p>
+            {ACCOUNT_LEARN[hoverTooltip].riskLabel && (
+              <div className="flex items-center gap-1.5 mb-2">
+                <div className={`w-1.5 h-1.5 rounded-full ${hoverTooltip === 'sp500' ? 'bg-amber' : 'bg-rose'}`} />
+                <span className={`text-[10px] font-bold ${ACCOUNT_LEARN[hoverTooltip].riskColor}`}>{ACCOUNT_LEARN[hoverTooltip].riskLabel}</span>
+              </div>
+            )}
+            <div className="rounded-lg px-2.5 py-2 bg-pencil/[0.06]">
+              <p className="text-[10px] text-ink-muted dark:text-white/50">
+                <span className="font-bold text-pencil">Fun fact:</span> {ACCOUNT_LEARN[hoverTooltip].funFact}
+              </p>
+            </div>
+          </motion.div>
+        </div>,
+        document.body
+      )}
 
       {/* ── Quick Actions ── */}
       <div className="px-8 mb-8">
