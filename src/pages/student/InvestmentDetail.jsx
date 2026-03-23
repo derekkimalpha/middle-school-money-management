@@ -23,8 +23,8 @@ const INVESTMENT_INFO = {
     icon: TrendingUp,
     color: '#a68b5b',
     lightBg: 'rgba(166,139,91,0.08)',
-    description: 'The S&P 500 tracks the 500 largest publicly traded companies in the U.S.',
-    whatYouOwn: 'When you invest here, you own a tiny piece of companies like Apple, Microsoft, Amazon, Google, and hundreds more.',
+    description: 'The S&P 500 is like owning a tiny slice of the 500 biggest companies in America — all at once.',
+    whatYouOwn: 'Your money is spread across companies you use every day: Apple (iPhones), Amazon (online shopping), Nike (shoes), Disney (movies), Tesla (cars), Google (search), and 494 more. Instead of betting on one company, you own a piece of all of them.',
     riskLevel: 'Moderate',
     historicalReturn: '~10% per year (long-term average)',
     learnCards: [
@@ -52,8 +52,8 @@ const INVESTMENT_INFO = {
     icon: BarChart3,
     color: '#78716c',
     lightBg: 'rgba(120,113,108,0.08)',
-    description: 'The NASDAQ-100 tracks the 100 largest non-financial companies on the NASDAQ exchange.',
-    whatYouOwn: 'This is heavy on tech companies — Apple, Microsoft, NVIDIA, Meta, Tesla, Netflix, and more innovative companies.',
+    description: 'The NASDAQ is like a tech-heavy version of the S&P 500 — focused on the 100 biggest innovative companies.',
+    whatYouOwn: 'This is dominated by the tech giants you know: Apple, Microsoft, NVIDIA (AI chips), Meta (Instagram), Tesla, Netflix, and Google. It goes up faster in good times but drops harder in bad times — that\'s the trade-off for higher potential returns.',
     riskLevel: 'Higher',
     historicalReturn: '~12% per year (but more volatile)',
     learnCards: [

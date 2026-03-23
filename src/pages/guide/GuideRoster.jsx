@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, AlertCircle, Plus, X, DollarSign, Check, XCircle } from 'lucide-react'
+import { Search, AlertCircle, Plus, X, DollarSign, Check, XCircle, HandCoins } from 'lucide-react'
 import { AnimNum, Tag, Toast, Button, Input, Field } from '../../components/shared'
 import { formatCurrency, ACCOUNT_META } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
@@ -76,7 +76,7 @@ export const GuideRoster = () => {
         supabase
           .from('cash_out_requests')
           .select('*, profiles!cash_out_requests_student_id_fkey(full_name)')
-          .eq('status', 'pending')
+          .in('status', ['pending', 'approved'])
           .order('created_at', { ascending: true })
       ])
 
@@ -91,14 +91,17 @@ export const GuideRoster = () => {
   const handleCashOutAction = async (requestId, action) => {
     try {
       const { data: userData } = await supabase.auth.getUser()
-      const rpcName = action === 'approve' ? 'approve_cash_out' : 'deny_cash_out'
+      const rpcName = action === 'approve' ? 'approve_cash_out'
+                    : action === 'paid' ? 'mark_cash_out_paid'
+                    : 'deny_cash_out'
       const { data, error } = await supabase.rpc(rpcName, {
         p_request_id: requestId,
         p_guide_id: userData.user.id,
       })
       if (error) throw error
       if (data?.error) throw new Error(data.error)
-      setToast({ type: 'success', text: `Cash out ${action}d` })
+      const msg = action === 'paid' ? 'Marked as paid' : `Cash out ${action}d`
+      setToast({ type: 'success', text: msg })
       fetchAlerts()
       fetchStudents()
     } catch (err) {
@@ -187,14 +190,13 @@ export const GuideRoster = () => {
         </div>
       </motion.div>
 
-      {/* Alerts */}
-      {/* Cash Out Requests */}
-      {cashout_requests.length > 0 && (
+      {/* Cash Out Requests — Pending (need approve/deny) */}
+      {cashout_requests.filter(r => r.status === 'pending').length > 0 && (
         <div className="mb-6 space-y-2">
           <h3 className="text-[11px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-2">
             Cash Out Requests
           </h3>
-          {cashout_requests.map(req => (
+          {cashout_requests.filter(r => r.status === 'pending').map(req => (
             <motion.div
               key={req.id}
               initial={{ opacity: 0, y: -8 }}
@@ -225,11 +227,49 @@ export const GuideRoster = () => {
                 <button
                   onClick={() => handleCashOutAction(req.id, 'approve')}
                   className="w-8 h-8 rounded-lg bg-sage/15 hover:bg-sage/25 flex items-center justify-center transition-colors"
-                  title="Approve & hand cash"
+                  title="Approve"
                 >
                   <Check className="w-4 h-4 text-sage-dark" />
                 </button>
               </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Cash Out — Approved, ready to hand cash */}
+      {cashout_requests.filter(r => r.status === 'approved').length > 0 && (
+        <div className="mb-6 space-y-2">
+          <h3 className="text-[11px] font-bold text-amber dark:text-amber uppercase tracking-wider mb-2">
+            Ready to Pay Out
+          </h3>
+          {cashout_requests.filter(r => r.status === 'approved').map(req => (
+            <motion.div
+              key={req.id}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-between p-4 rounded-xl border border-amber/30 bg-amber/[0.06]"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-amber/15 flex items-center justify-center">
+                  <HandCoins className="w-4 h-4 text-amber" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
+                    Hand {req.profiles?.full_name} {formatCurrency(req.amount)}
+                  </p>
+                  <p className="text-[11px] text-ink-muted dark:text-white/40">
+                    Approved · {req.note || 'No note'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => handleCashOutAction(req.id, 'paid')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink dark:bg-chalk-white text-white dark:text-ink text-[11px] font-bold hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors"
+              >
+                <HandCoins className="w-3.5 h-3.5" />
+                Mark Paid
+              </button>
             </motion.div>
           ))}
         </div>

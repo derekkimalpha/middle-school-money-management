@@ -450,55 +450,52 @@ export const StudentDashboard = () => {
         </motion.div>
       </div>
 
-      {/* ── Money Story + Fun Fact (side by side) ── */}
-      <div className="px-8 mb-6">
+      {/* ── Money Story + Fun Fact (stacked) ── */}
+      <div className="px-8 mb-6 space-y-3">
+        {/* Money Story — full width, expandable */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.5 }}
-          className="grid grid-cols-2 gap-3"
         >
-          {/* Fun Fact */}
           <div
-            className="rounded-xl p-4 overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg, rgba(107,138,135,0.10) 0%, rgba(107,138,135,0.04) 100%)',
-              border: '1px solid rgba(107,138,135,0.15)',
-            }}
-          >
-            <div className="flex items-start gap-2.5">
-              <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-teal/70 dark:text-teal/50 mb-1">
-                  Fun Fact
-                </p>
-                <p className="text-[11.5px] leading-relaxed text-ink-light dark:text-white/60">
-                  {dailyFact.fact}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Money Story */}
-          <div
-            className="rounded-xl p-4 overflow-hidden"
+            className="rounded-xl p-5"
             style={{
               background: 'linear-gradient(135deg, rgba(166,139,91,0.10) 0%, rgba(166,139,91,0.04) 100%)',
               border: '1px solid rgba(166,139,91,0.15)',
             }}
           >
-            <div className="flex items-start gap-2.5">
-              <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-amber/70 dark:text-amber/50 mb-1">
-                  Money Story
-                </p>
-                <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-0.5 leading-snug">
-                  {dailyStory.title}
-                </p>
-                <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60 line-clamp-4">
-                  {dailyStory.story}
-                </p>
-              </div>
-            </div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber/70 dark:text-amber/50 mb-1.5">
+              Money Story
+            </p>
+            <p className="text-[13px] font-bold text-ink dark:text-chalk-white mb-1 leading-snug">
+              {dailyStory.title}
+            </p>
+            <p className="text-[12px] leading-relaxed text-ink-light dark:text-white/60">
+              {dailyStory.story}
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Fun Fact — full width */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <div
+            className="rounded-xl p-4"
+            style={{
+              background: 'linear-gradient(135deg, rgba(107,138,135,0.10) 0%, rgba(107,138,135,0.04) 100%)',
+              border: '1px solid rgba(107,138,135,0.15)',
+            }}
+          >
+            <p className="text-[10px] font-bold uppercase tracking-wider text-teal/70 dark:text-teal/50 mb-1">
+              Fun Fact
+            </p>
+            <p className="text-[12px] leading-relaxed text-ink-light dark:text-white/60">
+              {dailyFact.fact}
+            </p>
           </div>
         </motion.div>
       </div>
@@ -524,9 +521,8 @@ export const StudentDashboard = () => {
                 className="group relative"
               >
                 <div
-                  className={`rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-shadow hover:shadow-sm ${isInvestment ? 'hover:border-black/[0.12] dark:hover:border-white/[0.12]' : ''}`}
+                  className={`rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-all ${isInvestment ? 'hover:shadow-md hover:border-black/[0.15] dark:hover:border-white/[0.15] hover:bg-paper-warm/40 dark:hover:bg-white/[0.05] cursor-pointer' : ''}`}
                   onClick={isInvestment ? () => navigate(`/invest/${key}`) : undefined}
-                  style={{ cursor: isInvestment ? 'pointer' : 'default' }}
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -554,11 +550,13 @@ export const StudentDashboard = () => {
                       <AnimatePresence>
                         {hoverTooltip === key && ACCOUNT_LEARN[key] && (
                           <motion.div
-                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                            initial={{ opacity: 0, x: index % 2 === 0 ? 4 : -4, scale: 0.96 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            exit={{ opacity: 0, x: index % 2 === 0 ? 4 : -4, scale: 0.96 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute right-0 top-full mt-2 z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-lg"
+                            className={`absolute z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-xl ${
+                              index % 2 === 0 ? 'left-full ml-3 top-0' : 'right-full mr-3 top-0'
+                            }`}
                           >
                             <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-1.5">
                               {ACCOUNT_LEARN[key].title}
@@ -602,6 +600,15 @@ export const StudentDashboard = () => {
                           {action.label}
                         </button>
                       ))}
+                    </div>
+                  ) : isInvestment ? (
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-[10px] text-ink-faint dark:text-white/25">
+                        {ACCOUNT_SUBTITLES[key]}
+                      </p>
+                      <span className="flex items-center gap-0.5 text-[10px] font-semibold group-hover:opacity-100 opacity-60 transition-opacity" style={{ color: colors.hex }}>
+                        View <ChevronRight className="w-3 h-3" />
+                      </span>
                     </div>
                   ) : (
                     <div className="flex items-center justify-between">
@@ -653,11 +660,11 @@ export const StudentDashboard = () => {
                       <AnimatePresence>
                         {hoverTooltip === 'roth' && (
                           <motion.div
-                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                            initial={{ opacity: 0, x: -4, scale: 0.96 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            exit={{ opacity: 0, x: -4, scale: 0.96 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute right-0 top-full mt-2 z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-lg"
+                            className="absolute right-full mr-3 top-0 z-50 w-64 rounded-xl p-4 bg-white dark:bg-[#1c1b19] border border-black/[0.1] dark:border-white/[0.1] shadow-xl"
                           >
                             <p className="text-[12px] font-bold text-ink dark:text-chalk-white mb-1.5">
                               {ACCOUNT_LEARN.roth.title}
@@ -728,8 +735,8 @@ export const StudentDashboard = () => {
         </div>
       </div>
 
-      {/* ── Leaderboard Teaser ── */}
-      {myRank && leaderboard.length > 1 && (
+      {/* Leaderboard teaser removed per guide request */}
+      {false && myRank && leaderboard.length > 1 && (
         <div className="px-8 mb-8">
           <motion.button
             initial={{ opacity: 0, y: 12 }}

@@ -77,9 +77,10 @@ export const StudentCashOut = () => {
     )
   }
 
-  const statusIcon = { pending: Clock, approved: CheckCircle, denied: XCircle }
-  const statusColor = { pending: 'text-amber', approved: 'text-sage', denied: 'text-rose' }
-  const statusBg = { pending: 'bg-amber/10', approved: 'bg-sage/10', denied: 'bg-rose/10' }
+  const statusIcon = { pending: Clock, approved: CheckCircle, denied: XCircle, paid: DollarSign }
+  const statusColor = { pending: 'text-amber', approved: 'text-sage', denied: 'text-rose', paid: 'text-teal' }
+  const statusBg = { pending: 'bg-amber/10', approved: 'bg-sage/10', denied: 'bg-rose/10', paid: 'bg-teal/10' }
+  const statusLabel = { pending: 'pending', approved: 'approved', denied: 'denied', paid: 'paid out' }
 
   return (
     <div className="space-y-6 p-8 pb-24">
@@ -237,7 +238,7 @@ export const StudentCashOut = () => {
                       </div>
                     </div>
                     <span className={`text-[10px] font-bold uppercase ${statusColor[req.status]}`}>
-                      {req.status}
+                      {statusLabel[req.status] || req.status}
                     </span>
                   </div>
                 )
