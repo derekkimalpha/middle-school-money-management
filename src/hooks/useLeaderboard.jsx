@@ -46,10 +46,7 @@ export const useLeaderboard = (currentUserId, isGuide = false) => {
           .map((student, index) => ({
             ...student,
             rank: index + 1,
-            // For student view, anonymize others
-            displayName: isGuide || student.isMe
-              ? student.name
-              : anonymize(student.name, index),
+            displayName: student.name,
           }))
 
         setLeaderboard(ranked)
@@ -68,16 +65,3 @@ export const useLeaderboard = (currentUserId, isGuide = false) => {
   return { leaderboard, myRank, loading }
 }
 
-function anonymize(name, index) {
-  const animals = [
-    'Fox', 'Owl', 'Bear', 'Wolf', 'Hawk', 'Deer', 'Lynx', 'Orca',
-    'Puma', 'Raven', 'Tiger', 'Eagle', 'Shark', 'Heron', 'Bison',
-    'Crane', 'Moose', 'Otter', 'Whale', 'Finch'
-  ]
-  const adjectives = [
-    'Swift', 'Clever', 'Bold', 'Wise', 'Bright', 'Calm', 'Lucky', 'Noble',
-    'Sharp', 'Brave', 'Keen', 'Quick', 'Sure', 'True', 'Wild',
-    'Fast', 'Cool', 'Ace', 'Star', 'Zen'
-  ]
-  return `${adjectives[index % adjectives.length]} ${animals[index % animals.length]}`
-}
