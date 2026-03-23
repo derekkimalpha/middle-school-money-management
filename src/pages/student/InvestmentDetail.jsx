@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, TrendingUp, TrendingDown, BarChart3, Info, ChevronRight } from 'lucide-react'
+import { ArrowLeft, TrendingUp, TrendingDown, BarChart3, Info, ChevronRight, Lock } from 'lucide-react'
 import { AnimNum, Toast } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
@@ -331,28 +331,26 @@ export const InvestmentDetail = () => {
         </motion.div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Locked Notice */}
       <div className="px-8 mb-8">
-        <div className="flex gap-2">
-          <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            onClick={() => navigate('/transfer')}
-            className="flex-1 py-3.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold text-center hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors"
-          >
-            Add Money
-          </motion.button>
-          <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            onClick={() => navigate('/transfer')}
-            className="flex-1 py-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] text-ink dark:text-chalk-white text-[13px] font-bold text-center hover:bg-surface-2 dark:hover:bg-white/[0.04] transition-colors"
-          >
-            Withdraw
-          </motion.button>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="rounded-xl p-4 border border-amber/20 dark:border-amber/10 bg-amber/[0.04]"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-amber/10 flex items-center justify-center flex-shrink-0">
+              <Lock className="w-5 h-5 text-amber" />
+            </div>
+            <div>
+              <p className="text-[13px] font-bold text-ink dark:text-chalk-white">Locked Until Graduation</p>
+              <p className="text-[11px] text-ink-light dark:text-white/50">
+                Your investments can only grow — no withdrawals. Money goes in through your weekly paycheck allocation. When you graduate, this is all yours!
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* Divider */}

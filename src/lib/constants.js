@@ -60,13 +60,17 @@ export const ACCOUNT_META = {
 }
 
 // Transfer rules defining which accounts can transfer to which
+// Savings, investments, and Roth are locked — money only flows IN, never out
+// Only checking can send money to savings/investments
+// Cash-outs happen from checking only (end of year)
+// Graduation unlocks everything
 export const TRANSFER_RULES = {
-  checking: ['savings', 'sp500', 'nasdaq', 'bonus'],
-  savings: ['checking', 'sp500', 'nasdaq'],
-  sp500: ['checking', 'savings'],
-  nasdaq: ['checking', 'savings'],
-  bonus: ['checking', 'savings', 'sp500', 'nasdaq'],
-  roth: [], // Locked until graduation — no transfers allowed
+  checking: ['savings', 'sp500', 'nasdaq'],  // Can invest or save
+  savings: [],    // Locked — grows until graduation
+  sp500: [],      // Locked — grows until graduation
+  nasdaq: [],     // Locked — grows until graduation
+  bonus: [],      // Locked
+  roth: [],       // Locked until graduation
 }
 
 // Grade levels

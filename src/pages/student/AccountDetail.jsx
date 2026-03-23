@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Wallet, PiggyBank, TrendingUp, Info, ChevronRight, DollarSign, ShoppingCart, ArrowLeftRight, Sprout } from 'lucide-react'
+import { ArrowLeft, Wallet, PiggyBank, TrendingUp, Info, ChevronRight, DollarSign, ShoppingCart, ArrowLeftRight, Sprout, Lock } from 'lucide-react'
 import { AnimNum, Toast } from '../../components/shared'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
@@ -194,55 +194,50 @@ export const AccountDetail = () => {
 
       {/* Quick Actions */}
       <div className="px-8 mb-8">
-        <div className="flex gap-2">
-          {type === 'checking' ? (
-            <>
-              <motion.button
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                onClick={() => navigate('/cash-out')}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold text-center hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors"
-              >
-                <DollarSign className="w-4 h-4" />
-                Cash Out
-              </motion.button>
-              <motion.button
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                onClick={() => navigate('/purchase')}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] text-ink dark:text-chalk-white text-[13px] font-bold text-center hover:bg-surface-2 dark:hover:bg-white/[0.04] transition-colors"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                Buy
-              </motion.button>
-            </>
-          ) : (
-            <>
-              <motion.button
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                onClick={() => navigate('/transfer')}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold text-center hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors"
-              >
-                <ArrowLeftRight className="w-4 h-4" />
-                Add Money
-              </motion.button>
-              <motion.button
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                onClick={() => navigate('/transfer')}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] text-ink dark:text-chalk-white text-[13px] font-bold text-center hover:bg-surface-2 dark:hover:bg-white/[0.04] transition-colors"
-              >
-                <TrendingUp className="w-4 h-4" />
-                Move to Investments
-              </motion.button>
-            </>
-          )}
-        </div>
+        {type === 'checking' ? (
+          <div className="flex gap-2">
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              onClick={() => navigate('/transfer')}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold text-center hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors"
+            >
+              <ArrowLeftRight className="w-4 h-4" />
+              Move to Savings / Invest
+            </motion.button>
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              onClick={() => navigate('/purchase')}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] text-ink dark:text-chalk-white text-[13px] font-bold text-center hover:bg-surface-2 dark:hover:bg-white/[0.04] transition-colors"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              Buy
+            </motion.button>
+          </div>
+        ) : (
+          /* Savings — locked, show info instead of action buttons */
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-xl p-4 border border-teal/20 dark:border-teal/10 bg-teal/[0.04]"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-teal/10 flex items-center justify-center flex-shrink-0">
+                <Lock className="w-5 h-5 text-teal" />
+              </div>
+              <div>
+                <p className="text-[13px] font-bold text-ink dark:text-chalk-white">Locked Until Graduation</p>
+                <p className="text-[11px] text-ink-light dark:text-white/50">
+                  Your savings can only grow — no withdrawals allowed. Money goes in through your weekly paycheck allocation. When you graduate, it's all yours!
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
 
       {/* Recent Activity */}
