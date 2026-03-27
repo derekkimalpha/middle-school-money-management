@@ -61,7 +61,8 @@ BEGIN
       (p_user_id, 'savings', 0),
       (p_user_id, 'sp500', 0),
       (p_user_id, 'nasdaq', 0),
-      (p_user_id, 'bonus', 0)
+      (p_user_id, 'bonus', 0),
+      (p_user_id, 'roth', 0)
     ON CONFLICT DO NOTHING;
   END IF;
 

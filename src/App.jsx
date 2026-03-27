@@ -48,7 +48,7 @@ const LoadingSpinner = ({ debugMsg }) => (
 )
 
 function AppInner() {
-  const { user, profile, loading, signInWithGoogle, signOut, refreshProfile } = useAuth()
+  const { user, profile, loading, authError, signInWithGoogle, signOut, refreshProfile } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -113,8 +113,34 @@ function AppInner() {
     return <LoadingSpinner />
   }
 
-  if (!user || !profile) {
+  if (!user) {
     return <LoginPage onSignInWithGoogle={signInWithGoogle} loading={loading} />
+  }
+
+  // User is authenticated but profile failed to load
+  if (!profile) {
+    if (authError) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[#faf9f7] dark:bg-[#141211] px-4">
+          <p className="text-ink dark:text-stone-300 text-center mb-4">{authError}</p>
+          <div className="flex gap-3">
+            <button
+              onClick={refreshProfile}
+              className="px-4 py-2 bg-ink text-white rounded font-semibold text-sm hover:bg-ink/90 transition-colors"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={signOut}
+              className="px-4 py-2 bg-stone-200 dark:bg-stone-700 text-ink dark:text-stone-300 rounded font-semibold text-sm hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return <LoadingSpinner debugMsg="Setting up your account..." />
   }
 
   // First-time user: show role selection

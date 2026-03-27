@@ -22,7 +22,6 @@ const STATUS_CONFIG = {
   submitted: { label: 'Submitted', color: 'bg-stone-100/50 dark:bg-stone-500/[0.06] text-stone-700 dark:text-stone-400' },
   verified: { label: 'Approved', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
   allocated: { label: 'Allocated', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
-  draft: { label: 'In Progress', color: 'bg-pencil/10 dark:bg-pencil/10 text-pencil-dark dark:text-pencil' },
 }
 
 // Get today's day key (mon, tue, etc.) — returns null on weekends

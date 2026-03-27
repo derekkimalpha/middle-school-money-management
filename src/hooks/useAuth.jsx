@@ -5,27 +5,37 @@ export const useAuth = () => {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [authError, setAuthError] = useState(null)
 
-  const fetchProfile = useCallback(async (userId) => {
-    try {
-      console.log('[Auth] Fetching profile for:', userId)
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-      if (data && !error) {
-        console.log('[Auth] Profile loaded:', data.email, data.role)
-        setProfile(data)
-        return data
-      } else {
-        console.error('[Auth] Profile error:', error?.message)
-        return null
+  const fetchProfile = useCallback(async (userId, retries = 3) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        console.log(`[Auth] Fetching profile for: ${userId} (attempt ${attempt}/${retries})`)
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
+        if (data && !error) {
+          console.log('[Auth] Profile loaded:', data.email, data.role)
+          setProfile(data)
+          return data
+        } else {
+          console.warn(`[Auth] Profile not found (attempt ${attempt}):`, error?.message)
+          if (attempt < retries) {
+            // Wait before retrying — the handle_new_user trigger may still be running
+            await new Promise(r => setTimeout(r, 800 * attempt))
+          }
+        }
+      } catch (err) {
+        console.error(`[Auth] Profile fetch failed (attempt ${attempt}):`, err.message)
+        if (attempt < retries) {
+          await new Promise(r => setTimeout(r, 800 * attempt))
+        }
       }
-    } catch (err) {
-      console.error('[Auth] Profile fetch failed:', err.message)
-      return null
     }
+    console.error('[Auth] Profile not found after all retries')
+    return null
   }, [])
 
   useEffect(() => {
@@ -51,8 +61,14 @@ export const useAuth = () => {
           // The auth state change callback can block the client
           setTimeout(async () => {
             if (!mounted) return
-            await fetchProfile(session.user.id)
-            if (mounted) setLoading(false)
+            setAuthError(null)
+            const result = await fetchProfile(session.user.id)
+            if (mounted) {
+              if (!result) {
+                setAuthError('Profile could not be loaded. Please try signing in again.')
+              }
+              setLoading(false)
+            }
           }, 0)
         } else {
           setUser(null)
@@ -123,5 +139,5 @@ export const useAuth = () => {
     return null
   }, [user?.id, fetchProfile])
 
-  return { user, profile, loading, signInWithGoogle, signOut, refreshProfile }
+  return { user, profile, loading, authError, signInWithGoogle, signOut, refreshProfile }
 }
