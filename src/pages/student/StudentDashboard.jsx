@@ -525,9 +525,11 @@ export const StudentDashboard = () => {
                 className="group relative"
               >
                 <div
-                  className="rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-all hover:shadow-md hover:border-black/[0.15] dark:hover:border-white/[0.15] hover:bg-paper-warm/40 dark:hover:bg-white/[0.05] cursor-pointer"
+                  className="relative rounded-xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] transition-all hover:shadow-md hover:border-black/[0.12] dark:hover:border-white/[0.12] cursor-pointer overflow-hidden"
+                  style={{ backgroundColor: `${colors.hex}04` }}
                   onClick={() => navigate(cardRoute)}
                 >
+                  <div className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-full" style={{ backgroundColor: colors.hex, opacity: 0.5 }} />
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div

@@ -352,6 +352,8 @@ export const GuideRoster = () => {
             const total = getStudentTotal(student.accounts)
             const accountBreakdown = {}
             student.accounts.forEach(a => { accountBreakdown[a.account_type] = a.balance })
+            const maxTotal = Math.max(...students.map(s => getStudentTotal(s.accounts)), 1)
+            const wealthPct = Math.min((total / maxTotal) * 100, 100)
 
             return (
               <motion.button
@@ -362,8 +364,11 @@ export const GuideRoster = () => {
                 onClick={() => handleStudentClick(student.id)}
                 className="w-full text-left group"
               >
-                <div className="flex items-center gap-4 p-4 rounded-xl border border-transparent hover:border-black/[0.06] dark:hover:border-white/[0.06] bg-white dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.04] transition-all">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-surface-3 dark:bg-white/[0.08] flex items-center justify-center text-ink-light dark:text-white/50 font-bold text-xs">
+                <div className="relative flex items-center gap-4 p-4 rounded-xl border border-black/[0.04] dark:border-white/[0.04] hover:border-black/[0.08] dark:hover:border-white/[0.08] bg-white dark:bg-white/[0.02] hover:shadow-sm transition-all overflow-hidden">
+                  {/* Subtle wealth bar at bottom */}
+                  <div className="absolute bottom-0 left-0 h-[2px] bg-sage/30 dark:bg-sage/20 transition-all duration-700" style={{ width: `${wealthPct}%` }} />
+
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-sage/10 dark:bg-sage/15 flex items-center justify-center text-sage-dark dark:text-sage-300 font-bold text-xs border border-sage/20 dark:border-sage/15">
                     {initials(student.full_name)}
                   </div>
 
@@ -387,7 +392,7 @@ export const GuideRoster = () => {
                   </div>
 
                   <div className="flex-shrink-0 text-right ml-2">
-                    <p className="text-base font-black tabular-nums text-ink dark:text-chalk-white">
+                    <p className="text-lg font-black tabular-nums text-ink dark:text-chalk-white">
                       <AnimNum value={total} prefix="$" duration={600} />
                     </p>
                   </div>

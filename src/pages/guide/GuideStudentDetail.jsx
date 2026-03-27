@@ -25,6 +25,15 @@ const ACCOUNT_HEX = {
   roth: '#8b5cf6',
 }
 
+const ACCOUNT_BG = {
+  checking: 'rgba(124,140,120,0.06)',
+  savings: 'rgba(107,138,135,0.06)',
+  sp500: 'rgba(166,139,91,0.06)',
+  nasdaq: 'rgba(120,113,108,0.06)',
+  bonus: 'rgba(166,114,114,0.06)',
+  roth: 'rgba(139,92,246,0.06)',
+}
+
 export const GuideStudentDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -319,22 +328,25 @@ export const GuideStudentDetail = () => {
         transition={{ delay: 0.08 }}
       >
         <h2 className="text-[13px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-3">Accounts</h2>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
           {Object.entries(ACCOUNT_META).map(([key, meta]) => {
             const account = student.accounts.find(a => a.account_type === key)
             const balance = account?.balance || 0
             const Icon = ACCOUNT_ICONS[key]
             const hex = ACCOUNT_HEX[key]
+            const bg = ACCOUNT_BG[key]
             return (
               <div
                 key={key}
-                className="p-3.5 rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03]"
+                className="relative p-4 rounded-xl border border-black/[0.04] dark:border-white/[0.06] overflow-hidden transition-all hover:shadow-sm"
+                style={{ backgroundColor: bg }}
               >
-                <div className="flex items-center gap-1.5 mb-2">
+                <div className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full" style={{ backgroundColor: hex }} />
+                <div className="flex items-center gap-1.5 mb-2 pl-2">
                   <Icon className="w-3.5 h-3.5" style={{ color: hex }} />
-                  <p className="text-[10px] font-semibold text-ink-muted dark:text-white/40 uppercase tracking-wider">{meta.label}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: hex }}>{meta.label}</p>
                 </div>
-                <p className="text-lg font-black tabular-nums text-ink dark:text-chalk-white">
+                <p className="text-xl font-black tabular-nums text-ink dark:text-chalk-white pl-2">
                   <AnimNum value={balance} prefix="$" duration={600} />
                 </p>
               </div>
