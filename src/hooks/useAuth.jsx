@@ -80,8 +80,17 @@ export const useAuth = () => {
       }
     )
 
-    // Clean up OAuth code from URL if present (Supabase client exchanges it automatically)
+    // Check for OAuth errors in URL (Supabase redirects with error params on failure)
     const params = new URLSearchParams(window.location.search)
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'))
+    const oauthError = params.get('error_description') || hashParams.get('error_description')
+    if (oauthError) {
+      console.error('[Auth] OAuth error from URL:', oauthError)
+      setAuthError(`Sign-in failed: ${oauthError}`)
+      setLoading(false)
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+    // Clean up OAuth code from URL if present (Supabase client exchanges it automatically)
     if (params.get('code')) {
       window.history.replaceState({}, '', window.location.pathname)
     }
