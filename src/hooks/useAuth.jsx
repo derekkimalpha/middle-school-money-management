@@ -41,7 +41,6 @@ export const useAuth = () => {
   useEffect(() => {
     let mounted = true
 
-    // Single source of truth: onAuthStateChange handles everything
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('[Auth] Event:', event, session?.user?.email)
@@ -58,7 +57,6 @@ export const useAuth = () => {
           })
 
           // Use setTimeout to avoid Supabase client deadlock
-          // The auth state change callback can block the client
           setTimeout(async () => {
             if (!mounted) return
             setAuthError(null)
@@ -71,6 +69,10 @@ export const useAuth = () => {
             }
           }, 0)
         } else {
+          // Only clear loading if this is NOT a mid-PKCE-exchange state.
+          // The Supabase client with flowType:'pkce' handles code exchange
+          // automatically — INITIAL_SESSION fires with the session after exchange.
+          // If we get here with no session, it genuinely means no user is logged in.
           setUser(null)
           setProfile(null)
           setLoading(false)
@@ -78,25 +80,19 @@ export const useAuth = () => {
       }
     )
 
-    // Also handle PKCE code exchange if we have a code in URL
+    // Clean up OAuth code from URL if present (Supabase client exchanges it automatically)
     const params = new URLSearchParams(window.location.search)
-    const code = params.get('code')
-    if (code) {
-      console.log('[Auth] Exchanging PKCE code...')
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (error) console.error('[Auth] Code exchange error:', error.message)
-        // Clean up URL regardless
-        window.history.replaceState({}, '', window.location.pathname)
-      })
+    if (params.get('code')) {
+      window.history.replaceState({}, '', window.location.pathname)
     }
 
-    // Safety timeout: if loading hasn't resolved after 5 seconds, force it
+    // Safety timeout
     const timeout = setTimeout(() => {
       if (mounted && loading) {
         console.warn('[Auth] Loading timeout - forcing load complete')
         setLoading(false)
       }
-    }, 5000)
+    }, 8000)
 
     return () => {
       mounted = false
@@ -110,7 +106,7 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://middle-school-money-management.vercel.app'
+          redirectTo: window.location.origin
         }
       })
       if (error) throw error
