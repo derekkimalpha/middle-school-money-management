@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Modes: 'signin' | 'signup' | 'forgot' | 'sent' | 'reset' | 'check-email'
-export const LoginPage = ({ onSignIn, onSignUp, onResetPassword, onUpdatePassword, loading }) => {
+export const LoginPage = ({ onSignIn, onSignUp, onResetPassword, onUpdatePassword, loading, forceMode }) => {
   // Detect if URL has password recovery token (Supabase appends ?type=recovery in hash)
   const isRecovery = typeof window !== 'undefined' &&
     (window.location.hash.includes('type=recovery') || window.location.search.includes('type=recovery'))
 
-  const [mode, setMode] = useState(isRecovery ? 'reset' : 'signin')
+  const [mode, setMode] = useState(forceMode || (isRecovery ? 'reset' : 'signin'))
+
+  // If parent forces a mode (e.g. PASSWORD_RECOVERY event), honor it
+  useEffect(() => {
+    if (forceMode) setMode(forceMode)
+  }, [forceMode])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')

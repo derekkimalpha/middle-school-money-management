@@ -48,7 +48,7 @@ const LoadingSpinner = ({ debugMsg }) => (
 )
 
 function AppInner() {
-  const { user, profile, loading, authError, signIn, signUp, resetPassword, updatePassword, signOut, refreshProfile } = useAuth()
+  const { user, profile, loading, authError, passwordRecovery, signIn, signUp, resetPassword, updatePassword, signOut, refreshProfile } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -113,8 +113,8 @@ function AppInner() {
     return <LoadingSpinner />
   }
 
-  if (!user) {
-    return <LoginPage onSignIn={signIn} onSignUp={signUp} onResetPassword={resetPassword} onUpdatePassword={updatePassword} loading={loading} />
+  if (!user || passwordRecovery) {
+    return <LoginPage onSignIn={signIn} onSignUp={signUp} onResetPassword={resetPassword} onUpdatePassword={updatePassword} loading={loading} forceMode={passwordRecovery ? 'reset' : null} />
   }
 
   // User is authenticated but profile failed to load

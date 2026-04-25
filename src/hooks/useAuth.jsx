@@ -6,6 +6,7 @@ export const useAuth = () => {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [authError, setAuthError] = useState(null)
+  const [passwordRecovery, setPasswordRecovery] = useState(false)
 
   const fetchProfile = useCallback(async (userId, retries = 3) => {
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -46,6 +47,14 @@ export const useAuth = () => {
         console.log('[Auth] Event:', event, session?.user?.email)
 
         if (!mounted) return
+
+        // Password recovery flow: user clicked reset link from email.
+        // Show the password reset form even though they have a session.
+        if (event === 'PASSWORD_RECOVERY') {
+          setPasswordRecovery(true)
+          setLoading(false)
+          return
+        }
 
         if (session?.user) {
           setUser({
@@ -137,6 +146,8 @@ export const useAuth = () => {
   const updatePassword = async (newPassword) => {
     const { error } = await supabase.auth.updateUser({ password: newPassword })
     if (error) throw error
+    // Clear recovery mode so the app continues to the dashboard
+    setPasswordRecovery(false)
   }
 
   const signOut = async () => {
@@ -158,5 +169,5 @@ export const useAuth = () => {
     return null
   }, [user?.id, fetchProfile])
 
-  return { user, profile, loading, authError, signIn, signUp, resetPassword, updatePassword, signOut, refreshProfile }
+  return { user, profile, loading, authError, passwordRecovery, signIn, signUp, resetPassword, updatePassword, signOut, refreshProfile }
 }
