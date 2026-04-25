@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 // Modes: 'signin' | 'signup' | 'forgot' | 'sent' | 'reset' | 'check-email'
 export const LoginPage = ({ onSignIn, onSignUp, onResetPassword, onUpdatePassword, loading, forceMode }) => {
@@ -170,59 +170,51 @@ export const LoginPage = ({ onSignIn, onSignUp, onResetPassword, onUpdatePasswor
             <p className="text-sm font-hand text-ink-muted mt-1 tracking-wide">Alpha School</p>
           </motion.div>
 
-          <AnimatePresence mode="wait">
-            {/* CHECK EMAIL state after sign up */}
-            {mode === 'check-email' && (
-              <motion.div key="check-email" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3 }} className="relative z-10 text-center">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-sage/15 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <p className="text-base font-bold text-ink mb-1.5">Check your email!</p>
-                <p className="text-sm text-ink-muted leading-relaxed">
-                  We sent a confirmation link to <span className="font-semibold text-ink">{email}</span>
-                </p>
-                <p className="text-xs text-ink-faint mt-4">
-                  Click the link in the email to confirm your account, then come back here to sign in.
-                </p>
-                <button onClick={() => setMode('signin')} className="mt-5 text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2">
-                  Back to sign in
-                </button>
-              </motion.div>
-            )}
+          {/* CHECK EMAIL state after sign up */}
+          {mode === 'check-email' && (
+            <div className="relative z-10 text-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-sage/15 flex items-center justify-center">
+                <svg className="w-6 h-6 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="text-base font-bold text-ink mb-1.5">Check your email!</p>
+              <p className="text-sm text-ink-muted leading-relaxed">
+                We sent a confirmation link to <span className="font-semibold text-ink">{email}</span>
+              </p>
+              <p className="text-xs text-ink-faint mt-4">
+                Click the link in the email to confirm your account, then come back here to sign in.
+              </p>
+              <button onClick={() => setMode('signin')} className="mt-5 text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2">
+                Back to sign in
+              </button>
+            </div>
+          )}
 
-            {/* SENT state after forgot password */}
-            {mode === 'sent' && (
-              <motion.div key="sent" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3 }} className="relative z-10 text-center">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-sage/15 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <p className="text-base font-bold text-ink mb-1.5">Check your email!</p>
-                <p className="text-sm text-ink-muted leading-relaxed">
-                  We sent a password reset link to <span className="font-semibold text-ink">{email}</span>
-                </p>
-                <button onClick={() => setMode('signin')} className="mt-5 text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2">
-                  Back to sign in
-                </button>
-              </motion.div>
-            )}
+          {/* SENT state after forgot password */}
+          {mode === 'sent' && (
+            <div className="relative z-10 text-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-sage/15 flex items-center justify-center">
+                <svg className="w-6 h-6 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="text-base font-bold text-ink mb-1.5">Check your email!</p>
+              <p className="text-sm text-ink-muted leading-relaxed">
+                We sent a password reset link to <span className="font-semibold text-ink">{email}</span>
+              </p>
+              <button onClick={() => setMode('signin')} className="mt-5 text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2">
+                Back to sign in
+              </button>
+            </div>
+          )}
 
-            {/* SIGN IN / SIGN UP / FORGOT / RESET forms */}
-            {(mode === 'signin' || mode === 'signup' || mode === 'forgot' || mode === 'reset') && (
-              <motion.form
-                key={mode}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                onSubmit={handleSubmit}
-                className="relative z-10 space-y-3"
-              >
+          {/* SIGN IN / SIGN UP / FORGOT / RESET forms */}
+          {(mode === 'signin' || mode === 'signup' || mode === 'forgot' || mode === 'reset') && (
+            <form
+              onSubmit={handleSubmit}
+              className="relative z-10 space-y-3"
+            >
                 {/* Tab toggle (signin/signup only) */}
                 {(mode === 'signin' || mode === 'signup') && (
                   <div className="flex bg-black/5 rounded-lg p-1 mb-4">
@@ -324,9 +316,8 @@ export const LoginPage = ({ onSignIn, onSignUp, onResetPassword, onUpdatePasswor
                     ← Back to sign in
                   </button>
                 )}
-              </motion.form>
-            )}
-          </AnimatePresence>
+            </form>
+          )}
 
           <p className="relative z-10 text-center text-sm font-hand text-ink-faint mt-6">
              Learn money. Have fun.
