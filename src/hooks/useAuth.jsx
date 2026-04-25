@@ -110,12 +110,12 @@ export const useAuth = () => {
     }
   }, [fetchProfile])
 
-  const signInWithGoogle = async () => {
+  const signInWithEmail = async (email) => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
         options: {
-          redirectTo: window.location.origin
+          emailRedirectTo: window.location.origin
         }
       })
       if (error) throw error
@@ -144,5 +144,5 @@ export const useAuth = () => {
     return null
   }, [user?.id, fetchProfile])
 
-  return { user, profile, loading, authError, signInWithGoogle, signOut, refreshProfile }
+  return { user, profile, loading, authError, signInWithEmail, signOut, refreshProfile }
 }
