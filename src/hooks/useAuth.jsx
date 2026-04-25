@@ -35,7 +35,47 @@ export const useAuth = () => {
         }
       }
     }
-    console.error('[Auth] Profile not found after all retries')
+
+    // Fallback: profile wasn't created by the trigger. Create one from the auth user data.
+    console.warn('[Auth] Profile not found after retries — attempting fallback creation')
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user && user.id === userId) {
+        // Check for existing profile by email (in case trigger ran but with wrong id, or migration case)
+        const { data: byEmail } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('email', user.email)
+          .maybeSingle()
+
+        if (byEmail && byEmail.id !== userId) {
+          console.log('[Auth] Found existing profile by email — leaving it for trigger migration')
+        }
+
+        const { data: created, error: createErr } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email: user.email,
+            full_name: user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0],
+            role: 'student',
+            setup_complete: false,
+          })
+          .select()
+          .single()
+
+        if (created && !createErr) {
+          console.log('[Auth] Fallback profile created:', created.email)
+          setProfile(created)
+          return created
+        }
+        console.error('[Auth] Fallback profile creation failed:', createErr?.message)
+      }
+    } catch (err) {
+      console.error('[Auth] Fallback profile creation threw:', err?.message)
+    }
+
+    console.error('[Auth] Profile not found and fallback failed')
     return null
   }, [])
 
