@@ -1,28 +1,113 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export const LoginPage = ({ onSignInWithEmail, loading }) => {
+// Modes: 'signin' | 'signup' | 'forgot' | 'sent' | 'reset' | 'check-email'
+export const LoginPage = ({ onSignIn, onSignUp, onResetPassword, onUpdatePassword, loading }) => {
+  // Detect if URL has password recovery token (Supabase appends ?type=recovery in hash)
+  const isRecovery = typeof window !== 'undefined' &&
+    (window.location.hash.includes('type=recovery') || window.location.search.includes('type=recovery'))
+
+  const [mode, setMode] = useState(isRecovery ? 'reset' : 'signin')
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [fullName, setFullName] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
+
+  useEffect(() => {
+    setError('')
+    setSuccessMsg('')
+  }, [mode])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    const trimmed = email.trim().toLowerCase()
-    if (!trimmed || !trimmed.includes('@')) {
-      setError('Please enter a valid email address')
-      return
+    setSuccessMsg('')
+
+    const trimmedEmail = email.trim().toLowerCase()
+
+    if (mode === 'signin') {
+      if (!trimmedEmail || !password) {
+        setError('Please enter your email and password')
+        return
+      }
+      setSubmitting(true)
+      try {
+        await onSignIn(trimmedEmail, password)
+        // Success: app will redirect on auth state change
+      } catch (err) {
+        setError(prettifyError(err))
+      } finally {
+        setSubmitting(false)
+      }
     }
-    setSubmitting(true)
-    try {
-      await onSignInWithEmail(trimmed)
-      setSent(true)
-    } catch (err) {
-      setError(err?.message || 'Something went wrong. Please try again.')
-    } finally {
-      setSubmitting(false)
+
+    else if (mode === 'signup') {
+      if (!trimmedEmail || !trimmedEmail.includes('@')) {
+        setError('Please enter a valid email address')
+        return
+      }
+      if (!fullName.trim()) {
+        setError('Please enter your name')
+        return
+      }
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters')
+        return
+      }
+      if (password !== confirmPassword) {
+        setError('Passwords do not match')
+        return
+      }
+      setSubmitting(true)
+      try {
+        await onSignUp(trimmedEmail, password, fullName.trim())
+        setMode('check-email')
+      } catch (err) {
+        setError(prettifyError(err))
+      } finally {
+        setSubmitting(false)
+      }
+    }
+
+    else if (mode === 'forgot') {
+      if (!trimmedEmail || !trimmedEmail.includes('@')) {
+        setError('Please enter a valid email address')
+        return
+      }
+      setSubmitting(true)
+      try {
+        await onResetPassword(trimmedEmail)
+        setMode('sent')
+      } catch (err) {
+        setError(prettifyError(err))
+      } finally {
+        setSubmitting(false)
+      }
+    }
+
+    else if (mode === 'reset') {
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters')
+        return
+      }
+      if (password !== confirmPassword) {
+        setError('Passwords do not match')
+        return
+      }
+      setSubmitting(true)
+      try {
+        await onUpdatePassword(password)
+        setSuccessMsg('Password updated! You are now signed in.')
+        // Clear hash so we don't keep showing reset mode
+        window.history.replaceState({}, '', window.location.pathname)
+      } catch (err) {
+        setError(prettifyError(err))
+      } finally {
+        setSubmitting(false)
+      }
     }
   }
 
@@ -34,31 +119,18 @@ export const LoginPage = ({ onSignInWithEmail, loading }) => {
       }} />
 
       {/* Decorative chalk doodles */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.06 }}
-        transition={{ delay: 0.8, duration: 1.5 }}
-        className="absolute top-[15%] left-[8%] text-white text-7xl font-hand select-none pointer-events-none"
-      >$</motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.04 }}
-        transition={{ delay: 1.2, duration: 1.5 }}
-        className="absolute bottom-[20%] right-[10%] text-white text-5xl font-hand select-none pointer-events-none rotate-12"
-      >%</motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.05 }}
-        transition={{ delay: 1.0, duration: 1.5 }}
-        className="absolute top-[25%] right-[15%] text-white text-4xl font-hand select-none pointer-events-none -rotate-6"
-      >+</motion.div>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.06 }} transition={{ delay: 0.8, duration: 1.5 }}
+        className="absolute top-[15%] left-[8%] text-white text-7xl font-hand select-none pointer-events-none">$</motion.div>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.04 }} transition={{ delay: 1.2, duration: 1.5 }}
+        className="absolute bottom-[20%] right-[10%] text-white text-5xl font-hand select-none pointer-events-none rotate-12">%</motion.div>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.05 }} transition={{ delay: 1.0, duration: 1.5 }}
+        className="absolute top-[25%] right-[15%] text-white text-4xl font-hand select-none pointer-events-none -rotate-6">+</motion.div>
 
-      {/* Notebook paper card */}
       <motion.div
         initial={{ opacity: 0, y: 30, rotate: -1 }}
         animate={{ opacity: 1, y: 0, rotate: 0 }}
         transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-        className="relative z-10 w-full max-w-[400px]"
+        className="relative z-10 w-full max-w-[420px]"
       >
         <div className="bg-[#faf8f4] rounded-sm p-10 shadow-[6px_6px_0px_rgba(0,0,0,0.15)] border border-black/[0.08] relative overflow-hidden">
           {/* Red margin line */}
@@ -75,38 +147,29 @@ export const LoginPage = ({ onSignInWithEmail, loading }) => {
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.5, type: 'spring', stiffness: 200 }}
-            className="flex justify-center mb-6 relative z-10"
+            className="flex justify-center mb-5 relative z-10"
           >
-            <div className="w-16 h-16 rounded-xl bg-pencil flex items-center justify-center shadow-[2px_2px_0px_rgba(0,0,0,0.12)]">
-              <span className="text-3xl font-black text-[#243024]">$</span>
+            <div className="w-14 h-14 rounded-xl bg-pencil flex items-center justify-center shadow-[2px_2px_0px_rgba(0,0,0,0.12)]">
+              <span className="text-2xl font-black text-[#243024]">$</span>
             </div>
           </motion.div>
 
-          {/* Title — handwritten style */}
+          {/* Title */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-center mb-8 relative z-10"
+            className="text-center mb-6 relative z-10"
           >
-            <h1 className="text-5xl font-hand font-bold text-ink tracking-tight">
-              My Money
-            </h1>
-            <p className="text-base font-hand text-ink-muted mt-1.5 tracking-wide">
-              Alpha School
-            </p>
+            <h1 className="text-4xl font-hand font-bold text-ink tracking-tight">My Money</h1>
+            <p className="text-sm font-hand text-ink-muted mt-1 tracking-wide">Alpha School</p>
           </motion.div>
 
           <AnimatePresence mode="wait">
-            {sent ? (
-              <motion.div
-                key="sent"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3 }}
-                className="relative z-10 text-center"
-              >
+            {/* CHECK EMAIL state after sign up */}
+            {mode === 'check-email' && (
+              <motion.div key="check-email" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }} className="relative z-10 text-center">
                 <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-sage/15 flex items-center justify-center">
                   <svg className="w-6 h-6 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
@@ -114,52 +177,119 @@ export const LoginPage = ({ onSignInWithEmail, loading }) => {
                 </div>
                 <p className="text-base font-bold text-ink mb-1.5">Check your email!</p>
                 <p className="text-sm text-ink-muted leading-relaxed">
-                  We sent a login link to <span className="font-semibold text-ink">{email}</span>
+                  We sent a confirmation link to <span className="font-semibold text-ink">{email}</span>
                 </p>
                 <p className="text-xs text-ink-faint mt-4">
-                  Click the link in the email to sign in.
+                  Click the link in the email to confirm your account, then come back here to sign in.
                 </p>
-                <button
-                  onClick={() => { setSent(false); setEmail(''); setError('') }}
-                  className="mt-5 text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2"
-                >
-                  Use a different email
+                <button onClick={() => setMode('signin')} className="mt-5 text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2">
+                  Back to sign in
                 </button>
               </motion.div>
-            ) : (
+            )}
+
+            {/* SENT state after forgot password */}
+            {mode === 'sent' && (
+              <motion.div key="sent" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }} className="relative z-10 text-center">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-sage/15 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p className="text-base font-bold text-ink mb-1.5">Check your email!</p>
+                <p className="text-sm text-ink-muted leading-relaxed">
+                  We sent a password reset link to <span className="font-semibold text-ink">{email}</span>
+                </p>
+                <button onClick={() => setMode('signin')} className="mt-5 text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2">
+                  Back to sign in
+                </button>
+              </motion.div>
+            )}
+
+            {/* SIGN IN / SIGN UP / FORGOT / RESET forms */}
+            {(mode === 'signin' || mode === 'signup' || mode === 'forgot' || mode === 'reset') && (
               <motion.form
-                key="form"
+                key={mode}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.25 }}
                 onSubmit={handleSubmit}
                 className="relative z-10 space-y-3"
               >
-                <div>
-                  <label htmlFor="email" className="block text-xs font-semibold text-ink-muted mb-1.5 tracking-wide uppercase">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@alpha.school"
-                    autoComplete="email"
-                    autoFocus
-                    disabled={submitting}
-                    className="w-full px-4 py-3 bg-white border border-black/10 rounded-lg text-[15px] text-ink placeholder-ink-faint focus:outline-none focus:border-pencil focus:ring-2 focus:ring-pencil/20 transition-all disabled:opacity-60"
-                  />
-                </div>
+                {/* Tab toggle (signin/signup only) */}
+                {(mode === 'signin' || mode === 'signup') && (
+                  <div className="flex bg-black/5 rounded-lg p-1 mb-4">
+                    <button type="button" onClick={() => setMode('signin')}
+                      className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${mode === 'signin' ? 'bg-white shadow-sm text-ink' : 'text-ink-muted hover:text-ink'}`}>
+                      Sign In
+                    </button>
+                    <button type="button" onClick={() => setMode('signup')}
+                      className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${mode === 'signup' ? 'bg-white shadow-sm text-ink' : 'text-ink-muted hover:text-ink'}`}>
+                      Sign Up
+                    </button>
+                  </div>
+                )}
+
+                {mode === 'forgot' && (
+                  <p className="text-sm text-ink-muted mb-3">
+                    Enter your email and we'll send you a link to reset your password.
+                  </p>
+                )}
+
+                {mode === 'reset' && (
+                  <p className="text-sm text-ink-muted mb-3">
+                    Choose a new password for your account.
+                  </p>
+                )}
+
+                {/* Full name (signup only) */}
+                {mode === 'signup' && (
+                  <Field label="Full Name" id="name" type="text" value={fullName}
+                    onChange={(v) => setFullName(v)} placeholder="June Rockefeller" autoComplete="name" autoFocus disabled={submitting} />
+                )}
+
+                {/* Email (not in reset mode) */}
+                {mode !== 'reset' && (
+                  <Field label="Email" id="email" type="email" value={email}
+                    onChange={(v) => setEmail(v)} placeholder="you@alpha.school" autoComplete="email"
+                    autoFocus={mode === 'signin' || mode === 'forgot'} disabled={submitting} />
+                )}
+
+                {/* Password (not in forgot mode) */}
+                {(mode === 'signin' || mode === 'signup' || mode === 'reset') && (
+                  <Field label={mode === 'reset' ? 'New Password' : 'Password'} id="password" type="password" value={password}
+                    onChange={(v) => setPassword(v)} placeholder={mode === 'signup' || mode === 'reset' ? 'At least 6 characters' : ''}
+                    autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                    autoFocus={mode === 'reset'} disabled={submitting} />
+                )}
+
+                {/* Confirm password (signup + reset) */}
+                {(mode === 'signup' || mode === 'reset') && (
+                  <Field label="Confirm Password" id="confirmPassword" type="password" value={confirmPassword}
+                    onChange={(v) => setConfirmPassword(v)} autoComplete="new-password" disabled={submitting} />
+                )}
+
+                {/* Forgot password link */}
+                {mode === 'signin' && (
+                  <div className="text-right">
+                    <button type="button" onClick={() => setMode('forgot')}
+                      className="text-xs font-semibold text-ink-muted hover:text-ink underline underline-offset-2">
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
 
                 {error && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-xs text-red-600 font-medium"
-                  >
+                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-red-600 font-medium">
                     {error}
+                  </motion.p>
+                )}
+
+                {successMsg && (
+                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-sage font-semibold">
+                    {successMsg}
                   </motion.p>
                 )}
 
@@ -167,29 +297,32 @@ export const LoginPage = ({ onSignInWithEmail, loading }) => {
                   type="submit"
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  disabled={submitting || loading || !email.trim()}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-ink text-white rounded-lg font-bold text-[15px] transition-all duration-200 shadow-[2px_2px_0px_rgba(0,0,0,0.15)] hover:shadow-[3px_3px_0px_rgba(0,0,0,0.2)] hover:bg-ink/90 disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={submitting || loading}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-ink text-white rounded-lg font-bold text-[15px] transition-all duration-200 shadow-[2px_2px_0px_rgba(0,0,0,0.15)] hover:shadow-[3px_3px_0px_rgba(0,0,0,0.2)] hover:bg-ink/90 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {submitting ? (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                      className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                    />
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
                   ) : (
-                    <>
-                      <span>Send login link</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </>
+                    <span>
+                      {mode === 'signin' && 'Sign In'}
+                      {mode === 'signup' && 'Create Account'}
+                      {mode === 'forgot' && 'Send Reset Link'}
+                      {mode === 'reset' && 'Update Password'}
+                    </span>
                   )}
                 </motion.button>
+
+                {mode === 'forgot' && (
+                  <button type="button" onClick={() => setMode('signin')}
+                    className="w-full text-xs font-semibold text-ink-muted hover:text-ink mt-2">
+                    ← Back to sign in
+                  </button>
+                )}
               </motion.form>
             )}
           </AnimatePresence>
 
-          {/* Tagline */}
           <p className="relative z-10 text-center text-sm font-hand text-ink-faint mt-6">
              Learn money. Have fun.
           </p>
@@ -200,4 +333,34 @@ export const LoginPage = ({ onSignInWithEmail, loading }) => {
       </motion.div>
     </div>
   )
+}
+
+// Reusable field component
+const Field = ({ label, id, type, value, onChange, placeholder, autoComplete, autoFocus, disabled }) => (
+  <div>
+    <label htmlFor={id} className="block text-xs font-semibold text-ink-muted mb-1.5 tracking-wide uppercase">
+      {label}
+    </label>
+    <input
+      id={id}
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      autoComplete={autoComplete}
+      autoFocus={autoFocus}
+      disabled={disabled}
+      className="w-full px-4 py-2.5 bg-white border border-black/10 rounded-lg text-[15px] text-ink placeholder-ink-faint focus:outline-none focus:border-pencil focus:ring-2 focus:ring-pencil/20 transition-all disabled:opacity-60"
+    />
+  </div>
+)
+
+// Format Supabase errors into friendly messages
+function prettifyError(err) {
+  const msg = err?.message || 'Something went wrong. Please try again.'
+  if (msg.includes('Invalid login credentials')) return 'Wrong email or password. Try again or use "Forgot password?"'
+  if (msg.includes('User already registered')) return 'An account with this email already exists. Try signing in instead.'
+  if (msg.includes('Email not confirmed')) return 'Please check your email and click the confirmation link before signing in.'
+  if (msg.includes('rate limit') || msg.includes('Too many')) return 'Too many tries. Please wait a minute and try again.'
+  return msg
 }

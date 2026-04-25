@@ -110,19 +110,33 @@ export const useAuth = () => {
     }
   }, [fetchProfile])
 
-  const signInWithEmail = async (email) => {
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: window.location.origin
-        }
-      })
-      if (error) throw error
-    } catch (error) {
-      console.error('Sign in error:', error)
-      throw error
-    }
+  const signIn = async (email, password) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+  }
+
+  const signUp = async (email, password, fullName) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: window.location.origin
+      }
+    })
+    if (error) throw error
+  }
+
+  const resetPassword = async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/reset-password'
+    })
+    if (error) throw error
+  }
+
+  const updatePassword = async (newPassword) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) throw error
   }
 
   const signOut = async () => {
@@ -144,5 +158,5 @@ export const useAuth = () => {
     return null
   }, [user?.id, fetchProfile])
 
-  return { user, profile, loading, authError, signInWithEmail, signOut, refreshProfile }
+  return { user, profile, loading, authError, signIn, signUp, resetPassword, updatePassword, signOut, refreshProfile }
 }
