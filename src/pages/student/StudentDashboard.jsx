@@ -26,7 +26,7 @@ import {
   BarChart3, ChevronRight, Banknote, ArrowUpRight,
   Sprout, Trophy, Flame, Target, Sparkles, BookOpen,
   Clock, Star, X, Info, Lock, MapPin, GraduationCap,
-  DollarSign, HandCoins, MessageSquare,
+  DollarSign, HandCoins, MessageSquare, CreditCard, Phone,
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
@@ -648,6 +648,56 @@ export const StudentDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* ── Cash Card (legacy, separate from My Money) ── */}
+      {profile?.card_balance > 0 && (
+        <div className="px-8 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.46 }}
+            className="rounded-xl p-5 bg-gradient-to-r from-amber-50/80 to-pencil-bg/60 dark:from-amber/[0.05] dark:to-pencil/[0.04] border border-amber/30 dark:border-amber/20"
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <div className="w-10 h-10 rounded-lg bg-amber/15 flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-5 h-5 text-amber" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-amber/80 mb-0.5">
+                  Your Cash Card
+                </p>
+                <p className="text-3xl font-black tabular-nums text-ink dark:text-chalk-white mb-1">
+                  {formatCurrency(profile.card_balance)}
+                </p>
+                <p className="text-[11px] leading-relaxed text-ink-light dark:text-white/60">
+                  This is the money on your physical Cash Card from earlier sessions. It's <span className="font-semibold">separate from My Money</span> and it's <span className="font-semibold">yours forever</span> — spend it whenever you want.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg bg-white/70 dark:bg-white/[0.04] p-3 mt-3 border border-amber/15 dark:border-amber/10">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-ink-muted dark:text-white/40 mb-2">
+                Check your real-time balance
+              </p>
+              <div className="space-y-1.5 text-[12px]">
+                <div className="flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5 text-amber flex-shrink-0" />
+                  <span className="text-ink-light dark:text-white/60">Call</span>
+                  <a href="tel:18668820410" className="font-bold tabular-nums text-ink dark:text-chalk-white hover:text-amber">
+                    1-866-882-0410
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-3.5 h-3.5 text-amber flex-shrink-0" />
+                  <span className="text-ink-light dark:text-white/60">Visit</span>
+                  <a href="https://cardholder.virtualrewardcenter.com/home/activate" target="_blank" rel="noreferrer" className="font-mono text-[11px] text-ink dark:text-chalk-white hover:text-amber underline-offset-2 hover:underline">
+                    cardholder.virtualrewardcenter.com
+                  </a>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* ── Portal Tooltip (renders outside card boundaries) ── */}
       {hoverTooltip && ACCOUNT_LEARN[hoverTooltip] && ReactDOM.createPortal(
