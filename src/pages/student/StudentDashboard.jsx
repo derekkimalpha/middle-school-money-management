@@ -224,6 +224,27 @@ export const StudentDashboard = () => {
           <HowXpWorks />
         </motion.div>
 
+        {/* ── Coming Soon: Roth IRA from MAP testing ── */}
+        <motion.div
+          {...fadeUp(0.43)}
+          className="mt-3 rounded-2xl p-5 bg-cobalt-50 dark:bg-cobalt-700/20 border-[3px] border-black shadow-gum"
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-11 h-11 rounded-xl bg-cobalt-400 border-[3px] border-black flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-black text-lg">🔒</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <p className="text-[14px] font-black text-black dark:text-white">Roth IRA</p>
+                <span className="px-2 py-0.5 rounded-full bg-cobalt-400 text-white text-[10px] font-black uppercase tracking-wider border-[2px] border-black">Coming soon</span>
+              </div>
+              <p className="text-[12px] text-black/65 dark:text-white/55 font-semibold leading-snug">
+                MAP testing payouts will land here — money that grows tax-free and stays locked until you graduate. Big assessments → big rewards. Just like a real Roth IRA.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* ── Recent activity ── */}
         {recent.length > 0 && (
           <motion.div
