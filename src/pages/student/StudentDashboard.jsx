@@ -13,17 +13,18 @@ import { NetWorthChart } from '../../components/student/NetWorthChart'
 import { PaycheckCard } from '../../components/student/PaycheckCard'
 import { SplitBalance } from '../../components/student/SplitBalance'
 import { HowXpWorks } from '../../components/student/HowXpWorks'
+import { EarningsBreakdown } from '../../components/student/EarningsBreakdown'
 import { formatCurrency } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
 
 const CASH_ROWS = [
-  { key: 'checking', label: 'Checking', subtitle: 'Spending account', icon: Wallet,    accent: '#1F6FEB' },
-  { key: 'savings',  label: 'Savings',  subtitle: '4.00% APY',         icon: PiggyBank, accent: '#114290' },
+  { key: 'checking', label: 'Checking', subtitle: 'Spending account',          icon: Wallet,    accent: '#1F6FEB' },
+  { key: 'savings',  label: 'Savings',  subtitle: '4.00% APY · paid daily',    icon: PiggyBank, accent: '#114290' },
 ]
 
 const INVEST_ROWS = [
-  { key: 'sp500',  label: 'S&P 500', subtitle: '500 U.S. companies', icon: TrendingUp, accent: '#1856B7' },
-  { key: 'nasdaq', label: 'NASDAQ',  subtitle: 'Tech & growth',      icon: BarChart3,  accent: '#0B3068' },
+  { key: 'sp500',  label: 'S&P 500', subtitle: '500 U.S. companies · updates daily', icon: TrendingUp, accent: '#1856B7' },
+  { key: 'nasdaq', label: 'NASDAQ',  subtitle: 'Tech & growth · updates daily',      icon: BarChart3,  accent: '#0B3068' },
 ]
 
 const fadeUp = (delay = 0) => ({
@@ -120,64 +121,116 @@ export const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-cream dark:bg-[#0c100c]">
-      <div className="pb-16 max-w-2xl mx-auto px-5 md:px-8 pt-7">
+      <div className="pb-16 max-w-6xl mx-auto px-5 md:px-8 pt-7">
 
-        {/* ── Hero card: chunky cobalt ── */}
+        {/* ── Hero card: chunky cobalt — full width ── */}
         <motion.div
           {...fadeUp(0)}
           className="rounded-2xl p-6 md:p-7 bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum"
         >
-          <p className="text-[11px] uppercase tracking-[0.18em] text-black/55 dark:text-white/50 font-black mb-2">
-            Net worth
-          </p>
-          <SplitBalance
-            value={totalBalance}
-            className="text-[48px] md:text-[60px] font-black leading-[1] tracking-[-0.02em] text-black dark:text-white"
-            centsClassName=""
-          />
-          <div className="flex items-center gap-3 mt-3 flex-wrap">
-            {todayDelta !== 0 && (
-              <span className={`flex items-center gap-1 text-[13px] font-bold px-2.5 py-1 rounded-full border-[2px] border-black ${todayDelta >= 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}`}>
-                {todayDelta >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-                {todayDelta >= 0 ? '+' : ''}{formatCurrency(todayDelta)} today
-              </span>
-            )}
-            {growth.total > 0 && (
-              <span className="text-[12px] font-bold text-black/65 dark:text-white/55">
-                <span className="text-emerald-700 dark:text-emerald-400">+{formatCurrency(growth.total)}</span> earned all-time
-              </span>
-            )}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-black/55 dark:text-white/50 font-black mb-2">
+                Net worth
+              </p>
+              <SplitBalance
+                value={totalBalance}
+                className="text-[48px] md:text-[60px] font-black leading-[1] tracking-[-0.02em] text-black dark:text-white"
+                centsClassName=""
+              />
+              <div className="flex items-center gap-3 mt-3 flex-wrap">
+                {todayDelta !== 0 && (
+                  <span className={`flex items-center gap-1 text-[13px] font-bold px-2.5 py-1 rounded-full border-[2px] border-black ${todayDelta >= 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}`}>
+                    {todayDelta >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+                    {todayDelta >= 0 ? '+' : ''}{formatCurrency(todayDelta)} today
+                  </span>
+                )}
+                {growth.total > 0 && (
+                  <span className="text-[12px] font-bold text-black/65 dark:text-white/55">
+                    <span className="text-emerald-700 dark:text-emerald-400">+{formatCurrency(growth.total)}</span> earned all-time
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 md:max-w-md md:flex-shrink-0">
+              <button
+                onClick={() => navigate('/transfer')}
+                className="flex items-center justify-center gap-2 py-3.5 px-5 rounded-2xl bg-cobalt-400 text-white border-[3px] border-black shadow-gum text-[14px] font-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed transition-all"
+              >
+                <Send className="w-4 h-4" strokeWidth={2.6} />
+                Transfer
+              </button>
+              <button
+                onClick={() => navigate('/cash-out')}
+                className="flex items-center justify-center gap-2 py-3.5 px-5 rounded-2xl bg-white text-black border-[3px] border-black shadow-gum text-[14px] font-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed transition-all"
+              >
+                <DollarSign className="w-4 h-4" strokeWidth={2.6} />
+                Cash Out
+              </button>
+            </div>
           </div>
         </motion.div>
 
-        {/* ── Action buttons (press-in) ── */}
-        <motion.div {...fadeUp(0.07)} className="grid grid-cols-2 gap-3 mt-5">
-          <button
-            onClick={() => navigate('/transfer')}
-            className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-cobalt-400 text-white border-[3px] border-black shadow-gum text-[14px] font-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed transition-all"
-          >
-            <Send className="w-4 h-4" strokeWidth={2.6} />
-            Transfer
-          </button>
-          <button
-            onClick={() => navigate('/cash-out')}
-            className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white text-black border-[3px] border-black shadow-gum text-[14px] font-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed transition-all"
-          >
-            <DollarSign className="w-4 h-4" strokeWidth={2.6} />
-            Cash Out
-          </button>
-        </motion.div>
+        {/* ── Two-column body (single col on mobile) ── */}
+        <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        {/* ── Chart card ── */}
+        {/* ─── LEFT: Chart + Earnings Breakdown ─── */}
+        <div className="lg:col-span-2 space-y-5">
+
+        {/* Chart card */}
         <motion.div
           {...fadeUp(0.14)}
-          className="mt-5 rounded-2xl p-5 bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum text-cobalt-500 dark:text-cobalt-200"
+          className="rounded-2xl p-5 bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum text-cobalt-500 dark:text-cobalt-200"
         >
           <p className="text-[11px] uppercase tracking-[0.15em] text-black/55 dark:text-white/50 font-black mb-3">
             Net worth over time
           </p>
-          <NetWorthChart history={history} currentTotal={totalBalance} height={200} />
+          <NetWorthChart history={history} currentTotal={totalBalance} height={240} />
         </motion.div>
+
+        {/* Earnings breakdown */}
+        <motion.div {...fadeUp(0.18)}>
+          <EarningsBreakdown studentId={profile.id} />
+        </motion.div>
+
+        {/* Recent activity (lives on left col, more vertical room) */}
+        {recent.length > 0 && (
+          <motion.div
+            {...fadeUp(0.42)}
+            className="rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum overflow-hidden"
+          >
+            <p className="text-[11px] uppercase tracking-[0.15em] text-black/55 dark:text-white/50 px-5 pt-4 pb-2 font-black">
+              Recent activity
+            </p>
+            {recent.map((tx, i) => {
+              const amount = Number(tx.amount || 0)
+              const sign = amount > 0 ? '+' : amount < 0 ? '−' : ''
+              const isPositive = amount >= 0
+              const date = tx.created_at
+                ? new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                : ''
+              return (
+                <div
+                  key={tx.id}
+                  className={`flex justify-between items-center px-5 py-3.5 ${i < recent.length - 1 ? 'border-b border-black/10 dark:border-white/[0.06]' : ''}`}
+                >
+                  <div className="min-w-0 flex-1 pr-3">
+                    <p className="text-[13px] font-semibold text-black dark:text-white truncate">{tx.description || tx.category}</p>
+                    <p className="text-[11px] text-black/45 dark:text-white/30 mt-0.5">{date}</p>
+                  </div>
+                  <p className={`text-[13px] font-black tabular-nums ${isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
+                    {sign}{formatCurrency(Math.abs(amount))}
+                  </p>
+                </div>
+              )
+            })}
+          </motion.div>
+        )}
+
+        </div>{/* end LEFT col */}
+
+        {/* ─── RIGHT: Accounts + Paycheck + How XP + MAP + Cash Card ─── */}
+        <div className="space-y-5">
 
         {/* ── Cash section ── */}
         <Section title="Cash" total={cashTotal} delay={0.21}>
@@ -245,41 +298,10 @@ export const StudentDashboard = () => {
           </div>
         </motion.div>
 
-        {/* ── Recent activity ── */}
-        {recent.length > 0 && (
-          <motion.div
-            {...fadeUp(0.42)}
-            className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum overflow-hidden"
-          >
-            <p className="text-[11px] uppercase tracking-[0.15em] text-black/55 dark:text-white/50 px-5 pt-4 pb-2 font-black">
-              Recent activity
-            </p>
-            {recent.map((tx, i) => {
-              const amount = Number(tx.amount || 0)
-              const sign = amount > 0 ? '+' : amount < 0 ? '−' : ''
-              const isPositive = amount >= 0
-              const date = tx.created_at
-                ? new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-                : ''
-              return (
-                <div
-                  key={tx.id}
-                  className={`flex justify-between items-center px-5 py-3.5 ${i < recent.length - 1 ? 'border-b border-black/10 dark:border-white/[0.06]' : ''}`}
-                >
-                  <div className="min-w-0 flex-1 pr-3">
-                    <p className="text-[13px] font-semibold text-black dark:text-white truncate">{tx.description || tx.category}</p>
-                    <p className="text-[11px] text-black/45 dark:text-white/30 mt-0.5">{date}</p>
-                  </div>
-                  <p className={`text-[13px] font-black tabular-nums ${isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
-                    {sign}{formatCurrency(Math.abs(amount))}
-                  </p>
-                </div>
-              )
-            })}
-          </motion.div>
-        )}
+        </div>{/* end RIGHT col */}
+        </div>{/* end body grid */}
 
-        {/* ── Cash Card panel ── */}
+        {/* ── Cash Card panel — full width below the grid ── */}
         <motion.div
           {...fadeUp(0.49)}
           className="mt-5 rounded-2xl p-5 bg-yellow-100 dark:bg-yellow-900/30 border-[3px] border-black shadow-gum"
