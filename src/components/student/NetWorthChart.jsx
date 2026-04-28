@@ -1,21 +1,30 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 /**
- * Wealthfront-style net worth chart.
- * - Smooth cardinal-spline curve
- * - Faint area fill underneath
- * - End-point dot
- * - Sage green when net up, rose when down, pencil amber when flat
+ * Dot-bar histogram of net worth over time.
+ *
+ * - Each bar = one day, rendered as a stack of dots whose height encodes the net worth
+ * - Bars stagger-rise on mount
+ * - Today's bar is highlighted in pencil yellow with a floating tooltip
+ * - Hovering any bar moves the tooltip and lights it up
  *
  * Props:
  *   history: [{ date: 'YYYY-MM-DD', total: number }, ...] sorted ascending
- *   currentTotal: fallback if history is empty
- *   range: '1W' | '1M' | '3M' | 'ALL' — slices history accordingly
- *   height: SVG height (px)
+ *   currentTotal: fallback total if history is empty
+ *   range: '1W' | '1M' | '3M' | 'ALL'
+ *   height: SVG height in px (default 180)
  */
-export const NetWorthChart = ({ history = [], currentTotal = 0, range = 'ALL', height = 140 }) => {
+export const NetWorthChart = ({
+  history = [],
+  currentTotal = 0,
+  range = 'ALL',
+  height = 180,
+}) => {
+  const [hoverIdx, setHoverIdx] = useState(null)
+
   const filtered = useMemo(() => {
-    if (range === 'ALL') return history
+    if (range === 'ALL' || history.length === 0) return history
     const days = range === '1W' ? 7 : range === '1M' ? 30 : 90
     const cutoff = new Date()
     cutoff.setDate(cutoff.getDate() - days)
@@ -23,87 +32,156 @@ export const NetWorthChart = ({ history = [], currentTotal = 0, range = 'ALL', h
     return history.filter((h) => h.date >= cutoffStr)
   }, [history, range])
 
-  const { pathLine, pathArea, endX, endY, isUp, isFlat, stroke, fill } = useMemo(() => {
-    const pts = (filtered.length > 0)
-      ? filtered.map((h) => h.total)
-      : [currentTotal, currentTotal]
+  // If we have no transaction history yet, render a single bar today.
+  const points = filtered.length > 0
+    ? filtered
+    : [{ date: new Date().toISOString().slice(0, 10), total: currentTotal }]
 
-    if (pts.length === 1) pts.push(pts[0])
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const todayIdx = points.findIndex((p) => p.date === todayStr)
+  const activeIdx = hoverIdx ?? (todayIdx >= 0 ? todayIdx : points.length - 1)
 
-    const min = Math.min(...pts)
-    const max = Math.max(...pts)
-    const range = max - min || 1
+  // Geometry
+  const PAD_X = 6
+  const PAD_TOP = 8
+  const PAD_BOTTOM = 12
+  const W = 600
+  const H = height
+  const usableW = W - PAD_X * 2
+  const usableH = H - PAD_TOP - PAD_BOTTOM
 
-    const padTop = 14
-    const padBottom = 12
-    const padX = 4
-    const w = 600
-    const h = height
-    const usableW = w - padX * 2
-    const usableH = h - padTop - padBottom
+  // How many vertical dots a 1-period bar shows. Scale max-value bar to ~14 dots.
+  const MAX_DOTS = 14
+  const DOT_SIZE = 2.5
+  const DOT_GAP = (usableH - MAX_DOTS * DOT_SIZE * 2) / (MAX_DOTS - 1)
+  const DOT_PITCH = DOT_SIZE * 2 + DOT_GAP
 
-    const xs = pts.map((_, i) => padX + (i / (pts.length - 1)) * usableW)
-    const ys = pts.map((v) => padTop + usableH - ((v - min) / range) * usableH)
+  const max = Math.max(...points.map((p) => p.total), 1)
 
-    // Cardinal spline → smooth Bezier curve.
-    const tension = 0.35
-    let line = `M ${xs[0]} ${ys[0]}`
-    for (let i = 0; i < xs.length - 1; i++) {
-      const x0 = i > 0 ? xs[i - 1] : xs[i]
-      const y0 = i > 0 ? ys[i - 1] : ys[i]
-      const x1 = xs[i]
-      const y1 = ys[i]
-      const x2 = xs[i + 1]
-      const y2 = ys[i + 1]
-      const x3 = i + 2 < xs.length ? xs[i + 2] : x2
-      const y3 = i + 2 < ys.length ? ys[i + 2] : y2
-      const cp1x = x1 + (x2 - x0) * tension / 2
-      const cp1y = y1 + (y2 - y0) * tension / 2
-      const cp2x = x2 - (x3 - x1) * tension / 2
-      const cp2y = y2 - (y3 - y1) * tension / 2
-      line += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x2} ${y2}`
-    }
-    const area = `${line} L ${xs[xs.length - 1]} ${h} L ${xs[0]} ${h} Z`
+  const colCount = points.length
+  const colW = usableW / Math.max(colCount, 1)
 
-    const isFlat = max === min
-    const isUp = pts[pts.length - 1] >= pts[0]
-    const stroke = isFlat ? '#a68b5b' : isUp ? '#1D9E75' : '#c43d3d'
-    const fill = isFlat ? 'rgba(166,139,91,0.10)' : isUp ? 'rgba(29,158,117,0.12)' : 'rgba(196,61,61,0.12)'
+  const bars = points.map((p, i) => {
+    const ratio = p.total / max
+    const dotCount = Math.max(1, Math.round(ratio * MAX_DOTS))
+    const cx = PAD_X + colW * i + colW / 2
+    return { ...p, idx: i, cx, dotCount }
+  })
 
-    return {
-      pathLine: line,
-      pathArea: area,
-      endX: xs[xs.length - 1],
-      endY: ys[ys.length - 1],
-      isUp, isFlat, stroke, fill,
-    }
-  }, [filtered, currentTotal, height])
+  // Active tooltip data
+  const active = bars[activeIdx]
+  const activeIsToday = active?.date === todayStr
+
+  // Tooltip horizontal placement (clamp inside chart)
+  const tooltipW = 110
+  let tooltipX = (active?.cx ?? W / 2) - tooltipW / 2
+  if (tooltipX < 4) tooltipX = 4
+  if (tooltipX + tooltipW > W - 4) tooltipX = W - tooltipW - 4
 
   return (
     <svg
-      viewBox={`0 0 600 ${height}`}
+      viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="none"
-      style={{ width: '100%', height: `${height}px`, display: 'block' }}
+      style={{ width: '100%', height: `${H}px`, display: 'block', overflow: 'visible' }}
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient id="nwArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={stroke} stopOpacity="0.22" />
-          <stop offset="100%" stopColor={stroke} stopOpacity="0.02" />
-        </linearGradient>
-      </defs>
-      <path d={pathArea} fill="url(#nwArea)" />
-      <path
-        d={pathLine}
-        fill="none"
-        stroke={stroke}
-        strokeWidth="2.25"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      {/* End-of-line dot */}
-      <circle cx={endX} cy={endY} r="3.5" fill={stroke} />
-      <circle cx={endX} cy={endY} r="6" fill={stroke} opacity="0.18" />
+      {/* Bars */}
+      {bars.map((bar) => {
+        const isActive = bar.idx === activeIdx
+        const isToday = bar.date === todayStr
+        const accent = isToday ? '#e8c840' : isActive ? '#1f2a1f' : '#bdb8a8'
+        return (
+          <g
+            key={bar.date + bar.idx}
+            onMouseEnter={() => setHoverIdx(bar.idx)}
+            onMouseLeave={() => setHoverIdx(null)}
+            style={{ cursor: 'pointer' }}
+          >
+            {/* Hit area */}
+            <rect
+              x={bar.cx - colW / 2}
+              y={0}
+              width={colW}
+              height={H}
+              fill="transparent"
+            />
+            {Array.from({ length: bar.dotCount }).map((_, j) => {
+              const cy = H - PAD_BOTTOM - j * DOT_PITCH - DOT_SIZE
+              return (
+                <motion.circle
+                  key={j}
+                  cx={bar.cx}
+                  cy={cy}
+                  r={DOT_SIZE}
+                  fill={accent}
+                  initial={{ opacity: 0, cy: H - PAD_BOTTOM }}
+                  animate={{ opacity: 1, cy }}
+                  transition={{
+                    duration: 0.5,
+                    delay: bar.idx * 0.012 + j * 0.01,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                />
+              )
+            })}
+          </g>
+        )
+      })}
+
+      {/* Floating tooltip for active bar */}
+      <AnimatePresence>
+        {active && (
+          <motion.g
+            key={`tip-${active.idx}`}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.18 }}
+          >
+            <rect
+              x={tooltipX}
+              y={2}
+              width={tooltipW}
+              height={36}
+              rx={10}
+              fill="#e8c840"
+            />
+            <text
+              x={tooltipX + tooltipW / 2}
+              y={18}
+              textAnchor="middle"
+              fontSize="13"
+              fontWeight="700"
+              fill="#1f2a1f"
+              fontFamily="system-ui, sans-serif"
+            >
+              ${active.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </text>
+            <text
+              x={tooltipX + tooltipW / 2}
+              y={31}
+              textAnchor="middle"
+              fontSize="9.5"
+              fill="#1f2a1f"
+              opacity="0.7"
+              fontFamily="system-ui, sans-serif"
+            >
+              {activeIsToday ? 'Today' : new Date(active.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            </text>
+            {/* connector line from tooltip to bar */}
+            <line
+              x1={active.cx}
+              y1={38}
+              x2={active.cx}
+              y2={H - PAD_BOTTOM - active.dotCount * DOT_PITCH}
+              stroke="#e8c840"
+              strokeWidth="1.5"
+              strokeDasharray="2 3"
+              opacity="0.55"
+            />
+          </motion.g>
+        )}
+      </AnimatePresence>
     </svg>
   )
 }

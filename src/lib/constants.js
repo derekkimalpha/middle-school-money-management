@@ -59,18 +59,18 @@ export const ACCOUNT_META = {
   },
 }
 
-// Transfer rules defining which accounts can transfer to which
-// Savings, investments, and Roth are locked — money only flows IN, never out
-// Only checking can send money to savings/investments
-// Cash-outs happen from checking only (end of year)
-// Graduation unlocks everything
+// Transfer rules — open across the four real accounts in either direction.
+// Mirrors how a modern retail brokerage works (Robinhood, Fidelity, Schwab):
+// $0 fee, instant settlement, freely move between cash and investments.
+// Cash-outs (spending physical card money) still come from Checking only.
+// Roth + bonus stay locked.
 export const TRANSFER_RULES = {
-  checking: ['savings', 'sp500', 'nasdaq'],  // Can invest or save
-  savings: [],    // Locked — grows until graduation
-  sp500: [],      // Locked — grows until graduation
-  nasdaq: [],     // Locked — grows until graduation
-  bonus: [],      // Locked
-  roth: [],       // Locked until graduation
+  checking: ['savings', 'sp500', 'nasdaq'],
+  savings:  ['checking', 'sp500', 'nasdaq'],
+  sp500:    ['checking', 'savings', 'nasdaq'],
+  nasdaq:   ['checking', 'savings', 'sp500'],
+  bonus:    [],
+  roth:     [],
 }
 
 // Grade levels

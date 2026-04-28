@@ -122,7 +122,7 @@ export const StudentTransfer = () => {
             <span className="text-[12px] font-bold text-ink dark:text-chalk-white">How Transfers Work</span>
           </div>
           <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-            You can move money from checking into savings or investments — but once it's there, it's locked until graduation. This is how real investing works: you commit to the long game. Choose wisely!
+            Move money between any of your accounts in either direction — no fees, instant. Just like a real brokerage (Robinhood, Fidelity, Schwab). Investments can swing up and down, so think long-term before selling.
           </p>
         </div>
 
@@ -139,14 +139,14 @@ export const StudentTransfer = () => {
             </h2>
             <AccountPicker
               accounts={Object.fromEntries(
-                Object.entries(accounts).filter(([key]) => key === 'checking')
+                Object.entries(accounts).filter(([key]) => ['checking', 'savings', 'sp500', 'nasdaq'].includes(key))
               )}
               selected={fromAccount}
               onSelect={setFromAccount}
               showBalance={true}
             />
             <p className="text-[11px] text-ink-faint dark:text-white/25 mt-2">
-              Only checking can transfer out — savings and investments are locked until graduation.
+              Move money in any direction — no fees, instant.
             </p>
           </div>
 
@@ -299,10 +299,10 @@ export const StudentTransfer = () => {
         <div className="rounded-xl p-4 border border-teal/20 dark:border-teal/10 bg-teal/[0.04] dark:bg-teal/[0.02]">
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold text-teal bg-teal/10 uppercase tracking-wider">Learn</span>
-            <span className="text-[12px] font-bold text-ink dark:text-chalk-white">Think Before You Transfer</span>
+            <span className="text-[12px] font-bold text-ink dark:text-chalk-white">Think Before You Sell</span>
           </div>
           <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-            Once money leaves checking, it's committed. Savings earns steady interest. S&P 500 and NASDAQ grow with the market but can go up and down. The best investors think long-term and don't panic when things dip.
+            Selling investments when they're down locks in a loss. The S&P 500 has dropped 20%+ about once every 4 years — and recovered every single time. The smartest investors hold through dips.
           </p>
         </div>
       </div>
