@@ -658,34 +658,34 @@ export const StudentPaycheck = () => {
      TRACKER VIEW — Daily paycheck tracker (main view)
      ═══════════════════════════════════════════════ */
   return (
-    <div className="relative pb-28">
-      <div className="space-y-4 p-8">
+    <div className="min-h-screen bg-cream dark:bg-[#0c100c] relative pb-28">
+      <div className="space-y-5 max-w-3xl mx-auto px-5 md:px-8 pt-7">
         <Toast message={toast} />
         <Confetti active={showConfetti} />
 
         {/* Header with save status */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[12px] font-semibold text-ink-faint dark:text-white/30 uppercase tracking-wider">This Week</p>
-              <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white font-hand tracking-[-0.02em] mt-1">My Paycheck</h1>
-              <p className="text-[13px] text-ink-muted dark:text-white/40 mt-1">Week of {currentWeekLabel}</p>
+              <p className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.18em]">This Week</p>
+              <h1 className="text-[32px] md:text-[40px] font-black text-black dark:text-white tracking-[-0.02em] leading-[1.05] mt-1">My Paycheck</h1>
+              <p className="text-[13px] font-semibold text-black/55 dark:text-white/45 mt-1">Week of {currentWeekLabel}</p>
             </div>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-2 flex-wrap justify-end">
               <AnimatePresence mode="wait">
                 {saveStatus === 'saving' && (
-                  <motion.span key="saving" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[11px] text-ink-faint dark:text-white/30 flex items-center gap-1">
-                    <motion.div className="w-3 h-3 border-2 border-ink-faint/30 border-t-ink-faint rounded-full" animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} />
+                  <motion.span key="saving" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[11px] font-bold text-black/55 dark:text-white/45 flex items-center gap-1">
+                    <motion.div className="w-3 h-3 border-2 border-black/30 border-t-black rounded-full" animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} />
                     Saving...
                   </motion.span>
                 )}
                 {saveStatus === 'saved' && (
-                  <motion.span key="saved" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[11px] text-sage-600 dark:text-sage-400 flex items-center gap-1">
+                  <motion.span key="saved" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                     <CheckCircle className="w-3 h-3" /> Saved
                   </motion.span>
                 )}
               </AnimatePresence>
-              <span className={`px-2.5 py-1 rounded-sm text-xs font-semibold ${STATUS_CONFIG[draftStatus]?.color || STATUS_CONFIG.draft.color}`}>
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-cobalt-50 text-cobalt-700 border-[2px] border-black">
                 {STATUS_CONFIG[draftStatus]?.label || 'In Progress'}
               </span>
             </div>
@@ -694,30 +694,28 @@ export const StudentPaycheck = () => {
 
         {/* Status messages */}
         {draftStatus === 'submitted' && (
-          <div className="p-3 rounded-sm bg-stone-500/[0.06] dark:bg-stone-400/[0.06] border border-stone-500/20 dark:border-stone-400/10 text-sm text-stone-600 dark:text-stone-400">
+          <div className="p-4 rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum text-[13px] font-bold text-black dark:text-white">
             <Clock className="w-4 h-4 inline mr-1" />
             Submitted! Waiting for your guide to review.
           </div>
         )}
         {(draftStatus === 'verified' || draftStatus === 'allocated') && (
-          <div className="p-3 rounded-sm bg-sage-500/[0.06] dark:bg-sage-400/[0.06] border border-sage-500/20 dark:border-sage-400/10 text-sm text-sage-600 dark:text-sage-400">
+          <div className="p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 border-[3px] border-black shadow-gum text-[13px] font-bold text-emerald-900 dark:text-emerald-200">
             <CheckCircle className="w-4 h-4 inline mr-1" />
             Approved! Your paycheck landed in Savings, earning 4% APY. Open the dashboard to invest or transfer.
           </div>
         )}
 
-        {/* Step tabs removed — paychecks now auto-flow to Savings on guide approval */}
-
-        <div className="max-w-2xl space-y-4">
+        <div className="space-y-5">
 
           {/* ══════ STEP 1: Log XP ══════ */}
           {step === 1 && <>
 
           {/* ── Daily XP — the star of the show ── */}
-          <div className="bg-white dark:bg-white/[0.04] rounded-sm p-6 border border-gray-200 dark:border-white/[0.06]">
-            <h3 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-1">Daily XP</h3>
+          <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border-[3px] border-black shadow-gum">
+            <h3 className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em] mb-1">Daily XP</h3>
             {isEditable && (
-              <p className="text-[11px] text-ink-faint dark:text-white/25 mb-4">Enter your XP each day — it saves automatically</p>
+              <p className="text-[12px] text-black/55 dark:text-white/45 font-semibold mb-4">Enter your XP each day — it saves automatically</p>
             )}
             <div className="grid grid-cols-5 gap-3 mb-6">
               {DAY_LABELS.map((day, idx) => {
@@ -837,10 +835,10 @@ export const StudentPaycheck = () => {
 
           {/* ── Mastery Tests ── */}
           {isEditable && (
-            <div className="bg-white dark:bg-white/[0.04] rounded-sm p-6 border border-gray-200 dark:border-white/[0.06]">
-              <h3 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-4">Mastery Tests</h3>
-              <p className="text-[11px] text-gray-400 dark:text-white/30 mb-3">
-                Score {settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} | 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}
+            <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border-[3px] border-black shadow-gum">
+              <h3 className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em] mb-2">Mastery Tests</h3>
+              <p className="text-[12px] text-black/55 dark:text-white/45 font-semibold mb-4">
+                Score {settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} · 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}
               </p>
 
               {masteryTests.map((test, idx) => {
@@ -875,8 +873,8 @@ export const StudentPaycheck = () => {
 
           {/* ── Custom Bonuses ── */}
           {isEditable && (settings.custom_bonuses || []).length > 0 && (
-            <div className="bg-white dark:bg-white/[0.04] rounded-sm p-6 border border-gray-200 dark:border-white/[0.06] space-y-4">
-              <h3 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider">Bonuses</h3>
+            <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border-[3px] border-black shadow-gum space-y-4">
+              <h3 className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em]">Bonuses</h3>
               <div className="space-y-3">
                 {(settings.custom_bonuses || []).map(bonus => {
                   const entry = customBonuses[bonus.id] || {}
@@ -1123,13 +1121,13 @@ export const StudentPaycheck = () => {
         </div>
       </div>
 
-      {/* ── Sticky bottom bar: running total + step navigation ── */}
+      {/* ── Sticky bottom bar: running total + submit ── */}
       {(isEditable || draftStatus === 'verified') && (
-        <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-30 bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-xl border-t border-gray-200 dark:border-white/[0.06]">
-          <div className="max-w-2xl mx-auto px-8 py-4 flex items-center justify-between">
+        <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-30 bg-cream/95 dark:bg-[#0c100c]/95 backdrop-blur-xl border-t-[3px] border-black">
+          <div className="max-w-3xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] text-gray-400 dark:text-white/30 uppercase tracking-wider">Total Earnings</p>
-              <p className="text-2xl font-bold text-ink dark:text-chalk-white tabular-nums">
+              <p className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em]">Total Earnings</p>
+              <p className="text-[24px] font-black text-black dark:text-white tabular-nums">
                 <AnimNum value={totalPaycheck} prefix="$" />
               </p>
               {totalPaycheck > 0 && (
@@ -1144,20 +1142,20 @@ export const StudentPaycheck = () => {
               )}
             </div>
             {draftStatus === 'verified' || draftStatus === 'allocated' ? (
-              <span className="text-[12px] text-sage-700 dark:text-sage-400 font-semibold">✓ In Savings</span>
+              <span className="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-900 border-[2px] border-black text-[12px] font-black">✓ In Savings</span>
             ) : (
               <button
                 onClick={handleLockIn}
                 disabled={loading || totalPaycheck <= 0}
-                className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
+                className={`rounded-2xl px-6 py-3 text-[14px] font-black border-[3px] border-black transition-all flex items-center gap-2 ${
                   totalPaycheck > 0 && !loading
-                    ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-sm'
-                    : 'bg-gray-100 dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
+                    ? 'bg-cobalt-400 text-white shadow-gum hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-gum-pressed'
                 }`}
               >
                 {loading ? 'Submitting...' : (
                   <>
-                    <Send className="w-4 h-4" />
+                    <Send className="w-4 h-4" strokeWidth={2.6} />
                     Submit for Guide Review
                   </>
                 )}
