@@ -636,13 +636,9 @@ export const StudentPaycheck = () => {
             )}
 
             {p.status === 'verified' && (
-              <div className="mt-6">
-                <Button full size="lg" onClick={() => {
-                  setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
-                  setView('allocate')
-                }}>
-                  Allocate This Paycheck
-                </Button>
+              <div className="mt-6 p-3 rounded-sm bg-sage-500/[0.06] dark:bg-sage-400/[0.06] border border-sage-500/20 dark:border-sage-400/10 text-sm text-sage-600 dark:text-sage-400">
+                <CheckCircle className="w-4 h-4 inline mr-1" />
+                Approved! This paycheck landed in your Savings, earning 4% APY.
               </div>
             )}
 
@@ -710,32 +706,7 @@ export const StudentPaycheck = () => {
           </div>
         )}
 
-        {/* Step tabs */}
-        {isEditable && (
-          <div className="flex gap-1 bg-surface-2 dark:bg-white/[0.04] rounded-xl p-1">
-            {[
-              { num: 1, label: 'Log XP' },
-              { num: 2, label: 'Review & Allocate' },
-            ].map(({ num, label }) => (
-              <button
-                key={num}
-                onClick={() => setStep(num)}
-                className={`flex-1 py-2.5 px-3 rounded-lg text-[12px] font-bold transition-all ${
-                  step === num
-                    ? 'bg-white dark:bg-white/[0.08] text-ink dark:text-chalk-white shadow-sm'
-                    : 'text-ink-muted dark:text-white/40 hover:text-ink dark:hover:text-white/60'
-                }`}
-              >
-                <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] mr-1.5 ${
-                  step === num ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink' : 'bg-black/[0.06] dark:bg-white/[0.08] text-ink-muted dark:text-white/40'
-                }`}>
-                  {num}
-                </span>
-                {label}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Step tabs removed — paychecks now auto-flow to Savings on guide approval */}
 
         <div className="max-w-2xl space-y-4">
 
@@ -1109,12 +1080,7 @@ export const StudentPaycheck = () => {
                       className="bg-white dark:bg-white/[0.04] rounded-sm border border-gray-200 dark:border-white/[0.06] p-4 hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-all cursor-pointer"
                       onClick={() => {
                         setSelectedPaycheck(paycheck)
-                        if (paycheck.status === 'verified') {
-                          setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
-                          setView('allocate')
-                        } else {
-                          setView('detail')
-                        }
+                        setView('detail')
                       }}
                     >
                       <div className="flex items-center justify-between">
@@ -1177,55 +1143,25 @@ export const StudentPaycheck = () => {
                 </div>
               )}
             </div>
-            {draftStatus === 'verified' ? (
+            {draftStatus === 'verified' || draftStatus === 'allocated' ? (
+              <span className="text-[12px] text-sage-700 dark:text-sage-400 font-semibold">✓ In Savings</span>
+            ) : (
               <button
-                onClick={() => {
-                  setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
-                  setView('allocate')
-                }}
-                className="rounded-xl px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 bg-pencil text-ink hover:bg-pencil-dark shadow-sm animate-pulse"
-              >
-                <DollarSign className="w-4 h-4" />
-                Split to My Accounts
-              </button>
-            ) : step === 1 ? (
-              <button
-                onClick={() => setStep(2)}
-                disabled={totalPaycheck <= 0}
+                onClick={handleLockIn}
+                disabled={loading || totalPaycheck <= 0}
                 className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
-                  totalPaycheck > 0
+                  totalPaycheck > 0 && !loading
                     ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-sm'
                     : 'bg-gray-100 dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
                 }`}
               >
-                Next: Review & Allocate
-                <ChevronRight className="w-4 h-4" />
+                {loading ? 'Submitting...' : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    Submit for Guide Review
+                  </>
+                )}
               </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setStep(1)}
-                  className="rounded-xl px-4 py-3 text-sm font-semibold text-ink-muted dark:text-white/40 hover:text-ink dark:hover:text-white/60 transition-colors"
-                >
-                  ← Back
-                </button>
-                <button
-                  onClick={handleLockIn}
-                  disabled={loading || totalPaycheck <= 0}
-                  className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${
-                    totalPaycheck > 0 && !loading
-                      ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink hover:bg-ink/90 dark:hover:bg-chalk-white/90 shadow-sm'
-                      : 'bg-gray-100 dark:bg-white/[0.04] text-gray-300 dark:text-white/20 cursor-not-allowed'
-                  }`}
-                >
-                  {loading ? 'Submitting...' : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      Submit for Guide Review
-                    </>
-                  )}
-                </button>
-              </div>
             )}
           </div>
         </div>
