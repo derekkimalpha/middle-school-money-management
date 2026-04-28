@@ -24,14 +24,13 @@ const INVEST_ROWS = [
   { key: 'nasdaq', label: 'NASDAQ',  subtitle: 'Tech & growth',      icon: BarChart3,  accent: '#78716c' },
 ]
 
-const containerV = {
-  hidden: { opacity: 0 },
-  show:   { opacity: 1, transition: { staggerChildren: 0.07, delayChildren: 0.04 } },
-}
-const itemV = {
-  hidden: { opacity: 0, y: 10 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
-}
+// Per-element fade-up. Each section animates independently with its own delay
+// so that even if variant propagation breaks, every element still becomes visible.
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] },
+})
 
 export const StudentDashboard = () => {
   const navigate = useNavigate()
@@ -92,14 +91,9 @@ export const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0c100c]">
-      <motion.div
-        variants={containerV}
-        initial="hidden"
-        animate="show"
-        className="pb-16 max-w-2xl mx-auto px-6 md:px-8"
-      >
+      <div className="pb-16 max-w-2xl mx-auto px-6 md:px-8">
       {/* ── Net worth headline ── */}
-      <motion.div variants={itemV} className="pt-10 pb-2">
+      <motion.div {...fadeUp(0)} className="pt-10 pb-2">
         <p className="text-[12px] uppercase tracking-[0.18em] text-ink-muted dark:text-white/40 font-semibold mb-2">
           Net worth
         </p>
@@ -123,14 +117,14 @@ export const StudentDashboard = () => {
 
       {/* ── Chart (no card chrome) ── */}
       <motion.div
-        variants={itemV}
+        {...fadeUp(0.07)}
         className="mt-5 mb-10 text-ink-muted dark:text-white/55"
       >
         <NetWorthChart history={history} currentTotal={totalBalance} height={240} />
       </motion.div>
 
       {/* ── Cash section ── */}
-      <Section title="Cash" total={cashTotal}>
+      <Section title="Cash" total={cashTotal} delay={0.14}>
         {CASH_ROWS.map((row) => (
           <AccountRow
             key={row.key}
@@ -141,7 +135,7 @@ export const StudentDashboard = () => {
       </Section>
 
       {/* ── Investments section ── */}
-      <Section title="Investments" total={investTotal}>
+      <Section title="Investments" total={investTotal} delay={0.21}>
         {INVEST_ROWS.map((row) => {
           const todayPct = row.key === 'sp500' ? todaysReturns.sp500
                           : row.key === 'nasdaq' ? todaysReturns.nasdaq
@@ -158,7 +152,7 @@ export const StudentDashboard = () => {
       </Section>
 
       {/* ── Action buttons ── */}
-      <motion.div variants={itemV} className="grid grid-cols-2 gap-3 mt-6 mb-8">
+      <motion.div {...fadeUp(0.32)} className="grid grid-cols-2 gap-3 mt-6 mb-8">
         <button
           onClick={() => navigate('/transfer')}
           className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[14px] font-semibold transition-all hover:opacity-90 active:scale-[0.98]"
@@ -176,13 +170,13 @@ export const StudentDashboard = () => {
       </motion.div>
 
       {/* ── This week's paycheck ── */}
-      <motion.div variants={itemV} className="mb-6">
+      <motion.div {...fadeUp(0.39)} className="mb-6">
         <PaycheckCard studentId={profile.id} />
       </motion.div>
 
       {/* ── Recent activity ── */}
       {recent.length > 0 && (
-        <motion.div variants={itemV} className="mb-8">
+        <motion.div {...fadeUp(0.46)} className="mb-8">
           <p className="text-[13px] font-semibold text-ink dark:text-chalk-white mb-2 mt-2">
             Recent activity
           </p>
@@ -213,7 +207,7 @@ export const StudentDashboard = () => {
 
       {/* ── Cash Card panel (informational) ── */}
       <motion.div
-        variants={itemV}
+        {...fadeUp(0.53)}
         className="rounded-2xl p-5 bg-amber-bg/60 dark:bg-amber/[0.05] border border-amber/30 dark:border-amber/20"
       >
         <div className="flex items-start gap-3 mb-3">
@@ -249,7 +243,7 @@ export const StudentDashboard = () => {
           </div>
         </div>
       </motion.div>
-      </motion.div>
+      </div>
     </div>
   )
 }
@@ -258,8 +252,13 @@ export const StudentDashboard = () => {
 // Subcomponents
 // ─────────────────────────────────────────────────────────
 
-const Section = ({ title, total, children }) => (
-  <motion.div variants={itemV} className="mb-1">
+const Section = ({ title, total, delay = 0, children }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
+    className="mb-1"
+  >
     <div className="flex items-baseline justify-between pt-4 pb-3 border-b border-black/[0.08] dark:border-white/[0.10]">
       <h2 className="text-[20px] font-bold tracking-tight text-ink dark:text-chalk-white">{title}</h2>
       <SplitBalance
