@@ -100,8 +100,45 @@ export const GuideRoster = () => {
       })
       if (error) throw error
       if (data?.error) throw new Error(data.error)
-      const msg = action === 'paid' ? 'Marked as paid' : `Cash out ${action}d`
-      setToast({ type: 'success', text: msg })
+
+      // On approve: copy a Cash Card sheet row to clipboard so Derek can paste into Petter's sheet.
+      // Column order matches "Payment Requests" tab:
+      // Date, Requester, Program, FirstName, LastName, Email, Addr1, City, State, Zip, Phone, Reward$, Type, Reason, Notes
+      if (action === 'approve') {
+        const req = cashout_requests.find(r => r.id === requestId)
+        const fullName = req?.profiles?.full_name || ''
+        const [first, ...rest] = fullName.split(' ')
+        const last = rest.join(' ')
+        const today = new Date()
+        const dateStr = `${today.getMonth()+1}/${today.getDate()}/${today.getFullYear()}`
+        const row = [
+          dateStr,
+          'Derek Kim',
+          'Alpha L3 & L4 - SF',
+          first,
+          last,
+          req?.profiles?.email || '',
+          '3741 Buchanan St',
+          'SF',
+          'CA',
+          '94123',
+          '',
+          `$${Number(req?.amount || 0).toFixed(2)}`,
+          'Physical Card',
+          'S5 Cash Out',
+          '',
+        ].join('\t')
+        try {
+          await navigator.clipboard.writeText(row)
+          setToast({ type: 'success', text: `Approved — row copied! Paste into Cash Card sheet (Payment Requests tab)` })
+        } catch {
+          setToast({ type: 'success', text: `Cash out approved (clipboard blocked — copy manually)` })
+        }
+      } else {
+        const msg = action === 'paid' ? 'Marked as paid' : `Cash out ${action}d`
+        setToast({ type: 'success', text: msg })
+      }
+
       fetchAlerts()
       fetchStudents()
     } catch (err) {

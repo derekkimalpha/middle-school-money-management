@@ -3,31 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Moon, Sun, LogOut, Menu } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 
-/* ── XP Progress Ring (SVG) ─────────────────────── */
-const XPRing = ({ progress = 0, size = 64, stroke = 4, color = '#e8c840' }) => {
-  const radius = (size - stroke) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (Math.min(progress, 100) / 100) * circumference;
-
-  return (
-    <svg width={size} height={size} className="rotate-[-90deg]">
-      <circle
-        cx={size / 2} cy={size / 2} r={radius}
-        fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={stroke}
-      />
-      <motion.circle
-        cx={size / 2} cy={size / 2} r={radius}
-        fill="none" stroke={color} strokeWidth={stroke}
-        strokeDasharray={circumference}
-        strokeLinecap="round"
-        initial={{ strokeDashoffset: circumference }}
-        animate={{ strokeDashoffset: offset }}
-        transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-      />
-    </svg>
-  );
-};
-
 export const Layout = ({
   user = null,
   role = '',
@@ -36,9 +11,6 @@ export const Layout = ({
   onNavigate,
   onSignOut,
   children,
-  level = null,
-  xpProgress = 0,
-  streak = 0,
 }) => {
   const { isDark, toggleTheme } = useTheme();
   const isStudent = role === 'student';
@@ -109,33 +81,20 @@ export const Layout = ({
           </button>
         </div>
 
-        {/* Student Status */}
+        {/* Student avatar + name */}
         {isStudent && (
           <div className="mx-4 mb-3 p-4 rounded-lg bg-white/[0.05] border border-white/[0.08]">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="relative flex-shrink-0">
-                <XPRing progress={xpProgress} size={48} stroke={3} color="#e8c840" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[36px] h-[36px] rounded-full bg-white/10 flex items-center justify-center">
-                    <span className="text-white font-hand font-bold text-[16px]">
-                      {firstName?.[0]?.toUpperCase() || '?'}
-                    </span>
-                  </div>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-pencil/15 border-2 border-pencil/30 flex items-center justify-center flex-shrink-0">
+                <span className="text-pencil font-hand font-bold text-[16px]">
+                  {firstName?.[0]?.toUpperCase() || '?'}
+                </span>
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-[14px] font-hand font-semibold text-white">{firstName}</div>
-                {level && (
-                  <span className="text-[12px] font-hand text-pencil">· {level.name}</span>
-                )}
+                <div className="text-[11px] text-white/35">Student</div>
               </div>
             </div>
-            {streak > 0 && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-pencil/10 border border-pencil/20">
-                <span className="text-[13px]"></span>
-                <span className="text-[12px] font-hand font-bold text-pencil">{streak}-day streak</span>
-              </div>
-            )}
           </div>
         )}
 

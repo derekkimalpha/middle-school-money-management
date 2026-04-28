@@ -1,28 +1,17 @@
 import React, { useMemo } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Home, Banknote, ArrowLeftRight, ShoppingBag, BookOpen, ClipboardList, Users, Package, Timer, Settings, FileCheck, Trophy, BarChart2, AlertTriangle, MapPin, DollarSign } from 'lucide-react'
+import { Home, Banknote, Users, Package, Timer, Settings, FileCheck, BarChart2, AlertTriangle, MapPin } from 'lucide-react'
 import { useAuth } from './hooks/useAuth'
-import { useAccounts } from './hooks/useAccounts'
 import { useGrowthEngine } from './hooks/useGrowthEngine'
-import { useStreak } from './hooks/useStreak'
-import { useAutoGrant } from './hooks/useAutoGrant'
 import { ThemeProvider } from './hooks/useTheme'
 import { Layout } from './components/shared/Layout'
-import { AchievementToast } from './components/shared/AchievementToast'
-import { getLevel, getNextLevel } from './lib/constants'
 import { LoginPage } from './pages/LoginPage'
 import { RoleSelector } from './pages/RoleSelector'
 // Student pages
 import { StudentDashboard } from './pages/student/StudentDashboard'
 import { StudentPaycheck } from './pages/student/StudentPaycheck'
 import { StudentTransfer } from './pages/student/StudentTransfer'
-import { StudentPurchase } from './pages/student/StudentPurchase'
-import { StudentHistory } from './pages/student/StudentHistory'
-import { StudentLearn } from './pages/student/StudentLearn'
-import { StudentLeaderboard } from './pages/student/StudentLeaderboard'
-import { InvestmentDetail } from './pages/student/InvestmentDetail'
-import { AccountDetail } from './pages/student/AccountDetail'
 import { StudentCashOut } from './pages/student/StudentCashOut'
 
 // Guide pages
@@ -52,45 +41,16 @@ function AppInner() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const isStudent = profile?.role === 'student'
-  const { accounts } = useAccounts(isStudent ? profile?.id : null)
-
   // Run growth engine once per day (applies savings interest + market returns)
   useGrowthEngine(!!profile)
 
-  // Fetch student streak
-  const { streak } = useStreak(isStudent ? profile?.id : null)
-
-  // Auto-grant badges when conditions are met
-  const { newBadges, dismissBadge } = useAutoGrant(
-    isStudent ? profile?.id : null,
-    accounts,
-    streak
-  )
-
-  // Compute level / XP progress for student sidebar
-  const studentMeta = useMemo(() => {
-    if (!isStudent || !accounts) return { level: null, xpProgress: 0, streak: 0 }
-    const total = Object.entries(accounts)
-      .filter(([key]) => key !== 'bonus')
-      .reduce((sum, [, bal]) => sum + bal, 0)
-    const level = getLevel(total)
-    const next = getNextLevel(total)
-    const xpProgress = next
-      ? Math.min(((total - level.min) / (next.min - level.min)) * 100, 100)
-      : 100
-    return { level, xpProgress, streak }
-  }, [isStudent, accounts, streak])
-
+  // Sidebar is intentionally minimal: just Home and Paycheck.
+  // Transfer and Cash Out are still routes (/transfer, /cash-out) but accessed
+  // via buttons on the dashboard, not the nav.
   const studentNavItems = useMemo(
     () => [
       { id: 'home', label: 'Home', icon: Home, path: '/' },
       { id: 'paycheck', label: 'Paycheck', icon: Banknote, path: '/paycheck' },
-      { id: 'transfer', label: 'Transfer', icon: ArrowLeftRight, path: '/transfer' },
-      { id: 'purchase', label: 'Buy', icon: ShoppingBag, path: '/purchase' },
-      { id: 'cashout', label: 'Cash Out', icon: DollarSign, path: '/cash-out' },
-      { id: 'learn', label: 'Learn', icon: BookOpen, path: '/learn' },
-      { id: 'history', label: 'History', icon: ClipboardList, path: '/history' },
     ],
     []
   )
@@ -165,65 +125,38 @@ function AppInner() {
     await signOut()
   }
 
-  // Transform new badges for achievement toast
-  const achievementsToShow = newBadges.map(b => ({
-    type: 'badge',
-    icon: b.icon,
-    title: b.title,
-    description: b.description,
-  }))
-
   return (
-    <>
-      {/* Achievement celebration overlay */}
-      {achievementsToShow.length > 0 && (
-        <AchievementToast
-          achievements={achievementsToShow}
-          onDismiss={() => newBadges.forEach(b => dismissBadge(b.id))}
-        />
+    <Layout
+      user={user}
+      role={profile.role}
+      navItems={navItems}
+      activePage={activePage}
+      onNavigate={handleNavigate}
+      onSignOut={handleSignOut}
+    >
+      {isGuide ? (
+        <Routes>
+          <Route path="/" element={<GuideRoster />} />
+          <Route path="/student/:id" element={<GuideStudentDetail />} />
+          <Route path="/paychecks" element={<GuidePaychecks />} />
+          <Route path="/purchases" element={<GuidePurchases />} />
+          <Route path="/stats" element={<GuideClassStats />} />
+          <Route path="/fines" element={<GuideFines />} />
+          <Route path="/map" element={<GuideMAP />} />
+          <Route path="/session" element={<GuideSession />} />
+          <Route path="/settings" element={<GuideSettings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route path="/" element={<StudentDashboard />} />
+          <Route path="/paycheck" element={<StudentPaycheck />} />
+          <Route path="/transfer" element={<StudentTransfer />} />
+          <Route path="/cash-out" element={<StudentCashOut />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       )}
-
-      <Layout
-        user={user}
-        role={profile.role}
-        navItems={navItems}
-        activePage={activePage}
-        onNavigate={handleNavigate}
-        onSignOut={handleSignOut}
-        level={studentMeta.level}
-        xpProgress={studentMeta.xpProgress}
-        streak={studentMeta.streak}
-      >
-        {isGuide ? (
-          <Routes>
-            <Route path="/" element={<GuideRoster />} />
-            <Route path="/student/:id" element={<GuideStudentDetail />} />
-            <Route path="/paychecks" element={<GuidePaychecks />} />
-            <Route path="/purchases" element={<GuidePurchases />} />
-            <Route path="/stats" element={<GuideClassStats />} />
-            <Route path="/fines" element={<GuideFines />} />
-            <Route path="/map" element={<GuideMAP />} />
-            <Route path="/session" element={<GuideSession />} />
-            <Route path="/settings" element={<GuideSettings />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/" element={<StudentDashboard />} />
-            <Route path="/paycheck" element={<StudentPaycheck />} />
-            <Route path="/transfer" element={<StudentTransfer />} />
-            <Route path="/purchase" element={<StudentPurchase />} />
-            <Route path="/cash-out" element={<StudentCashOut />} />
-            <Route path="/leaderboard" element={<StudentLeaderboard />} />
-            <Route path="/learn" element={<StudentLearn />} />
-            <Route path="/history" element={<StudentHistory />} />
-            <Route path="/invest/:type" element={<InvestmentDetail />} />
-            <Route path="/account/:type" element={<AccountDetail />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        )}
-      </Layout>
-    </>
+    </Layout>
   )
 }
 
