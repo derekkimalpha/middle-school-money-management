@@ -131,12 +131,12 @@ export const NetWorthChart = ({
     >
       <defs>
         <linearGradient id="nwArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#7C77DD" stopOpacity="0.42" />
-          <stop offset="100%" stopColor="#7C77DD" stopOpacity="0" />
+          <stop offset="0%" stopColor="#1F6FEB" stopOpacity="0.42" />
+          <stop offset="100%" stopColor="#1F6FEB" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="nwLine" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#9F8AFE" />
-          <stop offset="100%" stopColor="#7C77DD" />
+          <stop offset="0%" stopColor="#7CC4FF" />
+          <stop offset="100%" stopColor="#1F6FEB" />
         </linearGradient>
         <filter id="nwGlow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="2" result="coloredBlur" />
@@ -187,9 +187,9 @@ export const NetWorthChart = ({
       {active && (
         <>
           <line x1={active.x} x2={active.x} y1={PAD_TOP} y2={height - PAD_BOTTOM}
-            stroke="#7C77DD" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="2 3" />
-          <circle cx={active.x} cy={active.y} r="5" fill="#7C77DD" />
-          <circle cx={active.x} cy={active.y} r="9" fill="#7C77DD" opacity="0.25" />
+            stroke="#1F6FEB" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="2 3" />
+          <circle cx={active.x} cy={active.y} r="5" fill="#1F6FEB" />
+          <circle cx={active.x} cy={active.y} r="9" fill="#1F6FEB" opacity="0.25" />
           <text
             x={active.x}
             y={active.y - 14}

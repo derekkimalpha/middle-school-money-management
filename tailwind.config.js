@@ -68,6 +68,26 @@ export default {
           muted: '#9c9890',
           faint: '#c7c3bc',
         },
+        // ── Gumroad-style design system (blue palette) ──
+        cobalt: {
+          50:  '#EAF1FF',
+          100: '#C9DBFF',
+          200: '#9DBCFF',
+          400: '#1F6FEB',
+          500: '#1856B7',
+          600: '#114290',
+          700: '#0B3068',
+        },
+        cream: {
+          DEFAULT: '#FAF7F0',
+          dark:    '#F2EDE0',
+        },
+      },
+      boxShadow: {
+        'gum':     '4px 4px 0 0 #000',
+        'gum-sm':  '2px 2px 0 0 #000',
+        'gum-lg':  '6px 6px 0 0 #000',
+        'gum-pressed': '0px 0px 0 0 #000',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
