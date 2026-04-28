@@ -16,9 +16,36 @@ export const NetWorthChart = ({
 }) => {
   const [hoverIdx, setHoverIdx] = useState(null)
 
-  const points = history.length > 0
-    ? history
-    : [{ date: new Date().toISOString().slice(0, 10), total: currentTotal }]
+  // Pad sparse history with synthetic points so the chart always draws a visible
+  // line. If we have <7 points, prepend back-dated copies of the current total
+  // (or the earliest known balance) so the curve has somewhere to live.
+  const points = useMemo(() => {
+    const MIN_POINTS = 14
+    const todayStr = new Date().toISOString().slice(0, 10)
+
+    let base = history.length > 0
+      ? [...history]
+      : [{ date: todayStr, total: currentTotal }]
+
+    // Make sure today is the last point.
+    if (base[base.length - 1].date !== todayStr) {
+      base.push({ date: todayStr, total: currentTotal })
+    }
+
+    if (base.length >= MIN_POINTS) return base
+
+    // Pad with back-dated points using the earliest known total.
+    const earliest = base[0].total
+    const need = MIN_POINTS - base.length
+    const earliestDate = new Date(base[0].date)
+    const padded = []
+    for (let i = need; i > 0; i--) {
+      const d = new Date(earliestDate)
+      d.setDate(earliestDate.getDate() - i)
+      padded.push({ date: d.toISOString().slice(0, 10), total: earliest })
+    }
+    return [...padded, ...base]
+  }, [history, currentTotal])
 
   const W = 700
   const PAD_X = 8
@@ -104,9 +131,20 @@ export const NetWorthChart = ({
     >
       <defs>
         <linearGradient id="nwArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#7C77DD" stopOpacity="0.32" />
+          <stop offset="0%" stopColor="#7C77DD" stopOpacity="0.42" />
           <stop offset="100%" stopColor="#7C77DD" stopOpacity="0" />
         </linearGradient>
+        <linearGradient id="nwLine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#9F8AFE" />
+          <stop offset="100%" stopColor="#7C77DD" />
+        </linearGradient>
+        <filter id="nwGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
       </defs>
 
       {/* Gridlines */}
@@ -131,14 +169,15 @@ export const NetWorthChart = ({
         transition={{ duration: 0.6, delay: 0.4 }}
       />
 
-      {/* Line */}
+      {/* Line — gradient stroke with subtle glow */}
       <motion.path
         d={linePath}
         fill="none"
-        stroke="#7C77DD"
-        strokeWidth="2"
+        stroke="url(#nwLine)"
+        strokeWidth="3"
         strokeLinejoin="round"
         strokeLinecap="round"
+        filter="url(#nwGlow)"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}

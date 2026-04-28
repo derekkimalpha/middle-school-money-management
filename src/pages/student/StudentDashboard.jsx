@@ -91,33 +91,42 @@ export const StudentDashboard = () => {
   }
 
   return (
-    <motion.div
-      variants={containerV}
-      initial="hidden"
-      animate="show"
-      className="pb-12 max-w-2xl mx-auto px-5 md:px-7"
-    >
+    <div className="min-h-screen bg-white dark:bg-[#0c100c]">
+      <motion.div
+        variants={containerV}
+        initial="hidden"
+        animate="show"
+        className="pb-16 max-w-2xl mx-auto px-6 md:px-8"
+      >
       {/* ── Net worth headline ── */}
-      <motion.div variants={itemV} className="pt-8 pb-2">
+      <motion.div variants={itemV} className="pt-10 pb-2">
+        <p className="text-[12px] uppercase tracking-[0.18em] text-ink-muted dark:text-white/40 font-semibold mb-2">
+          Net worth
+        </p>
         <SplitBalance
           value={totalBalance}
-          className="text-[44px] md:text-[54px] font-black leading-[1.05] tracking-tight text-ink dark:text-chalk-white"
+          className="text-[52px] md:text-[64px] font-black leading-[1] tracking-[-0.02em] text-ink dark:text-chalk-white"
           centsClassName=""
         />
         {todayDelta !== 0 && (
-          <div className={`flex items-center gap-1 mt-2 text-[13px] font-semibold ${todayDelta >= 0 ? 'text-sage-dark dark:text-sage-300' : 'text-rose'}`}>
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className={`flex items-center gap-1 mt-3 text-[13px] font-semibold ${todayDelta >= 0 ? 'text-sage-dark dark:text-sage-300' : 'text-rose'}`}
+          >
             {todayDelta >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
             {todayDelta >= 0 ? '+' : ''}{formatCurrency(todayDelta)} today
-          </div>
+          </motion.div>
         )}
       </motion.div>
 
       {/* ── Chart (no card chrome) ── */}
       <motion.div
         variants={itemV}
-        className="mt-3 mb-8 text-ink-muted dark:text-white/55"
+        className="mt-5 mb-10 text-ink-muted dark:text-white/55"
       >
-        <NetWorthChart history={history} currentTotal={totalBalance} height={220} />
+        <NetWorthChart history={history} currentTotal={totalBalance} height={240} />
       </motion.div>
 
       {/* ── Cash section ── */}
@@ -240,7 +249,8 @@ export const StudentDashboard = () => {
           </div>
         </div>
       </motion.div>
-    </motion.div>
+      </motion.div>
+    </div>
   )
 }
 
@@ -249,9 +259,9 @@ export const StudentDashboard = () => {
 // ─────────────────────────────────────────────────────────
 
 const Section = ({ title, total, children }) => (
-  <motion.div variants={itemV} className="mb-2">
-    <div className="flex items-baseline justify-between pt-3 pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
-      <h2 className="text-[18px] font-semibold text-ink dark:text-chalk-white">{title}</h2>
+  <motion.div variants={itemV} className="mb-1">
+    <div className="flex items-baseline justify-between pt-4 pb-3 border-b border-black/[0.08] dark:border-white/[0.10]">
+      <h2 className="text-[20px] font-bold tracking-tight text-ink dark:text-chalk-white">{title}</h2>
       <SplitBalance
         value={total}
         className="text-[15px] font-semibold text-ink dark:text-chalk-white"
@@ -266,21 +276,24 @@ const AccountRow = ({ row, balance, todayPct = null }) => {
   const showPct = todayPct != null && todayPct !== 0
   return (
     <motion.div
-      whileTap={{ scale: 0.995 }}
-      className="flex items-center gap-3 py-3.5"
+      whileHover={{ x: 2 }}
+      transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+      className="flex items-center gap-3 py-4 -mx-2 px-2 rounded-lg cursor-default group"
     >
-      <div
-        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-        style={{ backgroundColor: `${row.accent}20` }}
+      <motion.div
+        whileHover={{ scale: 1.08, rotate: -3 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 22 }}
+        className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+        style={{ backgroundColor: `${row.accent}1f` }}
       >
-        <Icon className="w-4.5 h-4.5" style={{ color: row.accent }} />
-      </div>
+        <Icon className="w-5 h-5" style={{ color: row.accent }} strokeWidth={2.2} />
+      </motion.div>
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-semibold text-ink dark:text-chalk-white">{row.label}</p>
+        <p className="text-[15px] font-semibold tracking-tight text-ink dark:text-chalk-white">{row.label}</p>
         <p className={`text-[12px] mt-0.5 ${
           showPct
             ? (todayPct >= 0 ? 'text-sage-dark dark:text-sage-300' : 'text-rose')
-            : 'text-ink-faint dark:text-white/35'
+            : 'text-ink-faint dark:text-white/40'
         }`}>
           {showPct
             ? `${todayPct >= 0 ? '+' : ''}${(todayPct * 100).toFixed(2)}% today`
@@ -289,7 +302,7 @@ const AccountRow = ({ row, balance, todayPct = null }) => {
       </div>
       <SplitBalance
         value={balance}
-        className="text-[15px] font-semibold text-ink dark:text-chalk-white"
+        className="text-[16px] font-bold text-ink dark:text-chalk-white"
       />
     </motion.div>
   )
