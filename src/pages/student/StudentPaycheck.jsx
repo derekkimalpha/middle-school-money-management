@@ -200,7 +200,8 @@ export const StudentPaycheck = () => {
 
       // Recalculate earnings
       const totalXpCalc = Object.values(xp).reduce((sum, val) => sum + val, 0)
-      const epicCount = Object.values(epic).filter(Boolean).length
+      // Epic day = rings filled (epic_X column) AND xp >= 145 for that day
+      const epicCount = DAY_KEYS.filter((d) => epic[d] && (xp[d] || 0) >= 145).length
       const basePay = totalXpCalc >= (settings.xp_threshold || 600) ? (settings.base_pay || 10) : 0
       const epicBonus = epicCount >= (settings.epic_days_required || 5) ? (settings.epic_week_bonus || 5) : 0
       const bonusXp = totalXpCalc > (settings.xp_threshold || 600)
@@ -301,7 +302,8 @@ export const StudentPaycheck = () => {
   const xpProgress = (totalXp / xpThreshold) * 100
 
   const calculateEarnings = () => {
-    const epicCount = Object.values(epicDays).filter(Boolean).length
+    // Epic day = rings filled AND xp >= 145
+    const epicCount = DAY_KEYS.filter((d) => epicDays[d] && (xpByDay[d] || 0) >= 145).length
     const basePay = totalXp >= xpThreshold ? (settings.base_pay || 10) : 0
     const epicDaysRequired = settings.epic_days_required || 5
     const epicBonus = epicCount >= epicDaysRequired ? (settings.epic_week_bonus || 5) : 0
@@ -612,7 +614,6 @@ export const StudentPaycheck = () => {
               {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
               {p.mastery_pay > 0 && <div className="flex justify-between text-sm text-sage-600 dark:text-sage-400"><span>Mastery Tests</span><span className="font-semibold">{formatCurrency(p.mastery_pay)}</span></div>}
               {p.job_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>Job</span><span className="font-semibold">{formatCurrency(p.job_pay)}</span></div>}
-              {p.smart_goal > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>SMART Goal</span><span className="font-semibold">{formatCurrency(p.smart_goal)}</span></div>}
               {p.other_pay > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>Other</span><span className="font-semibold">{formatCurrency(p.other_pay)}</span></div>}
             </div>
 
@@ -721,14 +722,23 @@ export const StudentPaycheck = () => {
               {DAY_LABELS.map((day, idx) => {
                 const dayKey = DAY_KEYS[idx]
                 const isToday = dayKey === todayKey
-                const isEpic = epicDays[dayKey]
-                const hasValue = xpByDay[dayKey] > 0
+                const ringsFilled = epicDays[dayKey]   // epic_X column repurposed as "rings filled"
+                const xpVal = xpByDay[dayKey] || 0
+                const hasValue = xpVal > 0
+                const isEpicDay = ringsFilled && xpVal >= 145   // auto-epic rule
                 return (
                   <div key={day} className="flex flex-col gap-2">
-                    <label className={`text-[11px] font-semibold text-center ${isToday ? 'text-pencil-dark dark:text-pencil' : 'text-gray-500 dark:text-white/40'}`}>
-                      {day} {isToday && '←'}
-                    </label>
-                    <div className={`relative ${isToday ? 'ring-2 ring-pencil/40 rounded-sm' : ''}`}>
+                    <div className="flex items-center justify-center gap-1.5">
+                      <label className={`text-[11px] font-bold ${isToday ? 'text-cobalt-500 dark:text-cobalt-200' : 'text-black/55 dark:text-white/45'}`}>
+                        {day} {isToday && '←'}
+                      </label>
+                      {isEpicDay && (
+                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-200 text-amber-900 border-[1.5px] border-black uppercase tracking-wider">
+                          Epic
+                        </span>
+                      )}
+                    </div>
+                    <div className={`relative ${isToday ? 'ring-2 ring-cobalt-400/40 rounded-lg' : ''}`}>
                       <input
                         type="number"
                         min="0"
@@ -736,22 +746,22 @@ export const StudentPaycheck = () => {
                         value={xpByDay[dayKey] || ''}
                         onChange={(e) => updateXp(dayKey, e.target.value)}
                         disabled={!isEditable}
-                        className={`w-full px-2 py-2 text-center text-lg font-bold border rounded-sm focus:outline-none focus:border-pencil dark:focus:border-pencil/60 focus:ring-2 focus:ring-pencil/20 bg-white dark:bg-white/[0.04] dark:text-white ${
+                        className={`w-full px-2 py-2 text-center text-lg font-black border-[2px] rounded-lg focus:outline-none focus:border-cobalt-400 dark:focus:border-cobalt-200 focus:ring-2 focus:ring-cobalt-400/20 bg-white dark:bg-white/[0.04] dark:text-white ${
                           !isEditable ? 'opacity-60 cursor-not-allowed' : ''
-                        } ${hasValue ? 'border-pencil/30 dark:border-pencil/20' : 'border-gray-200 dark:border-white/[0.1]'}`}
+                        } ${hasValue ? 'border-black' : 'border-black/20 dark:border-white/[0.1]'}`}
                         placeholder="0"
                       />
                     </div>
                     <button
                       onClick={() => isEditable && toggleEpic(dayKey)}
                       disabled={!isEditable}
-                      className={`text-xs font-semibold py-1 rounded-sm transition-all ${
-                        isEpic
-                          ? 'bg-pencil/20 text-pencil-dark dark:text-pencil border border-pencil/30'
-                          : 'bg-gray-100 dark:bg-white/[0.04] text-gray-400 dark:text-white/30 border border-transparent'
+                      className={`text-[11px] font-black py-1.5 rounded-lg transition-all border-[2px] ${
+                        ringsFilled
+                          ? 'bg-cobalt-400 text-white border-black'
+                          : 'bg-white text-black/45 border-black/15 hover:border-black/30'
                       } ${!isEditable ? 'opacity-60 cursor-not-allowed' : ''}`}
                     >
-                      {isEpic ? 'Epic' : 'Epic'}
+                      {ringsFilled ? '✓ Rings' : 'Rings'}
                     </button>
                   </div>
                 )
@@ -793,22 +803,24 @@ export const StudentPaycheck = () => {
               </div>
             )}
 
-            {/* Epic Days Summary */}
-            {Object.values(epicDays).some(Boolean) && (
-              <div className="mt-3 p-3 rounded-lg bg-pencil/[0.06] border border-pencil/20">
+            {/* Epic Days Summary — auto-computed from rings filled + xp >= 145 */}
+            {(() => {
+              const epicDaysCount = DAY_KEYS.filter((d) => epicDays[d] && (xpByDay[d] || 0) >= 145).length
+              return epicDaysCount > 0 && (
+              <div className="mt-3 p-3 rounded-xl bg-amber-100 dark:bg-amber-900/20 border-[2px] border-black">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] font-bold text-pencil-dark dark:text-pencil uppercase tracking-wider">Epic Days</p>
-                    <p className="text-[12px] text-pencil-dark/60 dark:text-pencil/60 mt-0.5">
-                      {Object.values(epicDays).filter(Boolean).length} / {settings.epic_days_required || 5} days needed for bonus
+                    <p className="text-[11px] font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider">Epic Days</p>
+                    <p className="text-[12px] text-amber-800/80 dark:text-amber-200/70 font-semibold mt-0.5">
+                      {epicDaysCount} / {settings.epic_days_required || 5} days needed for bonus (rings filled + 145 XP)
                     </p>
                   </div>
-                  <span className="text-lg font-black text-pencil-dark dark:text-pencil tabular-nums">
+                  <span className="text-lg font-black text-amber-900 dark:text-amber-200 tabular-nums">
                     {earnings.epicBonus > 0 ? `+${formatCurrency(earnings.epicBonus)}` : '$0'}
                   </span>
                 </div>
               </div>
-            )}
+            )})()}
           </div>
 
           {/* ── Job Card ── */}
