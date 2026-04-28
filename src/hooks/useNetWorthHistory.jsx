@@ -58,6 +58,14 @@ export const useNetWorthHistory = (studentId, days = 60) => {
         return { date, total: Math.round(total * 100) / 100 }
       })
 
+      // Prepend a $0 starting point one day before the earliest transaction so
+      // the chart always tells the "started at zero, climbed to today" story.
+      if (series.length > 0) {
+        const earliest = new Date(series[0].date)
+        earliest.setDate(earliest.getDate() - 1)
+        series.unshift({ date: earliest.toISOString().slice(0, 10), total: 0 })
+      }
+
       setHistory(series)
       setLoading(false)
     }
