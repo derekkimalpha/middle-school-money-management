@@ -1,187 +1,179 @@
 import React, { useMemo, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 /**
- * Dot-bar histogram of net worth over time.
- *
- * - Each bar = one day, rendered as a stack of dots whose height encodes the net worth
- * - Bars stagger-rise on mount
- * - Today's bar is highlighted in pencil yellow with a floating tooltip
- * - Hovering any bar moves the tooltip and lights it up
- *
- * Props:
- *   history: [{ date: 'YYYY-MM-DD', total: number }, ...] sorted ascending
- *   currentTotal: fallback total if history is empty
- *   range: '1W' | '1M' | '3M' | 'ALL'
- *   height: SVG height in px (default 180)
+ * Wealthfront-style smooth line chart.
+ * - One curve, gradient fill underneath
+ * - Two dashed horizontal gridlines (max + midpoint) with value labels
+ * - Two x-axis labels (start date, "Today")
+ * - Optional hover dot that snaps to nearest bar
+ * - Animates the path drawing on mount
  */
 export const NetWorthChart = ({
   history = [],
   currentTotal = 0,
-  range = 'ALL',
-  height = 180,
+  height = 220,
 }) => {
   const [hoverIdx, setHoverIdx] = useState(null)
 
-  const filtered = useMemo(() => {
-    if (range === 'ALL' || history.length === 0) return history
-    const days = range === '1W' ? 7 : range === '1M' ? 30 : 90
-    const cutoff = new Date()
-    cutoff.setDate(cutoff.getDate() - days)
-    const cutoffStr = cutoff.toISOString().slice(0, 10)
-    return history.filter((h) => h.date >= cutoffStr)
-  }, [history, range])
-
-  // If we have no transaction history yet, render a single bar today.
-  const points = filtered.length > 0
-    ? filtered
+  const points = history.length > 0
+    ? history
     : [{ date: new Date().toISOString().slice(0, 10), total: currentTotal }]
 
-  const todayStr = new Date().toISOString().slice(0, 10)
-  const todayIdx = points.findIndex((p) => p.date === todayStr)
-  const activeIdx = hoverIdx ?? (todayIdx >= 0 ? todayIdx : points.length - 1)
-
-  // Geometry
-  const PAD_X = 6
-  const PAD_TOP = 8
-  const PAD_BOTTOM = 12
-  const W = 600
-  const H = height
+  const W = 700
+  const PAD_X = 8
+  const PAD_TOP = 20
+  const PAD_BOTTOM = 28
   const usableW = W - PAD_X * 2
-  const usableH = H - PAD_TOP - PAD_BOTTOM
+  const usableH = height - PAD_TOP - PAD_BOTTOM
 
-  // How many vertical dots a 1-period bar shows. Scale max-value bar to ~14 dots.
-  const MAX_DOTS = 14
-  const DOT_SIZE = 2.5
-  const DOT_GAP = (usableH - MAX_DOTS * DOT_SIZE * 2) / (MAX_DOTS - 1)
-  const DOT_PITCH = DOT_SIZE * 2 + DOT_GAP
+  const totals = points.map((p) => p.total)
+  const maxV = Math.max(...totals, 1)
+  const minV = Math.min(...totals, 0)
+  const range = maxV - minV || 1
+  const midV = (maxV + minV) / 2
 
-  const max = Math.max(...points.map((p) => p.total), 1)
+  const xs = points.map((_, i) =>
+    points.length === 1 ? PAD_X + usableW / 2 : PAD_X + (i / (points.length - 1)) * usableW
+  )
+  const ys = points.map((p) => PAD_TOP + usableH - ((p.total - minV) / range) * usableH)
 
-  const colCount = points.length
-  const colW = usableW / Math.max(colCount, 1)
+  // Cardinal spline path
+  const linePath = useMemo(() => {
+    if (xs.length === 0) return ''
+    if (xs.length === 1) return `M ${xs[0]} ${ys[0]} L ${xs[0]} ${ys[0]}`
+    const tension = 0.32
+    let d = `M ${xs[0]} ${ys[0]}`
+    for (let i = 0; i < xs.length - 1; i++) {
+      const x0 = i > 0 ? xs[i - 1] : xs[i]
+      const y0 = i > 0 ? ys[i - 1] : ys[i]
+      const x1 = xs[i], y1 = ys[i]
+      const x2 = xs[i + 1], y2 = ys[i + 1]
+      const x3 = i + 2 < xs.length ? xs[i + 2] : x2
+      const y3 = i + 2 < ys.length ? ys[i + 2] : y2
+      const cp1x = x1 + (x2 - x0) * tension / 2
+      const cp1y = y1 + (y2 - y0) * tension / 2
+      const cp2x = x2 - (x3 - x1) * tension / 2
+      const cp2y = y2 - (y3 - y1) * tension / 2
+      d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x2} ${y2}`
+    }
+    return d
+  }, [xs.join(','), ys.join(',')])
 
-  const bars = points.map((p, i) => {
-    const ratio = p.total / max
-    const dotCount = Math.max(1, Math.round(ratio * MAX_DOTS))
-    const cx = PAD_X + colW * i + colW / 2
-    return { ...p, idx: i, cx, dotCount }
-  })
+  const areaPath = `${linePath} L ${xs[xs.length - 1]} ${height - PAD_BOTTOM} L ${xs[0]} ${height - PAD_BOTTOM} Z`
 
-  // Active tooltip data
-  const active = bars[activeIdx]
-  const activeIsToday = active?.date === todayStr
+  // Y-axis gridline positions
+  const yMax = PAD_TOP
+  const yMid = PAD_TOP + usableH * 0.5
 
-  // Tooltip horizontal placement (clamp inside chart)
-  const tooltipW = 110
-  let tooltipX = (active?.cx ?? W / 2) - tooltipW / 2
-  if (tooltipX < 4) tooltipX = 4
-  if (tooltipX + tooltipW > W - 4) tooltipX = W - tooltipW - 4
+  const formatY = (v) => {
+    if (v >= 1000) return `$${(v / 1000).toFixed(1)}K`
+    return `$${v.toFixed(0)}`
+  }
+
+  const startLabel = points[0]?.date
+    ? new Date(points[0].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    : ''
+
+  // Hover dot
+  const activeIdx = hoverIdx != null ? hoverIdx : null
+  const active = activeIdx != null ? { x: xs[activeIdx], y: ys[activeIdx], total: points[activeIdx].total, date: points[activeIdx].date } : null
+
+  // Hit handler — snap to nearest x
+  const handleMove = (evt) => {
+    const svg = evt.currentTarget
+    const rect = svg.getBoundingClientRect()
+    const px = ((evt.clientX - rect.left) / rect.width) * W
+    let bestI = 0
+    let bestD = Infinity
+    for (let i = 0; i < xs.length; i++) {
+      const d = Math.abs(xs[i] - px)
+      if (d < bestD) { bestD = d; bestI = i }
+    }
+    setHoverIdx(bestI)
+  }
 
   return (
     <svg
-      viewBox={`0 0 ${W} ${H}`}
+      viewBox={`0 0 ${W} ${height}`}
       preserveAspectRatio="none"
-      style={{ width: '100%', height: `${H}px`, display: 'block', overflow: 'visible' }}
+      style={{ width: '100%', height: `${height}px`, display: 'block', overflow: 'visible' }}
+      onMouseMove={handleMove}
+      onMouseLeave={() => setHoverIdx(null)}
       aria-hidden="true"
     >
-      {/* Bars */}
-      {bars.map((bar) => {
-        const isActive = bar.idx === activeIdx
-        const isToday = bar.date === todayStr
-        const accent = isToday ? '#e8c840' : isActive ? '#1f2a1f' : '#bdb8a8'
-        return (
-          <g
-            key={bar.date + bar.idx}
-            onMouseEnter={() => setHoverIdx(bar.idx)}
-            onMouseLeave={() => setHoverIdx(null)}
-            style={{ cursor: 'pointer' }}
-          >
-            {/* Hit area */}
-            <rect
-              x={bar.cx - colW / 2}
-              y={0}
-              width={colW}
-              height={H}
-              fill="transparent"
-            />
-            {Array.from({ length: bar.dotCount }).map((_, j) => {
-              const cy = H - PAD_BOTTOM - j * DOT_PITCH - DOT_SIZE
-              return (
-                <motion.circle
-                  key={j}
-                  cx={bar.cx}
-                  cy={cy}
-                  r={DOT_SIZE}
-                  fill={accent}
-                  initial={{ opacity: 0, cy: H - PAD_BOTTOM }}
-                  animate={{ opacity: 1, cy }}
-                  transition={{
-                    duration: 0.5,
-                    delay: bar.idx * 0.012 + j * 0.01,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                />
-              )
-            })}
-          </g>
-        )
-      })}
+      <defs>
+        <linearGradient id="nwArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7C77DD" stopOpacity="0.32" />
+          <stop offset="100%" stopColor="#7C77DD" stopOpacity="0" />
+        </linearGradient>
+      </defs>
 
-      {/* Floating tooltip for active bar */}
-      <AnimatePresence>
-        {active && (
-          <motion.g
-            key={`tip-${active.idx}`}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.18 }}
+      {/* Gridlines */}
+      <line x1={PAD_X} x2={W - PAD_X} y1={yMax} y2={yMax}
+        stroke="currentColor" strokeOpacity="0.18" strokeDasharray="3 4" strokeWidth="0.75" />
+      <line x1={PAD_X} x2={W - PAD_X} y1={yMid} y2={yMid}
+        stroke="currentColor" strokeOpacity="0.12" strokeDasharray="3 4" strokeWidth="0.75" />
+
+      {/* Y-axis labels (left-anchored above the gridlines) */}
+      <text x={PAD_X} y={yMax - 6} fontSize="11" fill="currentColor" opacity="0.55"
+        fontFamily="system-ui, sans-serif">
+        {formatY(maxV)}
+      </text>
+      <text x={PAD_X} y={yMid - 6} fontSize="11" fill="currentColor" opacity="0.45"
+        fontFamily="system-ui, sans-serif">
+        {formatY(midV)}
+      </text>
+
+      {/* Area fill */}
+      <motion.path d={areaPath} fill="url(#nwArea)"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      />
+
+      {/* Line */}
+      <motion.path
+        d={linePath}
+        fill="none"
+        stroke="#7C77DD"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+      />
+
+      {/* Hover dot + vertical guide */}
+      {active && (
+        <>
+          <line x1={active.x} x2={active.x} y1={PAD_TOP} y2={height - PAD_BOTTOM}
+            stroke="#7C77DD" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="2 3" />
+          <circle cx={active.x} cy={active.y} r="5" fill="#7C77DD" />
+          <circle cx={active.x} cy={active.y} r="9" fill="#7C77DD" opacity="0.25" />
+          <text
+            x={active.x}
+            y={active.y - 14}
+            textAnchor="middle"
+            fontSize="12"
+            fontWeight="700"
+            fill="currentColor"
+            fontFamily="system-ui, sans-serif"
           >
-            <rect
-              x={tooltipX}
-              y={2}
-              width={tooltipW}
-              height={36}
-              rx={10}
-              fill="#e8c840"
-            />
-            <text
-              x={tooltipX + tooltipW / 2}
-              y={18}
-              textAnchor="middle"
-              fontSize="13"
-              fontWeight="700"
-              fill="#1f2a1f"
-              fontFamily="system-ui, sans-serif"
-            >
-              ${active.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </text>
-            <text
-              x={tooltipX + tooltipW / 2}
-              y={31}
-              textAnchor="middle"
-              fontSize="9.5"
-              fill="#1f2a1f"
-              opacity="0.7"
-              fontFamily="system-ui, sans-serif"
-            >
-              {activeIsToday ? 'Today' : new Date(active.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </text>
-            {/* connector line from tooltip to bar */}
-            <line
-              x1={active.cx}
-              y1={38}
-              x2={active.cx}
-              y2={H - PAD_BOTTOM - active.dotCount * DOT_PITCH}
-              stroke="#e8c840"
-              strokeWidth="1.5"
-              strokeDasharray="2 3"
-              opacity="0.55"
-            />
-          </motion.g>
-        )}
-      </AnimatePresence>
+            ${active.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </text>
+        </>
+      )}
+
+      {/* X-axis labels */}
+      <text x={PAD_X} y={height - 8} fontSize="11" fill="currentColor" opacity="0.55"
+        fontFamily="system-ui, sans-serif">
+        {startLabel}
+      </text>
+      <text x={W - PAD_X} y={height - 8} textAnchor="end" fontSize="11" fill="currentColor" opacity="0.55"
+        fontFamily="system-ui, sans-serif">
+        Today
+      </text>
     </svg>
   )
 }
