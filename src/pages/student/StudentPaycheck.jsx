@@ -118,14 +118,11 @@ export const StudentPaycheck = () => {
           })
           setCustomBonuses(bonusMap)
         }
-        // If it's not a draft, show tracker in read mode
+        // If it's not a draft, show tracker in read mode.
+        // Verified paychecks now auto-flow to Savings via DB trigger — no
+        // manual allocation step needed.
         if (existing.status !== 'draft') {
           setSelectedPaycheck(existing)
-          if (existing.status === 'verified') {
-            // Auto-show allocation view for approved paychecks
-            setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
-            setView('allocate')
-          }
         }
       } else {
         // Create new draft
@@ -706,19 +703,10 @@ export const StudentPaycheck = () => {
             Submitted! Waiting for your guide to review.
           </div>
         )}
-        {draftStatus === 'verified' && (
+        {(draftStatus === 'verified' || draftStatus === 'allocated') && (
           <div className="p-3 rounded-sm bg-sage-500/[0.06] dark:bg-sage-400/[0.06] border border-sage-500/20 dark:border-sage-400/10 text-sm text-sage-600 dark:text-sage-400">
             <CheckCircle className="w-4 h-4 inline mr-1" />
-            Approved!{' '}
-            <button
-              onClick={() => {
-                setAllocation({ checking: 0, savings: 0, sp500: 0, nasdaq: 0, bonus: 0 })
-                setView('allocate')
-              }}
-              className="font-bold underline hover:no-underline"
-            >
-              Allocate your earnings →
-            </button>
+            Approved! Your paycheck landed in Savings, earning 4% APY. Open the dashboard to invest or transfer.
           </div>
         )}
 
