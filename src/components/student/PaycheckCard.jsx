@@ -60,7 +60,7 @@ export const PaycheckCard = ({ studentId }) => {
   if (loading) {
     return (
       <div
-        className="rounded-xl p-5 bg-stone-50 dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] animate-pulse h-[112px]"
+        className="rounded-2xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] animate-pulse h-[120px]"
       />
     )
   }
@@ -80,19 +80,19 @@ export const PaycheckCard = ({ studentId }) => {
   return (
     <button
       onClick={handleClick}
-      className="w-full text-left rounded-xl p-5 bg-stone-50 dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-colors"
+      className="w-full text-left rounded-2xl p-5 bg-white dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] hover:border-black/[0.14] dark:hover:border-white/[0.14] transition-colors"
     >
-      <div className="flex items-baseline justify-between mb-2">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted dark:text-white/40">
+      <div className="flex items-baseline justify-between mb-3">
+        <p className="text-[11px] uppercase tracking-[0.15em] text-ink-muted dark:text-white/40 font-semibold">
           This week's paycheck
         </p>
-        <p className="text-2xl font-black tabular-nums text-sage-dark dark:text-sage-300">
+        <p className="text-[26px] font-black tabular-nums text-sage-dark dark:text-sage-300">
           {total > 0 ? `+${formatCurrency(total)}` : formatCurrency(0)}
         </p>
       </div>
 
-      {paycheck ? (
-        <div className="space-y-1 mt-3">
+      {paycheck && (totalXp > 0 || masteryPay > 0 || jobPay > 0 || otherPay !== 0) ? (
+        <div className="space-y-1.5 mt-3">
           {totalXp > 0 && (
             <div className="flex justify-between text-[12px] text-ink-light dark:text-white/55">
               <span>{totalXp.toLocaleString()} min XP</span>
