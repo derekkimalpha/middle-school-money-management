@@ -59,6 +59,8 @@ export const StudentPaycheck = () => {
   const [saveStatus, setSaveStatus] = useState('idle') // 'idle' | 'saving' | 'saved'
   const [draftStatus, setDraftStatus] = useState('draft')
   const [showPastPaychecks, setShowPastPaychecks] = useState(false)
+  // customBonuses retained as no-op state to avoid runtime errors; UI for bonuses is hidden.
+  const [customBonuses, setCustomBonuses] = useState({})
 
   // Allocation state
   const [allocation, setAllocation] = useState({
