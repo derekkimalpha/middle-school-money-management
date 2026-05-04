@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   AnimNum,
@@ -32,9 +33,11 @@ const getTodayKey = () => {
 }
 
 export const StudentPaycheck = () => {
+  const [searchParams] = useSearchParams()
   const { user, profile } = useAuth()
   const { settings } = usePaycheckSettings()
   const [view, setView] = useState('tracker')
+  const requestedWeekNumber = searchParams.get('week') ? parseInt(searchParams.get('week')) : null
   const [step, setStep] = useState(1) // 1=Log XP, 2=Review & Allocate, 3=Confirm
   const [pastPaychecks, setPastPaychecks] = useState([])
   const [selectedPaycheck, setSelectedPaycheck] = useState(null)
@@ -77,16 +80,65 @@ export const StudentPaycheck = () => {
   }
 
   const currentWeekLabel = getWeekLabel()
+  const [targetWeekNumber, setTargetWeekNumber] = useState(requestedWeekNumber)
 
-  // ── Initialize or load draft for current week ──
+  // ── Initialize or load draft for requested week (or current week) ──
   const initDraft = async () => {
     try {
-      // Check for existing paycheck this week (any status)
+      let weekLabel = currentWeekLabel
+      let useWeekNumber = false
+
+      // If ?week=N is provided, find paycheck by session_number=5 AND week_number=N
+      if (requestedWeekNumber) {
+        const { data: existing, error: err } = await supabase
+          .from('weekly_paychecks')
+          .select('*')
+          .eq('student_id', profile.id)
+          .eq('session_number', 5)
+          .eq('week_number', requestedWeekNumber)
+          .maybeSingle()
+
+        if (existing) {
+          weekLabel = existing.week_label
+          useWeekNumber = true
+          // Load and return early
+          setDraftId(existing.id)
+          setDraftStatus(existing.status)
+          setXpByDay({
+            mon: existing.xp_mon || 0,
+            tue: existing.xp_tue || 0,
+            wed: existing.xp_wed || 0,
+            thu: existing.xp_thu || 0,
+            fri: existing.xp_fri || 0,
+          })
+          setEpicDays({
+            mon: !!existing.epic_mon,
+            tue: !!existing.epic_tue,
+            wed: !!existing.epic_wed,
+            thu: !!existing.epic_thu,
+            fri: !!existing.epic_fri,
+          })
+          setJobDone(!!existing.job_completed)
+          if (existing.custom_bonus_data && Array.isArray(existing.custom_bonus_data)) {
+            const bonusMap = {}
+            existing.custom_bonus_data.forEach(b => {
+              bonusMap[b.id] = b.type === 'checkbox' ? { claimed: true } : { amount: b.amount || 0 }
+            })
+            setCustomBonuses(bonusMap)
+          }
+          if (existing.status !== 'draft') {
+            setSelectedPaycheck(existing)
+          }
+          return
+        }
+      }
+
+      // Check for existing paycheck by week_label (current week fallback)
       const { data: existing, error } = await supabase
         .from('weekly_paychecks')
         .select('*')
         .eq('student_id', profile.id)
-        .eq('week_label', currentWeekLabel)
+        .eq('week_label', weekLabel)
         .maybeSingle()
 
       if (error) throw error
@@ -668,9 +720,15 @@ export const StudentPaycheck = () => {
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.18em]">This Week</p>
-              <h1 className="text-[32px] md:text-[40px] font-black text-black dark:text-white tracking-[-0.02em] leading-[1.05] mt-1">My Paycheck</h1>
-              <p className="text-[13px] font-semibold text-black/55 dark:text-white/45 mt-1">Week of {currentWeekLabel}</p>
+              <p className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.18em]">
+                {requestedWeekNumber ? 'Paycheck' : 'This Week'}
+              </p>
+              <h1 className="text-[32px] md:text-[40px] font-black text-black dark:text-white tracking-[-0.02em] leading-[1.05] mt-1">
+                {requestedWeekNumber ? `S5 W${requestedWeekNumber}` : 'My Paycheck'}
+              </h1>
+              <p className="text-[13px] font-semibold text-black/55 dark:text-white/45 mt-1">
+                {requestedWeekNumber ? `S5 W${requestedWeekNumber} Paycheck` : `Week of ${currentWeekLabel}`}
+              </p>
             </div>
             <div className="flex items-center gap-2 mt-2 flex-wrap justify-end">
               <AnimatePresence mode="wait">

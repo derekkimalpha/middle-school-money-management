@@ -11,11 +11,13 @@ import { useGrowthLog } from '../../hooks/useGrowthLog'
 import { useNetWorthHistory } from '../../hooks/useNetWorthHistory'
 import { NetWorthChart } from '../../components/student/NetWorthChart'
 import { PaycheckCard } from '../../components/student/PaycheckCard'
+import { UnfilledPaychecksList } from '../../components/student/UnfilledPaychecksList'
 import { SplitBalance } from '../../components/student/SplitBalance'
 import { HowXpWorks } from '../../components/student/HowXpWorks'
 import { EarningsBreakdown } from '../../components/student/EarningsBreakdown'
 import { formatCurrency } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
+import { formatTxLabel } from '../../lib/txLabels'
 
 const CASH_ROWS = [
   { key: 'checking', label: 'Checking', subtitle: 'Spending account',          icon: Wallet,    accent: '#1F6FEB' },
@@ -43,6 +45,27 @@ export const StudentDashboard = () => {
   const [todaysReturns, setTodaysReturns] = useState({})
   const [recent, setRecent] = useState([])
   const [monthInterest, setMonthInterest] = useState({ thisMonth: 0, ytd: 0 })
+  const [currentSession, setCurrentSession] = useState(null)
+  const [currentWeek, setCurrentWeek] = useState(1)
+
+  // Get current session info
+  useEffect(() => {
+    supabase
+      .from('sessions')
+      .select('id, name, start_date')
+      .eq('is_active', true)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setCurrentSession(data)
+          // Calculate current week number (1-indexed) from start_date
+          const startDate = new Date(data.start_date)
+          const now = new Date()
+          const weekDiff = Math.floor((now.getTime() - startDate.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1
+          setCurrentWeek(Math.max(1, weekDiff))
+        }
+      })
+  }, [])
 
   // Today's market %
   useEffect(() => {
@@ -215,7 +238,7 @@ export const StudentDashboard = () => {
                   className={`flex justify-between items-center px-5 py-3.5 ${i < recent.length - 1 ? 'border-b border-black/10 dark:border-white/[0.06]' : ''}`}
                 >
                   <div className="min-w-0 flex-1 pr-3">
-                    <p className="text-[13px] font-semibold text-black dark:text-white truncate">{tx.description || tx.category}</p>
+                    <p className="text-[13px] font-semibold text-black dark:text-white truncate">{formatTxLabel(tx)}</p>
                     <p className="text-[11px] text-black/45 dark:text-white/30 mt-0.5">{date}</p>
                   </div>
                   <p className={`text-[13px] font-black tabular-nums ${isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
@@ -266,6 +289,15 @@ export const StudentDashboard = () => {
             )
           })}
         </Section>
+
+        {/* ── Unfilled Paychecks List ── */}
+        {currentSession && (
+          <UnfilledPaychecksList
+            studentId={profile.id}
+            currentSessionNumber={parseInt(currentSession.name.match(/\d+/)?.[0] || 5)}
+            currentWeekNumber={currentWeek}
+          />
+        )}
 
         {/* ── This week's paycheck ── */}
         <motion.div {...fadeUp(0.35)} className="mt-5">

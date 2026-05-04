@@ -2,3 +2,6 @@ node_modules
 dist
 .env
 .DS_Store
+dist-check
+vite.config.js.timestamp-*
+dist-check/

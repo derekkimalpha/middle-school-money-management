@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../lib/constants'
+import { formatTxLabel } from '../../lib/txLabels'
 
 /**
  * Wealthfront-style "Total gains/losses" breakdown card.
