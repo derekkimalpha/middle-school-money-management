@@ -211,12 +211,15 @@ export const StudentPaycheck = () => {
   const fetchPastPaychecks = async () => {
     try {
       setLoadingHistory(true)
+      // Only show current session's paychecks (S5+). Old S3/S4 paychecks live in the kid's
+      // starting balance and shouldn't clutter this view.
       const { data, error } = await supabase
         .from('weekly_paychecks')
         .select('*')
         .eq('student_id', profile.id)
+        .eq('session_number', 5)
         .neq('week_label', currentWeekLabel)
-        .order('created_at', { ascending: false })
+        .order('week_number', { ascending: true })
       if (error) throw error
       setPastPaychecks(data || [])
     } catch (err) {

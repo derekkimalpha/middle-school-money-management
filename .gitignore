@@ -5,3 +5,4 @@ dist
 dist-check
 vite.config.js.timestamp-*
 dist-check/
+dist-check*/
