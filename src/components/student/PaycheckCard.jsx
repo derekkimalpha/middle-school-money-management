@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, FileText } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../lib/constants'
 
@@ -82,10 +82,15 @@ export const PaycheckCard = ({ studentId }) => {
       onClick={handleClick}
       className="w-full text-left rounded-2xl p-6 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft hover:shadow-soft-lg transition-all"
     >
-      <div className="flex items-baseline justify-between mb-3">
-        <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-600 dark:text-alpha-blue-400 font-bold">
-          This week's paycheck
-        </p>
+      <div className="flex items-baseline justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-alpha-blue-500 flex items-center justify-center flex-shrink-0">
+            <FileText className="w-5 h-5 text-white" strokeWidth={2.4} />
+          </div>
+          <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
+            This week's paycheck
+          </p>
+        </div>
         <p className="text-[32px] font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
           {total > 0 ? `+${formatCurrency(total)}` : formatCurrency(0)}
         </p>

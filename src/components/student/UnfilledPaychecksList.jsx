@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, FileText } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../lib/constants'
 
@@ -63,9 +63,14 @@ export const UnfilledPaychecksList = ({ studentId, currentSessionNumber, current
       className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
     >
       <div className="px-6 pt-5 pb-3 border-b border-alpha-blue-100">
-        <h2 className="text-[16px] font-bold tracking-tight text-alpha-navy-800 dark:text-white">
-          Paychecks to fill
-        </h2>
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-9 h-9 rounded-xl bg-alpha-blue-500 flex items-center justify-center flex-shrink-0">
+            <FileText className="w-5 h-5 text-white" strokeWidth={2.4} />
+          </div>
+          <h2 className="text-base font-semibold tracking-tight text-alpha-navy-800 dark:text-white">
+            Paychecks to fill
+          </h2>
+        </div>
         <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-400 mt-1 font-semibold">
           {paychecks.length} week{paychecks.length !== 1 ? 's' : ''} — tap to fill in any you missed
         </p>

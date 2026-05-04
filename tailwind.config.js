@@ -24,6 +24,7 @@ export default {
         'alpha-navy': {
           600:  '#1F2960',
           800:  '#0A1B5C', // text
+          900:  '#0a0e27', // dark sidebar
         },
         'accent-purple': '#A78BFA',
         'accent-pink':   '#F472B6',

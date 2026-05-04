@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, BookOpen, Sparkles, Trophy, Zap, Briefcase } from 'lucide-react'
+import { ChevronDown, BookOpen, Sparkles, Trophy, Zap, Briefcase, Star } from 'lucide-react'
 import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 
 /**
@@ -67,13 +67,18 @@ export const HowXpWorks = () => {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-6 py-4 hover:bg-alpha-blue-50 dark:hover:bg-white/[0.02] transition-colors"
       >
-        <div className="text-left">
-          <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-600 dark:text-alpha-blue-400 font-bold">
-            How XP earns money
-          </p>
-          <p className="text-[14px] font-bold text-alpha-navy-800 dark:text-white mt-0.5">
-            Tap to see the rules
-          </p>
+        <div className="text-left flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0">
+            <Star className="w-5 h-5 text-white" strokeWidth={2.4} />
+          </div>
+          <div>
+            <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
+              How XP earns money
+            </p>
+            <p className="text-[12px] text-alpha-blue-600 dark:text-alpha-blue-400 mt-0.5">
+              Tap to see the rules
+            </p>
+          </div>
         </div>
         <motion.div
           animate={{ rotate: open ? 180 : 0 }}

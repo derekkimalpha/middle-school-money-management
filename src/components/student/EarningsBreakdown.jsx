@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, BarChart3 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../lib/constants'
 import { formatTxLabel } from '../../lib/txLabels'
@@ -61,9 +61,14 @@ export const EarningsBreakdown = ({ studentId }) => {
   return (
     <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden">
       <div className="px-6 pt-5 pb-4 border-b border-alpha-blue-100">
-        <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-600 dark:text-alpha-blue-400 font-bold mb-1">
-          Total gains
-        </p>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-xl bg-purple-500 flex items-center justify-center flex-shrink-0">
+            <BarChart3 className="w-5 h-5 text-white" strokeWidth={2.4} />
+          </div>
+          <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
+            Total gains
+          </p>
+        </div>
         <p className={`text-[28px] font-bold tabular-nums ${isUp ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
           {isUp ? '+' : ''}{formatCurrency(data.totalGains)}
         </p>

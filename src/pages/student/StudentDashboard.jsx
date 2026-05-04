@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import {
   ArrowUpRight, ArrowDownRight, Send, DollarSign,
   CreditCard, Phone, BookOpen, Wallet, PiggyBank, TrendingUp, BarChart3,
+  FileText, Clock, Star, Zap,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
@@ -146,22 +147,28 @@ export const StudentDashboard = () => {
     <div className="min-h-screen bg-alpha-blue-50 dark:bg-[#0c100c]">
       <div className="pb-16 max-w-6xl mx-auto px-5 md:px-8 pt-7">
 
-        {/* ── Welcome hero card: Big bold modern style ── */}
+        {/* ── Welcome hero card: Finbit style with huge title ── */}
         <motion.div
           {...fadeUp(0)}
           className="rounded-3xl p-6 md:p-8 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft-lg"
         >
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div className="min-w-0">
-              <p className="text-[13px] uppercase tracking-[0.15em] text-alpha-blue-600 dark:text-alpha-blue-400 font-black mb-3">
-                Welcome, {profile?.first_name || 'Student'}
+              <div className="mb-4 flex items-baseline gap-2">
+                <span className="text-[24px] md:text-[32px] font-bold text-alpha-navy-800 dark:text-white">Welcome,</span>
+                <span className="text-[24px] md:text-[32px] font-bold bg-gradient-to-r from-alpha-blue-500 to-alpha-blue-300 bg-clip-text text-transparent">
+                  {profile?.first_name || 'Student'}
+                </span>
+              </div>
+              <p className="text-[13px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold mb-4">
+                Alpha SF Money — Session 5
               </p>
               <SplitBalance
                 value={totalBalance}
-                className="text-[56px] md:text-[72px] font-black leading-[1] tracking-[-0.02em] text-alpha-navy-800 dark:text-white"
+                className="text-[56px] md:text-[64px] font-black leading-[1] tracking-[-0.02em] text-alpha-navy-800 dark:text-white"
                 centsClassName=""
               />
-              <p className="text-[13px] mt-2 text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Total net worth</p>
+              <p className="text-[13px] mt-3 text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Total net worth</p>
               <div className="flex items-center gap-3 mt-4 flex-wrap">
                 {todayDelta !== 0 && (
                   <span className={`flex items-center gap-1 text-[13px] font-bold px-3 py-1.5 rounded-full ${todayDelta >= 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}`}>
@@ -176,67 +183,79 @@ export const StudentDashboard = () => {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 md:max-w-md md:flex-shrink-0">
+            <div className="flex gap-3 flex-shrink-0">
               <button
-                onClick={() => navigate('/transfer')}
-                className="flex items-center justify-center gap-2 py-3 px-5 rounded-full bg-alpha-blue-500 text-white shadow-soft text-[14px] font-bold hover:bg-alpha-blue-600 transition-all"
+                className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-alpha-blue-200 dark:border-white/10 flex items-center justify-center hover:bg-alpha-blue-50 dark:hover:bg-white/10 transition-all"
+                title="Refresh"
               >
-                <Send className="w-4 h-4" strokeWidth={2.6} />
-                Transfer
+                <svg className="w-5 h-5 text-alpha-blue-600 dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
               </button>
               <button
-                onClick={() => navigate('/cash-out')}
-                className="flex items-center justify-center gap-2 py-3 px-5 rounded-full bg-alpha-blue-100 text-alpha-blue-700 hover:bg-alpha-blue-200 shadow-soft text-[14px] font-bold transition-all"
+                className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-alpha-blue-200 dark:border-white/10 flex items-center justify-center hover:bg-alpha-blue-50 dark:hover:bg-white/10 transition-all"
+                title="Notifications"
               >
-                <DollarSign className="w-4 h-4" strokeWidth={2.6} />
-                Cash Out
+                <svg className="w-5 h-5 text-alpha-blue-600 dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
               </button>
             </div>
           </div>
         </motion.div>
 
-        {/* ── Account Cards: Debit-card style (2 wide on desktop, stacked on mobile) ── */}
+        {/* ── Account Cards: Finbit wavy/curved blob design ── */}
         <div className="mt-7 grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Cash Card - Alpha Blue Gradient */}
+          {/* Cash Card - Alpha Blue Gradient with Navy Blob */}
           <motion.div
             {...fadeUp(0.06)}
-            className="rounded-2xl p-6 bg-gradient-to-br from-alpha-blue-500 to-alpha-blue-700 text-white shadow-soft-lg relative overflow-hidden"
+            className="rounded-3xl p-6 bg-gradient-to-br from-alpha-blue-600 to-alpha-blue-800 text-white shadow-soft-lg relative overflow-hidden min-h-[220px]"
           >
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-2xl"></div>
+            {/* Wavy dark blob overlay */}
+            <div className="absolute inset-0">
+              <div className="absolute -left-12 top-8 w-48 h-48 bg-alpha-navy-900 rounded-[100%] opacity-40 blur-3xl transform -translate-x-1/4 translate-y-1/4 scale-150"></div>
             </div>
-            <div className="relative z-10">
-              <p className="text-[12px] uppercase tracking-[0.12em] text-white/70 font-bold mb-12">Cash</p>
-              <p className="text-[14px] font-semibold text-white/80 mb-2">Checking & Savings</p>
-              <SplitBalance
-                value={cashTotal}
-                className="text-[40px] font-black leading-tight"
-                centsClassName="text-[24px]"
-              />
-              <div className="mt-4 pt-4 border-t border-white/20 flex justify-between text-[11px] text-white/70 font-semibold">
+            <div className="relative z-10 flex flex-col h-full justify-between">
+              <div>
+                <p className="text-white/70 text-xs px-3 py-1 bg-white/10 rounded-full w-fit font-bold mb-8">Cash card</p>
+              </div>
+              <div>
+                <p className="text-[14px] font-semibold text-white/80 mb-2">Checking & Savings</p>
+                <SplitBalance
+                  value={cashTotal}
+                  className="text-[48px] font-black leading-tight tracking-tight"
+                  centsClassName="text-[28px]"
+                />
+              </div>
+              <div className="mt-4 pt-3 border-t border-white/20 flex justify-between text-[11px] text-white/60 font-semibold">
                 <span>${(accounts?.checking || 0).toFixed(2)} Checking</span>
                 <span>${(accounts?.savings || 0).toFixed(2)} Savings</span>
               </div>
             </div>
           </motion.div>
 
-          {/* Invest Card - Accent Purple Gradient */}
+          {/* Invest Card - Purple Gradient with Navy Blob */}
           <motion.div
             {...fadeUp(0.10)}
-            className="rounded-2xl p-6 bg-gradient-to-br from-accent-purple to-purple-700 text-white shadow-soft-lg relative overflow-hidden"
+            className="rounded-3xl p-6 bg-gradient-to-br from-purple-500 to-purple-700 text-white shadow-soft-lg relative overflow-hidden min-h-[220px]"
           >
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-2xl"></div>
+            {/* Wavy dark blob overlay */}
+            <div className="absolute inset-0">
+              <div className="absolute -left-12 top-8 w-48 h-48 bg-alpha-navy-900 rounded-[100%] opacity-40 blur-3xl transform -translate-x-1/4 translate-y-1/4 scale-150"></div>
             </div>
-            <div className="relative z-10">
-              <p className="text-[12px] uppercase tracking-[0.12em] text-white/70 font-bold mb-12">Invest</p>
-              <p className="text-[14px] font-semibold text-white/80 mb-2">S&P 500 & NASDAQ</p>
-              <SplitBalance
-                value={investTotal}
-                className="text-[40px] font-black leading-tight"
-                centsClassName="text-[24px]"
-              />
-              <div className="mt-4 pt-4 border-t border-white/20 flex justify-between text-[11px] text-white/70 font-semibold">
+            <div className="relative z-10 flex flex-col h-full justify-between">
+              <div>
+                <p className="text-white/70 text-xs px-3 py-1 bg-white/10 rounded-full w-fit font-bold mb-8">Invest</p>
+              </div>
+              <div>
+                <p className="text-[14px] font-semibold text-white/80 mb-2">S&P 500 & NASDAQ</p>
+                <SplitBalance
+                  value={investTotal}
+                  className="text-[48px] font-black leading-tight tracking-tight"
+                  centsClassName="text-[28px]"
+                />
+              </div>
+              <div className="mt-4 pt-3 border-t border-white/20 flex justify-between text-[11px] text-white/60 font-semibold">
                 <span>${(accounts?.sp500 || 0).toFixed(2)} S&P 500</span>
                 <span>${(accounts?.nasdaq || 0).toFixed(2)} NASDAQ</span>
               </div>
@@ -255,9 +274,14 @@ export const StudentDashboard = () => {
           {...fadeUp(0.14)}
           className="rounded-2xl p-6 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft text-alpha-blue-600 dark:text-alpha-blue-300"
         >
-          <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-700 dark:text-alpha-blue-400 font-bold mb-4">
-            Net worth over time
-          </p>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="w-5 h-5 text-white" strokeWidth={2.4} />
+            </div>
+            <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
+              Net worth over time
+            </p>
+          </div>
           <NetWorthChart history={history} currentTotal={totalBalance} height={240} />
         </motion.div>
 
@@ -272,9 +296,14 @@ export const StudentDashboard = () => {
             {...fadeUp(0.42)}
             className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
           >
-            <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-700 dark:text-alpha-blue-400 px-6 pt-5 pb-3 font-bold">
-              Recent activity
-            </p>
+            <div className="px-6 pt-5 pb-3 border-b border-alpha-blue-100 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-purple-500 flex items-center justify-center flex-shrink-0">
+                <Clock className="w-5 h-5 text-white" strokeWidth={2.4} />
+              </div>
+              <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
+                Recent activity
+              </p>
+            </div>
             {recent.map((tx, i) => {
               const amount = Number(tx.amount || 0)
               const sign = amount > 0 ? '+' : amount < 0 ? '−' : ''
@@ -306,7 +335,7 @@ export const StudentDashboard = () => {
         <div className="space-y-5">
 
         {/* ── Cash section ── */}
-        <Section title="Cash" total={cashTotal} delay={0.21}>
+        <Section title="Cash" total={cashTotal} delay={0.21} icon={Wallet} iconColor="#2D55F5">
           {CASH_ROWS.map((row) => (
             <AccountRow
               key={row.key}
@@ -320,7 +349,7 @@ export const StudentDashboard = () => {
         </Section>
 
         {/* ── Investments section ── */}
-        <Section title="Investments" total={investTotal} delay={0.28}>
+        <Section title="Investments" total={investTotal} delay={0.28} icon={TrendingUp} iconColor="#9333ea">
           {INVEST_ROWS.map((row) => {
             const todayPct = row.key === 'sp500' ? todaysReturns.sp500
                             : row.key === 'nasdaq' ? todaysReturns.nasdaq
@@ -430,15 +459,22 @@ export const StudentDashboard = () => {
 // Subcomponents
 // ─────────────────────────────────────────────────────────
 
-const Section = ({ title, total, delay = 0, children }) => (
+const Section = ({ title, total, delay = 0, icon: Icon, iconColor, children }) => (
   <motion.div
     initial={{ opacity: 0, y: 12 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
     className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
   >
-    <div className="flex items-baseline justify-between px-6 pt-5 pb-4 border-b border-alpha-blue-100">
-      <h2 className="text-[18px] font-bold tracking-tight text-alpha-navy-800 dark:text-white">{title}</h2>
+    <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-alpha-blue-100">
+      <div className="flex items-center gap-3">
+        {Icon && (
+          <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0`} style={{ backgroundColor: iconColor }}>
+            <Icon className="w-5 h-5 text-white" strokeWidth={2.4} />
+          </div>
+        )}
+        <h2 className="text-base font-semibold tracking-tight text-alpha-navy-800 dark:text-white">{title}</h2>
+      </div>
       <SplitBalance
         value={total}
         className="text-[16px] font-bold text-alpha-navy-800 dark:text-white"
