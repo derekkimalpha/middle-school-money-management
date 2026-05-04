@@ -62,25 +62,25 @@ export const HowXpWorks = () => {
   }
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum overflow-hidden">
+    <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-4 hover:bg-cobalt-50 dark:hover:bg-white/[0.02] transition-colors"
+        className="w-full flex items-center justify-between px-6 py-4 hover:bg-alpha-blue-50 dark:hover:bg-white/[0.02] transition-colors"
       >
         <div className="text-left">
-          <p className="text-[11px] uppercase tracking-[0.15em] text-black/55 dark:text-white/50 font-black">
+          <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-600 dark:text-alpha-blue-400 font-bold">
             How XP earns money
           </p>
-          <p className="text-[14px] font-bold text-black dark:text-white mt-0.5">
+          <p className="text-[14px] font-bold text-alpha-navy-800 dark:text-white mt-0.5">
             Tap to see the rules
           </p>
         </div>
         <motion.div
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="w-9 h-9 rounded-full bg-cobalt-50 dark:bg-white/[0.06] border-[2px] border-black flex items-center justify-center flex-shrink-0"
+          className="w-9 h-9 rounded-full bg-alpha-blue-100 dark:bg-white/[0.06] flex items-center justify-center flex-shrink-0"
         >
-          <ChevronDown className="w-4 h-4 text-black dark:text-white" strokeWidth={3} />
+          <ChevronDown className="w-4 h-4 text-alpha-blue-600 dark:text-alpha-blue-400" strokeWidth={3} />
         </motion.div>
       </button>
 
@@ -93,7 +93,7 @@ export const HowXpWorks = () => {
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="px-5 pt-2 pb-5 border-t-[2px] border-black space-y-3">
+            <div className="px-6 pt-3 pb-5 border-t border-alpha-blue-100 space-y-3">
               {rules.map(({ Icon, title, body, accent }, i) => (
                 <motion.div
                   key={title}
@@ -103,18 +103,18 @@ export const HowXpWorks = () => {
                   className="flex items-start gap-3"
                 >
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border-[2px] border-black mt-0.5"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
                     style={{ backgroundColor: accent }}
                   >
                     <Icon className="w-4 h-4 text-white" strokeWidth={2.6} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-black text-black dark:text-white">{title}</p>
-                    <p className="text-[12px] text-black/65 dark:text-white/55 font-semibold leading-snug mt-0.5">{body}</p>
+                    <p className="text-[13px] font-bold text-alpha-navy-800 dark:text-white">{title}</p>
+                    <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold leading-snug mt-0.5">{body}</p>
                   </div>
                 </motion.div>
               ))}
-              <p className="text-[11px] text-black/40 dark:text-white/30 italic mt-3 pt-3 border-t border-black/10">
+              <p className="text-[11px] text-alpha-blue-600 dark:text-alpha-blue-500 italic mt-3 pt-3 border-t border-alpha-blue-100">
                 Rules can change session to session — this card always shows what's active right now.
               </p>
             </div>

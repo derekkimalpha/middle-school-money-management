@@ -8,6 +8,27 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ── Alpha Electric Blue – Modern Design System ──
+        'alpha-blue': {
+          50:   '#F5F8FF',
+          100:  '#E8F0FF',
+          200:  '#C7DAFF',
+          300:  '#94B3FF',
+          400:  '#5B82FF',
+          500:  '#2D55F5', // PRIMARY
+          600:  '#1F40E0',
+          700:  '#1530B5',
+          800:  '#0F2588',
+          900:  '#0A1B5C',
+        },
+        'alpha-navy': {
+          600:  '#1F2960',
+          800:  '#0A1B5C', // text
+        },
+        'accent-purple': '#A78BFA',
+        'accent-pink':   '#F472B6',
+
+        // Preserved for backwards-compatibility
         sage: {
           DEFAULT: '#7c8c78',
           200: '#c4ccc2',
@@ -36,7 +57,6 @@ export default {
           DEFAULT: '#a67272',
           bg: 'rgba(166,114,114,0.07)',
         },
-        // Notebook palette
         paper: {
           DEFAULT: '#faf8f4',
           warm: '#f3efe8',
@@ -68,7 +88,6 @@ export default {
           muted: '#9c9890',
           faint: '#c7c3bc',
         },
-        // ── Gumroad-style design system (blue palette) ──
         cobalt: {
           50:  '#EAF1FF',
           100: '#C9DBFF',
@@ -84,6 +103,9 @@ export default {
         },
       },
       boxShadow: {
+        'soft-sm': '0 1px 3px rgba(15,37,136,0.06)',
+        'soft':    '0 4px 12px rgba(15,37,136,0.08)',
+        'soft-lg': '0 12px 32px rgba(15,37,136,0.12)',
         'gum':     '4px 4px 0 0 #000',
         'gum-sm':  '2px 2px 0 0 #000',
         'gum-lg':  '6px 6px 0 0 #000',

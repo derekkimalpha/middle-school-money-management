@@ -47,7 +47,7 @@ export const UnfilledPaychecksList = ({ studentId, currentSessionNumber, current
 
   if (loading) {
     return (
-      <div className="rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum h-[140px] animate-pulse" />
+      <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft h-[140px] animate-pulse" />
     )
   }
 
@@ -60,18 +60,18 @@ export const UnfilledPaychecksList = ({ studentId, currentSessionNumber, current
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum overflow-hidden"
+      className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
     >
-      <div className="px-5 pt-4 pb-3 border-b-[2px] border-black">
-        <h2 className="text-[16px] font-black tracking-tight text-black dark:text-white">
+      <div className="px-6 pt-5 pb-3 border-b border-alpha-blue-100">
+        <h2 className="text-[16px] font-bold tracking-tight text-alpha-navy-800 dark:text-white">
           Paychecks to fill
         </h2>
-        <p className="text-[11px] text-black/55 dark:text-white/45 mt-1 font-semibold">
+        <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-400 mt-1 font-semibold">
           {paychecks.length} week{paychecks.length !== 1 ? 's' : ''} — tap to fill in any you missed
         </p>
       </div>
 
-      <div className="px-5 py-2">
+      <div className="px-6 py-3">
         {paychecks.map((pc, idx) => {
           const total = Number(pc.total_earnings || 0)
           const isSubmitted = pc.status === 'submitted'
@@ -82,23 +82,23 @@ export const UnfilledPaychecksList = ({ studentId, currentSessionNumber, current
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: idx * 0.08 }}
               onClick={() => navigate(`/paycheck?week=${pc.week_number}`)}
-              className="w-full flex items-center justify-between py-3 hover:bg-cobalt-50 dark:hover:bg-cobalt-500/5 transition-colors text-left"
+              className="w-full flex items-center justify-between py-3 hover:bg-alpha-blue-50 dark:hover:bg-alpha-blue-900/10 transition-colors text-left"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-black text-black dark:text-white">
+                <p className="text-[13px] font-bold text-alpha-navy-800 dark:text-white">
                   {pc.week_label || `Week ${pc.week_number}`}
                 </p>
-                <p className={`text-[11px] mt-0.5 ${isSubmitted ? 'text-amber-700 dark:text-amber-400' : 'text-black/55 dark:text-white/45'}`}>
+                <p className={`text-[11px] mt-0.5 ${isSubmitted ? 'text-amber-700 dark:text-amber-400' : 'text-alpha-blue-600 dark:text-alpha-blue-400'}`}>
                   {isSubmitted ? 'Submitted — waiting for guide review' : 'Not filled yet'}
                 </p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0 ml-3">
                 {total > 0 && (
-                  <span className="text-[13px] font-black text-emerald-700 dark:text-emerald-400 tabular-nums">
+                  <span className="text-[13px] font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
                     +{formatCurrency(total)}
                   </span>
                 )}
-                <ChevronRight className="w-4 h-4 text-black/45 dark:text-white/30" strokeWidth={2.4} />
+                <ChevronRight className="w-4 h-4 text-alpha-blue-400 dark:text-alpha-blue-600" strokeWidth={2.4} />
               </div>
             </motion.button>
           )

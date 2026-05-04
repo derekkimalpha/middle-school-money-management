@@ -35,7 +35,7 @@ export const Layout = ({
   };
 
   return (
-    <div className="flex h-screen bg-cream dark:bg-[#0c100c] transition-colors duration-300">
+    <div className="flex h-screen bg-alpha-blue-50 dark:bg-[#0c100c] transition-colors duration-300">
 
       {/* ── Mobile Sidebar Backdrop ── */}
       {isMobile && sidebarOpen && (
@@ -49,11 +49,11 @@ export const Layout = ({
         />
       )}
 
-      {/* ── Sidebar: Gumroad-style chunky panel ── */}
+      {/* ── Sidebar: Refined Alpha blue treatment ── */}
       <aside
         className={`
           flex flex-col select-none overflow-hidden
-          bg-white border-r-[3px] border-black
+          bg-white border-r border-alpha-blue-200
           md:w-[240px] md:relative md:translate-x-0 md:z-auto
           ${isMobile
             ? 'fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-300'
@@ -63,32 +63,32 @@ export const Layout = ({
         `}
       >
         {/* Brand */}
-        <div className="px-5 pt-6 pb-5 border-b-[3px] border-black">
+        <div className="px-5 pt-6 pb-5 border-b border-alpha-blue-200">
           <button
             onClick={() => onNavigate('home')}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
-            <div className="w-10 h-10 rounded-xl bg-cobalt-400 border-[3px] border-black shadow-gum-sm flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-alpha-blue-500 shadow-soft-sm flex items-center justify-center">
               <span className="text-white font-black text-base">$</span>
             </div>
             <div className="min-w-0 text-left">
-              <div className="text-[18px] font-black text-black tracking-tight leading-tight">My Money</div>
-              <div className="text-[11px] text-black/55 font-semibold mt-0.5 truncate">Alpha School</div>
+              <div className="text-[18px] font-black text-alpha-navy-800 tracking-tight leading-tight">My Money</div>
+              <div className="text-[11px] text-alpha-blue-700 font-semibold mt-0.5 truncate">Alpha School</div>
             </div>
           </button>
         </div>
 
         {/* Avatar */}
-        <div className="mx-4 mt-4 mb-3 p-3 rounded-xl bg-cobalt-50 border-[3px] border-black shadow-gum-sm">
+        <div className="mx-4 mt-4 mb-3 p-3 rounded-xl bg-alpha-blue-50 border border-alpha-blue-200 shadow-soft-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-cobalt-400 border-[3px] border-black flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-alpha-blue-500 flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-[15px]">
                 {firstName?.[0]?.toUpperCase() || '?'}
               </span>
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-[14px] font-bold text-black truncate">{firstName || user?.name}</div>
-              <div className="text-[11px] text-black/60 font-semibold uppercase tracking-wider">
+              <div className="text-[14px] font-bold text-alpha-navy-800 truncate">{firstName || user?.name}</div>
+              <div className="text-[11px] text-alpha-blue-700 font-semibold uppercase tracking-wider">
                 {isStudent ? 'Student' : 'Guide'}
               </div>
             </div>
@@ -104,10 +104,10 @@ export const Layout = ({
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
                 className={`
-                  w-full text-left px-3 py-2.5 rounded-xl text-[14px] font-bold transition-all
+                  w-full text-left px-3 py-2.5 rounded-lg text-[14px] font-bold transition-all
                   ${isActive
-                    ? 'bg-cobalt-400 text-white border-[3px] border-black shadow-gum-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-gum-pressed'
-                    : 'text-black/65 hover:text-black hover:bg-cobalt-50 border-[3px] border-transparent'
+                    ? 'bg-alpha-blue-500 text-white shadow-soft'
+                    : 'text-alpha-blue-700 hover:text-alpha-blue-900 hover:bg-alpha-blue-100'
                   }
                 `}
               >
@@ -126,10 +126,10 @@ export const Layout = ({
         </nav>
 
         {/* Bottom controls */}
-        <div className="px-3 pb-4 pt-3 space-y-1 border-t-[3px] border-black mt-auto">
+        <div className="px-3 pb-4 pt-3 space-y-1 border-t border-alpha-blue-200 mt-auto">
           <button
             onClick={toggleTheme}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-bold text-black/55 hover:text-black hover:bg-cobalt-50 border-[2px] border-transparent hover:border-black/10 transition-all"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-bold text-alpha-blue-700 hover:text-alpha-blue-900 hover:bg-alpha-blue-100 transition-all"
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.div

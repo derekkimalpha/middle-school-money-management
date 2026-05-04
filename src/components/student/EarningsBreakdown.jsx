@@ -52,36 +52,36 @@ export const EarningsBreakdown = ({ studentId }) => {
 
   if (!data) {
     return (
-      <div className="rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum h-[140px] animate-pulse" />
+      <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft h-[140px] animate-pulse" />
     )
   }
 
   const isUp = data.totalGains >= 0
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum overflow-hidden">
-      <div className="px-5 pt-4 pb-3 border-b-[2px] border-black">
-        <p className="text-[11px] uppercase tracking-[0.15em] text-black/55 dark:text-white/50 font-black mb-1">
+    <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden">
+      <div className="px-6 pt-5 pb-4 border-b border-alpha-blue-100">
+        <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-600 dark:text-alpha-blue-400 font-bold mb-1">
           Total gains
         </p>
-        <p className={`text-[26px] font-black tabular-nums ${isUp ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
+        <p className={`text-[28px] font-bold tabular-nums ${isUp ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
           {isUp ? '+' : ''}{formatCurrency(data.totalGains)}
         </p>
-        <p className="text-[12px] text-black/55 dark:text-white/55 mt-1 font-semibold leading-snug">
-          The total growth of your money — from interest payments and market changes.
+        <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 mt-2 font-semibold leading-snug">
+          Growth from interest payments and market changes.
         </p>
       </div>
 
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-3 hover:bg-cobalt-50 dark:hover:bg-white/[0.02] transition-colors"
+        className="w-full flex items-center justify-between px-6 py-3 hover:bg-alpha-blue-50 dark:hover:bg-white/[0.02] transition-colors"
       >
-        <span className="text-[13px] font-black text-cobalt-500 dark:text-cobalt-200">View breakdown</span>
+        <span className="text-[13px] font-bold text-alpha-blue-600 dark:text-alpha-blue-400">View breakdown</span>
         <motion.div
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDown className="w-4 h-4 text-cobalt-500 dark:text-cobalt-200" strokeWidth={3} />
+          <ChevronDown className="w-4 h-4 text-alpha-blue-600 dark:text-alpha-blue-400" strokeWidth={3} />
         </motion.div>
       </button>
 
@@ -92,17 +92,17 @@ export const EarningsBreakdown = ({ studentId }) => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden border-t-[2px] border-black"
+            className="overflow-hidden border-t border-alpha-blue-100"
           >
-            <div className="px-5 py-4 space-y-2.5 text-[14px] font-semibold">
+            <div className="px-6 py-4 space-y-2.5 text-[14px] font-semibold">
               <Line label="Starting balance" value={data.starting} muted />
               <Line label="Money in (paychecks + deposits)" value={data.deposits} positive />
               <Line label="Interest earned" value={data.interest} positive />
               <Line label="Market gains/losses" value={data.market} signed />
               {data.cashOut !== 0 && <Line label="Cash outs" value={data.cashOut} signed />}
-              <div className="pt-2.5 border-t-[2px] border-black flex items-center justify-between">
-                <span className="text-[14px] font-black text-black dark:text-white">Current balance</span>
-                <span className="text-[16px] font-black tabular-nums text-black dark:text-white">{formatCurrency(data.ending)}</span>
+              <div className="pt-3 border-t border-alpha-blue-100 flex items-center justify-between">
+                <span className="text-[14px] font-bold text-alpha-navy-800 dark:text-white">Current balance</span>
+                <span className="text-[16px] font-bold tabular-nums text-alpha-navy-800 dark:text-white">{formatCurrency(data.ending)}</span>
               </div>
             </div>
           </motion.div>
@@ -117,7 +117,7 @@ const Line = ({ label, value, muted, positive, signed }) => {
   let cls
   if (muted) {
     display = formatCurrency(value)
-    cls = 'text-black/65 dark:text-white/55'
+    cls = 'text-alpha-blue-600 dark:text-alpha-blue-400'
   } else if (positive) {
     display = `+${formatCurrency(Math.abs(value))}`
     cls = 'text-emerald-700 dark:text-emerald-400'
@@ -127,11 +127,11 @@ const Line = ({ label, value, muted, positive, signed }) => {
     cls = value >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
   } else {
     display = formatCurrency(value)
-    cls = 'text-black dark:text-white'
+    cls = 'text-alpha-navy-800 dark:text-white'
   }
   return (
     <div className="flex items-center justify-between">
-      <span className="text-black/65 dark:text-white/55">{label}</span>
+      <span className="text-alpha-blue-700 dark:text-alpha-blue-300">{label}</span>
       <span className={`tabular-nums font-bold ${cls}`}>{display}</span>
     </div>
   )

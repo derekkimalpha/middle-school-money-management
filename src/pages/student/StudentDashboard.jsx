@@ -132,9 +132,9 @@ export const StudentDashboard = () => {
 
   if (loading || !accounts || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen bg-cream">
+      <div className="flex items-center justify-center h-screen bg-alpha-blue-50">
         <motion.div
-          className="w-10 h-10 border-[3px] border-black border-t-cobalt-400 rounded-full"
+          className="w-10 h-10 border-[3px] border-alpha-blue-500 border-t-alpha-blue-300 rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -143,33 +143,34 @@ export const StudentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-[#0c100c]">
+    <div className="min-h-screen bg-alpha-blue-50 dark:bg-[#0c100c]">
       <div className="pb-16 max-w-6xl mx-auto px-5 md:px-8 pt-7">
 
-        {/* ── Hero card: chunky cobalt — full width ── */}
+        {/* ── Welcome hero card: Big bold modern style ── */}
         <motion.div
           {...fadeUp(0)}
-          className="rounded-2xl p-6 md:p-7 bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum"
+          className="rounded-3xl p-6 md:p-8 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft-lg"
         >
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-black/55 dark:text-white/50 font-black mb-2">
-                Net worth
+              <p className="text-[13px] uppercase tracking-[0.15em] text-alpha-blue-600 dark:text-alpha-blue-400 font-black mb-3">
+                Welcome, {profile?.first_name || 'Student'}
               </p>
               <SplitBalance
                 value={totalBalance}
-                className="text-[48px] md:text-[60px] font-black leading-[1] tracking-[-0.02em] text-black dark:text-white"
+                className="text-[56px] md:text-[72px] font-black leading-[1] tracking-[-0.02em] text-alpha-navy-800 dark:text-white"
                 centsClassName=""
               />
-              <div className="flex items-center gap-3 mt-3 flex-wrap">
+              <p className="text-[13px] mt-2 text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Total net worth</p>
+              <div className="flex items-center gap-3 mt-4 flex-wrap">
                 {todayDelta !== 0 && (
-                  <span className={`flex items-center gap-1 text-[13px] font-bold px-2.5 py-1 rounded-full border-[2px] border-black ${todayDelta >= 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}`}>
-                    {todayDelta >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+                  <span className={`flex items-center gap-1 text-[13px] font-bold px-3 py-1.5 rounded-full ${todayDelta >= 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}`}>
+                    {todayDelta >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
                     {todayDelta >= 0 ? '+' : ''}{formatCurrency(todayDelta)} today
                   </span>
                 )}
                 {growth.total > 0 && (
-                  <span className="text-[12px] font-bold text-black/65 dark:text-white/55">
+                  <span className="text-[12px] font-bold text-alpha-blue-700 dark:text-alpha-blue-300">
                     <span className="text-emerald-700 dark:text-emerald-400">+{formatCurrency(growth.total)}</span> earned all-time
                   </span>
                 )}
@@ -178,14 +179,14 @@ export const StudentDashboard = () => {
             <div className="grid grid-cols-2 gap-3 md:max-w-md md:flex-shrink-0">
               <button
                 onClick={() => navigate('/transfer')}
-                className="flex items-center justify-center gap-2 py-3.5 px-5 rounded-2xl bg-cobalt-400 text-white border-[3px] border-black shadow-gum text-[14px] font-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed transition-all"
+                className="flex items-center justify-center gap-2 py-3 px-5 rounded-full bg-alpha-blue-500 text-white shadow-soft text-[14px] font-bold hover:bg-alpha-blue-600 transition-all"
               >
                 <Send className="w-4 h-4" strokeWidth={2.6} />
                 Transfer
               </button>
               <button
                 onClick={() => navigate('/cash-out')}
-                className="flex items-center justify-center gap-2 py-3.5 px-5 rounded-2xl bg-white text-black border-[3px] border-black shadow-gum text-[14px] font-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed transition-all"
+                className="flex items-center justify-center gap-2 py-3 px-5 rounded-full bg-alpha-blue-100 text-alpha-blue-700 hover:bg-alpha-blue-200 shadow-soft text-[14px] font-bold transition-all"
               >
                 <DollarSign className="w-4 h-4" strokeWidth={2.6} />
                 Cash Out
@@ -194,8 +195,57 @@ export const StudentDashboard = () => {
           </div>
         </motion.div>
 
+        {/* ── Account Cards: Debit-card style (2 wide on desktop, stacked on mobile) ── */}
+        <div className="mt-7 grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Cash Card - Alpha Blue Gradient */}
+          <motion.div
+            {...fadeUp(0.06)}
+            className="rounded-2xl p-6 bg-gradient-to-br from-alpha-blue-500 to-alpha-blue-700 text-white shadow-soft-lg relative overflow-hidden"
+          >
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-2xl"></div>
+            </div>
+            <div className="relative z-10">
+              <p className="text-[12px] uppercase tracking-[0.12em] text-white/70 font-bold mb-12">Cash</p>
+              <p className="text-[14px] font-semibold text-white/80 mb-2">Checking & Savings</p>
+              <SplitBalance
+                value={cashTotal}
+                className="text-[40px] font-black leading-tight"
+                centsClassName="text-[24px]"
+              />
+              <div className="mt-4 pt-4 border-t border-white/20 flex justify-between text-[11px] text-white/70 font-semibold">
+                <span>${(accounts?.checking || 0).toFixed(2)} Checking</span>
+                <span>${(accounts?.savings || 0).toFixed(2)} Savings</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Invest Card - Accent Purple Gradient */}
+          <motion.div
+            {...fadeUp(0.10)}
+            className="rounded-2xl p-6 bg-gradient-to-br from-accent-purple to-purple-700 text-white shadow-soft-lg relative overflow-hidden"
+          >
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-2xl"></div>
+            </div>
+            <div className="relative z-10">
+              <p className="text-[12px] uppercase tracking-[0.12em] text-white/70 font-bold mb-12">Invest</p>
+              <p className="text-[14px] font-semibold text-white/80 mb-2">S&P 500 & NASDAQ</p>
+              <SplitBalance
+                value={investTotal}
+                className="text-[40px] font-black leading-tight"
+                centsClassName="text-[24px]"
+              />
+              <div className="mt-4 pt-4 border-t border-white/20 flex justify-between text-[11px] text-white/70 font-semibold">
+                <span>${(accounts?.sp500 || 0).toFixed(2)} S&P 500</span>
+                <span>${(accounts?.nasdaq || 0).toFixed(2)} NASDAQ</span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
         {/* ── Two-column body (single col on mobile) ── */}
-        <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="mt-7 grid grid-cols-1 lg:grid-cols-3 gap-5">
 
         {/* ─── LEFT: Chart + Earnings Breakdown ─── */}
         <div className="lg:col-span-2 space-y-5">
@@ -203,9 +253,9 @@ export const StudentDashboard = () => {
         {/* Chart card */}
         <motion.div
           {...fadeUp(0.14)}
-          className="rounded-2xl p-5 bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum text-cobalt-500 dark:text-cobalt-200"
+          className="rounded-2xl p-6 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft text-alpha-blue-600 dark:text-alpha-blue-300"
         >
-          <p className="text-[11px] uppercase tracking-[0.15em] text-black/55 dark:text-white/50 font-black mb-3">
+          <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-700 dark:text-alpha-blue-400 font-bold mb-4">
             Net worth over time
           </p>
           <NetWorthChart history={history} currentTotal={totalBalance} height={240} />
@@ -220,9 +270,9 @@ export const StudentDashboard = () => {
         {recent.length > 0 && (
           <motion.div
             {...fadeUp(0.42)}
-            className="rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum overflow-hidden"
+            className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
           >
-            <p className="text-[11px] uppercase tracking-[0.15em] text-black/55 dark:text-white/50 px-5 pt-4 pb-2 font-black">
+            <p className="text-[12px] uppercase tracking-[0.15em] text-alpha-blue-700 dark:text-alpha-blue-400 px-6 pt-5 pb-3 font-bold">
               Recent activity
             </p>
             {recent.map((tx, i) => {
@@ -235,11 +285,11 @@ export const StudentDashboard = () => {
               return (
                 <div
                   key={tx.id}
-                  className={`flex justify-between items-center px-5 py-3.5 ${i < recent.length - 1 ? 'border-b border-black/10 dark:border-white/[0.06]' : ''}`}
+                  className={`flex justify-between items-center px-6 py-3.5 ${i < recent.length - 1 ? 'border-b border-alpha-blue-100 dark:border-white/[0.06]' : ''}`}
                 >
                   <div className="min-w-0 flex-1 pr-3">
-                    <p className="text-[13px] font-semibold text-black dark:text-white truncate">{formatTxLabel(tx)}</p>
-                    <p className="text-[11px] text-black/45 dark:text-white/30 mt-0.5">{date}</p>
+                    <p className="text-[13px] font-semibold text-alpha-navy-800 dark:text-white truncate">{formatTxLabel(tx)}</p>
+                    <p className="text-[11px] text-alpha-blue-600 dark:text-alpha-blue-400 mt-0.5">{date}</p>
                   </div>
                   <p className={`text-[13px] font-black tabular-nums ${isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
                     {sign}{formatCurrency(Math.abs(amount))}
@@ -309,22 +359,22 @@ export const StudentDashboard = () => {
           <HowXpWorks />
         </motion.div>
 
-        {/* ── Coming Soon: Roth IRA from MAP testing ── */}
+        {/* ── MAP Testing / Roth IRA Card ── */}
         <motion.div
           {...fadeUp(0.43)}
-          className="mt-3 rounded-2xl p-5 bg-cobalt-50 dark:bg-cobalt-700/20 border-[3px] border-black shadow-gum"
+          className="mt-3 rounded-2xl p-6 bg-alpha-blue-100 dark:bg-alpha-blue-900/30 border border-alpha-blue-300 shadow-soft"
         >
           <div className="flex items-start gap-3">
-            <div className="w-11 h-11 rounded-xl bg-cobalt-400 border-[3px] border-black flex items-center justify-center flex-shrink-0">
+            <div className="w-11 h-11 rounded-lg bg-alpha-blue-500 flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-lg">🔒</span>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <p className="text-[14px] font-black text-black dark:text-white">Roth IRA</p>
-                <span className="px-2 py-0.5 rounded-full bg-cobalt-400 text-white text-[10px] font-black uppercase tracking-wider border-[2px] border-black">Coming soon</span>
+                <p className="text-[14px] font-bold text-alpha-navy-800 dark:text-white">Roth IRA</p>
+                <span className="px-2.5 py-0.5 rounded-full bg-alpha-blue-400 text-white text-[10px] font-bold uppercase tracking-wider">Coming soon</span>
               </div>
-              <p className="text-[12px] text-black/65 dark:text-white/55 font-semibold leading-snug">
-                MAP testing payouts will land here — money that grows tax-free and stays locked until you graduate. Big assessments → big rewards. Just like a real Roth IRA.
+              <p className="text-[12px] text-alpha-blue-800 dark:text-alpha-blue-200 font-semibold leading-snug">
+                MAP testing payouts will land here — money that grows tax-free and stays locked until you graduate. Big assessments, big rewards.
               </p>
             </div>
           </div>
@@ -333,38 +383,38 @@ export const StudentDashboard = () => {
         </div>{/* end RIGHT col */}
         </div>{/* end body grid */}
 
-        {/* ── Cash Card panel — full width below the grid ── */}
+        {/* ── Physical Cash Card Info Panel ── */}
         <motion.div
           {...fadeUp(0.49)}
-          className="mt-5 rounded-2xl p-5 bg-yellow-100 dark:bg-yellow-900/30 border-[3px] border-black shadow-gum"
+          className="mt-7 rounded-2xl p-6 bg-accent-pink/10 dark:bg-accent-pink/5 border border-accent-pink/30 shadow-soft"
         >
-          <div className="flex items-start gap-3 mb-3">
-            <div className="w-11 h-11 rounded-full bg-white border-[3px] border-black flex items-center justify-center flex-shrink-0">
-              <CreditCard className="w-5 h-5 text-black" strokeWidth={2.4} />
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-11 h-11 rounded-lg bg-accent-pink flex items-center justify-center flex-shrink-0">
+              <CreditCard className="w-5 h-5 text-white" strokeWidth={2.4} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-black uppercase tracking-wider text-black mb-0.5">Your Cash Card</p>
-              <p className="text-[12px] leading-relaxed text-black/75 font-semibold">
-                Physical card with money from earlier sessions. Separate from My Money and yours forever. Check the balance whenever you need to spend it:
+              <p className="text-[12px] font-bold uppercase tracking-wider text-accent-pink mb-0.5">Your Physical Cash Card</p>
+              <p className="text-[13px] leading-relaxed text-alpha-navy-800 dark:text-alpha-blue-100 font-semibold">
+                Separate card for money from earlier sessions. Check the balance when you need to spend it:
               </p>
             </div>
           </div>
-          <div className="rounded-xl bg-white p-3 mt-3 border-[2px] border-black space-y-1.5 text-[12px]">
-            <div className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-black flex-shrink-0" strokeWidth={2.4} />
-              <span className="text-black/70 font-semibold">Call</span>
-              <a href="tel:18668820410" className="font-black tabular-nums text-black hover:text-cobalt-400">
+          <div className="rounded-lg bg-white dark:bg-white/[0.05] p-4 space-y-2.5 text-[12px]">
+            <div className="flex items-center gap-3">
+              <Phone className="w-4 h-4 text-accent-pink flex-shrink-0" strokeWidth={2.4} />
+              <span className="text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Call</span>
+              <a href="tel:18668820410" className="font-bold tabular-nums text-alpha-blue-600 dark:text-alpha-blue-300 hover:text-accent-pink">
                 1-866-882-0410
               </a>
             </div>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-3.5 h-3.5 text-black flex-shrink-0" strokeWidth={2.4} />
-              <span className="text-black/70 font-semibold">Visit</span>
+            <div className="flex items-center gap-3">
+              <BookOpen className="w-4 h-4 text-accent-pink flex-shrink-0" strokeWidth={2.4} />
+              <span className="text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Visit</span>
               <a
                 href="https://cardholder.virtualrewardcenter.com/home/activate"
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-[11px] font-bold text-black hover:text-cobalt-400 underline-offset-2 hover:underline"
+                className="font-mono text-[11px] font-bold text-alpha-blue-600 dark:text-alpha-blue-300 hover:text-accent-pink underline-offset-2 hover:underline"
               >
                 cardholder.virtualrewardcenter.com
               </a>
@@ -385,16 +435,16 @@ const Section = ({ title, total, delay = 0, children }) => (
     initial={{ opacity: 0, y: 12 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
-    className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum overflow-hidden"
+    className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
   >
-    <div className="flex items-baseline justify-between px-5 pt-4 pb-3 border-b-[2px] border-black">
-      <h2 className="text-[20px] font-black tracking-tight text-black dark:text-white">{title}</h2>
+    <div className="flex items-baseline justify-between px-6 pt-5 pb-4 border-b border-alpha-blue-100">
+      <h2 className="text-[18px] font-bold tracking-tight text-alpha-navy-800 dark:text-white">{title}</h2>
       <SplitBalance
         value={total}
-        className="text-[16px] font-black text-black dark:text-white"
+        className="text-[16px] font-bold text-alpha-navy-800 dark:text-white"
       />
     </div>
-    <div className="px-5 py-2">{children}</div>
+    <div className="px-6 py-3">{children}</div>
   </motion.div>
 )
 
@@ -412,18 +462,18 @@ const AccountRow = ({ row, balance, todayPct = null, earned = 0, monthEarned = 0
       <motion.div
         whileHover={{ rotate: -3, scale: 1.05 }}
         transition={{ type: 'spring', stiffness: 380, damping: 22 }}
-        className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 border-[3px] border-black shadow-gum-sm"
+        className="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 shadow-soft-sm"
         style={{ backgroundColor: row.accent }}
       >
         <Icon className="w-5 h-5 text-white" strokeWidth={2.6} />
       </motion.div>
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-black tracking-tight text-black dark:text-white">{row.label}</p>
+        <p className="text-[15px] font-bold tracking-tight text-alpha-navy-800 dark:text-white">{row.label}</p>
         <p className="text-[12px] mt-0.5 flex items-center gap-1.5 flex-wrap font-semibold">
           <span className={
             showPct
               ? (todayPct >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400')
-              : 'text-black/50 dark:text-white/40'
+              : 'text-alpha-blue-700 dark:text-alpha-blue-400'
           }>
             {showPct
               ? `${todayPct >= 0 ? '+' : ''}${(todayPct * 100).toFixed(2)}% today`
@@ -431,7 +481,7 @@ const AccountRow = ({ row, balance, todayPct = null, earned = 0, monthEarned = 0
           </span>
           {showMonthly && (
             <>
-              <span className="text-black/30 dark:text-white/25">·</span>
+              <span className="text-alpha-blue-300 dark:text-alpha-blue-600">·</span>
               <span className="text-emerald-700 dark:text-emerald-400 tabular-nums">
                 +{formatCurrency(monthEarned)} this month
               </span>
@@ -439,7 +489,7 @@ const AccountRow = ({ row, balance, todayPct = null, earned = 0, monthEarned = 0
           )}
           {!showMonthly && showEarned && (
             <>
-              <span className="text-black/30 dark:text-white/25">·</span>
+              <span className="text-alpha-blue-300 dark:text-alpha-blue-600">·</span>
               <span className="text-emerald-700 dark:text-emerald-400 tabular-nums">
                 +{formatCurrency(earned)} earned
               </span>
@@ -449,7 +499,7 @@ const AccountRow = ({ row, balance, todayPct = null, earned = 0, monthEarned = 0
       </div>
       <SplitBalance
         value={balance}
-        className="text-[16px] font-black text-black dark:text-white"
+        className="text-[16px] font-bold text-alpha-navy-800 dark:text-white"
       />
     </motion.div>
   )

@@ -735,7 +735,7 @@ export const StudentPaycheck = () => {
      TRACKER VIEW — Daily paycheck tracker (main view)
      ═══════════════════════════════════════════════ */
   return (
-    <div className="min-h-screen bg-cream dark:bg-[#0c100c] relative pb-28">
+    <div className="min-h-screen bg-alpha-blue-50 dark:bg-[#0c100c] relative pb-28">
       <div className="space-y-5 max-w-3xl mx-auto px-5 md:px-8 pt-7">
         <Toast message={toast} />
         <Confetti active={showConfetti} />
@@ -768,7 +768,7 @@ export const StudentPaycheck = () => {
                   </motion.span>
                 )}
               </AnimatePresence>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-cobalt-50 text-cobalt-700 border-[2px] border-black">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-alpha-blue-100 text-alpha-blue-700">
                 {STATUS_CONFIG[draftStatus]?.label || 'In Progress'}
               </span>
             </div>
@@ -789,12 +789,12 @@ export const StudentPaycheck = () => {
                   disabled={isFuture}
                   onClick={() => navigate(`/paycheck?week=${wp.week_number}`)}
                   className={[
-                    'px-3.5 py-2 rounded-full text-[12px] font-black border-[3px] border-black transition-all',
-                    isCurrent ? 'bg-cobalt-500 text-white shadow-gum-sm' :
-                    isFuture ? 'bg-black/5 text-black/30 dark:bg-white/5 dark:text-white/20 cursor-not-allowed border-black/20' :
+                    'px-3.5 py-2 rounded-full text-[12px] font-bold border border-alpha-blue-300 transition-all',
+                    isCurrent ? 'bg-alpha-blue-500 text-white shadow-soft' :
+                    isFuture ? 'bg-alpha-blue-200/30 text-alpha-blue-400/50 dark:bg-alpha-blue-900/20 dark:text-alpha-blue-600/40 cursor-not-allowed border-alpha-blue-200/50' :
                     isAllocated ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' :
                     isSubmitted ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' :
-                    'bg-white text-black hover:bg-cobalt-50 dark:bg-white/[0.04] dark:text-white'
+                    'bg-white text-alpha-blue-700 hover:bg-alpha-blue-50 dark:bg-white/[0.04] dark:text-alpha-blue-300'
                   ].join(' ')}
                 >
                   W{wp.week_number}
@@ -808,13 +808,13 @@ export const StudentPaycheck = () => {
 
         {/* Status messages */}
         {draftStatus === 'submitted' && (
-          <div className="p-4 rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum text-[13px] font-bold text-black dark:text-white">
+          <div className="p-4 rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft text-[13px] font-bold text-alpha-navy-800 dark:text-white">
             <Clock className="w-4 h-4 inline mr-1" />
             Submitted! Waiting for your guide to review.
           </div>
         )}
         {(draftStatus === 'verified' || draftStatus === 'allocated') && (
-          <div className="p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 border-[3px] border-black shadow-gum text-[13px] font-bold text-emerald-900 dark:text-emerald-200">
+          <div className="p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-300 shadow-soft text-[13px] font-bold text-emerald-900 dark:text-emerald-200">
             <CheckCircle className="w-4 h-4 inline mr-1" />
             Approved! Your paycheck landed in Savings, earning 4% APY. Open the dashboard to invest or transfer.
           </div>
@@ -826,7 +826,7 @@ export const StudentPaycheck = () => {
           {step === 1 && <>
 
           {/* ── Daily XP — the star of the show ── */}
-          <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border-[3px] border-black shadow-gum">
+          <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border border-alpha-blue-200 shadow-soft">
             <h3 className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em] mb-1">Daily XP</h3>
             {isEditable && (
               <p className="text-[12px] text-black/55 dark:text-white/45 font-semibold mb-4">Enter your XP each day — it saves automatically</p>
@@ -870,7 +870,7 @@ export const StudentPaycheck = () => {
                       disabled={!isEditable}
                       className={`text-[11px] font-black py-1.5 rounded-lg transition-all border-[2px] ${
                         ringsFilled
-                          ? 'bg-cobalt-400 text-white border-black'
+                          ? 'bg-alpha-blue-500 text-white border-alpha-blue-500'
                           : 'bg-white text-black/45 border-black/15 hover:border-black/30'
                       } ${!isEditable ? 'opacity-60 cursor-not-allowed' : ''}`}
                     >
@@ -960,7 +960,7 @@ export const StudentPaycheck = () => {
 
           {/* ── Mastery Tests ── */}
           {isEditable && (
-            <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border-[3px] border-black shadow-gum">
+            <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border border-alpha-blue-200 shadow-soft">
               <h3 className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em] mb-2">Mastery Tests</h3>
               <p className="text-[12px] text-black/55 dark:text-white/45 font-semibold mb-4">
                 Score {settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} · 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}
@@ -1256,7 +1256,7 @@ export const StudentPaycheck = () => {
 
       {/* ── Sticky bottom bar: running total + submit ── */}
       {(isEditable || draftStatus === 'verified') && (
-        <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-30 bg-cream/95 dark:bg-[#0c100c]/95 backdrop-blur-xl border-t-[3px] border-black">
+        <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-30 bg-alpha-blue-50/95 dark:bg-[#0c100c]/95 backdrop-blur-xl border-t border-alpha-blue-200">
           <div className="max-w-3xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em]">Total Earnings</p>
@@ -1280,10 +1280,10 @@ export const StudentPaycheck = () => {
               <button
                 onClick={handleLockIn}
                 disabled={loading || totalPaycheck <= 0}
-                className={`rounded-2xl px-6 py-3 text-[14px] font-black border-[3px] border-black transition-all flex items-center gap-2 ${
+                className={`rounded-full px-6 py-3 text-[14px] font-bold border border-alpha-blue-500 transition-all flex items-center gap-2 ${
                   totalPaycheck > 0 && !loading
-                    ? 'bg-cobalt-400 text-white shadow-gum hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-gum-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-gum-pressed'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-gum-pressed'
+                    ? 'bg-alpha-blue-500 text-white shadow-soft hover:bg-alpha-blue-600'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 {loading ? 'Submitting...' : (
