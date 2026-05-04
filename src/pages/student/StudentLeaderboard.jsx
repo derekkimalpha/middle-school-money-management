@@ -37,7 +37,7 @@ export const StudentLeaderboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
         >
-          <h1 className="text-4xl font-hand font-bold text-ink dark:text-chalk-white">
+          <h1 className="text-4xl font-bold text-alpha-navy-800 dark:text-white">
             Leaderboard
           </h1>
           <p className="text-[13px] text-ink-muted dark:text-white/40 mt-1">

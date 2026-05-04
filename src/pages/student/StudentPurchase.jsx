@@ -192,7 +192,7 @@ export const StudentPurchase = () => {
           onSubmit={handleSubmit}
           className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] p-6 space-y-5 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
         >
-          <h2 className="text-[15px] font-semibold text-ink dark:text-chalk-white font-hand">New Request</h2>
+          <h2 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em]">New Request</h2>
 
           <Field label="What do you want to buy?">
             <Input
@@ -238,7 +238,7 @@ export const StudentPurchase = () => {
             transition={{ delay: 0.3 }}
             className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] p-6 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
           >
-            <h2 className="text-[15px] font-semibold text-ink dark:text-chalk-white font-hand mb-4">
+            <h2 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em] mb-4">
               Your Requests
             </h2>
 

@@ -243,7 +243,7 @@ export const StudentHistory = () => {
             transition={{ delay: 0.3 }}
             className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] p-6 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
           >
-            <h3 className="text-[13px] font-semibold text-ink dark:text-chalk-white font-hand uppercase tracking-wider mb-4">Summary</h3>
+            <h3 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em] mb-4">Summary</h3>
 
             {(() => {
               const credits = filteredTransactions

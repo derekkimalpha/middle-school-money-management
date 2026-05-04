@@ -225,7 +225,7 @@ const StudentLearn = () => {
           <div className="flex items-center gap-3">
             <BookOpen className="w-7 h-7 text-pencil-dark dark:text-pencil" />
             <div>
-              <h1 className="text-3xl font-hand font-bold text-ink dark:text-chalk-white">
+              <h1 className="text-3xl font-bold text-alpha-navy-800 dark:text-white">
                 Money Dictionary
               </h1>
               <p className="text-xs text-ink-muted dark:text-white/50 mt-0.5">
@@ -250,7 +250,7 @@ const StudentLearn = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search terms…"
-            className="w-full pl-10 pr-4 py-3 rounded-sm bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] text-sm text-ink dark:text-chalk-white placeholder:text-ink-faint dark:placeholder:text-white/30 shadow-[2px_2px_0px_rgba(0,0,0,0.04)] focus:outline-none focus:ring-2 focus:ring-pencil/30 focus:border-pencil/50 font-hand"
+            className="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-white/[0.03] border border-alpha-blue-200 text-sm text-alpha-navy-800 dark:text-white placeholder:text-alpha-blue-500 dark:placeholder:text-alpha-blue-400 shadow-soft focus:outline-none focus:ring-2 focus:ring-alpha-blue-400/30 focus:border-alpha-blue-400"
           />
         </motion.div>
       </div>
@@ -265,7 +265,7 @@ const StudentLearn = () => {
         >
           <button
             onClick={() => setActiveTopic(null)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-hand font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
               activeTopic === null
                 ? 'bg-ink dark:bg-chalk-white text-chalk-white dark:text-ink border-ink dark:border-chalk-white shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
                 : 'bg-white dark:bg-white/[0.04] text-ink-muted dark:text-white/50 border-black/[0.08] dark:border-white/[0.06] hover:border-pencil/40'
@@ -277,7 +277,7 @@ const StudentLearn = () => {
             <button
               key={topic.id}
               onClick={() => setActiveTopic(activeTopic === topic.id ? null : topic.id)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-hand font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
                 activeTopic === topic.id
                   ? 'bg-ink dark:bg-chalk-white text-chalk-white dark:text-ink border-ink dark:border-chalk-white shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
                   : 'bg-white dark:bg-white/[0.04] text-ink-muted dark:text-white/50 border-black/[0.08] dark:border-white/[0.06] hover:border-pencil/40'
@@ -298,7 +298,7 @@ const StudentLearn = () => {
           className="px-8 py-16 text-center"
         >
           <Search className="w-10 h-10 mx-auto mb-3 text-ink-faint dark:text-white/20" />
-          <p className="text-sm font-hand font-bold text-ink-muted dark:text-white/50">
+          <p className="text-sm font-bold text-alpha-blue-700 dark:text-alpha-blue-300">
             No terms match "{search}"
           </p>
           <p className="text-xs text-ink-faint dark:text-white/30 mt-1">
@@ -317,7 +317,7 @@ const StudentLearn = () => {
               {/* Topic heading */}
               <div className="flex items-center gap-2 mb-3">
                 
-                <h2 className="text-sm font-hand font-bold text-ink dark:text-chalk-white">
+                <h2 className="text-sm font-bold text-alpha-navy-800 dark:text-white">
                   {topic.label}
                 </h2>
                 <span className="text-[10px] text-ink-faint dark:text-white/30 ml-1">
@@ -354,7 +354,7 @@ const StudentLearn = () => {
                         >
                           
                           <div className="flex-1 min-w-0">
-                            <span className="text-sm font-bold text-ink dark:text-chalk-white block font-hand">
+                            <span className="text-sm font-bold text-alpha-navy-800 dark:text-white block">
                               {entry.term}
                             </span>
                             <span className="text-[11px] text-ink-muted dark:text-white/50 block truncate">
@@ -396,7 +396,7 @@ const StudentLearn = () => {
                                   >
                                     <Sparkles className="w-4 h-4 text-pencil-dark dark:text-pencil flex-shrink-0 mt-0.5" />
                                     <div>
-                                      <span className="text-[10px] font-hand font-bold uppercase tracking-wider text-pencil-dark dark:text-pencil block mb-0.5">
+                                      <span className="text-[10px] font-bold uppercase tracking-widest text-alpha-blue-700 dark:text-alpha-blue-400 block mb-0.5">
                                         Fun Fact
                                       </span>
                                       <p className="text-xs leading-relaxed text-ink-light dark:text-white/60">
@@ -427,7 +427,7 @@ const StudentLearn = () => {
           transition={{ delay: 0.6 }}
           className="px-8 mt-10 mb-4 text-center"
         >
-          <p className="text-[11px] text-ink-faint dark:text-white/25 font-hand">
+          <p className="text-[11px] text-alpha-blue-600 dark:text-alpha-blue-400">
             More terms added as you explore new topics in class
           </p>
         </motion.div>

@@ -552,7 +552,7 @@ export const StudentPaycheck = () => {
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl space-y-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-ink dark:text-chalk-white tracking-[-0.02em] font-hand">Allocate Your Paycheck</h1>
+            <h1 className="text-3xl font-extrabold text-alpha-navy-800 dark:text-white tracking-[-0.02em]">Allocate Your Paycheck</h1>
             <p className="text-[13px] text-gray-500 dark:text-white/40 mt-1">
               {pc.week_label || currentWeekLabel} — {formatCurrency(total)} to distribute
             </p>
@@ -651,7 +651,7 @@ export const StudentPaycheck = () => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="bg-white dark:bg-white/[0.04] rounded-sm border border-gray-200 dark:border-white/[0.06] p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-ink dark:text-chalk-white font-hand">{p.week_label || 'Paycheck'}</h2>
+              <h2 className="text-xl font-bold text-alpha-navy-800 dark:text-white">{p.week_label || 'Paycheck'}</h2>
               <span className={`px-3 py-1 rounded-sm text-xs font-semibold ${statusConf.color}`}>
                 {statusConf.label}
               </span>
@@ -684,7 +684,7 @@ export const StudentPaycheck = () => {
 
             {/* Earnings breakdown */}
             <div className="space-y-2 border-t border-gray-200 dark:border-white/[0.06] pt-4">
-              <h3 className="font-semibold text-ink dark:text-chalk-white mb-2 font-hand">Breakdown</h3>
+              <h3 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 mb-3 uppercase tracking-[0.18em]">Breakdown</h3>
               {p.base_pay > 0 && <div className="flex justify-between text-sm"><span className="text-gray-500 dark:text-white/40">Base Pay</span><span className="font-semibold">{formatCurrency(p.base_pay)}</span></div>}
               {p.epic_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>Epic Bonus</span><span className="font-semibold">{formatCurrency(p.epic_bonus)}</span></div>}
               {p.xp_bonus > 0 && <div className="flex justify-between text-sm text-stone-600 dark:text-stone-400"><span>XP Bonus</span><span className="font-semibold">{formatCurrency(p.xp_bonus)}</span></div>}
@@ -696,7 +696,7 @@ export const StudentPaycheck = () => {
             {/* Allocation (if already allocated) */}
             {p.status === 'allocated' && (
               <div className="mt-4 border-t border-gray-200 dark:border-white/[0.06] pt-4">
-                <h3 className="font-semibold text-ink dark:text-chalk-white mb-2 font-hand">Allocation</h3>
+                <h3 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 mb-3 uppercase tracking-[0.18em]">Allocation</h3>
                 <div className="grid grid-cols-5 gap-2">
                   {['checking', 'savings', 'sp500', 'nasdaq', 'bonus'].map(acct => {
                     const val = p[`alloc_${acct}`] || 0

@@ -196,7 +196,7 @@ export const InvestmentDetail = () => {
             <Icon className="w-6 h-6" style={{ color: info.color }} />
           </div>
           <div>
-            <h1 className="text-3xl font-hand font-bold text-ink dark:text-chalk-white">
+            <h1 className="text-3xl font-bold text-alpha-navy-800 dark:text-white">
               {info.name}
             </h1>
             <p className="text-xs text-ink-muted dark:text-white/40">{info.ticker} · {info.riskLevel} risk</p>

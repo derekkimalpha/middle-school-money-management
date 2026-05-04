@@ -99,44 +99,44 @@ export const StudentTransfer = () => {
   }
 
   return (
-    <div className="space-y-6 p-8">
+    <div className="min-h-screen bg-alpha-blue-50 dark:bg-[#0c100c]">
       <Toast message={toast} />
 
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white tracking-[-0.02em] mb-2">
-          Transfer Funds
-        </h1>
-        <p className="text-[13px] text-ink-muted dark:text-white/50">
-          Move money from checking into savings or investments
-        </p>
-      </motion.div>
-
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="rounded-xl p-4 border border-teal/20 dark:border-teal/10 bg-teal/[0.04] dark:bg-teal/[0.02]">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold text-teal bg-teal/10 uppercase tracking-wider">Learn</span>
-            <span className="text-[12px] font-bold text-ink dark:text-chalk-white">How Transfers Work</span>
-          </div>
-          <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-            Move money between any of your accounts in either direction — no fees, instant. Just like a real brokerage (Robinhood, Fidelity, Schwab). Investments can swing up and down, so think long-term before selling.
-          </p>
-        </div>
-
+      <div className="max-w-3xl mx-auto px-5 md:px-8 pt-7 pb-16">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] shadow-[2px_2px_0px_rgba(0,0,0,0.06)] p-6 space-y-6"
+          className="mb-8"
         >
-          {/* From Account Picker */}
-          <div>
-            <h2 className="text-[13px] font-semibold text-ink dark:text-chalk-white font-hand uppercase tracking-wider mb-4">
-              From Account
-            </h2>
+          <h1 className="text-4xl font-extrabold text-alpha-navy-800 dark:text-white tracking-[-0.02em] mb-2">
+            Transfer Funds
+          </h1>
+          <p className="text-[13px] text-alpha-blue-600 dark:text-alpha-blue-300 font-semibold">
+            Move money from checking into savings or investments
+          </p>
+        </motion.div>
+
+        <div className="space-y-6">
+          <div className="rounded-2xl p-5 border border-alpha-blue-200 bg-alpha-blue-50 dark:bg-white/[0.02]">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[11px] font-bold text-alpha-blue-700 dark:text-alpha-blue-400 uppercase tracking-[0.18em]">Learn</span>
+            </div>
+            <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 leading-relaxed font-medium">
+              Move money between any of your accounts in either direction — no fees, instant. Just like a real brokerage (Robinhood, Fidelity, Schwab). Investments can swing up and down, so think long-term before selling.
+            </p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white dark:bg-white/[0.03] rounded-2xl border border-alpha-blue-200 shadow-soft p-6 space-y-6"
+          >
+            {/* From Account Picker */}
+            <div>
+              <h2 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em] mb-4">
+                From Account
+              </h2>
             <AccountPicker
               accounts={Object.fromEntries(
                 Object.entries(accounts).filter(([key]) => ['checking', 'savings', 'sp500', 'nasdaq'].includes(key))
@@ -170,7 +170,7 @@ export const StudentTransfer = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <h2 className="text-[13px] font-semibold text-ink dark:text-chalk-white font-hand uppercase tracking-wider mb-4">
+              <h2 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em] mb-4">
                 To Account
               </h2>
               <AccountPicker
@@ -204,7 +204,7 @@ export const StudentTransfer = () => {
               className="space-y-6"
             >
               <div>
-                <h2 className="text-[13px] font-semibold text-ink dark:text-chalk-white font-hand uppercase tracking-wider mb-4">
+                <h2 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em] mb-4">
                   Amount
                 </h2>
                 <Field label="How much would you like to transfer?">
@@ -276,8 +276,8 @@ export const StudentTransfer = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] rounded-sm p-4 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]">
-            <h3 className="font-semibold text-[13px] text-ink dark:text-chalk-white font-hand mb-2 uppercase tracking-wider">Current Balances</h3>
+          <div className="bg-white dark:bg-white/[0.03] border border-alpha-blue-200 rounded-2xl p-6 shadow-soft">
+            <h3 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 mb-4 uppercase tracking-[0.18em]">Current Balances</h3>
             <div className="space-y-1 text-sm">
               {Object.entries(accounts)
                 .filter(([key]) => key !== 'bonus')
@@ -296,14 +296,14 @@ export const StudentTransfer = () => {
           </div>
         </motion.div>
 
-        <div className="rounded-xl p-4 border border-teal/20 dark:border-teal/10 bg-teal/[0.04] dark:bg-teal/[0.02]">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold text-teal bg-teal/10 uppercase tracking-wider">Learn</span>
-            <span className="text-[12px] font-bold text-ink dark:text-chalk-white">Think Before You Sell</span>
+          <div className="rounded-2xl p-5 border border-alpha-blue-200 bg-alpha-blue-50 dark:bg-white/[0.02]">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[11px] font-bold text-alpha-blue-700 dark:text-alpha-blue-400 uppercase tracking-[0.18em]">Learn</span>
+            </div>
+            <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 leading-relaxed font-medium">
+              Selling investments when they're down locks in a loss. The S&P 500 has dropped 20%+ about once every 4 years — and recovered every single time. The smartest investors hold through dips.
+            </p>
           </div>
-          <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-            Selling investments when they're down locks in a loss. The S&P 500 has dropped 20%+ about once every 4 years — and recovered every single time. The smartest investors hold through dips.
-          </p>
         </div>
       </div>
     </div>
