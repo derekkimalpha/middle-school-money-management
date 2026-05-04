@@ -19,10 +19,10 @@ const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri']
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
 const STATUS_CONFIG = {
-  draft: { label: 'In Progress', color: 'bg-pencil/10 dark:bg-pencil/10 text-pencil-dark dark:text-pencil' },
-  submitted: { label: 'Submitted', color: 'bg-stone-100/50 dark:bg-stone-500/[0.06] text-stone-700 dark:text-stone-400' },
-  verified: { label: 'Approved', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
-  allocated: { label: 'Allocated', color: 'bg-sage-100/50 dark:bg-sage-500/[0.06] text-sage-700 dark:text-sage-400' },
+  draft: { label: 'In Progress', color: 'bg-alpha-blue-100 text-alpha-blue-700' },
+  submitted: { label: '✓ Submitted', color: 'bg-emerald-100 text-emerald-700' },
+  verified: { label: '✓ Submitted', color: 'bg-emerald-100 text-emerald-700' },
+  allocated: { label: '✓ Submitted', color: 'bg-emerald-100 text-emerald-700' },
 }
 
 // Get today's day key (mon, tue, etc.) — returns null on weekends
@@ -450,16 +450,22 @@ export const StudentPaycheck = () => {
       if (allocation.nasdaq > 0) allocData.alloc_nasdaq = allocation.nasdaq
       if (allocation.bonus > 0) allocData.alloc_bonus = allocation.bonus
 
-      const { error } = await supabase
-        .from('weekly_paychecks')
-        .update({ status: 'submitted', ...allocData })
-        .eq('id', draftId)
+      // Auto-allocate everything to Savings (no guide review step). Skip allocation if 0.
+      if (totalPaycheck > 0) {
+        const { error: allocErr } = await supabase.rpc('allocate_paycheck', {
+          p_paycheck_id: draftId,
+          p_checking: 0,
+          p_savings: totalPaycheck,
+          p_sp500: 0,
+          p_nasdaq: 0,
+          p_bonus: 0,
+        })
+        if (allocErr) throw allocErr
+      }
 
-      if (error) throw error
-
-      setDraftStatus('submitted')
+      setDraftStatus('allocated')
       setShowConfetti(true)
-      setToast({ type: 'success', text: 'Paycheck submitted! Your guide will review it.' })
+      setToast({ type: 'success', text: 'Paycheck submitted! Money is in your Savings.' })
       setTimeout(() => setShowConfetti(false), 3000)
       await fetchPastPaychecks()
     } catch (error) {
@@ -874,7 +880,7 @@ export const StudentPaycheck = () => {
                           : 'bg-white text-black/45 border-black/15 hover:border-black/30'
                       } ${!isEditable ? 'opacity-60 cursor-not-allowed' : ''}`}
                     >
-                      {ringsFilled ? '✓ Rings' : 'Rings'}
+                      {ringsFilled ? '✓ Rings filled' : 'Rings filled'}
                     </button>
                   </div>
                 )
@@ -996,8 +1002,8 @@ export const StudentPaycheck = () => {
             </div>
           )}
 
-          {/* ── Custom Bonuses ── */}
-          {isEditable && (settings.custom_bonuses || []).length > 0 && (
+          {/* ── Custom Bonuses (HIDDEN — keep state intact for earnings calc) ── */}
+          {false && isEditable && (settings.custom_bonuses || []).length > 0 && (
             <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border-[3px] border-black shadow-gum space-y-4">
               <h3 className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em]">Bonuses</h3>
               <div className="space-y-3">
@@ -1178,9 +1184,21 @@ export const StudentPaycheck = () => {
             )}
           </>}
 
-          {/* ── Past Paychecks ── */}
-          <div className="mt-6">
-            <h2 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-3">Past Weeks</h2>
+          {/* ── Past Paychecks (collapsed by default) ── */}
+          <details className="mt-6 group">
+            <summary className="flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden mb-3 px-1 py-2 hover:opacity-80 transition-opacity">
+              <h2 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider">
+                Past Weeks
+                {pastPaychecks.length > 0 && (
+                  <span className="ml-2 text-alpha-blue-600 dark:text-alpha-blue-400">({pastPaychecks.length})</span>
+                )}
+              </h2>
+              <span className="flex items-center gap-1 text-[11px] font-bold text-alpha-blue-600 dark:text-alpha-blue-400">
+                <span className="group-open:hidden">Show</span>
+                <span className="hidden group-open:inline">Hide</span>
+                <ChevronRight className="w-3.5 h-3.5 transition-transform group-open:rotate-90" />
+              </span>
+            </summary>
             {loadingHistory ? (
               <div className="space-y-2.5">
                 {[1, 2, 3].map(i => <div key={i} className="h-16 bg-gray-100 dark:bg-white/[0.04] rounded-sm animate-pulse" />)}
@@ -1238,7 +1256,7 @@ export const StudentPaycheck = () => {
                 })}
               </div>
             )}
-          </div>
+          </details>
 
           {/* Learn tip — educational styling (teal/learn theme) */}
           <details className="rounded-xl border border-teal/20 dark:border-teal/10 bg-teal/[0.04] dark:bg-teal/[0.02] group">
@@ -1289,7 +1307,7 @@ export const StudentPaycheck = () => {
                 {loading ? 'Submitting...' : (
                   <>
                     <Send className="w-4 h-4" strokeWidth={2.6} />
-                    Submit for Guide Review
+                    Submit Paycheck
                   </>
                 )}
               </button>

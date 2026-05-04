@@ -157,7 +157,7 @@ export const StudentDashboard = () => {
               <div className="mb-4 flex items-baseline gap-2">
                 <span className="text-[24px] md:text-[32px] font-bold text-alpha-navy-800 dark:text-white">Welcome,</span>
                 <span className="text-[24px] md:text-[32px] font-bold bg-gradient-to-r from-alpha-blue-500 to-alpha-blue-300 bg-clip-text text-transparent">
-                  {profile?.first_name || 'Student'}
+                  {profile?.full_name?.split(' ')[0] || 'Student'}
                 </span>
               </div>
               <p className="text-[13px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold mb-4">
@@ -183,22 +183,20 @@ export const StudentDashboard = () => {
                 )}
               </div>
             </div>
-            <div className="flex gap-3 flex-shrink-0">
+            <div className="flex gap-2 flex-shrink-0">
               <button
-                className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-alpha-blue-200 dark:border-white/10 flex items-center justify-center hover:bg-alpha-blue-50 dark:hover:bg-white/10 transition-all"
-                title="Refresh"
+                onClick={() => navigate('/transfer')}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-alpha-blue-500 hover:bg-alpha-blue-600 text-white font-bold text-[13px] shadow-soft transition-all"
               >
-                <svg className="w-5 h-5 text-alpha-blue-600 dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
+                <Send className="w-4 h-4" strokeWidth={2.6} />
+                Transfer
               </button>
               <button
-                className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-alpha-blue-200 dark:border-white/10 flex items-center justify-center hover:bg-alpha-blue-50 dark:hover:bg-white/10 transition-all"
-                title="Notifications"
+                onClick={() => navigate('/cash-out')}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-alpha-blue-300 text-alpha-blue-700 hover:bg-alpha-blue-50 font-bold text-[13px] shadow-soft-sm transition-all"
               >
-                <svg className="w-5 h-5 text-alpha-blue-600 dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
+                <DollarSign className="w-4 h-4" strokeWidth={2.6} />
+                Cash Out
               </button>
             </div>
           </div>

@@ -112,7 +112,7 @@ export const StudentTransfer = () => {
             Transfer Funds
           </h1>
           <p className="text-[13px] text-alpha-blue-600 dark:text-alpha-blue-300 font-semibold">
-            Move money from checking into savings or investments
+            Move money between any of your accounts — no fees, instant
           </p>
         </motion.div>
 
