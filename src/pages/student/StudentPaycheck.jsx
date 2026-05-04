@@ -13,7 +13,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, GRADES, formatCurrency } from '../../lib/constants'
-import { ChevronRight, Trash2, Clock, CheckCircle, AlertCircle, DollarSign, Save, Lock, Send, Wallet, PiggyBank, TrendingUp, BarChart3, Sparkles, Star } from 'lucide-react'
+import { ChevronRight, Trash2, Clock, CheckCircle, AlertCircle, DollarSign, Save, Lock, Send, Wallet, PiggyBank, TrendingUp, BarChart3, Sparkles } from 'lucide-react'
 
 const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri']
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
@@ -54,13 +54,11 @@ export const StudentPaycheck = () => {
   const [xpByDay, setXpByDay] = useState({ mon: 0, tue: 0, wed: 0, thu: 0, fri: 0 })
   const [epicDays, setEpicDays] = useState({ mon: false, tue: false, wed: false, thu: false, fri: false })
   const [masteryTests, setMasteryTests] = useState([])
+  const [customBonuses, setCustomBonuses] = useState({})
   const [jobDone, setJobDone] = useState(false)
   const [studentJob, setStudentJob] = useState(null)
   const [saveStatus, setSaveStatus] = useState('idle') // 'idle' | 'saving' | 'saved'
   const [draftStatus, setDraftStatus] = useState('draft')
-  const [showPastPaychecks, setShowPastPaychecks] = useState(false)
-  // customBonuses retained as no-op state to avoid runtime errors; UI for bonuses is hidden.
-  const [customBonuses, setCustomBonuses] = useState({})
 
   // Allocation state
   const [allocation, setAllocation] = useState({
@@ -291,7 +289,27 @@ export const StudentPaycheck = () => {
         return sum
       }, 0)
       const jobPay = job && studentJob ? studentJob.weekly_pay || 0 : 0
-      const totalEarnings = basePay + epicBonus + bonusXp + masteryRewards + jobPay
+      const bonuses = updatedBonuses || customBonuses
+      const customBonusTotal = (settings.custom_bonuses || []).reduce((sum, bonus) => {
+        const entry = bonuses[bonus.id]
+        if (!entry) return sum
+        if (bonus.type === 'checkbox' && entry.claimed) return sum + (bonus.amount || 0)
+        if (bonus.type === 'student_amount' && entry.amount > 0) return sum + entry.amount
+        return sum
+      }, 0)
+
+      const totalEarnings = basePay + epicBonus + bonusXp + masteryRewards + jobPay + customBonusTotal
+
+      const customBonusData = (settings.custom_bonuses || [])
+        .filter(b => {
+          const entry = bonuses[b.id]
+          if (!entry) return false
+          return (b.type === 'checkbox' && entry.claimed) || (b.type === 'student_amount' && entry.amount > 0)
+        })
+        .map(b => ({
+          id: b.id, name: b.name, type: b.type,
+          amount: b.type === 'checkbox' ? b.amount : (bonuses[b.id]?.amount || 0)
+        }))
 
       const { error } = await supabase
         .from('weekly_paychecks')
@@ -307,6 +325,7 @@ export const StudentPaycheck = () => {
           job_pay: jobPay,
           other_pay: Math.round(customBonusTotal * 100) / 100,
           total_earnings: Math.round(totalEarnings * 100) / 100,
+          custom_bonus_data: customBonusData,
           job_completed: job,
           job_id: studentJob?.id || null,
         })
@@ -319,7 +338,7 @@ export const StudentPaycheck = () => {
       console.error('Auto-save error:', err)
       setSaveStatus('idle')
     }
-  }, [draftId, draftStatus, xpByDay, epicDays, jobDone, masteryTests, settings, studentJob])
+  }, [draftId, draftStatus, xpByDay, epicDays, jobDone, customBonuses, masteryTests, settings, studentJob])
 
   const debouncedSave = useCallback((updatedXp, updatedEpic, updatedJob, updatedBonuses) => {
     if (saveTimer.current) clearTimeout(saveTimer.current)
@@ -433,14 +452,14 @@ export const StudentPaycheck = () => {
 
       const { error } = await supabase
         .from('weekly_paychecks')
-        .update({ status: 'allocated', ...allocData })
+        .update({ status: 'submitted', ...allocData })
         .eq('id', draftId)
 
       if (error) throw error
 
-      setDraftStatus('allocated')
+      setDraftStatus('submitted')
       setShowConfetti(true)
-      setToast({ type: 'success', text: 'Paycheck submitted and allocated!' })
+      setToast({ type: 'success', text: 'Paycheck submitted! Your guide will review it.' })
       setTimeout(() => setShowConfetti(false), 3000)
       await fetchPastPaychecks()
     } catch (error) {
@@ -599,6 +618,11 @@ export const StudentPaycheck = () => {
               {isAllocValid && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold">All funds allocated</p>}
             </div>
           </div>
+
+          <Button full size="lg" disabled={!isAllocValid || loading} onClick={handleAllocatePaycheck}>
+            {loading ? 'Allocating...' : 'Lock It In'}
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </Button>
         </motion.div>
       </div>
     )
@@ -758,7 +782,7 @@ export const StudentPaycheck = () => {
               const isCurrent = (requestedWeekNumber || currentWeekNum) === wp.week_number
               const isFuture = wp.week_number > currentWeekNum
               const isAllocated = wp.status === 'allocated' || wp.status === 'verified'
-              
+              const isSubmitted = wp.status === 'submitted'
               return (
                 <button
                   key={wp.id}
@@ -783,6 +807,12 @@ export const StudentPaycheck = () => {
         )}
 
         {/* Status messages */}
+        {draftStatus === 'submitted' && (
+          <div className="p-4 rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft text-[13px] font-bold text-alpha-navy-800 dark:text-white">
+            <Clock className="w-4 h-4 inline mr-1" />
+            Submitted! Waiting for your guide to review.
+          </div>
+        )}
         {(draftStatus === 'verified' || draftStatus === 'allocated') && (
           <div className="p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-300 shadow-soft text-[13px] font-bold text-emerald-900 dark:text-emerald-200">
             <CheckCircle className="w-4 h-4 inline mr-1" />
@@ -844,7 +874,7 @@ export const StudentPaycheck = () => {
                           : 'bg-white text-black/45 border-black/15 hover:border-black/30'
                       } ${!isEditable ? 'opacity-60 cursor-not-allowed' : ''}`}
                     >
-                      {ringsFilled ? '✓ Rings filled' : 'Rings filled'}
+                      {ringsFilled ? '✓ Rings' : 'Rings'}
                     </button>
                   </div>
                 )
@@ -930,46 +960,39 @@ export const StudentPaycheck = () => {
 
           {/* ── Mastery Tests ── */}
           {isEditable && (
-            <div className="bg-white border border-alpha-blue-200 rounded-2xl p-6 shadow-soft">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center">
-                  <Star className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-ink">Mastery Tests</h3>
-                  <p className="text-[11px] text-gray-500">{settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} · 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}</p>
-                </div>
-              </div>
+            <div className="bg-white dark:bg-white/[0.04] rounded-2xl p-6 border border-alpha-blue-200 shadow-soft">
+              <h3 className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.15em] mb-2">Mastery Tests</h3>
+              <p className="text-[12px] text-black/55 dark:text-white/45 font-semibold mb-4">
+                Score {settings.mastery_min_score || 90}%+ = {formatCurrency(settings.mastery_pass_pay || 20)} · 100% = {formatCurrency(settings.mastery_perfect_pay || 100)}
+              </p>
 
-              {masteryTests.length > 0 && (
-                <div className="space-y-2 mb-4">
-                  {masteryTests.map((test, idx) => {
-                    const reward = test.score >= 100 ? (settings.mastery_perfect_pay || 100) :
-                      test.score >= (settings.mastery_min_score || 90) ? (settings.mastery_pass_pay || 20) : 0
-                    return (
-                      <motion.div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] rounded-lg" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm text-ink">{test.subject || '(no subject)'}</span>
-                            <span className="text-[11px] px-2 py-0.5 bg-gray-200 dark:bg-white/[0.1] rounded-full text-gray-700 dark:text-white/70">{test.grade}</span>
-                            <span className="text-[12px] font-bold text-amber-600">{test.score}%</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {reward > 0 && <span className="text-sm font-bold text-sage-600">+{formatCurrency(reward)}</span>}
-                          <button onClick={() => setMasteryTests(masteryTests.filter((_, i) => i !== idx))} className="p-1 text-gray-300 hover:text-rose-500 transition-colors">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </motion.div>
-                    )
-                  })}
-                </div>
-              )}
+              {masteryTests.map((test, idx) => {
+                const reward = test.score >= 100 ? (settings.mastery_perfect_pay || 100) :
+                  test.score >= (settings.mastery_min_score || 90) ? (settings.mastery_pass_pay || 20) : 0
+                return (
+                  <motion.div key={idx} className="p-3 border border-gray-200 dark:border-white/[0.06] rounded-sm mb-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 grid grid-cols-3 gap-3">
+                        <input type="text" value={test.subject} onChange={(e) => { const u = [...masteryTests]; u[idx].subject = e.target.value; setMasteryTests(u) }} placeholder="Subject" className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-sm focus:outline-none focus:border-pencil dark:focus:border-pencil/60 focus:ring-2 focus:ring-pencil/20 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
+                        <select value={test.grade} onChange={(e) => { const u = [...masteryTests]; u[idx].grade = e.target.value; setMasteryTests(u) }} className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-sm focus:outline-none focus:border-pencil dark:focus:border-pencil/60 focus:ring-2 focus:ring-pencil/20 text-sm bg-white dark:bg-white/[0.04] dark:text-white">
+                          {GRADES.map(g => <option key={g} value={g}>{g}</option>)}
+                        </select>
+                        <input type="number" min="0" max="100" value={test.score || ''} onChange={(e) => { const u = [...masteryTests]; u[idx].score = parseInt(e.target.value) || 0; setMasteryTests(u) }} placeholder="Score %" className="px-3 py-2 border border-gray-200 dark:border-white/[0.1] rounded-sm focus:outline-none focus:border-pencil dark:focus:border-pencil/60 focus:ring-2 focus:ring-pencil/20 text-sm bg-white dark:bg-white/[0.04] dark:text-white" />
+                      </div>
+                      <button onClick={() => setMasteryTests(masteryTests.filter((_, i) => i !== idx))} className="p-1 text-gray-300 dark:text-white/20 hover:text-rose-500 dark:hover:text-rose-400">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {reward > 0 && <p className="text-[11px] text-sage-600 dark:text-sage-400 font-semibold mt-1">+{formatCurrency(reward)}</p>}
+                  </motion.div>
+                )
+              })}
 
-              <button onClick={() => setMasteryTests([...masteryTests, { subject: '', grade: 'K', score: 0 }])} className="w-full border-2 border-dashed border-gray-300 dark:border-white/[0.15] rounded-lg py-3 text-sm font-semibold text-gray-600 dark:text-white/60 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-white/[0.3] transition-colors">
-                + Add Mastery Test
+              {masteryTests.length < 6 && (
+                <button onClick={() => setMasteryTests([...masteryTests, { subject: '', grade: 'K', score: 0 }])} className="text-[13px] font-semibold text-ink dark:text-chalk-white/60 hover:text-gray-900 dark:hover:text-white/90">
+                  + Add Mastery Test
                 </button>
+              )}
             </div>
           )}
 
@@ -1155,9 +1178,8 @@ export const StudentPaycheck = () => {
             )}
           </>}
 
-          {/* ── Past Paychecks (collapsible) ── */}
-          {showPastPaychecks && (
-            <div className="mt-8">
+          {/* ── Past Paychecks ── */}
+          <div className="mt-6">
             <h2 className="text-[12px] font-semibold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-3">Past Weeks</h2>
             {loadingHistory ? (
               <div className="space-y-2.5">
@@ -1216,15 +1238,7 @@ export const StudentPaycheck = () => {
                 })}
               </div>
             )}
-          </div>            )}
-          {!showPastPaychecks && pastPaychecks.length > 0 && (
-            <button
-              onClick={() => setShowPastPaychecks(true)}
-              className="mt-6 text-sm font-semibold text-alpha-blue-600 dark:text-alpha-blue-400 hover:text-alpha-blue-700 dark:hover:text-alpha-blue-300 transition-colors"
-            >
-              ↓ View past paychecks ({pastPaychecks.length})
-            </button>
-          )}
+          </div>
 
           {/* Learn tip — educational styling (teal/learn theme) */}
           <details className="rounded-xl border border-teal/20 dark:border-teal/10 bg-teal/[0.04] dark:bg-teal/[0.02] group">
@@ -1256,6 +1270,7 @@ export const StudentPaycheck = () => {
                   {earnings.bonusXp > 0 && <span className="text-[10px] text-amber-600 dark:text-amber-400">XP +{formatCurrency(earnings.bonusXp)}</span>}
                   {earnings.masteryRewards > 0 && <span className="text-[10px] text-sage-500">Tests {formatCurrency(earnings.masteryRewards)}</span>}
                   {earnings.jobPay > 0 && <span className="text-[10px] text-stone-500">Job {formatCurrency(earnings.jobPay)}</span>}
+                  {earnings.customBonusTotal > 0 && <span className="text-[10px] text-stone-500">Other {formatCurrency(earnings.customBonusTotal)}</span>}
                 </div>
               )}
             </div>
@@ -1274,7 +1289,7 @@ export const StudentPaycheck = () => {
                 {loading ? 'Submitting...' : (
                   <>
                     <Send className="w-4 h-4" strokeWidth={2.6} />
-                    Submit Paycheck
+                    Submit for Guide Review
                   </>
                 )}
               </button>
