@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   AnimNum,
@@ -34,12 +34,15 @@ const getTodayKey = () => {
 
 export const StudentPaycheck = () => {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const { user, profile } = useAuth()
   const { settings } = usePaycheckSettings()
   const [view, setView] = useState('tracker')
   const requestedWeekNumber = searchParams.get('week') ? parseInt(searchParams.get('week')) : null
   const [step, setStep] = useState(1) // 1=Log XP, 2=Review & Allocate, 3=Confirm
   const [pastPaychecks, setPastPaychecks] = useState([])
+  const [sessionPaychecks, setSessionPaychecks] = useState([])
+  const [currentWeekNum, setCurrentWeekNum] = useState(null)
   const [selectedPaycheck, setSelectedPaycheck] = useState(null)
   const [loadingHistory, setLoadingHistory] = useState(true)
   const [toast, setToast] = useState(null)
@@ -70,7 +73,25 @@ export const StudentPaycheck = () => {
     initDraft()
     fetchPastPaychecks()
     fetchJob()
-  }, [profile?.id])
+    fetchSessionPaychecks()
+  }, [profile?.id, requestedWeekNumber])
+
+  // Fetch all S5 paychecks for this kid (used to render the week-selector pills)
+  const fetchSessionPaychecks = async () => {
+    if (!profile?.id) return
+    const { data } = await supabase
+      .from('weekly_paychecks')
+      .select('id, week_label, week_number, status, total_earnings')
+      .eq('student_id', profile.id)
+      .eq('session_number', 5)
+      .order('week_number', { ascending: true })
+    if (data) setSessionPaychecks(data)
+    // Compute current week (today vs S5 start Apr 27, 2026). S5 W1 starts Mon Apr 27.
+    const s5Start = new Date('2026-04-27T00:00:00')
+    const now = new Date()
+    const wk = Math.floor((now.getTime() - s5Start.getTime()) / (7 * 86400000)) + 1
+    setCurrentWeekNum(Math.max(1, Math.min(6, wk)))
+  }
 
   const getWeekLabel = () => {
     const now = new Date()
@@ -754,6 +775,37 @@ export const StudentPaycheck = () => {
           </div>
         </motion.div>
 
+        {/* Week selector pills — flip between S5 W1, W2, etc. */}
+        {sessionPaychecks.length > 0 && currentWeekNum && (
+          <div className="flex flex-wrap gap-2">
+            {sessionPaychecks.map((wp) => {
+              const isCurrent = (requestedWeekNumber || currentWeekNum) === wp.week_number
+              const isFuture = wp.week_number > currentWeekNum
+              const isAllocated = wp.status === 'allocated' || wp.status === 'verified'
+              const isSubmitted = wp.status === 'submitted'
+              return (
+                <button
+                  key={wp.id}
+                  disabled={isFuture}
+                  onClick={() => navigate(`/paycheck?week=${wp.week_number}`)}
+                  className={[
+                    'px-3.5 py-2 rounded-full text-[12px] font-black border-[3px] border-black transition-all',
+                    isCurrent ? 'bg-cobalt-500 text-white shadow-gum-sm' :
+                    isFuture ? 'bg-black/5 text-black/30 dark:bg-white/5 dark:text-white/20 cursor-not-allowed border-black/20' :
+                    isAllocated ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' :
+                    isSubmitted ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' :
+                    'bg-white text-black hover:bg-cobalt-50 dark:bg-white/[0.04] dark:text-white'
+                  ].join(' ')}
+                >
+                  W{wp.week_number}
+                  {isAllocated && ' ✓'}
+                  {isSubmitted && ' ⏳'}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
         {/* Status messages */}
         {draftStatus === 'submitted' && (
           <div className="p-4 rounded-2xl bg-white dark:bg-white/[0.03] border-[3px] border-black shadow-gum text-[13px] font-bold text-black dark:text-white">
@@ -1150,8 +1202,16 @@ export const StudentPaycheck = () => {
                       transition={{ delay: idx * 0.04 }}
                       className="bg-white dark:bg-white/[0.04] rounded-sm border border-gray-200 dark:border-white/[0.06] p-4 hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-all cursor-pointer"
                       onClick={() => {
-                        setSelectedPaycheck(paycheck)
-                        setView('detail')
+                        // If allocated/verified, show read-only detail. Otherwise jump to editor for that week.
+                        if (paycheck.status === 'allocated' || paycheck.status === 'verified') {
+                          setSelectedPaycheck(paycheck)
+                          setView('detail')
+                        } else if (paycheck.week_number) {
+                          navigate(`/paycheck?week=${paycheck.week_number}`)
+                        } else {
+                          setSelectedPaycheck(paycheck)
+                          setView('detail')
+                        }
                       }}
                     >
                       <div className="flex items-center justify-between">
