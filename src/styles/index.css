@@ -3,6 +3,68 @@
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════
+   DESIGN SYSTEM v2 — Wealthfront editorial fintech
+   (Used by `ds-*` Tailwind tokens. Old `alpha-blue-*`,
+   `paper-*`, etc. still work for unmigrated screens.)
+   ══════════════════════════════════════════════ */
+:root {
+  /* Surfaces */
+  --ds-canvas:   #FAF7F2;
+  --ds-surface:  #FFFFFF;
+  --ds-inset:    #F2EDE5;
+  --ds-overlay:  rgba(10,17,41,0.04);
+
+  /* Text */
+  --ds-primary:    #0A1129;
+  --ds-secondary:  #5C6175;
+  --ds-tertiary:   #8B8FA0;
+  --ds-on-accent:  #FFFFFF;
+
+  /* Borders */
+  --ds-hairline:     rgba(10,17,41,0.07);
+  --ds-border:       rgba(10,17,41,0.12);
+  --ds-border-strong: rgba(10,17,41,0.22);
+
+  /* Accent — sage green (the one color that means money) */
+  --ds-accent:        #1E9968;
+  --ds-accent-hover:  #178055;
+  --ds-accent-soft:   rgba(30,153,104,0.10);
+
+  /* Semantic */
+  --ds-positive:       #1E9968;
+  --ds-negative:       #D25A4F;
+  --ds-negative-soft:  rgba(210,90,79,0.10);
+
+  --ds-ring-focus: 0 0 0 3px rgba(30,153,104,0.20);
+}
+
+.dark {
+  --ds-canvas:   #0C0F14;
+  --ds-surface:  #14181F;
+  --ds-inset:    #1B1F28;
+  --ds-overlay:  rgba(255,255,255,0.04);
+
+  --ds-primary:    #F2EEE7;
+  --ds-secondary:  #9CA1B0;
+  --ds-tertiary:   #6C6F7B;
+  --ds-on-accent:  #0C0F14;
+
+  --ds-hairline:      rgba(255,255,255,0.07);
+  --ds-border:        rgba(255,255,255,0.12);
+  --ds-border-strong: rgba(255,255,255,0.22);
+
+  --ds-accent:        #2BD089;
+  --ds-accent-hover:  #1FB573;
+  --ds-accent-soft:   rgba(43,208,137,0.14);
+
+  --ds-positive:       #2BD089;
+  --ds-negative:       #F47171;
+  --ds-negative-soft:  rgba(244,113,113,0.12);
+
+  --ds-ring-focus: 0 0 0 3px rgba(43,208,137,0.25);
+}
+
+/* ══════════════════════════════════════════════
    NOTEBOOK THEME — CSS FOUNDATION
    ══════════════════════════════════════════════ */
 

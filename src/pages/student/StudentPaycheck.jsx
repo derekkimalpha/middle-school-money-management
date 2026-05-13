@@ -148,7 +148,13 @@ export const StudentPaycheck = () => {
             setCustomBonuses(bonusMap)
           }
           if (existing.status !== 'draft') {
+            // Show clean read-only detail view for submitted/allocated paychecks
             setSelectedPaycheck(existing)
+            setView('detail')
+          } else {
+            // Editable draft — make sure any stale detail state is cleared
+            setSelectedPaycheck(null)
+            setView('tracker')
           }
           return
         }
@@ -191,11 +197,16 @@ export const StudentPaycheck = () => {
           })
           setCustomBonuses(bonusMap)
         }
-        // If it's not a draft, show tracker in read mode.
-        // Verified paychecks now auto-flow to Savings via DB trigger — no
+        // If it's not a draft, show clean read-only detail view.
+        // Verified paychecks auto-flow to Savings via DB trigger — no
         // manual allocation step needed.
         if (existing.status !== 'draft') {
           setSelectedPaycheck(existing)
+          setView('detail')
+        } else {
+          // Editable draft — clear stale detail state
+          setSelectedPaycheck(null)
+          setView('tracker')
         }
       } else {
         // Create new draft
@@ -468,6 +479,17 @@ export const StudentPaycheck = () => {
       setToast({ type: 'success', text: 'Paycheck submitted! Money is in your Savings.' })
       setTimeout(() => setShowConfetti(false), 3000)
       await fetchPastPaychecks()
+      // Switch to the locked read-only detail view after submit
+      await fetchSessionPaychecks()
+      const { data: justSubmitted } = await supabase
+        .from('weekly_paychecks')
+        .select('*')
+        .eq('id', draftId)
+        .maybeSingle()
+      if (justSubmitted) {
+        setSelectedPaycheck(justSubmitted)
+        setView('detail')
+      }
     } catch (error) {
       console.error('Error locking in paycheck:', error)
       setToast({ type: 'error', text: 'Failed to submit paycheck' })
@@ -644,18 +666,63 @@ export const StudentPaycheck = () => {
     const epicCountDetail = DAY_KEYS.filter(k => p[`epic_${k}`]).length
 
     return (
-      <div className="space-y-6 p-8">
-        <Toast message={toast} />
+      <div className="min-h-screen bg-alpha-blue-50 dark:bg-[#0c100c]">
+        <div className="space-y-5 max-w-3xl mx-auto px-5 md:px-8 pt-7 pb-16">
+          <Toast message={toast} />
 
-        <button
-          onClick={() => { setView('tracker'); setSelectedPaycheck(null) }}
-          className="text-gray-500 dark:text-white/40 hover:text-gray-900 dark:hover:text-white/80 font-semibold mb-4 flex items-center gap-1 transition-colors"
-        >
-          ← Back to Paychecks
-        </button>
+          {/* Header — locked paycheck title */}
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-black text-black/55 dark:text-white/50 uppercase tracking-[0.18em]">
+                  Paycheck
+                </p>
+                <h1 className="text-[32px] md:text-[40px] font-black text-black dark:text-white tracking-[-0.02em] leading-[1.05] mt-1">
+                  {p.week_label || 'Paycheck'}
+                </h1>
+                <p className="text-[13px] font-semibold text-black/55 dark:text-white/45 mt-1 flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5" /> Locked — submitted and deposited
+                </p>
+              </div>
+              <span className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${statusConf.color}`}>
+                {statusConf.label}
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Week selector pills — flip between S5 W1, W2, etc. */}
+          {sessionPaychecks.length > 0 && currentWeekNum && (
+            <div className="flex flex-wrap gap-2">
+              {sessionPaychecks.map((wp) => {
+                const isCurrent = p.week_number === wp.week_number
+                const isFuture = wp.week_number > currentWeekNum
+                const isAllocated = wp.status === 'allocated' || wp.status === 'verified'
+                const isSubmitted = wp.status === 'submitted'
+                return (
+                  <button
+                    key={wp.id}
+                    disabled={isFuture}
+                    onClick={() => navigate(`/paycheck?week=${wp.week_number}`)}
+                    className={[
+                      'px-3.5 py-2 rounded-full text-[12px] font-bold border border-alpha-blue-300 transition-all',
+                      isCurrent ? 'bg-alpha-blue-500 text-white shadow-soft' :
+                      isFuture ? 'bg-alpha-blue-200/30 text-alpha-blue-400/50 dark:bg-alpha-blue-900/20 dark:text-alpha-blue-600/40 cursor-not-allowed border-alpha-blue-200/50' :
+                      isAllocated ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' :
+                      isSubmitted ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' :
+                      'bg-white text-alpha-blue-700 hover:bg-alpha-blue-50 dark:bg-white/[0.04] dark:text-alpha-blue-300'
+                    ].join(' ')}
+                  >
+                    W{wp.week_number}
+                    {isAllocated && ' ✓'}
+                    {isSubmitted && ' ⏳'}
+                  </button>
+                )
+              })}
+            </div>
+          )}
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="bg-white dark:bg-white/[0.04] rounded-sm border border-gray-200 dark:border-white/[0.06] p-6">
+          <div className="bg-white dark:bg-white/[0.04] rounded-2xl border border-alpha-blue-200 shadow-soft p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-alpha-navy-800 dark:text-white">{p.week_label || 'Paycheck'}</h2>
               <span className={`px-3 py-1 rounded-sm text-xs font-semibold ${statusConf.color}`}>
@@ -733,6 +800,7 @@ export const StudentPaycheck = () => {
             )}
           </div>
         </motion.div>
+        </div>
       </div>
     )
   }

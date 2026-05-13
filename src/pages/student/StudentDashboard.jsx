@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import {
   ArrowUpRight, ArrowDownRight, Send, DollarSign,
   CreditCard, Phone, BookOpen, Wallet, PiggyBank, TrendingUp, BarChart3,
-  FileText, Clock, Star, Zap,
+  Lock,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
@@ -20,21 +20,26 @@ import { formatCurrency } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
 import { formatTxLabel } from '../../lib/txLabels'
 
-const CASH_ROWS = [
-  { key: 'checking', label: 'Checking', subtitle: 'Spending account',          icon: Wallet,    accent: '#1F6FEB' },
-  { key: 'savings',  label: 'Savings',  subtitle: '4.00% APY · paid daily',    icon: PiggyBank, accent: '#114290' },
-]
-
-const INVEST_ROWS = [
-  { key: 'sp500',  label: 'S&P 500', subtitle: '500 U.S. companies · updates daily', icon: TrendingUp, accent: '#1856B7' },
-  { key: 'nasdaq', label: 'NASDAQ',  subtitle: 'Tech & growth · updates daily',      icon: BarChart3,  accent: '#0B3068' },
+const ACCOUNT_ROWS = [
+  { key: 'checking', label: 'Checking', subtitle: 'Spending',                       icon: Wallet },
+  { key: 'savings',  label: 'Savings',  subtitle: '4.00% APY · paid daily',         icon: PiggyBank },
+  { key: 'sp500',    label: 'S&P 500',  subtitle: '500 U.S. companies',             icon: TrendingUp },
+  { key: 'nasdaq',   label: 'NASDAQ',   subtitle: 'Tech & growth',                  icon: BarChart3 },
 ]
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 12 },
+  initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] },
 })
+
+const greeting = () => {
+  const h = new Date().getHours()
+  if (h < 5)  return 'Good evening'
+  if (h < 12) return 'Good morning'
+  if (h < 18) return 'Good afternoon'
+  return 'Good evening'
+}
 
 export const StudentDashboard = () => {
   const navigate = useNavigate()
@@ -59,7 +64,6 @@ export const StudentDashboard = () => {
       .then(({ data }) => {
         if (data) {
           setCurrentSession(data)
-          // Calculate current week number (1-indexed) from start_date
           const startDate = new Date(data.start_date)
           const now = new Date()
           const weekDiff = Math.floor((now.getTime() - startDate.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1
@@ -115,13 +119,10 @@ export const StudentDashboard = () => {
       })
   }, [profile?.id])
 
-  const allRows = [...CASH_ROWS, ...INVEST_ROWS]
   const totalBalance = useMemo(
-    () => accounts ? allRows.reduce((s, r) => s + (accounts[r.key] || 0), 0) : 0,
+    () => accounts ? ACCOUNT_ROWS.reduce((s, r) => s + (accounts[r.key] || 0), 0) : 0,
     [accounts]
   )
-  const cashTotal = (accounts?.checking || 0) + (accounts?.savings || 0)
-  const investTotal = (accounts?.sp500 || 0) + (accounts?.nasdaq || 0)
 
   const todayDelta = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10)
@@ -131,11 +132,13 @@ export const StudentDashboard = () => {
       .reduce((s, t) => s + Number(t.amount || 0), 0)
   }, [recent])
 
+  const firstName = profile?.full_name?.split(' ')[0] || 'Student'
+
   if (loading || !accounts || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen bg-alpha-blue-50">
+      <div className="flex items-center justify-center h-screen bg-ds-canvas">
         <motion.div
-          className="w-10 h-10 border-[3px] border-alpha-blue-500 border-t-alpha-blue-300 rounded-full"
+          className="w-9 h-9 border-[2.5px] border-ds-hairline border-t-ds-accent rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -144,397 +147,238 @@ export const StudentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-alpha-blue-50 dark:bg-[#0c100c]">
-      <div className="pb-16 max-w-6xl mx-auto px-5 md:px-8 pt-7">
+    <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+      <div className="max-w-6xl mx-auto px-6 md:px-10 pt-10 pb-20">
 
-        {/* ── Welcome hero card: Finbit style with huge title ── */}
-        <motion.div
+        {/* ─── HERO — welcome + huge number + quick actions ─── */}
+        <motion.section
           {...fadeUp(0)}
-          className="rounded-3xl p-6 md:p-8 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft-lg"
+          className="grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6 md:items-end mb-12"
         >
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div className="min-w-0">
-              <div className="mb-4 flex items-baseline gap-2">
-                <span className="text-[24px] md:text-[32px] font-bold text-alpha-navy-800 dark:text-white">Welcome,</span>
-                <span className="text-[24px] md:text-[32px] font-bold bg-gradient-to-r from-alpha-blue-500 to-alpha-blue-300 bg-clip-text text-transparent">
-                  {profile?.full_name?.split(' ')[0] || 'Student'}
-                </span>
-              </div>
-              <p className="text-[13px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold mb-4">
-                Alpha SF Money — Session 5
-              </p>
-              <SplitBalance
-                value={totalBalance}
-                className="text-[56px] md:text-[64px] font-black leading-[1] tracking-[-0.02em] text-alpha-navy-800 dark:text-white"
-                centsClassName=""
-              />
-              <p className="text-[13px] mt-3 text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Total net worth</p>
-              <div className="flex items-center gap-3 mt-4 flex-wrap">
-                {todayDelta !== 0 && (
-                  <span className={`flex items-center gap-1 text-[13px] font-bold px-3 py-1.5 rounded-full ${todayDelta >= 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}`}>
-                    {todayDelta >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                    {todayDelta >= 0 ? '+' : ''}{formatCurrency(todayDelta)} today
-                  </span>
-                )}
-                {growth.total > 0 && (
-                  <span className="text-[12px] font-bold text-alpha-blue-700 dark:text-alpha-blue-300">
-                    <span className="text-emerald-700 dark:text-emerald-400">+{formatCurrency(growth.total)}</span> earned all-time
-                  </span>
-                )}
-              </div>
+          <div>
+            <p className="text-[11px] font-semibold text-ds-tertiary tracking-[0.06em] uppercase mb-2">
+              Total net worth
+            </p>
+            <p className="text-[18px] md:text-[22px] font-semibold text-ds-secondary mb-4">
+              {greeting()}, <span className="text-ds-primary">{firstName}</span>
+            </p>
+            <div className="text-[64px] md:text-[76px] font-bold leading-[0.95] tracking-[-0.04em] text-ds-primary">
+              <SplitBalance value={totalBalance} />
             </div>
-            <div className="flex gap-2 flex-shrink-0">
-              <button
-                onClick={() => navigate('/transfer')}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-alpha-blue-500 hover:bg-alpha-blue-600 text-white font-bold text-[13px] shadow-soft transition-all"
-              >
-                <Send className="w-4 h-4" strokeWidth={2.6} />
-                Transfer
-              </button>
-              <button
-                onClick={() => navigate('/cash-out')}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-alpha-blue-300 text-alpha-blue-700 hover:bg-alpha-blue-50 font-bold text-[13px] shadow-soft-sm transition-all"
-              >
-                <DollarSign className="w-4 h-4" strokeWidth={2.6} />
-                Cash Out
-              </button>
+            <div className="flex items-center gap-2.5 mt-4 flex-wrap">
+              {todayDelta !== 0 && (
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-semibold ${
+                  todayDelta >= 0
+                    ? 'bg-ds-accent-soft text-ds-accent'
+                    : 'bg-ds-negative-soft text-ds-negative'
+                }`}>
+                  {todayDelta >= 0 ? <ArrowUpRight className="w-3 h-3" strokeWidth={2.5} /> : <ArrowDownRight className="w-3 h-3" strokeWidth={2.5} />}
+                  {todayDelta >= 0 ? '+' : ''}{formatCurrency(todayDelta)} today
+                </span>
+              )}
+              {growth.total > 0 && (
+                <span className="text-[12px] text-ds-tertiary font-medium">
+                  <span className="text-ds-positive font-semibold">+{formatCurrency(growth.total)}</span> earned all-time
+                </span>
+              )}
             </div>
           </div>
-        </motion.div>
 
-        {/* ── Account Cards: Finbit wavy/curved blob design ── */}
-        <div className="mt-7 grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Cash Card - Alpha Blue Gradient with Navy Blob */}
-          <motion.div
-            {...fadeUp(0.06)}
-            className="rounded-3xl p-6 bg-gradient-to-br from-alpha-blue-600 to-alpha-blue-800 text-white shadow-soft-lg relative overflow-hidden min-h-[220px]"
-          >
-            {/* Wavy dark blob overlay */}
-            <div className="absolute inset-0">
-              <div className="absolute -left-12 top-8 w-48 h-48 bg-alpha-navy-900 rounded-[100%] opacity-40 blur-3xl transform -translate-x-1/4 translate-y-1/4 scale-150"></div>
+          <div className="flex gap-2 flex-shrink-0">
+            <button
+              onClick={() => navigate('/cash-out')}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-ds-surface border border-ds-border text-ds-primary text-[13px] font-semibold hover:bg-ds-inset transition-all"
+            >
+              <DollarSign className="w-3.5 h-3.5" strokeWidth={2.4} />
+              Cash out
+            </button>
+            <button
+              onClick={() => navigate('/transfer')}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-ds-accent hover:bg-ds-accent-hover text-ds-on-accent text-[13px] font-semibold transition-all"
+            >
+              <Send className="w-3.5 h-3.5" strokeWidth={2.4} />
+              Transfer
+            </button>
+          </div>
+        </motion.section>
+
+        {/* ─── CHART + ACCOUNTS GRID ─── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr,1fr] gap-6 mb-6">
+
+          {/* Chart panel */}
+          <motion.div {...fadeUp(0.08)} className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7">
+            <p className="text-[12px] font-semibold text-ds-tertiary tracking-[0.05em] uppercase mb-5">Net worth</p>
+            <div className="flex items-baseline justify-between mb-4">
+              <p className="text-[26px] md:text-[28px] font-bold tracking-[-0.02em] tabular-nums text-ds-primary">
+                {formatCurrency(totalBalance)}
+              </p>
+              {growth.total > 0 && (
+                <p className="text-[13px] font-semibold text-ds-positive">
+                  +{formatCurrency(growth.total)}
+                </p>
+              )}
             </div>
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div>
-                <p className="text-white/70 text-xs px-3 py-1 bg-white/10 rounded-full w-fit font-bold mb-8">Cash card</p>
-              </div>
-              <div>
-                <p className="text-[14px] font-semibold text-white/80 mb-2">Checking & Savings</p>
-                <SplitBalance
-                  value={cashTotal}
-                  className="text-[48px] font-black leading-tight tracking-tight"
-                  centsClassName="text-[28px]"
-                />
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/20 flex justify-between text-[11px] text-white/60 font-semibold">
-                <span>${(accounts?.checking || 0).toFixed(2)} Checking</span>
-                <span>${(accounts?.savings || 0).toFixed(2)} Savings</span>
-              </div>
-            </div>
+            <NetWorthChart history={history} currentTotal={totalBalance} height={220} />
           </motion.div>
 
-          {/* Invest Card - Purple Gradient with Navy Blob */}
-          <motion.div
-            {...fadeUp(0.10)}
-            className="rounded-3xl p-6 bg-gradient-to-br from-purple-500 to-purple-700 text-white shadow-soft-lg relative overflow-hidden min-h-[220px]"
-          >
-            {/* Wavy dark blob overlay */}
-            <div className="absolute inset-0">
-              <div className="absolute -left-12 top-8 w-48 h-48 bg-alpha-navy-900 rounded-[100%] opacity-40 blur-3xl transform -translate-x-1/4 translate-y-1/4 scale-150"></div>
-            </div>
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div>
-                <p className="text-white/70 text-xs px-3 py-1 bg-white/10 rounded-full w-fit font-bold mb-8">Invest</p>
-              </div>
-              <div>
-                <p className="text-[14px] font-semibold text-white/80 mb-2">S&P 500 & NASDAQ</p>
-                <SplitBalance
-                  value={investTotal}
-                  className="text-[48px] font-black leading-tight tracking-tight"
-                  centsClassName="text-[28px]"
-                />
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/20 flex justify-between text-[11px] text-white/60 font-semibold">
-                <span>${(accounts?.sp500 || 0).toFixed(2)} S&P 500</span>
-                <span>${(accounts?.nasdaq || 0).toFixed(2)} NASDAQ</span>
-              </div>
+          {/* Accounts panel */}
+          <motion.div {...fadeUp(0.12)} className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7">
+            <p className="text-[12px] font-semibold text-ds-tertiary tracking-[0.05em] uppercase mb-4">Accounts</p>
+            <div className="flex flex-col">
+              {ACCOUNT_ROWS.map((row, idx) => {
+                const balance = accounts[row.key] || 0
+                const todayPct = row.key === 'sp500' ? todaysReturns.sp500
+                              : row.key === 'nasdaq' ? todaysReturns.nasdaq
+                              : null
+                const isLast = idx === ACCOUNT_ROWS.length - 1
+                const earnedThisMonth = row.key === 'savings' ? monthInterest.thisMonth : 0
+                const Icon = row.icon
+                return (
+                  <div key={row.key} className={`flex items-center gap-3 py-3.5 ${!isLast ? 'border-b border-ds-hairline' : ''}`}>
+                    <div className="w-9 h-9 rounded-ds-md bg-ds-inset text-ds-primary flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-4 h-4" strokeWidth={2} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-semibold text-ds-primary">{row.label}</p>
+                      <p className="text-[11px] text-ds-tertiary font-medium mt-0.5">{row.subtitle}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[15px] font-semibold tabular-nums text-ds-primary">
+                        ${balance.toFixed(2)}
+                      </p>
+                      {todayPct != null && todayPct !== 0 && (
+                        <p className={`text-[11px] font-semibold mt-0.5 ${todayPct >= 0 ? 'text-ds-positive' : 'text-ds-negative'}`}>
+                          {todayPct >= 0 ? '+' : ''}{(todayPct * 100).toFixed(2)}%
+                        </p>
+                      )}
+                      {earnedThisMonth > 0 && (
+                        <p className="text-[11px] font-semibold text-ds-positive mt-0.5">
+                          +{formatCurrency(earnedThisMonth)} this month
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </motion.div>
         </div>
 
-        {/* ── Two-column body (single col on mobile) ── */}
-        <div className="mt-7 grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-        {/* ─── LEFT: Chart + Earnings Breakdown ─── */}
-        <div className="lg:col-span-2 space-y-5">
-
-        {/* Chart card */}
-        <motion.div
-          {...fadeUp(0.14)}
-          className="rounded-2xl p-6 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft text-alpha-blue-600 dark:text-alpha-blue-300"
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center flex-shrink-0">
-              <TrendingUp className="w-5 h-5 text-white" strokeWidth={2.4} />
-            </div>
-            <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
-              Net worth over time
-            </p>
-          </div>
-          <NetWorthChart history={history} currentTotal={totalBalance} height={240} />
-        </motion.div>
-
-        {/* Earnings breakdown */}
-        <motion.div {...fadeUp(0.18)}>
-          <EarningsBreakdown studentId={profile.id} />
-        </motion.div>
-
-        {/* Recent activity (lives on left col, more vertical room) */}
-        {recent.length > 0 && (
-          <motion.div
-            {...fadeUp(0.42)}
-            className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
-          >
-            <div className="px-6 pt-5 pb-3 border-b border-alpha-blue-100 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-purple-500 flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-white" strokeWidth={2.4} />
-              </div>
-              <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
-                Recent activity
-              </p>
-            </div>
-            {recent.map((tx, i) => {
-              const amount = Number(tx.amount || 0)
-              const sign = amount > 0 ? '+' : amount < 0 ? '−' : ''
-              const isPositive = amount >= 0
-              const date = tx.created_at
-                ? new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-                : ''
-              return (
-                <div
-                  key={tx.id}
-                  className={`flex justify-between items-center px-6 py-3.5 ${i < recent.length - 1 ? 'border-b border-alpha-blue-100 dark:border-white/[0.06]' : ''}`}
-                >
-                  <div className="min-w-0 flex-1 pr-3">
-                    <p className="text-[13px] font-semibold text-alpha-navy-800 dark:text-white truncate">{formatTxLabel(tx)}</p>
-                    <p className="text-[11px] text-alpha-blue-600 dark:text-alpha-blue-400 mt-0.5">{date}</p>
-                  </div>
-                  <p className={`text-[13px] font-black tabular-nums ${isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
-                    {sign}{formatCurrency(Math.abs(amount))}
-                  </p>
-                </div>
-              )
-            })}
-          </motion.div>
-        )}
-
-        </div>{/* end LEFT col */}
-
-        {/* ─── RIGHT: Accounts + Paycheck + How XP + MAP + Cash Card ─── */}
-        <div className="space-y-5">
-
-        {/* ── Cash section ── */}
-        <Section title="Cash" total={cashTotal} delay={0.21} icon={Wallet} iconColor="#2D55F5">
-          {CASH_ROWS.map((row) => (
-            <AccountRow
-              key={row.key}
-              row={row}
-              balance={accounts[row.key] || 0}
-              earned={row.key === 'savings' ? growth.savings : 0}
-              monthEarned={row.key === 'savings' ? monthInterest.thisMonth : 0}
-              ytdEarned={row.key === 'savings' ? monthInterest.ytd : 0}
-            />
-          ))}
-        </Section>
-
-        {/* ── Investments section ── */}
-        <Section title="Investments" total={investTotal} delay={0.28} icon={TrendingUp} iconColor="#9333ea">
-          {INVEST_ROWS.map((row) => {
-            const todayPct = row.key === 'sp500' ? todaysReturns.sp500
-                            : row.key === 'nasdaq' ? todaysReturns.nasdaq
-                            : null
-            const earned = row.key === 'sp500' ? growth.sp500
-                         : row.key === 'nasdaq' ? growth.nasdaq
-                         : 0
-            return (
-              <AccountRow
-                key={row.key}
-                row={row}
-                balance={accounts[row.key] || 0}
-                todayPct={todayPct}
-                earned={earned}
-              />
-            )
-          })}
-        </Section>
-
-        {/* ── Unfilled Paychecks List ── */}
-        {currentSession && (
-          <UnfilledPaychecksList
-            studentId={profile.id}
-            currentSessionNumber={parseInt(currentSession.name.match(/\d+/)?.[0] || 5)}
-            currentWeekNumber={currentWeek}
-          />
-        )}
-
-        {/* ── This week's paycheck ── */}
-        <motion.div {...fadeUp(0.35)} className="mt-5">
+        {/* ─── THIS WEEK'S PAYCHECK ─── */}
+        <motion.div {...fadeUp(0.16)} className="mb-6">
           <PaycheckCard studentId={profile.id} />
         </motion.div>
 
-        {/* ── How XP earns money (collapsible) ── */}
-        <motion.div {...fadeUp(0.39)} className="mt-3">
-          <HowXpWorks />
+        {/* ─── UNFILLED PAYCHECKS ─── */}
+        {currentSession && (
+          <motion.div {...fadeUp(0.20)} className="mb-6">
+            <UnfilledPaychecksList
+              studentId={profile.id}
+              currentSessionNumber={parseInt(currentSession.name.match(/\d+/)?.[0] || 5)}
+              currentWeekNumber={currentWeek}
+            />
+          </motion.div>
+        )}
+
+        {/* ─── EARNINGS BREAKDOWN ─── */}
+        <motion.div {...fadeUp(0.24)} className="mb-6">
+          <EarningsBreakdown studentId={profile.id} />
         </motion.div>
 
-        {/* ── MAP Testing / Roth IRA Card ── */}
-        <motion.div
-          {...fadeUp(0.43)}
-          className="mt-3 rounded-2xl p-6 bg-alpha-blue-100 dark:bg-alpha-blue-900/30 border border-alpha-blue-300 shadow-soft"
-        >
+        {/* ─── RECENT ACTIVITY ─── */}
+        {recent.length > 0 && (
+          <motion.div {...fadeUp(0.28)} className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7 mb-6">
+            <p className="text-[12px] font-semibold text-ds-tertiary tracking-[0.05em] uppercase mb-4">Recent activity</p>
+            <div>
+              {recent.map((tx, i) => {
+                const amount = Number(tx.amount || 0)
+                const sign = amount > 0 ? '+' : amount < 0 ? '−' : ''
+                const isPositive = amount >= 0
+                const date = tx.created_at
+                  ? new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                  : ''
+                const isLast = i === recent.length - 1
+                return (
+                  <div key={tx.id} className={`flex items-center gap-3 py-3 ${!isLast ? 'border-b border-ds-hairline' : ''}`}>
+                    <div className="w-9 h-9 rounded-full bg-ds-inset text-ds-secondary flex items-center justify-center flex-shrink-0">
+                      {isPositive
+                        ? <ArrowDownRight className="w-4 h-4 text-ds-positive" strokeWidth={2.4} />
+                        : <ArrowUpRight className="w-4 h-4 text-ds-negative" strokeWidth={2.4} />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-medium text-ds-primary truncate">{formatTxLabel(tx)}</p>
+                      <p className="text-[11px] text-ds-tertiary mt-0.5">{date}</p>
+                    </div>
+                    <p className={`text-[14px] font-semibold tabular-nums ${isPositive ? 'text-ds-positive' : 'text-ds-negative'}`}>
+                      {sign}{formatCurrency(Math.abs(amount))}
+                    </p>
+                  </div>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ─── ROTH IRA — MAP coming soon ─── */}
+        <motion.div {...fadeUp(0.32)} className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7 mb-6">
           <div className="flex items-start gap-3">
-            <div className="w-11 h-11 rounded-lg bg-alpha-blue-500 flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-black text-lg">🔒</span>
+            <div className="w-10 h-10 rounded-ds-md bg-ds-accent-soft text-ds-accent flex items-center justify-center flex-shrink-0">
+              <Lock className="w-4 h-4" strokeWidth={2.4} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <p className="text-[14px] font-bold text-alpha-navy-800 dark:text-white">Roth IRA</p>
-                <span className="px-2.5 py-0.5 rounded-full bg-alpha-blue-400 text-white text-[10px] font-bold uppercase tracking-wider">Coming soon</span>
+                <p className="text-[14px] font-semibold text-ds-primary">Roth IRA</p>
+                <span className="px-2 py-0.5 rounded-full bg-ds-inset text-ds-secondary text-[10px] font-semibold uppercase tracking-wider">Coming soon</span>
               </div>
-              <p className="text-[12px] text-alpha-blue-800 dark:text-alpha-blue-200 font-semibold leading-snug">
-                MAP testing payouts will land here — money that grows tax-free and stays locked until you graduate. Big assessments, big rewards.
+              <p className="text-[12px] text-ds-secondary leading-relaxed">
+                MAP testing payouts will land here — money that grows tax-free and stays locked until you graduate.
               </p>
             </div>
           </div>
         </motion.div>
 
-        </div>{/* end RIGHT col */}
-        </div>{/* end body grid */}
+        {/* ─── HOW XP WORKS ─── */}
+        <motion.div {...fadeUp(0.36)} className="mb-6">
+          <HowXpWorks />
+        </motion.div>
 
-        {/* ── Physical Cash Card Info Panel ── */}
-        <motion.div
-          {...fadeUp(0.49)}
-          className="mt-7 rounded-2xl p-6 bg-accent-pink/10 dark:bg-accent-pink/5 border border-accent-pink/30 shadow-soft"
-        >
+        {/* ─── PHYSICAL CASH CARD ─── */}
+        <motion.div {...fadeUp(0.40)} className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7">
           <div className="flex items-start gap-3 mb-4">
-            <div className="w-11 h-11 rounded-lg bg-accent-pink flex items-center justify-center flex-shrink-0">
-              <CreditCard className="w-5 h-5 text-white" strokeWidth={2.4} />
+            <div className="w-10 h-10 rounded-ds-md bg-ds-inset text-ds-secondary flex items-center justify-center flex-shrink-0">
+              <CreditCard className="w-5 h-5" strokeWidth={2} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-bold uppercase tracking-wider text-accent-pink mb-0.5">Your Physical Cash Card</p>
-              <p className="text-[13px] leading-relaxed text-alpha-navy-800 dark:text-alpha-blue-100 font-semibold">
+              <p className="text-[14px] font-semibold text-ds-primary mb-1">Physical cash card</p>
+              <p className="text-[12px] text-ds-secondary leading-relaxed">
                 Separate card for money from earlier sessions. Check the balance when you need to spend it:
               </p>
             </div>
           </div>
-          <div className="rounded-lg bg-white dark:bg-white/[0.05] p-4 space-y-2.5 text-[12px]">
+          <div className="rounded-ds-md bg-ds-inset p-4 space-y-2.5 text-[12px]">
             <div className="flex items-center gap-3">
-              <Phone className="w-4 h-4 text-accent-pink flex-shrink-0" strokeWidth={2.4} />
-              <span className="text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Call</span>
-              <a href="tel:18668820410" className="font-bold tabular-nums text-alpha-blue-600 dark:text-alpha-blue-300 hover:text-accent-pink">
+              <Phone className="w-3.5 h-3.5 text-ds-tertiary flex-shrink-0" strokeWidth={2} />
+              <span className="text-ds-tertiary font-medium">Call</span>
+              <a href="tel:18668820410" className="font-semibold tabular-nums text-ds-primary hover:text-ds-accent transition-colors">
                 1-866-882-0410
               </a>
             </div>
             <div className="flex items-center gap-3">
-              <BookOpen className="w-4 h-4 text-accent-pink flex-shrink-0" strokeWidth={2.4} />
-              <span className="text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">Visit</span>
+              <BookOpen className="w-3.5 h-3.5 text-ds-tertiary flex-shrink-0" strokeWidth={2} />
+              <span className="text-ds-tertiary font-medium">Visit</span>
               <a
                 href="https://cardholder.virtualrewardcenter.com/home/activate"
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-[11px] font-bold text-alpha-blue-600 dark:text-alpha-blue-300 hover:text-accent-pink underline-offset-2 hover:underline"
+                className="font-ds-mono text-[11px] font-medium text-ds-primary hover:text-ds-accent underline-offset-2 hover:underline transition-colors"
               >
                 cardholder.virtualrewardcenter.com
               </a>
             </div>
           </div>
         </motion.div>
+
       </div>
     </div>
-  )
-}
-
-// ─────────────────────────────────────────────────────────
-// Subcomponents
-// ─────────────────────────────────────────────────────────
-
-const Section = ({ title, total, delay = 0, icon: Icon, iconColor, children }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 12 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
-    className="mt-5 rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden"
-  >
-    <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-alpha-blue-100">
-      <div className="flex items-center gap-3">
-        {Icon && (
-          <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0`} style={{ backgroundColor: iconColor }}>
-            <Icon className="w-5 h-5 text-white" strokeWidth={2.4} />
-          </div>
-        )}
-        <h2 className="text-base font-semibold tracking-tight text-alpha-navy-800 dark:text-white">{title}</h2>
-      </div>
-      <SplitBalance
-        value={total}
-        className="text-[16px] font-bold text-alpha-navy-800 dark:text-white"
-      />
-    </div>
-    <div className="px-6 py-3">{children}</div>
-  </motion.div>
-)
-
-const AccountRow = ({ row, balance, todayPct = null, earned = 0, monthEarned = 0, ytdEarned = 0 }) => {
-  const Icon = row.icon
-  const showPct = todayPct != null && todayPct !== 0
-  const showEarned = earned > 0
-  const showMonthly = monthEarned > 0
-  return (
-    <motion.div
-      whileHover={{ x: 2 }}
-      transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-      className="flex items-center gap-3 py-3.5 cursor-default group"
-    >
-      <motion.div
-        whileHover={{ rotate: -3, scale: 1.05 }}
-        transition={{ type: 'spring', stiffness: 380, damping: 22 }}
-        className="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 shadow-soft-sm"
-        style={{ backgroundColor: row.accent }}
-      >
-        <Icon className="w-5 h-5 text-white" strokeWidth={2.6} />
-      </motion.div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-bold tracking-tight text-alpha-navy-800 dark:text-white">{row.label}</p>
-        <p className="text-[12px] mt-0.5 flex items-center gap-1.5 flex-wrap font-semibold">
-          <span className={
-            showPct
-              ? (todayPct >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400')
-              : 'text-alpha-blue-700 dark:text-alpha-blue-400'
-          }>
-            {showPct
-              ? `${todayPct >= 0 ? '+' : ''}${(todayPct * 100).toFixed(2)}% today`
-              : row.subtitle}
-          </span>
-          {showMonthly && (
-            <>
-              <span className="text-alpha-blue-300 dark:text-alpha-blue-600">·</span>
-              <span className="text-emerald-700 dark:text-emerald-400 tabular-nums">
-                +{formatCurrency(monthEarned)} this month
-              </span>
-            </>
-          )}
-          {!showMonthly && showEarned && (
-            <>
-              <span className="text-alpha-blue-300 dark:text-alpha-blue-600">·</span>
-              <span className="text-emerald-700 dark:text-emerald-400 tabular-nums">
-                +{formatCurrency(earned)} earned
-              </span>
-            </>
-          )}
-        </p>
-      </div>
-      <SplitBalance
-        value={balance}
-        className="text-[16px] font-bold text-alpha-navy-800 dark:text-white"
-      />
-    </motion.div>
   )
 }

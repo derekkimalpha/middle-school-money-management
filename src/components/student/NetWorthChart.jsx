@@ -131,20 +131,9 @@ export const NetWorthChart = ({
     >
       <defs>
         <linearGradient id="nwArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#1F6FEB" stopOpacity="0.42" />
-          <stop offset="100%" stopColor="#1F6FEB" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--ds-accent)" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="var(--ds-accent)" stopOpacity="0" />
         </linearGradient>
-        <linearGradient id="nwLine" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#7CC4FF" />
-          <stop offset="100%" stopColor="#1F6FEB" />
-        </linearGradient>
-        <filter id="nwGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
       </defs>
 
       {/* Gridlines */}
@@ -169,15 +158,14 @@ export const NetWorthChart = ({
         transition={{ duration: 0.6, delay: 0.4 }}
       />
 
-      {/* Line — gradient stroke with subtle glow */}
+      {/* Line — single accent stroke, no glow */}
       <motion.path
         d={linePath}
         fill="none"
-        stroke="url(#nwLine)"
-        strokeWidth="3"
+        stroke="var(--ds-accent)"
+        strokeWidth="2.5"
         strokeLinejoin="round"
         strokeLinecap="round"
-        filter="url(#nwGlow)"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
@@ -187,9 +175,9 @@ export const NetWorthChart = ({
       {active && (
         <>
           <line x1={active.x} x2={active.x} y1={PAD_TOP} y2={height - PAD_BOTTOM}
-            stroke="#1F6FEB" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="2 3" />
-          <circle cx={active.x} cy={active.y} r="5" fill="#1F6FEB" />
-          <circle cx={active.x} cy={active.y} r="9" fill="#1F6FEB" opacity="0.25" />
+            stroke="var(--ds-accent)" strokeOpacity="0.4" strokeWidth="1" strokeDasharray="2 3" />
+          <circle cx={active.x} cy={active.y} r="5" fill="var(--ds-accent)" />
+          <circle cx={active.x} cy={active.y} r="9" fill="var(--ds-accent)" opacity="0.22" />
           <text
             x={active.x}
             y={active.y - 14}

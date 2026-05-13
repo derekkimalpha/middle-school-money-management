@@ -8,6 +8,27 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ── Design System v2 (Wealthfront editorial) ──
+        // Usage: bg-ds-canvas, text-ds-primary, border-ds-hairline, bg-ds-accent, text-ds-positive
+        // Auto-adapts to .dark class on <html>. See src/styles/index.css for CSS vars.
+        'ds-canvas':        'var(--ds-canvas)',
+        'ds-surface':       'var(--ds-surface)',
+        'ds-inset':         'var(--ds-inset)',
+        'ds-overlay':       'var(--ds-overlay)',
+        'ds-primary':       'var(--ds-primary)',
+        'ds-secondary':     'var(--ds-secondary)',
+        'ds-tertiary':      'var(--ds-tertiary)',
+        'ds-on-accent':     'var(--ds-on-accent)',
+        'ds-hairline':      'var(--ds-hairline)',
+        'ds-border':        'var(--ds-border)',
+        'ds-border-strong': 'var(--ds-border-strong)',
+        'ds-accent':        'var(--ds-accent)',
+        'ds-accent-hover':  'var(--ds-accent-hover)',
+        'ds-accent-soft':   'var(--ds-accent-soft)',
+        'ds-positive':      'var(--ds-positive)',
+        'ds-negative':      'var(--ds-negative)',
+        'ds-negative-soft': 'var(--ds-negative-soft)',
+
         // ── Alpha Electric Blue – Modern Design System ──
         'alpha-blue': {
           50:   '#F5F8FF',
@@ -115,6 +136,17 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         hand: ['Caveat', 'cursive'],
+        // Design System v2
+        'ds-sans': ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
+        'ds-mono': ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+      borderRadius: {
+        'ds-xs': '4px',
+        'ds-sm': '8px',
+        'ds-md': '12px',
+        'ds-lg': '16px',
+        'ds-xl': '20px',
+        'ds-2xl': '24px',
       },
       backgroundColor: {
         base: '#faf8f4',
