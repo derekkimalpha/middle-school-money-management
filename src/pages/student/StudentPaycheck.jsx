@@ -463,7 +463,7 @@ export const StudentPaycheck = () => {
 
       // Auto-allocate everything to Savings (no guide review step). Skip allocation if 0.
       if (totalPaycheck > 0) {
-        const { error: allocErr } = await supabase.rpc('allocate_paycheck', {
+        const { data: allocResult, error: allocErr } = await supabase.rpc('allocate_paycheck', {
           p_paycheck_id: draftId,
           p_checking: 0,
           p_savings: totalPaycheck,
@@ -472,6 +472,11 @@ export const StudentPaycheck = () => {
           p_bonus: 0,
         })
         if (allocErr) throw allocErr
+        // The RPC returns jsonb; check for {error: "..."} payload (function returns this
+        // on validation failures instead of throwing).
+        if (allocResult && allocResult.error) {
+          throw new Error(allocResult.error)
+        }
       }
 
       setDraftStatus('allocated')
@@ -492,7 +497,7 @@ export const StudentPaycheck = () => {
       }
     } catch (error) {
       console.error('Error locking in paycheck:', error)
-      setToast({ type: 'error', text: 'Failed to submit paycheck' })
+      setToast({ type: 'error', text: `Failed to submit: ${error.message || 'unknown error'}` })
     } finally {
       setLoading(false)
     }
