@@ -25,6 +25,7 @@ const ACCOUNT_ROWS = [
   { key: 'savings',  label: 'Savings',  subtitle: '4.00% APY · paid daily',         icon: PiggyBank },
   { key: 'sp500',    label: 'S&P 500',  subtitle: '500 U.S. companies',             icon: TrendingUp },
   { key: 'nasdaq',   label: 'NASDAQ',   subtitle: 'Tech & growth',                  icon: BarChart3 },
+  { key: 'roth',     label: 'Roth IRA', subtitle: 'MAP earnings · locked',          icon: Lock, locked: true },
 ]
 
 const fadeUp = (delay = 0) => ({
@@ -235,11 +236,18 @@ export const StudentDashboard = () => {
                 const Icon = row.icon
                 return (
                   <div key={row.key} className={`flex items-center gap-3 py-3.5 ${!isLast ? 'border-b border-ds-hairline' : ''}`}>
-                    <div className="w-9 h-9 rounded-ds-md bg-ds-inset text-ds-primary flex items-center justify-center flex-shrink-0">
+                    <div className={`w-9 h-9 rounded-ds-md flex items-center justify-center flex-shrink-0 ${
+                      row.locked ? 'bg-ds-accent-soft text-ds-accent' : 'bg-ds-inset text-ds-primary'
+                    }`}>
                       <Icon className="w-4 h-4" strokeWidth={2} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[14px] font-semibold text-ds-primary">{row.label}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[14px] font-semibold text-ds-primary">{row.label}</p>
+                        {row.locked && (
+                          <Lock className="w-3 h-3 text-ds-tertiary" strokeWidth={2.2} />
+                        )}
+                      </div>
                       <p className="text-[11px] text-ds-tertiary font-medium mt-0.5">{row.subtitle}</p>
                     </div>
                     <div className="text-right">
@@ -318,24 +326,6 @@ export const StudentDashboard = () => {
             </div>
           </motion.div>
         )}
-
-        {/* ─── ROTH IRA — MAP coming soon ─── */}
-        <motion.div {...fadeUp(0.32)} className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7 mb-6">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-ds-md bg-ds-accent-soft text-ds-accent flex items-center justify-center flex-shrink-0">
-              <Lock className="w-4 h-4" strokeWidth={2.4} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <p className="text-[14px] font-semibold text-ds-primary">Roth IRA</p>
-                <span className="px-2 py-0.5 rounded-full bg-ds-inset text-ds-secondary text-[10px] font-semibold uppercase tracking-wider">Coming soon</span>
-              </div>
-              <p className="text-[12px] text-ds-secondary leading-relaxed">
-                MAP testing payouts will land here — money that grows tax-free and stays locked until you graduate.
-              </p>
-            </div>
-          </div>
-        </motion.div>
 
         {/* ─── HOW XP WORKS ─── */}
         <motion.div {...fadeUp(0.36)} className="mb-6">

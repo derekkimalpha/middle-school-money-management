@@ -106,6 +106,18 @@ export const useGrowthEngine = (enabled = true) => {
         console.log('Growth engine result:', result)
       }
 
+      // 3b. Apply S&P-linked growth to Roth IRA balances (closest-to-reality:
+      // a real Roth holds an index fund, so it moves with the S&P every day).
+      // No-ops if pct is negligible or already applied today.
+      const { data: rothResult, error: rothErr } = await supabase.rpc('apply_roth_growth', {
+        p_pct: sp500Return
+      })
+      if (rothErr) {
+        console.warn('Roth growth RPC error:', rothErr)
+      } else if (rothResult && rothResult.updated > 0) {
+        console.log('Roth growth applied:', rothResult)
+      }
+
       // 4. Cache results
       localStorage.setItem(GROWTH_KEY, today)
       localStorage.setItem(MARKET_CACHE_KEY, JSON.stringify(data))

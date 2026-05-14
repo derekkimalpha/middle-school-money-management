@@ -461,12 +461,13 @@ export const StudentPaycheck = () => {
       if (allocation.nasdaq > 0) allocData.alloc_nasdaq = allocation.nasdaq
       if (allocation.bonus > 0) allocData.alloc_bonus = allocation.bonus
 
-      // Auto-allocate everything to Savings (no guide review step). Skip allocation if 0.
+      // Auto-deposit everything to Checking (just like a real paycheck — direct deposit
+      // lands in spending account, kids move to savings/invest themselves).
       if (totalPaycheck > 0) {
         const { data: allocResult, error: allocErr } = await supabase.rpc('allocate_paycheck', {
           p_paycheck_id: draftId,
-          p_checking: 0,
-          p_savings: totalPaycheck,
+          p_checking: totalPaycheck,
+          p_savings: 0,
           p_sp500: 0,
           p_nasdaq: 0,
           p_bonus: 0,
@@ -481,7 +482,7 @@ export const StudentPaycheck = () => {
 
       setDraftStatus('allocated')
       setShowConfetti(true)
-      setToast({ type: 'success', text: 'Paycheck submitted! Money is in your Savings.' })
+      setToast({ type: 'success', text: 'Paycheck deposited to Checking.' })
       setTimeout(() => setShowConfetti(false), 3000)
       await fetchPastPaychecks()
       // Switch to the locked read-only detail view after submit
@@ -774,31 +775,7 @@ export const StudentPaycheck = () => {
               {p.other_pay > 0 && <div className="flex justify-between text-sm text-ds-secondary"><span>Other</span><span className="font-semibold tabular-nums">{formatCurrency(p.other_pay)}</span></div>}
             </div>
 
-            {/* Allocation (if already allocated) */}
-            {p.status === 'allocated' && (
-              <div className="mt-4 border-t border-ds-hairline pt-4">
-                <h3 className="text-[11px] font-semibold text-ds-tertiary mb-3 uppercase tracking-[0.05em]">Allocation</h3>
-                <div className="grid grid-cols-5 gap-2">
-                  {['checking', 'savings', 'sp500', 'nasdaq', 'bonus'].map(acct => {
-                    const val = p[`alloc_${acct}`] || 0
-                    if (val <= 0) return null
-                    return (
-                      <div key={acct} className="text-center p-2 rounded-ds-md bg-ds-inset">
-                        <p className="text-[11px] text-ds-tertiary capitalize">{ACCOUNT_META[acct]?.label || acct}</p>
-                        <p className="text-sm font-semibold text-ds-primary tabular-nums">{formatCurrency(val)}</p>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {p.status === 'verified' && (
-              <div className="mt-6 p-3 rounded-ds-md bg-ds-accent-soft border border-ds-hairline text-sm text-ds-accent">
-                <CheckCircle className="w-4 h-4 inline mr-1" />
-                Approved! This paycheck landed in your Savings, earning 4% APY.
-              </div>
-            )}
+            {/* No allocation breakdown — paychecks auto-deposit to Checking now */}
 
             {p.status === 'submitted' && (
               <div className="mt-4 p-3 rounded-ds-md bg-ds-inset border border-ds-hairline text-sm text-ds-secondary">
@@ -898,7 +875,7 @@ export const StudentPaycheck = () => {
         {(draftStatus === 'verified' || draftStatus === 'allocated') && (
           <div className="p-4 rounded-ds-xl bg-ds-accent-soft border border-ds-hairline text-[13px] font-semibold text-ds-accent">
             <CheckCircle className="w-4 h-4 inline mr-1" />
-            Approved! Your paycheck landed in Savings, earning 4% APY. Open the dashboard to invest or transfer.
+            Deposited to Checking. Open the dashboard to transfer to Savings or invest.
           </div>
         )}
 
@@ -1334,16 +1311,6 @@ export const StudentPaycheck = () => {
           </details>
 
           {/* Learn tip — educational */}
-          <details className="rounded-ds-lg border border-ds-hairline bg-ds-inset group">
-            <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-              <span className="px-2 py-0.5 rounded-ds-md text-[10px] font-semibold text-ds-secondary bg-ds-surface uppercase tracking-wider">Learn</span>
-              <span className="text-sm font-semibold text-ds-primary flex-1">Why Budget Your Paycheck?</span>
-              <ChevronRight className="w-4 h-4 text-ds-tertiary transition-transform group-open:rotate-90" />
-            </summary>
-            <div className="px-4 pb-4 text-[13px] text-ds-secondary leading-relaxed border-t border-ds-hairline pt-3">
-              In real life, your paycheck doesn't all go to one place. Learning to split your earnings now builds habits that'll serve you for life. The 50/30/20 rule suggests: 50% needs, 30% wants, 20% savings.
-            </div>
-          </details>
         </div>
       </div>
 
@@ -1368,7 +1335,7 @@ export const StudentPaycheck = () => {
               )}
             </div>
             {draftStatus === 'verified' || draftStatus === 'allocated' ? (
-              <span className="px-3 py-1.5 rounded-full bg-ds-accent-soft text-ds-accent text-[12px] font-semibold">✓ In Savings</span>
+              <span className="px-3 py-1.5 rounded-full bg-ds-accent-soft text-ds-accent text-[12px] font-semibold">✓ Deposited</span>
             ) : (
               <button
                 onClick={handleLockIn}
