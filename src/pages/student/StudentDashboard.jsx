@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import {
   ArrowUpRight, ArrowDownRight, Send, DollarSign,
   CreditCard, Phone, BookOpen, Wallet, PiggyBank, TrendingUp, BarChart3,
-  Lock,
+  Lock, Info,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useAccounts } from '../../hooks/useAccounts'
@@ -25,8 +25,41 @@ const ACCOUNT_ROWS = [
   { key: 'savings',  label: 'Savings',  subtitle: '4.00% APY · paid daily',         icon: PiggyBank },
   { key: 'sp500',    label: 'S&P 500',  subtitle: '500 U.S. companies',             icon: TrendingUp },
   { key: 'nasdaq',   label: 'NASDAQ',   subtitle: 'Tech & growth',                  icon: BarChart3 },
-  { key: 'roth',     label: 'Roth IRA', subtitle: 'MAP earnings · locked',          icon: Lock, locked: true },
+  { key: 'roth',     label: 'Roth IRA', subtitle: 'MAP earnings · invested in S&P 500', icon: Lock, locked: true },
 ]
+
+// Kid-friendly one-sentence definitions surfaced via hover/tap info icon
+const ACCOUNT_INFO = {
+  checking: "Money you can spend right now — instant access, no interest earned.",
+  savings:  "Money you save here and earn 4% interest on, paid every day — like a real savings account.",
+  sp500:    "Money invested in 500 of the biggest U.S. companies — moves up and down with the market.",
+  nasdaq:   "Money invested in tech and growth stocks — bigger ups and downs than the S&P 500.",
+  roth:     "A retirement-style account that grows tax-free and stays locked until you leave Alpha.",
+}
+
+// Small info icon with hover/tap tooltip
+const InfoTooltip = ({ text, label }) => {
+  const [open, setOpen] = React.useState(false)
+  return (
+    <span className="relative inline-flex items-center">
+      <button
+        type="button"
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(o => !o) }}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        className="text-ds-tertiary hover:text-ds-secondary transition-colors p-0.5 -m-0.5"
+        aria-label={`About ${label}`}
+      >
+        <Info className="w-3 h-3" strokeWidth={2.2} />
+      </button>
+      {open && (
+        <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-50 w-56 px-3 py-2 bg-ds-primary text-ds-canvas text-[11px] font-normal leading-relaxed rounded-ds-md pointer-events-none border border-ds-border-strong">
+          {text}
+        </span>
+      )}
+    </span>
+  )
+}
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 10 },
@@ -230,6 +263,7 @@ export const StudentDashboard = () => {
                 const balance = accounts[row.key] || 0
                 const todayPct = row.key === 'sp500' ? todaysReturns.sp500
                               : row.key === 'nasdaq' ? todaysReturns.nasdaq
+                              : row.key === 'roth' ? todaysReturns.sp500
                               : null
                 const isLast = idx === ACCOUNT_ROWS.length - 1
                 const earnedThisMonth = row.key === 'savings' ? monthInterest.thisMonth : 0
@@ -247,6 +281,7 @@ export const StudentDashboard = () => {
                         {row.locked && (
                           <Lock className="w-3 h-3 text-ds-tertiary" strokeWidth={2.2} />
                         )}
+                        <InfoTooltip text={ACCOUNT_INFO[row.key]} label={row.label} />
                       </div>
                       <p className="text-[11px] text-ds-tertiary font-medium mt-0.5">{row.subtitle}</p>
                     </div>
