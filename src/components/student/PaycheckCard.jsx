@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronRight, FileText } from 'lucide-react'
+import { ChevronRight, FileText, Check } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../lib/constants'
 
 const STATUS_LABELS = {
   draft: 'In progress',
-  submitted: 'Submitted for review',
-  verified: 'Approved — ready to allocate',
-  allocated: 'Allocated',
+  submitted: 'Submitted',
+  verified: 'Submitted',
+  allocated: 'Submitted',
 }
 
 const getCurrentWeekLabel = () => {
@@ -59,14 +59,13 @@ export const PaycheckCard = ({ studentId }) => {
 
   if (loading) {
     return (
-      <div
-        className="rounded-2xl p-6 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft animate-pulse h-[120px]"
-      />
+      <div className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7 h-[140px] animate-pulse" />
     )
   }
 
   const total = Number(paycheck?.total_earnings || 0)
   const status = paycheck?.status || 'draft'
+  const isSubmitted = status !== 'draft'
   const totalXp = paycheck
     ? (paycheck.xp_mon || 0) + (paycheck.xp_tue || 0) + (paycheck.xp_wed || 0) + (paycheck.xp_thu || 0) + (paycheck.xp_fri || 0)
     : 0
@@ -76,64 +75,73 @@ export const PaycheckCard = ({ studentId }) => {
   const xpBonus = Number(paycheck?.xp_bonus || 0)
   const jobPay = Number(paycheck?.job_pay || 0)
   const otherPay = Number(paycheck?.other_pay || 0)
+  const hasContent = paycheck && (totalXp > 0 || masteryPay > 0 || jobPay > 0 || otherPay !== 0)
 
   return (
     <button
       onClick={handleClick}
-      className="w-full text-left rounded-2xl p-6 bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft hover:shadow-soft-lg transition-all"
+      className="w-full text-left bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7 hover:border-ds-border transition-colors"
     >
-      <div className="flex items-baseline justify-between mb-4">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-alpha-blue-500 flex items-center justify-center flex-shrink-0">
-            <FileText className="w-5 h-5 text-white" strokeWidth={2.4} />
+          <div className={`w-10 h-10 rounded-ds-md flex items-center justify-center flex-shrink-0 transition-colors ${
+            isSubmitted
+              ? 'bg-ds-accent text-ds-on-accent'
+              : 'bg-ds-accent-soft text-ds-accent'
+          }`}>
+            {isSubmitted
+              ? <Check className="w-4 h-4" strokeWidth={2.4} />
+              : <FileText className="w-4 h-4" strokeWidth={2} />}
           </div>
-          <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
-            This week's paycheck
-          </p>
+          <div>
+            <p className="text-[14px] font-semibold text-ds-primary">This week's paycheck</p>
+          </div>
         </div>
-        <p className="text-[32px] font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
-          {total > 0 ? `+${formatCurrency(total)}` : formatCurrency(0)}
+        <p className="text-[26px] font-bold tracking-tight tabular-nums text-ds-primary">
+          {total > 0 ? `+${formatCurrency(total)}` : '$0.00'}
         </p>
       </div>
 
-      {paycheck && (totalXp > 0 || masteryPay > 0 || jobPay > 0 || otherPay !== 0) ? (
-        <div className="space-y-2 mt-4">
+      {hasContent ? (
+        <div className="space-y-2 mt-4 pt-4 border-t border-ds-hairline">
           {totalXp > 0 && (
-            <div className="flex justify-between text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">
+            <div className="flex justify-between text-[12px] text-ds-secondary">
               <span>{totalXp.toLocaleString()} min XP</span>
-              <span className="tabular-nums">{formatCurrency(basePay + xpBonus + epicBonus)}</span>
+              <span className="tabular-nums font-medium text-ds-primary">{formatCurrency(basePay + xpBonus + epicBonus)}</span>
             </div>
           )}
           {masteryPay > 0 && (
-            <div className="flex justify-between text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">
+            <div className="flex justify-between text-[12px] text-ds-secondary">
               <span>Mastery tests</span>
-              <span className="tabular-nums">{formatCurrency(masteryPay)}</span>
+              <span className="tabular-nums font-medium text-ds-primary">{formatCurrency(masteryPay)}</span>
             </div>
           )}
           {jobPay > 0 && (
-            <div className="flex justify-between text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">
+            <div className="flex justify-between text-[12px] text-ds-secondary">
               <span>Job pay</span>
-              <span className="tabular-nums">{formatCurrency(jobPay)}</span>
+              <span className="tabular-nums font-medium text-ds-primary">{formatCurrency(jobPay)}</span>
             </div>
           )}
           {otherPay !== 0 && (
-            <div className="flex justify-between text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold">
+            <div className="flex justify-between text-[12px] text-ds-secondary">
               <span>Bonuses / fines</span>
-              <span className="tabular-nums">{otherPay > 0 ? '+' : ''}{formatCurrency(otherPay)}</span>
+              <span className="tabular-nums font-medium text-ds-primary">{otherPay > 0 ? '+' : ''}{formatCurrency(otherPay)}</span>
             </div>
           )}
         </div>
       ) : (
-        <p className="text-[12px] text-alpha-blue-600 dark:text-alpha-blue-400 mt-2 font-semibold">
+        <p className="text-[12px] text-ds-tertiary mt-2">
           Nothing logged yet — tap to start this week's paycheck.
         </p>
       )}
 
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-alpha-blue-100">
-        <span className="text-[11px] font-bold text-alpha-blue-600 dark:text-alpha-blue-400 uppercase tracking-wider">
-          {STATUS_LABELS[status] || 'Tap to enter →'}
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-ds-hairline">
+        <span className={`text-[11px] font-semibold uppercase tracking-[0.05em] ${
+          isSubmitted ? 'text-ds-positive' : 'text-ds-tertiary'
+        }`}>
+          {STATUS_LABELS[status] || 'Tap to open'}
         </span>
-        <ChevronRight className="w-4 h-4 text-alpha-blue-400 dark:text-alpha-blue-600" strokeWidth={2.4} />
+        <ChevronRight className="w-3.5 h-3.5 text-ds-tertiary" strokeWidth={2} />
       </div>
     </button>
   )

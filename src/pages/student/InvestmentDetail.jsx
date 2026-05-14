@@ -21,7 +21,7 @@ const INVESTMENT_INFO = {
     name: 'S&P 500',
     ticker: 'SPY',
     icon: TrendingUp,
-    color: '#a68b5b',
+    color: 'var(--ds-accent)',
     lightBg: 'rgba(166,139,91,0.08)',
     description: 'The S&P 500 is like owning a tiny slice of the 500 biggest companies in America — all at once.',
     whatYouOwn: 'Your money is spread across companies you use every day: Apple (iPhones), Amazon (online shopping), Nike (shoes), Disney (movies), Tesla (cars), Google (search), and 494 more. Instead of betting on one company, you own a piece of all of them.',
@@ -50,7 +50,7 @@ const INVESTMENT_INFO = {
     name: 'NASDAQ',
     ticker: 'QQQ',
     icon: BarChart3,
-    color: '#78716c',
+    color: 'var(--ds-accent)',
     lightBg: 'rgba(120,113,108,0.08)',
     description: 'The NASDAQ is like a tech-heavy version of the S&P 500 — focused on the 100 biggest innovative companies.',
     whatYouOwn: 'This is dominated by the tech giants you know: Apple, Microsoft, NVIDIA (AI chips), Meta (Instagram), Tesla, Netflix, and Google. It goes up faster in good times but drops harder in bad times — that\'s the trade-off for higher potential returns.',
@@ -89,9 +89,9 @@ export const InvestmentDetail = () => {
   const info = INVESTMENT_INFO[type]
   if (!info) {
     return (
-      <div className="max-w-3xl mx-auto px-8 py-10 text-center">
-        <p className="text-ink-muted dark:text-white/40">Investment type not found</p>
-        <button onClick={() => navigate('/')} className="mt-4 text-sage underline text-sm">Go back</button>
+      <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans max-w-3xl mx-auto px-8 py-10 text-center">
+        <p className="text-ds-tertiary">Investment type not found</p>
+        <button onClick={() => navigate('/')} className="mt-4 text-ds-accent underline text-sm">Go back</button>
       </div>
     )
   }
@@ -165,224 +165,223 @@ export const InvestmentDetail = () => {
   }, [filteredTimeline, type])
 
   return (
-    <div className="max-w-3xl mx-auto pb-24">
-      <Toast message={toast} />
+    <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+      <div className="max-w-3xl mx-auto pb-24">
+        <Toast message={toast} />
 
-      {/* Header */}
-      <div className="px-8 pt-8 pb-4">
-        <motion.div
-          initial={{ opacity: 0, x: -8 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-ink-muted dark:text-white/40 hover:text-ink dark:hover:text-white/60 transition-colors mb-4"
+        {/* Header */}
+        <div className="px-8 pt-8 pb-4">
+          <motion.div
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-[13px] font-medium">Back</span>
-          </button>
-        </motion.div>
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-ds-tertiary hover:text-ds-secondary transition-colors mb-4"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-[13px] font-medium">Back</span>
+            </button>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="flex items-center gap-4"
-        >
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: info.lightBg }}
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="flex items-center gap-4"
           >
-            <Icon className="w-6 h-6" style={{ color: info.color }} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-alpha-navy-800 dark:text-white">
-              {info.name}
-            </h1>
-            <p className="text-xs text-ink-muted dark:text-white/40">{info.ticker} · {info.riskLevel} risk</p>
-          </div>
-        </motion.div>
-      </div>
+            <div className="w-12 h-12 rounded-ds-lg bg-ds-inset flex items-center justify-center">
+              <Icon className="w-6 h-6 text-ds-accent" />
+            </div>
+            <div>
+              <h1 className="text-[28px] md:text-[32px] font-semibold text-ds-primary tracking-[-0.02em]">
+                {info.name}
+              </h1>
+              <p className="text-xs text-ds-tertiary">{info.ticker} · {info.riskLevel} risk</p>
+            </div>
+          </motion.div>
+        </div>
 
-      {/* Balance */}
-      <div className="px-8 py-4">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <p className="text-xs font-medium uppercase tracking-[0.15em] text-ink-muted dark:text-white/40 mb-1">
-            Your Balance
-          </p>
-          <h2 className="text-5xl font-black tabular-nums tracking-tight text-ink dark:text-chalk-white">
-            <AnimNum value={balance} prefix="$" />
-          </h2>
-          <div className="flex items-center gap-2 mt-2">
-            {isPositive ? (
-              <TrendingUp className="w-4 h-4 text-sage" />
+        {/* Balance */}
+        <div className="px-8 py-4">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <p className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-1">
+              Your Balance
+            </p>
+            <h2 className="text-5xl font-bold tabular-nums tracking-tight text-ds-primary">
+              <AnimNum value={balance} prefix="$" />
+            </h2>
+            <div className="flex items-center gap-2 mt-2">
+              {isPositive ? (
+                <TrendingUp className="w-4 h-4 text-ds-positive" />
+              ) : (
+                <TrendingDown className="w-4 h-4 text-ds-negative" />
+              )}
+              <span className={`text-sm font-semibold tabular-nums ${isPositive ? 'text-ds-positive' : 'text-ds-negative'}`}>
+                {isPositive ? '+' : ''}{formatCurrency(totalGains)}
+              </span>
+              <span className="text-xs text-ds-tertiary">total earned</span>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Chart */}
+        <div className="px-8 mb-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7"
+          >
+            {/* Time period selector */}
+            <div className="flex gap-1 mb-4">
+              {TIME_PERIODS.map(period => (
+                <button
+                  key={period.key}
+                  onClick={() => setSelectedPeriod(period.key)}
+                  className={`px-3 py-1.5 rounded-ds-md text-[11px] font-semibold transition-colors ${
+                    selectedPeriod === period.key
+                      ? 'bg-ds-accent text-ds-on-accent hover:bg-ds-accent-hover'
+                      : 'text-ds-tertiary hover:bg-ds-overlay'
+                  }`}
+                >
+                  {period.label}
+                </button>
+              ))}
+            </div>
+
+            {/* SVG Chart */}
+            {chartData ? (
+              <svg viewBox={`0 0 ${chartData.width} ${chartData.height}`} className="w-full h-[200px]">
+                {/* Gradient */}
+                <defs>
+                  <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--ds-accent)" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="var(--ds-accent)" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+
+                {/* Area fill */}
+                <motion.path
+                  d={chartData.areaPath}
+                  fill={`url(#gradient-${type})`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                />
+
+                {/* Line */}
+                <motion.path
+                  d={chartData.pathPoints}
+                  fill="none"
+                  stroke="var(--ds-accent)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
+                />
+              </svg>
             ) : (
-              <TrendingDown className="w-4 h-4 text-rose" />
+              <div className="h-[200px] flex items-center justify-center">
+                <p className="text-[13px] text-ds-tertiary">
+                  No growth data yet — earnings will appear here as your investment grows
+                </p>
+              </div>
             )}
-            <span className={`text-sm font-bold tabular-nums ${isPositive ? 'text-sage' : 'text-rose'}`}>
-              {isPositive ? '+' : ''}{formatCurrency(totalGains)}
-            </span>
-            <span className="text-xs text-ink-faint dark:text-white/30">total earned</span>
-          </div>
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
 
-      {/* Chart */}
-      <div className="px-8 mb-6">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-          className="rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] p-5"
-        >
-          {/* Time period selector */}
-          <div className="flex gap-1 mb-4">
-            {TIME_PERIODS.map(period => (
-              <button
-                key={period.key}
-                onClick={() => setSelectedPeriod(period.key)}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-colors ${
-                  selectedPeriod === period.key
-                    ? 'bg-ink dark:bg-chalk-white text-white dark:text-ink'
-                    : 'text-ink-muted dark:text-white/40 hover:bg-surface-2 dark:hover:bg-white/[0.06]'
-                }`}
-              >
-                {period.label}
-              </button>
-            ))}
-          </div>
+        {/* Info Card */}
+        <div className="px-8 mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7"
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <Info className="w-4 h-4 text-ds-tertiary mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-[13px] font-semibold text-ds-primary mb-1">
+                  {info.description}
+                </p>
+                <p className="text-[12px] text-ds-secondary leading-relaxed">
+                  {info.whatYouOwn}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="rounded-ds-md p-3 bg-ds-inset">
+                <p className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-1">Risk Level</p>
+                <p className="text-[13px] font-semibold text-ds-primary">{info.riskLevel}</p>
+              </div>
+              <div className="rounded-ds-md p-3 bg-ds-inset">
+                <p className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-1">Avg. Return</p>
+                <p className="text-[13px] font-semibold text-ds-primary">{info.historicalReturn}</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
 
-          {/* SVG Chart */}
-          {chartData ? (
-            <svg viewBox={`0 0 ${chartData.width} ${chartData.height}`} className="w-full h-[200px]">
-              {/* Gradient */}
-              <defs>
-                <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={info.color} stopOpacity="0.2" />
-                  <stop offset="100%" stopColor={info.color} stopOpacity="0" />
-                </linearGradient>
-              </defs>
+        {/* Locked Notice */}
+        <div className="px-8 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="bg-ds-inset border border-ds-hairline rounded-ds-lg p-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-ds-md bg-ds-surface flex items-center justify-center flex-shrink-0">
+                <Lock className="w-5 h-5 text-ds-secondary" />
+              </div>
+              <div>
+                <p className="text-[13px] font-semibold text-ds-primary">Locked Until Graduation</p>
+                <p className="text-[11px] text-ds-secondary">
+                  Your investments can only grow — no withdrawals. Money goes in through your weekly paycheck allocation. When you graduate, this is all yours!
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
 
-              {/* Area fill */}
-              <motion.path
-                d={chartData.areaPath}
-                fill={`url(#gradient-${type})`}
+        {/* Divider */}
+        <div className="px-8 mb-6">
+          <div className="border-t border-ds-hairline" />
+        </div>
+
+        {/* Learn Section */}
+        <div className="px-8">
+          <h3 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-3">
+            Learn About {info.name}
+          </h3>
+          <div className="space-y-2">
+            {info.learnCards.map((card, i) => (
+              <motion.details
+                key={i}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-              />
-
-              {/* Line */}
-              <motion.path
-                d={chartData.pathPoints}
-                fill="none"
-                stroke={info.color}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-              />
-            </svg>
-          ) : (
-            <div className="h-[200px] flex items-center justify-center">
-              <p className="text-[13px] text-ink-faint dark:text-white/30">
-                No growth data yet — earnings will appear here as your investment grows
-              </p>
-            </div>
-          )}
-        </motion.div>
-      </div>
-
-      {/* Info Card */}
-      <div className="px-8 mb-6">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="rounded-xl p-5 border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03]"
-        >
-          <div className="flex items-start gap-3 mb-3">
-            <Info className="w-4 h-4 text-ink-muted dark:text-white/40 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-[13px] font-bold text-ink dark:text-chalk-white mb-1">
-                {info.description}
-              </p>
-              <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-                {info.whatYouOwn}
-              </p>
-            </div>
+                transition={{ delay: 0.35 + i * 0.05 }}
+                className="group bg-ds-surface border border-ds-hairline rounded-ds-lg overflow-hidden"
+              >
+                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-ds-overlay transition-colors">
+                  <span className="text-[13px] font-semibold text-ds-primary">
+                    {card.title}
+                  </span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-ds-tertiary" />
+                </summary>
+                <div className="px-5 pb-4 text-[13px] leading-relaxed border-t border-ds-hairline pt-3 text-ds-secondary">
+                  {card.body}
+                </div>
+              </motion.details>
+            ))}
           </div>
-          <div className="grid grid-cols-2 gap-3 mt-4">
-            <div className="rounded-lg p-3 bg-surface-2 dark:bg-white/[0.04]">
-              <p className="text-[10px] font-bold text-ink-faint dark:text-white/30 uppercase tracking-wider mb-1">Risk Level</p>
-              <p className="text-[13px] font-bold text-ink dark:text-chalk-white">{info.riskLevel}</p>
-            </div>
-            <div className="rounded-lg p-3 bg-surface-2 dark:bg-white/[0.04]">
-              <p className="text-[10px] font-bold text-ink-faint dark:text-white/30 uppercase tracking-wider mb-1">Avg. Return</p>
-              <p className="text-[13px] font-bold text-ink dark:text-chalk-white">{info.historicalReturn}</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Locked Notice */}
-      <div className="px-8 mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="rounded-xl p-4 border border-amber/20 dark:border-amber/10 bg-amber/[0.04]"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber/10 flex items-center justify-center flex-shrink-0">
-              <Lock className="w-5 h-5 text-amber" />
-            </div>
-            <div>
-              <p className="text-[13px] font-bold text-ink dark:text-chalk-white">Locked Until Graduation</p>
-              <p className="text-[11px] text-ink-light dark:text-white/50">
-                Your investments can only grow — no withdrawals. Money goes in through your weekly paycheck allocation. When you graduate, this is all yours!
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Divider */}
-      <div className="px-8 mb-6">
-        <div className="border-t border-black/[0.06] dark:border-white/[0.06]" />
-      </div>
-
-      {/* Learn Section */}
-      <div className="px-8">
-        <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
-          Learn About {info.name}
-        </h3>
-        <div className="space-y-2">
-          {info.learnCards.map((card, i) => (
-            <motion.details
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.35 + i * 0.05 }}
-              className="group rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] overflow-hidden"
-            >
-              <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-paper-warm/50 dark:hover:bg-white/[0.02] transition-colors">
-                <span className="text-[13px] font-bold text-ink dark:text-chalk-white">
-                  {card.title}
-                </span>
-                <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-ink-faint dark:text-white/20" />
-              </summary>
-              <div className="px-5 pb-4 text-[13px] leading-relaxed border-t border-black/[0.04] dark:border-white/[0.04] pt-3 text-ink-light dark:text-white/50">
-                {card.body}
-              </div>
-            </motion.details>
-          ))}
         </div>
       </div>
     </div>

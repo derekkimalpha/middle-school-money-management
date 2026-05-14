@@ -200,12 +200,12 @@ export const GuideStudentDetail = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      draft: 'bg-amber-bg text-amber',
-      submitted: 'bg-surface-2 text-ink-muted',
-      verified: 'bg-sage-bg text-sage-dark',
-      allocated: 'bg-surface-2 text-ink-muted',
+      draft: 'bg-ds-inset text-ds-secondary',
+      submitted: 'bg-ds-inset text-ds-tertiary',
+      verified: 'bg-ds-accent-soft text-ds-positive',
+      allocated: 'bg-ds-inset text-ds-tertiary',
     }
-    return colors[status] || 'bg-surface-2 text-ink-muted'
+    return colors[status] || 'bg-ds-inset text-ds-tertiary'
   }
 
   const getStatusLabel = (status) => {
@@ -270,17 +270,21 @@ export const GuideStudentDetail = () => {
 
   if (loading) {
     return (
-      <div className="max-w-3xl mx-auto px-8 py-10 space-y-4">
-        <div className="h-20 bg-surface-2 dark:bg-white/[0.03] rounded-xl animate-pulse" />
-        <div className="h-48 bg-surface-2 dark:bg-white/[0.03] rounded-xl animate-pulse" />
+      <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+        <div className="max-w-3xl mx-auto px-8 py-10 space-y-4">
+          <div className="h-20 bg-ds-inset rounded-ds-lg animate-pulse" />
+          <div className="h-48 bg-ds-inset rounded-ds-lg animate-pulse" />
+        </div>
       </div>
     )
   }
 
   if (!student) {
     return (
-      <div className="text-center py-12">
-        <p className="text-ink-muted dark:text-white/50">Student not found</p>
+      <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+        <div className="text-center py-12">
+          <p className="text-ds-tertiary">Student not found</p>
+        </div>
       </div>
     )
   }
@@ -288,316 +292,317 @@ export const GuideStudentDetail = () => {
   const total = getStudentTotal()
 
   return (
-    <div className="max-w-3xl mx-auto px-8 py-10 space-y-8">
-      <Toast message={toast} />
+    <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+      <div className="max-w-3xl mx-auto px-8 py-10 space-y-8">
+        <Toast message={toast} />
 
-      {/* Back */}
-      <motion.button
-        onClick={() => navigate('/')}
-        className="flex items-center gap-2 text-[13px] font-bold text-ink-muted dark:text-white/40 hover:text-ink dark:hover:text-white/70 transition-colors"
-        whileHover={{ x: -3 }}
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Students
-      </motion.button>
+        {/* Back */}
+        <motion.button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-[13px] font-semibold text-ds-tertiary hover:text-ds-primary transition-colors"
+          whileHover={{ x: -3 }}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Students
+        </motion.button>
 
-      {/* Student Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex items-center gap-4 mb-2">
-          <div className="flex-shrink-0 w-12 h-12 rounded-full bg-surface-3 dark:bg-white/[0.08] flex items-center justify-center text-ink-light dark:text-white/50 font-bold text-sm">
-            {initials(student.full_name)}
+        {/* Student Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center gap-4 mb-2">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-ds-inset flex items-center justify-center text-ds-secondary font-semibold text-sm">
+              {initials(student.full_name)}
+            </div>
+            <div>
+              <h1 className="text-[28px] md:text-[32px] font-semibold text-ds-primary tracking-[-0.02em]">{student.full_name}</h1>
+              <p className="text-[13px] text-ds-tertiary">{student.email}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-hand font-bold text-ink dark:text-chalk-white">{student.full_name}</h1>
-            <p className="text-[13px] text-ink-muted dark:text-white/40">{student.email}</p>
-          </div>
-        </div>
-        <p className="text-4xl font-black tabular-nums text-ink dark:text-chalk-white mt-4">
-          <AnimNum value={total} prefix="$" duration={600} />
-        </p>
-        <p className="text-[11px] text-ink-faint dark:text-white/25 mt-1">Total across all accounts</p>
-      </motion.div>
+          <p className="text-4xl font-bold tabular-nums text-ds-primary mt-4">
+            <AnimNum value={total} prefix="$" duration={600} />
+          </p>
+          <p className="text-[11px] text-ds-tertiary mt-1">Total across all accounts</p>
+        </motion.div>
 
-      {/* Account Summary */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.08 }}
-      >
-        <h2 className="text-[13px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-3">Accounts</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
-          {Object.entries(ACCOUNT_META).map(([key, meta]) => {
-            const account = student.accounts.find(a => a.account_type === key)
-            const balance = account?.balance || 0
-            const Icon = ACCOUNT_ICONS[key]
-            const hex = ACCOUNT_HEX[key]
-            const bg = ACCOUNT_BG[key]
-            return (
-              <div
-                key={key}
-                className="relative p-4 rounded-xl border border-black/[0.04] dark:border-white/[0.06] overflow-hidden transition-all hover:shadow-sm"
-                style={{ backgroundColor: bg }}
-              >
-                <div className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full" style={{ backgroundColor: hex }} />
-                <div className="flex items-center gap-1.5 mb-2 pl-2">
-                  <Icon className="w-3.5 h-3.5" style={{ color: hex }} />
-                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: hex }}>{meta.label}</p>
-                </div>
-                <p className="text-xl font-black tabular-nums text-ink dark:text-chalk-white pl-2">
-                  <AnimNum value={balance} prefix="$" duration={600} />
-                </p>
-              </div>
-            )
-          })}
-        </div>
-      </motion.div>
-
-      {/* Divider */}
-      <div className="border-t border-black/[0.06] dark:border-white/[0.06]" />
-
-      {/* Paycheck History */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12 }}
-      >
-        <h2 className="text-[13px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-3">Paychecks</h2>
-        <div className="space-y-2">
-          {paychecks.length === 0 ? (
-            <p className="text-[13px] text-ink-faint dark:text-white/25 py-4">No paychecks yet</p>
-          ) : (
-            paychecks.map(paycheck => {
-              const totalXp = (paycheck.xp_mon || 0) + (paycheck.xp_tue || 0) + (paycheck.xp_wed || 0) + (paycheck.xp_thu || 0) + (paycheck.xp_fri || 0)
-              const epicCount = [paycheck.epic_mon, paycheck.epic_tue, paycheck.epic_wed, paycheck.epic_thu, paycheck.epic_fri].filter(Boolean).length
-
+        {/* Account Summary */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+        >
+          <h2 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-3">Accounts</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+            {Object.entries(ACCOUNT_META).map(([key, meta]) => {
+              const account = student.accounts.find(a => a.account_type === key)
+              const balance = account?.balance || 0
+              const Icon = ACCOUNT_ICONS[key]
+              const hex = ACCOUNT_HEX[key]
+              const bg = ACCOUNT_BG[key]
               return (
                 <div
-                  key={paycheck.id}
-                  className="p-4 rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] space-y-3"
+                  key={key}
+                  className="relative p-4 rounded-ds-lg border border-ds-hairline bg-ds-surface overflow-hidden transition-all hover:bg-ds-overlay"
                 >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="text-[13px] font-bold text-ink dark:text-chalk-white">
-                          {paycheck.week_label || new Date(paycheck.created_at).toLocaleDateString()}
-                        </p>
-                        <Tag color={getStatusColor(paycheck.status)}>
-                          {getStatusLabel(paycheck.status)}
-                        </Tag>
-                      </div>
-                      <p className="text-xl font-black tabular-nums text-ink dark:text-chalk-white">{formatCurrency(paycheck.total_earnings || 0)}</p>
-                      <div className="mt-2 flex flex-wrap gap-1.5 text-[10px]">
-                        {totalXp > 0 && <span className="px-2 py-0.5 bg-surface-2 dark:bg-white/[0.04] rounded-md text-ink-muted dark:text-white/40">XP: {totalXp}</span>}
-                        {epicCount > 0 && <span className="px-2 py-0.5 bg-amber-bg dark:bg-amber/[0.06] rounded-md text-amber dark:text-amber">{epicCount} epic</span>}
-                        {paycheck.base_pay > 0 && <span className="px-2 py-0.5 bg-sage-bg dark:bg-sage/[0.06] rounded-md text-sage-dark dark:text-sage-300">Base ${paycheck.base_pay}</span>}
-                        {paycheck.epic_bonus > 0 && <span className="px-2 py-0.5 bg-surface-2 dark:bg-white/[0.04] rounded-md text-ink-muted dark:text-white/40">Epic ${paycheck.epic_bonus}</span>}
-                        {paycheck.xp_bonus > 0 && <span className="px-2 py-0.5 bg-surface-2 dark:bg-white/[0.04] rounded-md text-ink-muted dark:text-white/40">XP Bonus ${paycheck.xp_bonus}</span>}
-                        {paycheck.mastery_pay > 0 && <span className="px-2 py-0.5 bg-surface-2 dark:bg-white/[0.04] rounded-md text-ink-muted dark:text-white/40">Mastery ${paycheck.mastery_pay}</span>}
-                        {paycheck.job_pay > 0 && <span className="px-2 py-0.5 bg-surface-2 dark:bg-white/[0.04] rounded-md text-ink-muted dark:text-white/40">Job ${paycheck.job_pay}</span>}
-                        {paycheck.smart_goal > 0 && <span className="px-2 py-0.5 bg-surface-2 dark:bg-white/[0.04] rounded-md text-ink-muted dark:text-white/40">SMART ${paycheck.smart_goal}</span>}
-                        {paycheck.other_pay > 0 && <span className="px-2 py-0.5 bg-surface-2 dark:bg-white/[0.04] rounded-md text-ink-muted dark:text-white/40">Other ${paycheck.other_pay}</span>}
-                      </div>
-                    </div>
+                  <div className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full" style={{ backgroundColor: hex }} />
+                  <div className="flex items-center gap-1.5 mb-2 pl-2">
+                    <Icon className="w-3.5 h-3.5" style={{ color: hex }} />
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.05em]" style={{ color: hex }}>{meta.label}</p>
                   </div>
-
-                  {paycheck.status === 'submitted' && (
-                    <div className="border-t border-black/[0.04] dark:border-white/[0.04] pt-3 space-y-2">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: paycheck.total_earnings })}
-                          disabled={verifyingPaycheck === paycheck.id}
-                          className="flex items-center gap-1 px-3 py-2 rounded-lg bg-ink dark:bg-chalk-white text-white dark:text-ink text-[12px] font-bold hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors disabled:opacity-50"
-                        >
-                          <Check className="w-3.5 h-3.5" />
-                          Approve {formatCurrency(paycheck.total_earnings || 0)}
-                        </button>
-                        <div className="flex items-center gap-2 flex-1">
-                          <input
-                            type="number"
-                            value={verifiedAmounts[paycheck.id] || ''}
-                            onChange={(e) => setVerifiedAmounts(prev => ({
-                              ...prev,
-                              [paycheck.id]: e.target.value
-                            }))}
-                            placeholder="Adjust..."
-                            className="flex-1 px-3 py-2 text-[12px] rounded-lg border border-black/[0.06] dark:border-white/[0.08] bg-transparent dark:text-white focus:outline-none focus:border-ink/20"
-                          />
-                          {verifiedAmounts[paycheck.id] && (
-                            <button
-                              onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: parseFloat(verifiedAmounts[paycheck.id]) })}
-                              disabled={verifyingPaycheck === paycheck.id}
-                              className="px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] text-[12px] font-bold text-ink-muted dark:text-white/50 hover:bg-surface-2 dark:hover:bg-white/[0.04] transition-colors"
-                            >
-                              Approve Adjusted
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-3">
-                        <button
-                          onClick={() => returnPaycheck(paycheck.id)}
-                          className="text-[11px] font-bold text-rose hover:underline"
-                        >
-                          Send Back
-                        </button>
-                        <button
-                          onClick={() => startEditPaycheck(paycheck)}
-                          className="text-[11px] font-bold text-ink-muted dark:text-white/40 hover:underline"
-                        >
-                          Edit Amounts
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Edit mode */}
-                  {editingPaycheck === paycheck.id && (
-                    <div className="border-t border-black/[0.04] dark:border-white/[0.04] pt-3 space-y-2">
-                      <p className="text-[10px] font-bold text-ink-faint dark:text-white/30 uppercase tracking-wider">Edit Earnings</p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {['base_pay', 'epic_bonus', 'xp_bonus', 'mastery_pay', 'job_pay', 'other_pay'].map(field => (
-                          <div key={field}>
-                            <label className="text-[10px] text-ink-faint dark:text-white/25 capitalize">{field.replace('_', ' ')}</label>
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              value={editFields[field] || ''}
-                              onChange={(e) => setEditFields(prev => ({ ...prev, [field]: parseFloat(e.target.value) || 0 }))}
-                              className="w-full px-2 py-1.5 text-[12px] rounded-lg border border-black/[0.06] dark:border-white/[0.08] bg-transparent dark:text-white focus:outline-none focus:border-ink/20"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex gap-2 mt-2">
-                        <button
-                          onClick={() => saveEditPaycheck(paycheck.id)}
-                          className="px-3 py-2 rounded-lg bg-ink dark:bg-chalk-white text-white dark:text-ink text-[12px] font-bold hover:bg-ink/90 transition-colors"
-                        >
-                          Save Changes
-                        </button>
-                        <button onClick={() => setEditingPaycheck(null)} className="text-[11px] text-ink-muted hover:underline">Cancel</button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Verified/Allocated footer */}
-                  {(paycheck.status === 'verified' || paycheck.status === 'allocated') && editingPaycheck !== paycheck.id && (
-                    <div className="border-t border-black/[0.04] dark:border-white/[0.04] pt-3 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-sage-dark dark:text-sage-300 text-[12px] font-bold">
-                        <Check className="w-3.5 h-3.5" />
-                        Approved: {formatCurrency(paycheck.verified_amount || paycheck.total_earnings)}
-                      </div>
-                      <button
-                        onClick={() => startEditPaycheck(paycheck)}
-                        className="text-[11px] font-bold text-ink-faint dark:text-white/30 hover:underline"
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  )}
+                  <p className="text-xl font-bold tabular-nums text-ds-primary pl-2">
+                    <AnimNum value={balance} prefix="$" duration={600} />
+                  </p>
                 </div>
               )
-            }))
-          }
-        </div>
-      </motion.div>
-
-      {/* Add Bonus */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.16 }}
-        className="p-5 rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03]"
-      >
-        <h2 className="text-[13px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-4">Add Manual Bonus</h2>
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-[11px] font-semibold text-ink-muted dark:text-white/40 block mb-1">Amount ($)</label>
-              <input
-                type="number"
-                value={bonusAmount}
-                onChange={(e) => setBonusAmount(e.target.value)}
-                placeholder="0.00"
-                className="w-full px-3 py-2.5 text-[13px] rounded-xl border border-black/[0.06] dark:border-white/[0.08] bg-transparent dark:text-white focus:outline-none focus:border-ink/20 dark:focus:border-white/20"
-              />
-            </div>
-            <div>
-              <label className="text-[11px] font-semibold text-ink-muted dark:text-white/40 block mb-1">Description (optional)</label>
-              <input
-                type="text"
-                value={bonusDescription}
-                onChange={(e) => setBonusDescription(e.target.value)}
-                placeholder="e.g., Extra credit"
-                className="w-full px-3 py-2.5 text-[13px] rounded-xl border border-black/[0.06] dark:border-white/[0.08] bg-transparent dark:text-white focus:outline-none focus:border-ink/20 dark:focus:border-white/20"
-              />
-            </div>
+            })}
           </div>
-          <button
-            onClick={addManualBonus}
-            disabled={addingBonus || !bonusAmount}
-            className="w-full py-2.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors disabled:opacity-50"
-          >
-            Add Bonus
-          </button>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Transaction History */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <h2 className="text-[13px] font-bold text-ink-muted dark:text-white/40 uppercase tracking-wider mb-3">Transactions</h2>
-        <div className="space-y-1">
-          {transactions.length === 0 ? (
-            <p className="text-[13px] text-ink-faint dark:text-white/25 py-4">No transactions yet</p>
-          ) : (
-            transactions.map(trans => (
-              <div
-                key={trans.id}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-2/50 dark:hover:bg-white/[0.02] transition-colors"
-              >
-                <div className="flex-1">
-                  <p className="text-[13px] font-semibold text-ink dark:text-chalk-white">{trans.description}</p>
-                  <p className="text-[10px] text-ink-faint dark:text-white/25 mt-0.5">
-                    {new Date(trans.created_at).toLocaleDateString()}
-                    {trans.category && <span className="ml-2 capitalize">{trans.category}</span>}
-                  </p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className={`text-[13px] font-bold tabular-nums ${trans.amount >= 0 ? 'text-sage-dark dark:text-sage-300' : 'text-rose dark:text-rose'}`}>
-                    {trans.amount >= 0 ? '+' : ''}{formatCurrency(trans.amount)}
-                  </p>
-                  {trans.balance_after != null && (
-                    <p className="text-[10px] text-ink-faint dark:text-white/25 tabular-nums">Bal: {formatCurrency(trans.balance_after)}</p>
-                  )}
-                </div>
+        {/* Divider */}
+        <div className="border-t border-ds-hairline" />
+
+        {/* Paycheck History */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12 }}
+        >
+          <h2 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-3">Paychecks</h2>
+          <div className="space-y-2">
+            {paychecks.length === 0 ? (
+              <p className="text-[13px] text-ds-tertiary py-4">No paychecks yet</p>
+            ) : (
+              paychecks.map(paycheck => {
+                const totalXp = (paycheck.xp_mon || 0) + (paycheck.xp_tue || 0) + (paycheck.xp_wed || 0) + (paycheck.xp_thu || 0) + (paycheck.xp_fri || 0)
+                const epicCount = [paycheck.epic_mon, paycheck.epic_tue, paycheck.epic_wed, paycheck.epic_thu, paycheck.epic_fri].filter(Boolean).length
+
+                return (
+                  <div
+                    key={paycheck.id}
+                    className="p-4 rounded-ds-lg border border-ds-hairline bg-ds-surface space-y-3"
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="text-[13px] font-semibold text-ds-primary">
+                            {paycheck.week_label || new Date(paycheck.created_at).toLocaleDateString()}
+                          </p>
+                          <Tag color={getStatusColor(paycheck.status)}>
+                            {getStatusLabel(paycheck.status)}
+                          </Tag>
+                        </div>
+                        <p className="text-xl font-bold tabular-nums text-ds-primary">{formatCurrency(paycheck.total_earnings || 0)}</p>
+                        <div className="mt-2 flex flex-wrap gap-1.5 text-[10px]">
+                          {totalXp > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary">XP: {totalXp}</span>}
+                          {epicCount > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary">{epicCount} epic</span>}
+                          {paycheck.base_pay > 0 && <span className="px-2 py-0.5 bg-ds-accent-soft rounded-ds-md text-ds-positive tabular-nums">Base ${paycheck.base_pay}</span>}
+                          {paycheck.epic_bonus > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary tabular-nums">Epic ${paycheck.epic_bonus}</span>}
+                          {paycheck.xp_bonus > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary tabular-nums">XP Bonus ${paycheck.xp_bonus}</span>}
+                          {paycheck.mastery_pay > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary tabular-nums">Mastery ${paycheck.mastery_pay}</span>}
+                          {paycheck.job_pay > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary tabular-nums">Job ${paycheck.job_pay}</span>}
+                          {paycheck.smart_goal > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary tabular-nums">SMART ${paycheck.smart_goal}</span>}
+                          {paycheck.other_pay > 0 && <span className="px-2 py-0.5 bg-ds-inset rounded-ds-md text-ds-secondary tabular-nums">Other ${paycheck.other_pay}</span>}
+                        </div>
+                      </div>
+                    </div>
+
+                    {paycheck.status === 'submitted' && (
+                      <div className="border-t border-ds-hairline pt-3 space-y-2">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: paycheck.total_earnings })}
+                            disabled={verifyingPaycheck === paycheck.id}
+                            className="flex items-center gap-1 px-3 py-2 rounded-ds-md bg-ds-accent text-ds-on-accent text-[12px] font-semibold hover:bg-ds-accent-hover transition-colors disabled:opacity-50 tabular-nums"
+                          >
+                            <Check className="w-3.5 h-3.5" />
+                            Approve {formatCurrency(paycheck.total_earnings || 0)}
+                          </button>
+                          <div className="flex items-center gap-2 flex-1">
+                            <input
+                              type="number"
+                              value={verifiedAmounts[paycheck.id] || ''}
+                              onChange={(e) => setVerifiedAmounts(prev => ({
+                                ...prev,
+                                [paycheck.id]: e.target.value
+                              }))}
+                              placeholder="Adjust..."
+                              className="flex-1 px-3 py-2 text-[12px] rounded-ds-md border border-ds-hairline bg-ds-inset text-ds-primary focus:outline-none focus:border-ds-border tabular-nums"
+                            />
+                            {verifiedAmounts[paycheck.id] && (
+                              <button
+                                onClick={() => setConfirmPaycheck({ id: paycheck.id, amount: parseFloat(verifiedAmounts[paycheck.id]) })}
+                                disabled={verifyingPaycheck === paycheck.id}
+                                className="px-3 py-2 rounded-ds-md border border-ds-hairline text-[12px] font-semibold text-ds-secondary hover:bg-ds-overlay transition-colors"
+                              >
+                                Approve Adjusted
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => returnPaycheck(paycheck.id)}
+                            className="text-[11px] font-semibold text-ds-negative hover:underline"
+                          >
+                            Send Back
+                          </button>
+                          <button
+                            onClick={() => startEditPaycheck(paycheck)}
+                            className="text-[11px] font-semibold text-ds-tertiary hover:underline"
+                          >
+                            Edit Amounts
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Edit mode */}
+                    {editingPaycheck === paycheck.id && (
+                      <div className="border-t border-ds-hairline pt-3 space-y-2">
+                        <p className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em]">Edit Earnings</p>
+                        <div className="grid grid-cols-3 gap-2">
+                          {['base_pay', 'epic_bonus', 'xp_bonus', 'mastery_pay', 'job_pay', 'other_pay'].map(field => (
+                            <div key={field}>
+                              <label className="text-[10px] text-ds-tertiary capitalize">{field.replace('_', ' ')}</label>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={editFields[field] || ''}
+                                onChange={(e) => setEditFields(prev => ({ ...prev, [field]: parseFloat(e.target.value) || 0 }))}
+                                className="w-full px-2 py-1.5 text-[12px] rounded-ds-md border border-ds-hairline bg-ds-inset text-ds-primary focus:outline-none focus:border-ds-border tabular-nums"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            onClick={() => saveEditPaycheck(paycheck.id)}
+                            className="px-3 py-2 rounded-ds-md bg-ds-accent text-ds-on-accent text-[12px] font-semibold hover:bg-ds-accent-hover transition-colors"
+                          >
+                            Save Changes
+                          </button>
+                          <button onClick={() => setEditingPaycheck(null)} className="text-[11px] text-ds-tertiary hover:underline">Cancel</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Verified/Allocated footer */}
+                    {(paycheck.status === 'verified' || paycheck.status === 'allocated') && editingPaycheck !== paycheck.id && (
+                      <div className="border-t border-ds-hairline pt-3 flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-ds-positive text-[12px] font-semibold tabular-nums">
+                          <Check className="w-3.5 h-3.5" />
+                          Approved: {formatCurrency(paycheck.verified_amount || paycheck.total_earnings)}
+                        </div>
+                        <button
+                          onClick={() => startEditPaycheck(paycheck)}
+                          className="text-[11px] font-semibold text-ds-tertiary hover:underline"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )
+              }))
+            }
+          </div>
+        </motion.div>
+
+        {/* Add Bonus */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.16 }}
+          className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7"
+        >
+          <h2 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-4">Add Manual Bonus</h2>
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] block mb-1">Amount ($)</label>
+                <input
+                  type="number"
+                  value={bonusAmount}
+                  onChange={(e) => setBonusAmount(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full px-3 py-2.5 text-[13px] rounded-ds-md border border-ds-hairline bg-ds-inset text-ds-primary focus:outline-none focus:border-ds-border tabular-nums"
+                />
               </div>
-            ))
-          )}
-        </div>
-      </motion.div>
+              <div>
+                <label className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] block mb-1">Description (optional)</label>
+                <input
+                  type="text"
+                  value={bonusDescription}
+                  onChange={(e) => setBonusDescription(e.target.value)}
+                  placeholder="e.g., Extra credit"
+                  className="w-full px-3 py-2.5 text-[13px] rounded-ds-md border border-ds-hairline bg-ds-inset text-ds-primary focus:outline-none focus:border-ds-border"
+                />
+              </div>
+            </div>
+            <button
+              onClick={addManualBonus}
+              disabled={addingBonus || !bonusAmount}
+              className="w-full py-2.5 rounded-ds-md bg-ds-accent text-ds-on-accent text-[13px] font-semibold hover:bg-ds-accent-hover transition-colors disabled:opacity-50"
+            >
+              Add Bonus
+            </button>
+          </div>
+        </motion.div>
 
-      <ConfirmDialog
-        open={confirmPaycheck !== null}
-        title="Verify paycheck?"
-        message={confirmPaycheck ? `Amount: ${formatCurrency(confirmPaycheck.amount)}` : ''}
-        confirmLabel="Verify"
-        loading={verifyingPaycheck === confirmPaycheck?.id}
-        onConfirm={async () => {
-          if (confirmPaycheck) {
-            await verifyPaycheck(confirmPaycheck.id, confirmPaycheck.amount)
-          }
-          setConfirmPaycheck(null)
-        }}
-        onCancel={() => setConfirmPaycheck(null)}
-      />
+        {/* Transaction History */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h2 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-3">Transactions</h2>
+          <div className="space-y-1">
+            {transactions.length === 0 ? (
+              <p className="text-[13px] text-ds-tertiary py-4">No transactions yet</p>
+            ) : (
+              transactions.map(trans => (
+                <div
+                  key={trans.id}
+                  className="flex items-center justify-between p-3 rounded-ds-lg hover:bg-ds-overlay transition-colors"
+                >
+                  <div className="flex-1">
+                    <p className="text-[13px] font-semibold text-ds-primary">{trans.description}</p>
+                    <p className="text-[10px] text-ds-tertiary mt-0.5">
+                      {new Date(trans.created_at).toLocaleDateString()}
+                      {trans.category && <span className="ml-2 capitalize">{trans.category}</span>}
+                    </p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className={`text-[13px] font-semibold tabular-nums ${trans.amount >= 0 ? 'text-ds-positive' : 'text-ds-negative'}`}>
+                      {trans.amount >= 0 ? '+' : ''}{formatCurrency(trans.amount)}
+                    </p>
+                    {trans.balance_after != null && (
+                      <p className="text-[10px] text-ds-tertiary tabular-nums">Bal: {formatCurrency(trans.balance_after)}</p>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </motion.div>
+
+        <ConfirmDialog
+          open={confirmPaycheck !== null}
+          title="Verify paycheck?"
+          message={confirmPaycheck ? `Amount: ${formatCurrency(confirmPaycheck.amount)}` : ''}
+          confirmLabel="Verify"
+          loading={verifyingPaycheck === confirmPaycheck?.id}
+          onConfirm={async () => {
+            if (confirmPaycheck) {
+              await verifyPaycheck(confirmPaycheck.id, confirmPaycheck.amount)
+            }
+            setConfirmPaycheck(null)
+          }}
+          onCancel={() => setConfirmPaycheck(null)}
+        />
+      </div>
     </div>
   )
 }

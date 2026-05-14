@@ -117,24 +117,24 @@ export const StudentPurchase = () => {
   const getStatusTag = (status) => {
     switch (status) {
       case 'approved':
-        return <Tag color="bg-sage-100 text-sage-700">Approved</Tag>
+        return <Tag color="bg-ds-accent-soft text-ds-positive">Approved</Tag>
       case 'rejected':
-        return <Tag color="bg-red-100 text-red-700">Rejected</Tag>
+        return <Tag color="bg-ds-negative-soft text-ds-negative">Rejected</Tag>
       default:
-        return <Tag color="bg-stone-100 text-stone-700">Pending</Tag>
+        return <Tag color="bg-ds-inset text-ds-secondary">Pending</Tag>
     }
   }
 
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-ds-hairline"></div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 p-8">
+    <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans space-y-6 p-8">
       <Toast message={toast} />
 
       <motion.div
@@ -142,10 +142,10 @@ export const StudentPurchase = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-extrabold text-ink dark:text-chalk-white tracking-[-0.02em] mb-2">
+        <h1 className="text-[28px] md:text-[32px] font-semibold text-ds-primary tracking-[-0.02em] mb-2">
           Purchase Request
         </h1>
-        <p className="text-[13px] text-ink-muted dark:text-white/50">
+        <p className="text-[13px] text-ds-tertiary">
           Ask for permission to buy something
         </p>
       </motion.div>
@@ -166,17 +166,17 @@ export const StudentPurchase = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] rounded-sm p-6 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
+          className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[12px] font-semibold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-1">
+              <p className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-1">
                 Spending Money
               </p>
-              <p className="text-3xl font-bold text-ink dark:text-chalk-white tabular-nums">
+              <p className="text-3xl font-bold text-ds-primary tabular-nums">
                 <AnimNum value={checkingBalance} prefix="$" />
               </p>
-              <p className="text-[11px] text-ink-muted dark:text-white/50 mt-1">
+              <p className="text-[11px] text-ds-tertiary mt-1">
                 from your Checking account
               </p>
             </div>
@@ -190,9 +190,9 @@ export const StudentPurchase = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] p-6 space-y-5 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
+          className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7 space-y-5"
         >
-          <h2 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em]">New Request</h2>
+          <h2 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em]">New Request</h2>
 
           <Field label="What do you want to buy?">
             <Input
@@ -236,9 +236,9 @@ export const StudentPurchase = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-white/[0.04] rounded-sm border border-black/[0.08] dark:border-white/[0.06] p-6 shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
+            className="bg-ds-surface border border-ds-hairline rounded-ds-xl p-6 md:p-7"
           >
-            <h2 className="text-[11px] font-bold text-alpha-navy/60 dark:text-alpha-blue-300 uppercase tracking-[0.18em] mb-4">
+            <h2 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-4">
               Your Requests
             </h2>
 
@@ -249,19 +249,19 @@ export const StudentPurchase = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 border border-black/[0.08] dark:border-white/[0.06] rounded-sm hover:border-black/[0.12] dark:hover:border-white/[0.10] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,0.06)]"
+                  className="p-4 border border-ds-hairline rounded-ds-lg hover:border-ds-border transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-ink dark:text-chalk-white">
+                        <h3 className="font-semibold text-ds-primary">
                           {purchase.item_name}
                         </h3>
                         {getStatusTag(purchase.status)}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-ink-muted dark:text-white/50 mb-2">
-                        <div className="font-semibold text-ink dark:text-chalk-white">
+                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-ds-tertiary mb-2">
+                        <div className="font-semibold text-ds-primary tabular-nums">
                           {formatCurrency(purchase.price)}
                         </div>
 
@@ -281,7 +281,7 @@ export const StudentPurchase = () => {
                             href={purchase.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-ink dark:text-white/50 hover:text-ink dark:hover:text-white/90 flex items-center gap-1"
+                            className="text-ds-secondary hover:text-ds-primary flex items-center gap-1"
                           >
                             View Link
                             <ExternalLink className="w-3 h-3" />
@@ -293,7 +293,7 @@ export const StudentPurchase = () => {
                     {purchase.status === 'pending' && (
                       <button
                         onClick={() => setConfirmDelete(purchase)}
-                        className="p-2 text-gray-300 dark:text-white/40 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
+                        className="p-2 text-ds-tertiary hover:bg-ds-overlay rounded-ds-md hover:text-ds-negative transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -304,19 +304,19 @@ export const StudentPurchase = () => {
             </div>
 
             {/* Status Legend */}
-            <div className="mt-6 pt-6 border-t border-black/[0.08] dark:border-white/[0.06] text-sm text-ink-muted dark:text-white/50 space-y-2">
-              <p className="font-semibold text-ink dark:text-chalk-white">Status Meanings:</p>
+            <div className="mt-6 pt-6 border-t border-ds-hairline text-sm text-ds-tertiary space-y-2">
+              <p className="font-semibold text-ds-primary">Status Meanings:</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-stone-400" aria-hidden="true" />
+                  <div className="w-3 h-3 rounded-full bg-ds-inset" aria-hidden="true" />
                   <span>Pending - Awaiting decision</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-sage-400" aria-hidden="true" />
+                  <div className="w-3 h-3 rounded-full bg-ds-accent-soft" aria-hidden="true" />
                   <span>Approved - Ready to buy!</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-400" aria-hidden="true" />
+                  <div className="w-3 h-3 rounded-full bg-ds-negative-soft" aria-hidden="true" />
                   <span>Rejected - Not approved</span>
                 </div>
               </div>
@@ -332,8 +332,8 @@ export const StudentPurchase = () => {
             className="py-16 text-center"
           >
             <div className="text-4xl mb-3"></div>
-            <p className="text-sm font-semibold text-ink-muted dark:text-white/40">No purchase requests yet</p>
-            <p className="text-xs text-ink-faint dark:text-white/25 mt-1">Fill out the form above to request a purchase</p>
+            <p className="text-sm font-semibold text-ds-tertiary">No purchase requests yet</p>
+            <p className="text-xs text-ds-tertiary mt-1">Fill out the form above to request a purchase</p>
           </motion.div>
         )}
 

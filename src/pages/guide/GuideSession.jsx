@@ -236,14 +236,14 @@ export default function GuideSession() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-paper-warm dark:bg-ink-900">
-        <div className="text-pencil dark:text-chalk">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+        <div className="text-ds-secondary">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-paper-warm dark:bg-ink-900 p-6">
+    <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -251,10 +251,10 @@ export default function GuideSession() {
       >
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold font-hand text-ink dark:text-chalk mb-2">
+          <h1 className="text-[28px] md:text-[32px] font-semibold text-ds-primary tracking-[-0.02em] mb-2">
             Guide Session Manager
           </h1>
-          <p className="text-pencil dark:text-stone-300">
+          <p className="text-ds-secondary">
             Manage your financial literacy session settings
           </p>
         </div>
@@ -264,9 +264,9 @@ export default function GuideSession() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mb-8 p-6 bg-teal-50 dark:bg-teal-950 border-2 border-teal text-center rounded-lg"
+            className="mb-8 p-6 bg-ds-inset border border-ds-hairline text-center rounded-ds-lg"
           >
-            <p className="text-pencil dark:text-stone-300">
+            <p className="text-ds-secondary">
               Loading market data...
             </p>
           </motion.div>
@@ -276,48 +276,48 @@ export default function GuideSession() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            <h2 className="text-lg font-bold font-hand text-ink dark:text-chalk mb-4">
+            <h2 className="text-lg font-semibold text-ds-primary mb-4">
               Market Performance
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* SPY Card */}
-              <div className="p-6 bg-white dark:bg-ink-800 border-2 border-teal rounded-lg">
+              <div className="p-6 bg-ds-surface border border-ds-hairline rounded-ds-lg">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-ink dark:text-chalk">
+                    <h3 className="text-xl font-semibold text-ds-primary">
                       SPY
                     </h3>
-                    <p className="text-sm text-pencil dark:text-stone-400">
+                    <p className="text-sm text-ds-secondary">
                       S&P 500 ETF
                     </p>
                   </div>
                   {parseFloat(marketData.spy.dailyChangePercent) >= 0 ? (
-                    <TrendingUp className="w-6 h-6 text-teal" />
+                    <TrendingUp className="w-6 h-6 text-ds-positive" />
                   ) : (
-                    <TrendingDown className="w-6 h-6 text-rose" />
+                    <TrendingDown className="w-6 h-6 text-ds-negative" />
                   )}
                 </div>
 
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-pencil dark:text-stone-400">
+                    <p className="text-sm text-ds-secondary">
                       Current Price
                     </p>
-                    <p className="text-2xl font-bold text-ink dark:text-chalk">
+                    <p className="text-2xl font-bold text-ds-primary tabular-nums">
                       ${marketData.spy.currentPrice}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-pencil dark:text-stone-400 mb-1">
+                      <p className="text-xs text-ds-secondary mb-1">
                         Daily Change
                       </p>
                       <p
-                        className={`font-bold text-sm ${
+                        className={`font-semibold text-sm tabular-nums ${
                           parseFloat(marketData.spy.dailyChangePercent) >= 0
-                            ? 'text-teal'
-                            : 'text-rose'
+                            ? 'text-ds-positive'
+                            : 'text-ds-negative'
                         }`}
                       >
                         ${marketData.spy.dailyChange}
@@ -327,14 +327,14 @@ export default function GuideSession() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-pencil dark:text-stone-400 mb-1">
+                      <p className="text-xs text-ds-secondary mb-1">
                         1-Month Change
                       </p>
                       <p
-                        className={`font-bold text-sm ${
+                        className={`font-semibold text-sm tabular-nums ${
                           parseFloat(marketData.spy.monthChangePercent) >= 0
-                            ? 'text-teal'
-                            : 'text-rose'
+                            ? 'text-ds-positive'
+                            : 'text-ds-negative'
                         }`}
                       >
                         {marketData.spy.monthChangePercent}%
@@ -342,8 +342,8 @@ export default function GuideSession() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-stone-200 dark:border-ink-700">
-                    <p className="text-xs text-pencil dark:text-stone-400 italic">
+                  <div className="pt-3 border-t border-ds-hairline">
+                    <p className="text-xs text-ds-tertiary italic">
                       Tracks student S&P 500 investment accounts
                     </p>
                   </div>
@@ -351,43 +351,43 @@ export default function GuideSession() {
               </div>
 
               {/* QQQ Card */}
-              <div className="p-6 bg-white dark:bg-ink-800 border-2 border-teal rounded-lg">
+              <div className="p-6 bg-ds-surface border border-ds-hairline rounded-ds-lg">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-ink dark:text-chalk">
+                    <h3 className="text-xl font-semibold text-ds-primary">
                       QQQ
                     </h3>
-                    <p className="text-sm text-pencil dark:text-stone-400">
+                    <p className="text-sm text-ds-secondary">
                       NASDAQ-100 ETF
                     </p>
                   </div>
                   {parseFloat(marketData.qqq.dailyChangePercent) >= 0 ? (
-                    <TrendingUp className="w-6 h-6 text-plum" />
+                    <TrendingUp className="w-6 h-6 text-ds-secondary" />
                   ) : (
-                    <TrendingDown className="w-6 h-6 text-rose" />
+                    <TrendingDown className="w-6 h-6 text-ds-negative" />
                   )}
                 </div>
 
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-pencil dark:text-stone-400">
+                    <p className="text-sm text-ds-secondary">
                       Current Price
                     </p>
-                    <p className="text-2xl font-bold text-ink dark:text-chalk">
+                    <p className="text-2xl font-bold text-ds-primary tabular-nums">
                       ${marketData.qqq.currentPrice}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-pencil dark:text-stone-400 mb-1">
+                      <p className="text-xs text-ds-secondary mb-1">
                         Daily Change
                       </p>
                       <p
-                        className={`font-bold text-sm ${
+                        className={`font-semibold text-sm tabular-nums ${
                           parseFloat(marketData.qqq.dailyChangePercent) >= 0
-                            ? 'text-plum'
-                            : 'text-rose'
+                            ? 'text-ds-secondary'
+                            : 'text-ds-negative'
                         }`}
                       >
                         ${marketData.qqq.dailyChange}
@@ -397,14 +397,14 @@ export default function GuideSession() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-pencil dark:text-stone-400 mb-1">
+                      <p className="text-xs text-ds-secondary mb-1">
                         1-Month Change
                       </p>
                       <p
-                        className={`font-bold text-sm ${
+                        className={`font-semibold text-sm tabular-nums ${
                           parseFloat(marketData.qqq.monthChangePercent) >= 0
-                            ? 'text-plum'
-                            : 'text-rose'
+                            ? 'text-ds-secondary'
+                            : 'text-ds-negative'
                         }`}
                       >
                         {marketData.qqq.monthChangePercent}%
@@ -412,8 +412,8 @@ export default function GuideSession() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-stone-200 dark:border-ink-700">
-                    <p className="text-xs text-pencil dark:text-stone-400 italic">
+                  <div className="pt-3 border-t border-ds-hairline">
+                    <p className="text-xs text-ds-tertiary italic">
                       Tracks student NASDAQ investment accounts
                     </p>
                   </div>
@@ -428,26 +428,26 @@ export default function GuideSession() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-8 bg-white dark:bg-ink-800 border-3 border-sage rounded-lg shadow-lg"
+            className="mb-8 p-6 md:p-7 bg-ds-surface border border-ds-hairline rounded-ds-xl"
           >
-            <h2 className="text-2xl font-bold font-hand text-ink dark:text-chalk mb-6">
+            <h2 className="text-2xl font-semibold text-ds-primary mb-6">
               Active Session: {activeSession.name}
             </h2>
 
             <div className="space-y-6 mb-8">
               {/* Read-only S&P 500 Rate from Market Data */}
-              <div className="p-4 bg-teal-50 dark:bg-teal-950 rounded-lg border border-teal-200 dark:border-teal-800">
+              <div className="p-4 bg-ds-accent-soft rounded-ds-lg border border-ds-hairline">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-sm font-semibold text-pencil dark:text-stone-300 mb-1">
+                    <p className="text-sm font-semibold text-ds-secondary mb-1">
                       S&P 500 Return Rate
                     </p>
-                    <p className="text-3xl font-bold text-teal dark:text-teal-300">
+                    <p className="text-3xl font-bold text-ds-accent tabular-nums">
                       {marketData?.spy
                         ? `${marketData.spy.monthChangePercent}%`
                         : 'Loading...'}
                     </p>
-                    <p className="text-xs text-pencil dark:text-stone-400 mt-1">
+                    <p className="text-xs text-ds-tertiary mt-1">
                       From real SPY market data
                     </p>
                   </div>
@@ -455,18 +455,18 @@ export default function GuideSession() {
               </div>
 
               {/* Read-only NASDAQ Rate from Market Data */}
-              <div className="p-4 bg-plum-50 dark:bg-plum-950 rounded-lg border border-plum-200 dark:border-plum-800">
+              <div className="p-4 bg-ds-inset rounded-ds-lg border border-ds-hairline">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-sm font-semibold text-pencil dark:text-stone-300 mb-1">
+                    <p className="text-sm font-semibold text-ds-secondary mb-1">
                       NASDAQ Return Rate
                     </p>
-                    <p className="text-3xl font-bold text-plum dark:text-plum-300">
+                    <p className="text-3xl font-bold text-ds-primary tabular-nums">
                       {marketData?.qqq
                         ? `${marketData.qqq.monthChangePercent}%`
                         : 'Loading...'}
                     </p>
-                    <p className="text-xs text-pencil dark:text-stone-400 mt-1">
+                    <p className="text-xs text-ds-tertiary mt-1">
                       From real QQQ market data
                     </p>
                   </div>
@@ -486,7 +486,7 @@ export default function GuideSession() {
                   max="100"
                   disabled={processing}
                 />
-                <p className="text-xs text-pencil dark:text-stone-400 mt-2">
+                <p className="text-xs text-ds-tertiary mt-2">
                   This is the only rate you can customize for your session
                 </p>
               </div>
@@ -525,7 +525,7 @@ export default function GuideSession() {
             </div>
 
             {/* Start Date Display */}
-            <p className="text-xs text-pencil dark:text-stone-400 mt-4">
+            <p className="text-xs text-ds-tertiary mt-4">
               Started:{' '}
               {new Date(activeSession.start_date).toLocaleDateString(
                 'en-US',
@@ -542,9 +542,9 @@ export default function GuideSession() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-8 bg-white dark:bg-ink-800 border-3 border-amber rounded-lg shadow-lg"
+            className="p-6 md:p-7 bg-ds-surface border border-ds-hairline rounded-ds-xl"
           >
-            <h2 className="text-2xl font-bold font-hand text-ink dark:text-chalk mb-6">
+            <h2 className="text-2xl font-semibold text-ds-primary mb-6">
               Create New Session
             </h2>
 

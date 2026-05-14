@@ -9,12 +9,13 @@ export const Input = ({
   prefix = '',
   big = false,
   disabled = false,
-  className = ''
+  className = '',
+  ...rest
 }) => {
   return (
     <motion.div className="relative">
       {prefix && (
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-white/40 font-bold text-[13px]">
+        <span className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-ds-tertiary font-medium text-[14px] pointer-events-none">
           {prefix}
         </span>
       )}
@@ -25,15 +26,16 @@ export const Input = ({
         placeholder={placeholder}
         disabled={disabled}
         className={`
-          w-full rounded border border-black/[0.1] dark:border-white/10 transition-all duration-200
-          focus:outline-none focus:border-pencil dark:focus:border-pencil/60 focus:ring-2 focus:ring-pencil/20 dark:focus:ring-pencil/10
-          placeholder-ink-faint dark:placeholder-white/20 text-ink dark:text-chalk-white
-          ${prefix ? 'pl-8' : 'px-4'} py-2.5
-          ${big ? 'text-lg py-3.5 font-bold' : 'text-[14px]'}
-          bg-white dark:bg-white/5
+          w-full font-ds-sans rounded-ds-md bg-ds-inset border border-ds-hairline
+          text-ds-primary placeholder-ds-tertiary tabular-nums
+          transition-all duration-150
+          focus:outline-none focus:border-ds-accent focus:ring-2 focus:ring-ds-accent-soft
+          ${prefix ? 'pl-8' : 'px-3.5'} py-2.5
+          ${big ? 'text-[20px] py-3.5 font-semibold' : 'text-[14px]'}
           disabled:opacity-40 disabled:cursor-not-allowed
           ${className}
         `}
+        {...rest}
       />
     </motion.div>
   );

@@ -30,25 +30,21 @@ export const HowXpWorks = () => {
       Icon: Zap,
       title: 'Base pay',
       body: `Hit ${xpThreshold.toLocaleString()} XP minutes in a week → you earn $${basePay} flat.`,
-      accent: '#1F6FEB',
     },
     {
       Icon: Sparkles,
       title: 'Bonus XP',
       body: `Every ${bonusXpPer} XP over ${xpThreshold.toLocaleString()} → +$${bonusXpRate}. Stack as much as you want.`,
-      accent: '#114290',
     },
     {
       Icon: Trophy,
       title: 'Epic week bonus',
       body: `Get ${epicDaysRequired} epic days in one week → +$${epicWeekBonus} bonus.`,
-      accent: '#0B3068',
     },
     {
       Icon: BookOpen,
       title: 'Mastery tests',
       body: `Score ${masteryMinScore}%+ → +$${masteryPassPay}. Score 100% → +$${masteryPerfectPay}. Per test.`,
-      accent: '#1856B7',
     },
   ]
 
@@ -57,25 +53,24 @@ export const HowXpWorks = () => {
       Icon: Briefcase,
       title: 'Bonuses & jobs',
       body: `Your guide can add custom bonuses (jobs, leadership, extra credit). They show up on your paycheck card.`,
-      accent: '#1F6FEB',
     })
   }
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden">
+    <div className="bg-ds-surface border border-ds-hairline rounded-ds-xl overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-4 hover:bg-alpha-blue-50 dark:hover:bg-white/[0.02] transition-colors"
+        className="w-full flex items-center justify-between px-6 md:px-7 py-4 hover:bg-ds-overlay transition-colors"
       >
         <div className="text-left flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0">
-            <Star className="w-5 h-5 text-white" strokeWidth={2.4} />
+          <div className="w-10 h-10 rounded-ds-md bg-ds-inset text-ds-secondary flex items-center justify-center flex-shrink-0">
+            <Star className="w-4 h-4" strokeWidth={2} />
           </div>
           <div>
-            <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
+            <p className="text-[14px] font-semibold text-ds-primary">
               How XP earns money
             </p>
-            <p className="text-[12px] text-alpha-blue-600 dark:text-alpha-blue-400 mt-0.5">
+            <p className="text-[11px] text-ds-tertiary font-medium mt-0.5">
               Tap to see the rules
             </p>
           </div>
@@ -83,9 +78,9 @@ export const HowXpWorks = () => {
         <motion.div
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="w-9 h-9 rounded-full bg-alpha-blue-100 dark:bg-white/[0.06] flex items-center justify-center flex-shrink-0"
+          className="flex items-center justify-center flex-shrink-0"
         >
-          <ChevronDown className="w-4 h-4 text-alpha-blue-600 dark:text-alpha-blue-400" strokeWidth={3} />
+          <ChevronDown className="w-3.5 h-3.5 text-ds-tertiary" strokeWidth={2.4} />
         </motion.div>
       </button>
 
@@ -98,28 +93,25 @@ export const HowXpWorks = () => {
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="px-6 pt-3 pb-5 border-t border-alpha-blue-100 space-y-3">
-              {rules.map(({ Icon, title, body, accent }, i) => (
+            <div className="px-6 md:px-7 pt-3 pb-5 border-t border-ds-hairline space-y-3">
+              {rules.map(({ Icon, title, body }, i) => (
                 <motion.div
                   key={title}
-                  initial={{ opacity: 0, x: -8 }}
+                  initial={{ opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06 }}
+                  transition={{ delay: i * 0.05 }}
                   className="flex items-start gap-3"
                 >
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-                    style={{ backgroundColor: accent }}
-                  >
-                    <Icon className="w-4 h-4 text-white" strokeWidth={2.6} />
+                  <div className="w-8 h-8 rounded-ds-sm bg-ds-accent-soft text-ds-accent flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Icon className="w-3.5 h-3.5" strokeWidth={2.2} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-bold text-alpha-navy-800 dark:text-white">{title}</p>
-                    <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 font-semibold leading-snug mt-0.5">{body}</p>
+                    <p className="text-[13px] font-semibold text-ds-primary">{title}</p>
+                    <p className="text-[12px] text-ds-secondary leading-snug mt-0.5">{body}</p>
                   </div>
                 </motion.div>
               ))}
-              <p className="text-[11px] text-alpha-blue-600 dark:text-alpha-blue-500 italic mt-3 pt-3 border-t border-alpha-blue-100">
+              <p className="text-[11px] text-ds-tertiary italic mt-3 pt-3 border-t border-ds-hairline">
                 Rules can change session to session — this card always shows what's active right now.
               </p>
             </div>

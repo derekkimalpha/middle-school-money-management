@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, BarChart3 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../lib/constants'
-import { formatTxLabel } from '../../lib/txLabels'
 
 /**
  * Wealthfront-style "Total gains/losses" breakdown card.
@@ -52,41 +51,43 @@ export const EarningsBreakdown = ({ studentId }) => {
 
   if (!data) {
     return (
-      <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft h-[140px] animate-pulse" />
+      <div className="bg-ds-surface border border-ds-hairline rounded-ds-xl h-[140px] animate-pulse" />
     )
   }
 
   const isUp = data.totalGains >= 0
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-alpha-blue-200 shadow-soft overflow-hidden">
-      <div className="px-6 pt-5 pb-4 border-b border-alpha-blue-100">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl bg-purple-500 flex items-center justify-center flex-shrink-0">
-            <BarChart3 className="w-5 h-5 text-white" strokeWidth={2.4} />
+    <div className="bg-ds-surface border border-ds-hairline rounded-ds-xl overflow-hidden">
+      <div className="px-6 md:px-7 pt-6 pb-5 border-b border-ds-hairline">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-ds-md bg-ds-inset text-ds-secondary flex items-center justify-center flex-shrink-0">
+            <BarChart3 className="w-4 h-4" strokeWidth={2} />
           </div>
-          <p className="text-base font-semibold text-alpha-navy-800 dark:text-white">
+          <p className="text-[15px] font-semibold text-ds-primary">
             Total gains
           </p>
         </div>
-        <p className={`text-[28px] font-bold tabular-nums ${isUp ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
+        <p className={`text-[28px] font-bold tracking-[-0.02em] tabular-nums ${isUp ? 'text-ds-positive' : 'text-ds-negative'}`}>
           {isUp ? '+' : ''}{formatCurrency(data.totalGains)}
         </p>
-        <p className="text-[12px] text-alpha-blue-700 dark:text-alpha-blue-300 mt-2 font-semibold leading-snug">
+        <p className="text-[12px] text-ds-tertiary mt-2 leading-snug">
           Growth from interest payments and market changes.
         </p>
       </div>
 
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-3 hover:bg-alpha-blue-50 dark:hover:bg-white/[0.02] transition-colors"
+        className="w-full flex items-center justify-between px-6 md:px-7 py-3.5 hover:bg-ds-overlay transition-colors"
       >
-        <span className="text-[13px] font-bold text-alpha-blue-600 dark:text-alpha-blue-400">View breakdown</span>
+        <span className="text-[12px] font-semibold text-ds-secondary uppercase tracking-[0.05em]">
+          {open ? 'Hide breakdown' : 'View breakdown'}
+        </span>
         <motion.div
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDown className="w-4 h-4 text-alpha-blue-600 dark:text-alpha-blue-400" strokeWidth={3} />
+          <ChevronDown className="w-3.5 h-3.5 text-ds-tertiary" strokeWidth={2.4} />
         </motion.div>
       </button>
 
@@ -97,17 +98,17 @@ export const EarningsBreakdown = ({ studentId }) => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden border-t border-alpha-blue-100"
+            className="overflow-hidden border-t border-ds-hairline"
           >
-            <div className="px-6 py-4 space-y-2.5 text-[14px] font-semibold">
+            <div className="px-6 md:px-7 py-4 space-y-2.5 text-[13px]">
               <Line label="Starting balance" value={data.starting} muted />
               <Line label="Money in (paychecks + deposits)" value={data.deposits} positive />
               <Line label="Interest earned" value={data.interest} positive />
               <Line label="Market gains/losses" value={data.market} signed />
               {data.cashOut !== 0 && <Line label="Cash outs" value={data.cashOut} signed />}
-              <div className="pt-3 border-t border-alpha-blue-100 flex items-center justify-between">
-                <span className="text-[14px] font-bold text-alpha-navy-800 dark:text-white">Current balance</span>
-                <span className="text-[16px] font-bold tabular-nums text-alpha-navy-800 dark:text-white">{formatCurrency(data.ending)}</span>
+              <div className="pt-3 border-t border-ds-hairline flex items-center justify-between">
+                <span className="text-[13px] font-semibold text-ds-primary">Current balance</span>
+                <span className="text-[15px] font-semibold tabular-nums text-ds-primary">{formatCurrency(data.ending)}</span>
               </div>
             </div>
           </motion.div>
@@ -122,22 +123,22 @@ const Line = ({ label, value, muted, positive, signed }) => {
   let cls
   if (muted) {
     display = formatCurrency(value)
-    cls = 'text-alpha-blue-600 dark:text-alpha-blue-400'
+    cls = 'text-ds-tertiary'
   } else if (positive) {
     display = `+${formatCurrency(Math.abs(value))}`
-    cls = 'text-emerald-700 dark:text-emerald-400'
+    cls = 'text-ds-positive'
   } else if (signed) {
     const sign = value >= 0 ? '+' : '−'
     display = `${sign}${formatCurrency(Math.abs(value))}`
-    cls = value >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
+    cls = value >= 0 ? 'text-ds-positive' : 'text-ds-negative'
   } else {
     display = formatCurrency(value)
-    cls = 'text-alpha-navy-800 dark:text-white'
+    cls = 'text-ds-primary'
   }
   return (
     <div className="flex items-center justify-between">
-      <span className="text-alpha-blue-700 dark:text-alpha-blue-300">{label}</span>
-      <span className={`tabular-nums font-bold ${cls}`}>{display}</span>
+      <span className="text-ds-secondary">{label}</span>
+      <span className={`tabular-nums font-semibold ${cls}`}>{display}</span>
     </div>
   )
 }

@@ -2,23 +2,23 @@ import React from 'react';
 
 const STATUS_STYLES = {
   draft: {
-    bg: 'bg-alpha-blue-100',
-    text: 'text-alpha-blue-800',
-    label: 'In Progress',
+    bg: 'bg-ds-inset',
+    text: 'text-ds-secondary',
+    label: 'In progress',
   },
   submitted: {
-    bg: 'bg-amber-100',
-    text: 'text-amber-800',
+    bg: 'bg-ds-accent-soft',
+    text: 'text-ds-accent',
     label: 'Submitted',
   },
   allocated: {
-    bg: 'bg-emerald-100',
-    text: 'text-emerald-800',
+    bg: 'bg-ds-accent-soft',
+    text: 'text-ds-accent',
     label: 'Allocated',
   },
   verified: {
-    bg: 'bg-emerald-100',
-    text: 'text-emerald-800',
+    bg: 'bg-ds-accent-soft',
+    text: 'text-ds-accent',
     label: 'Verified',
   },
 };
@@ -34,7 +34,7 @@ export const StatusBadge = ({ status = 'draft', showLabel = true, className = ''
   return (
     <span
       className={`
-        inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold
+        inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-[0.02em]
         ${style.bg} ${style.text}
         ${className}
       `}

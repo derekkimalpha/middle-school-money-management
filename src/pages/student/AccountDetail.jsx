@@ -76,9 +76,11 @@ export const AccountDetail = () => {
   const info = ACCOUNT_INFO[type]
   if (!info) {
     return (
-      <div className="max-w-3xl mx-auto px-8 py-10 text-center">
-        <p className="text-ink-muted dark:text-white/40">Account type not found</p>
-        <button onClick={() => navigate('/')} className="mt-4 text-sage underline text-sm">Go back</button>
+      <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+        <div className="max-w-3xl mx-auto px-8 py-10 text-center">
+          <p className="text-ds-tertiary">Account type not found</p>
+          <button onClick={() => navigate('/')} className="mt-4 text-ds-accent underline text-sm">Go back</button>
+        </div>
       </div>
     )
   }
@@ -104,208 +106,209 @@ export const AccountDetail = () => {
   const earnedForType = type === 'savings' ? growthLog.savings : 0
 
   return (
-    <div className="max-w-3xl mx-auto pb-24">
-      <Toast message={toast} />
+    <div className="min-h-screen bg-ds-canvas text-ds-primary font-ds-sans">
+      <div className="max-w-3xl mx-auto pb-24">
+        <Toast message={toast} />
 
-      {/* Header */}
-      <div className="px-8 pt-8 pb-4">
-        <motion.div
-          initial={{ opacity: 0, x: -8 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-ink-muted dark:text-white/40 hover:text-ink dark:hover:text-white/60 transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-[13px] font-medium">Back</span>
-          </button>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="flex items-center gap-4"
-        >
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: info.lightBg }}
-          >
-            <Icon className="w-6 h-6" style={{ color: info.color }} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-alpha-navy-800 dark:text-white">
-              {info.name}
-            </h1>
-            <p className="text-xs text-ink-muted dark:text-white/40">
-              {type === 'savings' ? 'Earning interest daily' : 'Your spending account'}
-            </p>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Balance */}
-      <div className="px-8 py-4">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <p className="text-xs font-medium uppercase tracking-[0.15em] text-ink-muted dark:text-white/40 mb-1">
-            Your Balance
-          </p>
-          <h2 className="text-5xl font-black tabular-nums tracking-tight text-ink dark:text-chalk-white">
-            <AnimNum value={balance} prefix="$" />
-          </h2>
-          {type === 'savings' && earnedForType > 0 && (
-            <div className="flex items-center gap-2 mt-2">
-              <Sprout className="w-4 h-4 text-sage" />
-              <span className="text-sm font-bold tabular-nums text-sage">
-                +{formatCurrency(earnedForType)}
-              </span>
-              <span className="text-xs text-ink-faint dark:text-white/30">interest earned</span>
-            </div>
-          )}
-        </motion.div>
-      </div>
-
-      {/* Info Card */}
-      <div className="px-8 mb-6">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="rounded-xl p-5 border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03]"
-        >
-          <div className="flex items-start gap-3 mb-3">
-            <Info className="w-4 h-4 text-ink-muted dark:text-white/40 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-[13px] font-bold text-ink dark:text-chalk-white mb-1">
-                {info.description}
-              </p>
-              <p className="text-[12px] text-ink-light dark:text-white/50 leading-relaxed">
-                {info.whatItDoes}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="px-8 mb-8">
-        {type === 'checking' ? (
-          <div className="flex gap-2">
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              onClick={() => navigate('/transfer')}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-ink dark:bg-chalk-white text-white dark:text-ink text-[13px] font-bold text-center hover:bg-ink/90 dark:hover:bg-chalk-white/90 transition-colors"
-            >
-              <ArrowLeftRight className="w-4 h-4" />
-              Move to Savings / Invest
-            </motion.button>
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              onClick={() => navigate('/purchase')}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] text-ink dark:text-chalk-white text-[13px] font-bold text-center hover:bg-surface-2 dark:hover:bg-white/[0.04] transition-colors"
-            >
-              <ShoppingCart className="w-4 h-4" />
-              Buy
-            </motion.button>
-          </div>
-        ) : (
-          /* Savings — locked, show info instead of action buttons */
+        {/* Header */}
+        <div className="px-8 pt-8 pb-4">
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="rounded-xl p-4 border border-teal/20 dark:border-teal/10 bg-teal/[0.04]"
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-teal/10 flex items-center justify-center flex-shrink-0">
-                <Lock className="w-5 h-5 text-teal" />
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-ds-tertiary hover:text-ds-secondary transition-colors mb-4"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-[13px] font-medium">Back</span>
+            </button>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="flex items-center gap-4"
+          >
+            <div
+              className="w-12 h-12 rounded-ds-lg flex items-center justify-center bg-ds-inset"
+            >
+              <Icon className="w-6 h-6 text-ds-secondary" />
+            </div>
+            <div>
+              <h1 className="text-[28px] md:text-[32px] font-semibold text-ds-primary tracking-[-0.02em]">
+                {info.name}
+              </h1>
+              <p className="text-xs text-ds-tertiary">
+                {type === 'savings' ? 'Earning interest daily' : 'Your spending account'}
+              </p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Balance */}
+        <div className="px-8 py-4">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <p className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-1">
+              Your Balance
+            </p>
+            <h2 className="text-5xl font-bold tabular-nums tracking-tight text-ds-primary">
+              <AnimNum value={balance} prefix="$" />
+            </h2>
+            {type === 'savings' && earnedForType > 0 && (
+              <div className="flex items-center gap-2 mt-2">
+                <Sprout className="w-4 h-4 text-ds-positive" />
+                <span className="text-sm font-semibold tabular-nums text-ds-positive">
+                  +{formatCurrency(earnedForType)}
+                </span>
+                <span className="text-xs text-ds-tertiary">interest earned</span>
               </div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* Info Card */}
+        <div className="px-8 mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="rounded-ds-lg p-5 border border-ds-hairline bg-ds-surface"
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <Info className="w-4 h-4 text-ds-tertiary mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[13px] font-bold text-ink dark:text-chalk-white">Locked Until Graduation</p>
-                <p className="text-[11px] text-ink-light dark:text-white/50">
-                  Your savings can only grow — no withdrawals allowed. Money goes in through your weekly paycheck allocation. When you graduate, it's all yours!
+                <p className="text-[13px] font-semibold text-ds-primary mb-1">
+                  {info.description}
+                </p>
+                <p className="text-[12px] text-ds-secondary leading-relaxed">
+                  {info.whatItDoes}
                 </p>
               </div>
             </div>
           </motion.div>
-        )}
-      </div>
-
-      {/* Recent Activity */}
-      {recentTransactions.length > 0 && (
-        <div className="px-8 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] p-5"
-          >
-            <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
-              Recent Activity
-            </h3>
-            <div className="space-y-2">
-              {recentTransactions.map((tx) => {
-                const isPositive = tx.amount > 0
-                return (
-                  <div key={tx.id} className="flex items-center justify-between py-2 border-b border-black/[0.03] dark:border-white/[0.03] last:border-0">
-                    <div>
-                      <p className="text-[13px] font-medium text-ink dark:text-chalk-white">
-                        {tx.description || tx.type || 'Transaction'}
-                      </p>
-                      <p className="text-[10px] text-ink-faint dark:text-white/30">
-                        {new Date(tx.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <span className={`text-[13px] font-bold tabular-nums ${isPositive ? 'text-sage' : 'text-rose'}`}>
-                      {isPositive ? '+' : ''}{formatCurrency(tx.amount)}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          </motion.div>
         </div>
-      )}
 
-      {/* Divider */}
-      <div className="px-8 mb-6">
-        <div className="border-t border-black/[0.06] dark:border-white/[0.06]" />
-      </div>
-
-      {/* Learn Section */}
-      <div className="px-8">
-        <h3 className="text-[13px] font-bold text-ink-muted dark:text-white/50 uppercase tracking-wider mb-3">
-          Learn About {info.name}
-        </h3>
-        <div className="space-y-2">
-          {info.learnCards.map((card, i) => (
-            <motion.details
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.35 + i * 0.05 }}
-              className="group rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] overflow-hidden"
+        {/* Quick Actions */}
+        <div className="px-8 mb-8">
+          {type === 'checking' ? (
+            <div className="flex gap-2">
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                onClick={() => navigate('/transfer')}
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-ds-lg bg-ds-accent text-ds-on-accent text-[13px] font-semibold text-center hover:bg-ds-accent-hover transition-colors"
+              >
+                <ArrowLeftRight className="w-4 h-4" />
+                Move to Savings / Invest
+              </motion.button>
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                onClick={() => navigate('/purchase')}
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-ds-lg border border-ds-hairline text-ds-primary text-[13px] font-semibold text-center hover:bg-ds-overlay transition-colors"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                Buy
+              </motion.button>
+            </div>
+          ) : (
+            /* Savings — locked, show info instead of action buttons */
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="rounded-ds-lg p-4 border border-ds-hairline bg-ds-inset"
             >
-              <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-paper-warm/50 dark:hover:bg-white/[0.02] transition-colors">
-                <span className="text-[13px] font-bold text-ink dark:text-chalk-white">
-                  {card.title}
-                </span>
-                <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-ink-faint dark:text-white/20" />
-              </summary>
-              <div className="px-5 pb-4 text-[13px] leading-relaxed border-t border-black/[0.04] dark:border-white/[0.04] pt-3 text-ink-light dark:text-white/50">
-                {card.body}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-ds-md bg-ds-surface flex items-center justify-center flex-shrink-0">
+                  <Lock className="w-5 h-5 text-ds-secondary" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-semibold text-ds-primary">Locked Until Graduation</p>
+                  <p className="text-[11px] text-ds-secondary">
+                    Your savings can only grow — no withdrawals allowed. Money goes in through your weekly paycheck allocation. When you graduate, it's all yours!
+                  </p>
+                </div>
               </div>
-            </motion.details>
-          ))}
+            </motion.div>
+          )}
+        </div>
+
+        {/* Recent Activity */}
+        {recentTransactions.length > 0 && (
+          <div className="px-8 mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="rounded-ds-lg border border-ds-hairline bg-ds-surface p-5"
+            >
+              <h3 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-3">
+                Recent Activity
+              </h3>
+              <div className="space-y-2">
+                {recentTransactions.map((tx) => {
+                  const isPositive = tx.amount > 0
+                  return (
+                    <div key={tx.id} className="flex items-center justify-between py-2 border-b border-ds-hairline last:border-0">
+                      <div>
+                        <p className="text-[13px] font-medium text-ds-primary">
+                          {tx.description || tx.type || 'Transaction'}
+                        </p>
+                        <p className="text-[10px] text-ds-tertiary">
+                          {new Date(tx.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <span className={`text-[13px] font-semibold tabular-nums ${isPositive ? 'text-ds-positive' : 'text-ds-negative'}`}>
+                        {isPositive ? '+' : ''}{formatCurrency(tx.amount)}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Divider */}
+        <div className="px-8 mb-6">
+          <div className="border-t border-ds-hairline" />
+        </div>
+
+        {/* Learn Section */}
+        <div className="px-8">
+          <h3 className="text-[11px] font-semibold text-ds-tertiary uppercase tracking-[0.05em] mb-3">
+            Learn About {info.name}
+          </h3>
+          <div className="space-y-2">
+            {info.learnCards.map((card, i) => (
+              <motion.details
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.35 + i * 0.05 }}
+                className="group rounded-ds-lg border border-ds-hairline bg-ds-surface overflow-hidden"
+              >
+                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-ds-overlay transition-colors">
+                  <span className="text-[13px] font-semibold text-ds-primary">
+                    {card.title}
+                  </span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-ds-tertiary" />
+                </summary>
+                <div className="px-5 pb-4 text-[13px] leading-relaxed border-t border-ds-hairline pt-3 text-ds-secondary">
+                  {card.body}
+                </div>
+              </motion.details>
+            ))}
+          </div>
         </div>
       </div>
     </div>

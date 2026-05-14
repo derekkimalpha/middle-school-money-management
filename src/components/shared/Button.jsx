@@ -18,13 +18,13 @@ export const Button = ({
   };
 
   const variantClasses = {
-    primary: 'bg-alpha-blue-500 text-white hover:bg-alpha-blue-600 dark:hover:bg-alpha-blue-600 shadow-soft',
-    secondary: 'bg-alpha-blue-100 text-alpha-blue-700 hover:bg-alpha-blue-200 dark:bg-alpha-blue-900/40 dark:text-alpha-blue-300 dark:hover:bg-alpha-blue-900/60 shadow-soft',
-    outline: 'border-2 border-alpha-blue-500 text-alpha-blue-500 hover:bg-alpha-blue-50 dark:border-alpha-blue-400 dark:text-alpha-blue-400 dark:hover:bg-alpha-blue-900/30',
-    accent: 'bg-pencil hover:bg-pencil-dark text-ink shadow-soft',
-    ghost: 'border border-black/[0.1] dark:border-white/10 text-ink dark:text-white/60 hover:bg-paper-warm dark:hover:bg-white/5',
-    danger: 'bg-red-700 text-white hover:bg-red-800 shadow-soft',
-    soft: 'bg-paper-warm dark:bg-white/[0.06] text-ink-light dark:text-white/60 hover:bg-surface-3 dark:hover:bg-white/[0.1]',
+    primary:   'bg-ds-accent text-ds-on-accent hover:bg-ds-accent-hover',
+    secondary: 'bg-ds-surface border border-ds-border text-ds-primary hover:bg-ds-inset',
+    outline:   'bg-transparent border border-ds-accent text-ds-accent hover:bg-ds-accent-soft',
+    accent:    'bg-ds-accent text-ds-on-accent hover:bg-ds-accent-hover',
+    ghost:     'bg-transparent text-ds-secondary hover:text-ds-primary hover:bg-ds-overlay',
+    danger:    'bg-ds-negative text-white hover:opacity-90',
+    soft:      'bg-ds-inset text-ds-primary hover:bg-ds-overlay',
   };
 
   return (
@@ -33,15 +33,14 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled}
       className={`
-        inline-flex items-center justify-center font-bold transition-all duration-200
+        inline-flex items-center justify-center font-semibold font-ds-sans transition-all duration-150
         ${sizeClasses[size]}
         ${variantClasses[variant] || variantClasses.primary}
         ${full ? 'w-full' : ''}
         ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
         ${className}
       `}
-      whileHover={!disabled ? { y: -1, scale: 1.01 } : {}}
-      whileTap={!disabled ? { scale: 0.97 } : {}}
+      whileTap={!disabled ? { scale: 0.98 } : {}}
     >
       {children}
     </motion.button>

@@ -26,13 +26,13 @@ import { GuideFines } from './pages/guide/GuideFines'
 import { GuideMAP } from './pages/guide/GuideMAP'
 
 const LoadingSpinner = ({ debugMsg }) => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-[#faf9f7] dark:bg-[#141211]">
+  <div className="min-h-screen flex flex-col items-center justify-center bg-ds-canvas font-ds-sans">
     <motion.div
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-      className="w-10 h-10 border-[3px] border-stone-200 dark:border-stone-700 border-t-stone-700 dark:border-t-stone-400 rounded-full"
+      className="w-10 h-10 border-[3px] border-ds-hairline border-t-ds-accent rounded-full"
     />
-    {debugMsg && <p className="mt-4 text-xs text-gray-400 font-mono max-w-md text-center">{debugMsg}</p>}
+    {debugMsg && <p className="mt-4 text-xs text-ds-tertiary font-mono max-w-md text-center">{debugMsg}</p>}
   </div>
 )
 
@@ -81,18 +81,18 @@ function AppInner() {
   if (!profile) {
     if (authError) {
       return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-[#faf9f7] dark:bg-[#141211] px-4">
-          <p className="text-ink dark:text-stone-300 text-center mb-4">{authError}</p>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-ds-canvas font-ds-sans px-4">
+          <p className="text-ds-primary text-center mb-4">{authError}</p>
           <div className="flex gap-3">
             <button
               onClick={refreshProfile}
-              className="px-4 py-2 bg-ink text-white rounded font-semibold text-sm hover:bg-ink/90 transition-colors"
+              className="px-4 py-2 bg-ds-accent text-ds-on-accent rounded-ds-md font-semibold text-sm hover:bg-ds-accent-hover transition-colors"
             >
               Try Again
             </button>
             <button
               onClick={signOut}
-              className="px-4 py-2 bg-stone-200 dark:bg-stone-700 text-ink dark:text-stone-300 rounded font-semibold text-sm hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+              className="px-4 py-2 bg-ds-inset text-ds-primary rounded-ds-md font-semibold text-sm hover:bg-ds-overlay transition-colors"
             >
               Sign Out
             </button>
