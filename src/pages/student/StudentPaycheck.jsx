@@ -13,7 +13,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { usePaycheckSettings } from '../../hooks/usePaycheckSettings'
 import { supabase } from '../../lib/supabase'
 import { ACCOUNT_META, GRADES, formatCurrency } from '../../lib/constants'
-import { ChevronRight, Trash2, Clock, CheckCircle, AlertCircle, DollarSign, Save, Lock, Send, Wallet, PiggyBank, TrendingUp, BarChart3, Sparkles } from 'lucide-react'
+import { ChevronRight, Trash2, Clock, CheckCircle, AlertCircle, DollarSign, Save, Lock, Send, Wallet, PiggyBank, TrendingUp, BarChart3, Sparkles, RotateCcw } from 'lucide-react'
 
 const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri']
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
@@ -35,7 +35,8 @@ const getTodayKey = () => {
 export const StudentPaycheck = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { user, profile } = useAuth()
+  const { user, profile, realProfile } = useAuth()
+  const isGuide = realProfile?.role === 'guide'
   const { settings } = usePaycheckSettings()
   const [view, setView] = useState('tracker')
   const requestedWeekNumber = searchParams.get('week') ? parseInt(searchParams.get('week')) : null
@@ -504,6 +505,50 @@ export const StudentPaycheck = () => {
     }
   }
 
+  // Guide-only: reset a submitted/allocated paycheck back to draft and reverse the deposit.
+  const handleResetPaycheck = async () => {
+    if (!isGuide) return
+    const pc = selectedPaycheck
+    if (!pc?.id) return
+    if (!window.confirm(`Reset ${pc.week_label || 'this paycheck'}? This sends it back to draft and reverses the deposit.`)) {
+      return
+    }
+    setLoading(true)
+    try {
+      const { data, error } = await supabase.rpc('reset_paycheck', { p_paycheck_id: pc.id })
+      if (error) throw error
+      if (data && data.error) throw new Error(data.error)
+      setToast({ type: 'success', text: `Reset ${pc.week_label || 'paycheck'}. The kid can fill it in again.` })
+      await fetchPastPaychecks()
+      await fetchSessionPaychecks()
+      // Jump back to the tracker so the kid (or impersonating guide) can edit
+      const { data: refreshed } = await supabase
+        .from('weekly_paychecks')
+        .select('*')
+        .eq('id', pc.id)
+        .maybeSingle()
+      if (refreshed) {
+        setSelectedPaycheck(null)
+        setDraftId(refreshed.id)
+        setDraftStatus(refreshed.status)
+        setXpByDay({
+          mon: refreshed.xp_mon || 0, tue: refreshed.xp_tue || 0, wed: refreshed.xp_wed || 0,
+          thu: refreshed.xp_thu || 0, fri: refreshed.xp_fri || 0,
+        })
+        setEpicDays({
+          mon: !!refreshed.epic_mon, tue: !!refreshed.epic_tue, wed: !!refreshed.epic_wed,
+          thu: !!refreshed.epic_thu, fri: !!refreshed.epic_fri,
+        })
+        setView('tracker')
+      }
+    } catch (err) {
+      console.error('Reset paycheck error:', err)
+      setToast({ type: 'error', text: `Reset failed: ${err.message || 'unknown error'}` })
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleAllocatePaycheck = async () => {
     const pc = selectedPaycheck || { total_earnings: totalPaycheck, id: draftId }
     const total = pc.total_earnings || 0
@@ -781,6 +826,23 @@ export const StudentPaycheck = () => {
               <div className="mt-4 p-3 rounded-ds-md bg-ds-inset border border-ds-hairline text-sm text-ds-secondary">
                 <Clock className="w-4 h-4 inline mr-1" />
                 Waiting for your guide to review this paycheck.
+              </div>
+            )}
+
+            {/* Guide-only reset — unlocks the paycheck back to draft and refunds the deposit */}
+            {isGuide && p.status !== 'draft' && (
+              <div className="mt-6 pt-5 border-t border-ds-hairline">
+                <button
+                  onClick={handleResetPaycheck}
+                  disabled={loading}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-ds-surface border border-ds-border text-[12px] font-semibold text-ds-secondary hover:bg-ds-inset hover:text-ds-primary transition-all disabled:opacity-40"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" strokeWidth={2.2} />
+                  Reset paycheck
+                </button>
+                <p className="text-[11px] text-ds-tertiary mt-1.5">
+                  Sends this paycheck back to draft and reverses the deposit. The kid's XP and mastery data is preserved so they can fix what was wrong.
+                </p>
               </div>
             )}
           </div>

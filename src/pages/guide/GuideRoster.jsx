@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, AlertCircle, Plus, X, DollarSign, Check, XCircle, HandCoins } from 'lucide-react'
+import { Search, AlertCircle, Plus, X, DollarSign, Check, XCircle, HandCoins, Eye } from 'lucide-react'
 import { AnimNum, Tag, Toast, Button, Input, Field } from '../../components/shared'
 import { formatCurrency, ACCOUNT_META } from '../../lib/constants'
 import { supabase } from '../../lib/supabase'
+import { useAuth } from '../../hooks/useAuth'
 
 export const GuideRoster = () => {
   const navigate = useNavigate()
+  const { impersonate } = useAuth()
+
+  const handleImpersonate = async (studentId, e) => {
+    e?.stopPropagation?.()
+    e?.preventDefault?.()
+    await impersonate(studentId)
+    navigate('/')
+  }
   const [students, setStudents] = useState([])
   const [filteredStudents, setFilteredStudents] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -394,13 +403,16 @@ export const GuideRoster = () => {
               const wealthPct = Math.min((total / maxTotal) * 100, 100)
 
               return (
-                <motion.button
+                <motion.div
                   key={student.id}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.03, duration: 0.3 }}
                   onClick={() => handleStudentClick(student.id)}
-                  className="w-full text-left group"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleStudentClick(student.id) }}
+                  className="w-full text-left group cursor-pointer"
                 >
                   <div className="relative flex items-center gap-4 p-4 rounded-ds-lg border border-ds-hairline hover:bg-ds-overlay bg-ds-surface transition-all overflow-hidden">
                     {/* Subtle wealth bar at bottom */}
@@ -435,11 +447,20 @@ export const GuideRoster = () => {
                       </p>
                     </div>
 
+                    <button
+                      onClick={(e) => handleImpersonate(student.id, e)}
+                      className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full text-ds-tertiary hover:text-ds-primary hover:bg-ds-inset transition-all"
+                      aria-label={`View as ${student.full_name}`}
+                      title={`View as ${student.full_name.split(' ')[0]}`}
+                    >
+                      <Eye className="w-3.5 h-3.5" strokeWidth={2.2} />
+                    </button>
+
                     <svg className="w-4 h-4 text-ds-tertiary flex-shrink-0 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
-                </motion.button>
+                </motion.div>
               )
             })}
           </div>

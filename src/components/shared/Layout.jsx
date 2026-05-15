@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun, LogOut, Menu, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Moon, Sun, LogOut, Menu, ChevronRight, Eye, X } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
+import { useAuth } from '../../hooks/useAuth';
 
 // ── Alpha bird brand mark (inline SVG, inherits currentColor) ──
 const AlphaBird = ({ className = '' }) => (
@@ -86,11 +88,18 @@ export const Layout = ({
   children,
 }) => {
   const { isDark, toggleTheme } = useTheme();
+  const { isImpersonating, impersonatedProfile, exitImpersonation } = useAuth();
+  const navigate = useNavigate();
   const isStudent = role === 'student';
   const firstName = user?.name?.split(' ')[0] || '';
   const initials = (user?.name || '?').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  const handleExitImpersonation = () => {
+    exitImpersonation();
+    navigate('/');
+  };
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 768px)');
@@ -245,6 +254,29 @@ export const Layout = ({
             </div>
           )}
         </header>
+
+        {/* Impersonation banner — only shown when a guide is viewing as a student */}
+        {isImpersonating && (
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="bg-ds-primary text-ds-canvas px-6 md:px-8 py-2.5 flex items-center justify-between gap-3 border-b border-ds-border-strong"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <Eye className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2.2} />
+              <span className="text-[12px] font-semibold truncate">
+                Viewing as <span className="text-ds-accent">{impersonatedProfile?.full_name}</span>
+              </span>
+            </div>
+            <button
+              onClick={handleExitImpersonation}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-ds-canvas/10 hover:bg-ds-canvas/20 text-[11px] font-semibold transition-colors flex-shrink-0"
+            >
+              <X className="w-3 h-3" strokeWidth={2.4} />
+              Exit
+            </button>
+          </motion.div>
+        )}
 
         {/* Content */}
         <main className="flex-1 overflow-y-auto bg-ds-canvas">
